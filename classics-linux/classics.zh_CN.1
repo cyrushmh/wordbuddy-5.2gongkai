@@ -1,0 +1,89 @@
+.TH CLASSICS 1 "2026-10-17" "classics 1.0.0" "用户命令"
+.SH 名称
+classics \- 典籍阅读与编码安全解码命令行工具
+.SH 概述
+.B classics
+.I 命令
+[\fI参数\fR]
+.SH 描述
+.B classics
+是一套典籍阅读与文本编码安全处理的命令行工具。其核心策略是
+.BR 「绝不假装解码成功」 ：
+先按严格 UTF\-8 校验，失败则回退严格 GB18030，仍失败才做有损替换并明确标注，
+而不是静默产出乱码。
+.PP
+该策略与本项目 iOS/macOS 端的
+.IR TextEncoding.decodeSafe 、
+HarmonyOS 端的
+.IR decodeTextSafe
+保持一致，把「编码防护落到用户路径」延伸到 Linux。
+.SH 命令
+.TP
+.B list
+列出已安装的典籍。按分类分组（经史子集道藏），组内按朝代时序排序。
+.TP
+.BI show " 书名或id" " [章号]"
+显示原文的译文。章号省略时输出整本。
+.TP
+.BI decode " 文件"
+安全解码外部文本。输出判定结果（utf\-8 / gb18030 / 有损）与解码后正文；
+若检出乱码指纹会额外告警。
+.TP
+.BI lint " 文件"
+乱码特征自检。检出乱码指纹或无法映射的字节时以非零状态退出，
+适合在导入流程中做前置守门。
+.SH 退出状态
+.TP
+.B 0
+成功（lint 未发现可疑之处）。
+.TP
+.B 1
+失败：文件不可读，或 lint 检出乱码/无法映射的字节。
+.TP
+.B 2
+命令用法错误。
+.SH 环境变量
+.TP
+.B CLASSICS_DATADIR
+覆盖典籍数据的搜索目录（默认
+.IR /usr/share/classics ）。
+便于在解压目录下测试或自带私有书库。
+.SH 文件
+.TP
+.I /usr/share/classics/*.txt
+典籍文本数据（道德经节选/般若波罗蜜多心经/道德真经道藏无注本 81 章/黄庭内景经 36 章/黄庭外景经/黄庭内外玉景经解），由
+.B classics\-data
+包提供，架构无关。
+.TP
+.I /usr/share/man/man1/classics.1
+本手册的英文版本；中文版位于
+.IR /usr/share/man/zh_CN/man1/classics.1 。
+.SH 乱码类型
+本项目识别若干典型的中文编码错配产物：
+.TP
+.B 古文码
+以 GBK 方式读 UTF\-8，产出「鐢辨湀」这类罕见字连续串。
+.TP
+.B 口字码
+以 UTF\-8 方式读 GBK，产出「□□□」。
+.TP
+.B 符号码 / 拼音码
+以 ISO8859\-1 读 UTF\-8 或 GBK，产出「ç"±」这类符号串。
+.TP
+.B 锟拷码
+UTF\-8 读 GBK 后再以 GBK 读，产出「锟斤拷」。
+.TP
+.B 烫烫烫 / 屯屯屯
+MSVC 调试填充字节 0xCC / 0xCD 被当作文本读取的产物。
+.SH 参见
+.BR iconv (1),
+.BR file (1),
+.BR locale (7)
+.SH 备注
+严格 GB18030 解码在遇到「同一文件内混用多种编码」时会
+.BR 成功
+但产出乱码（因为每个字节都可映射）。为此本工具在解码后会做
+.BR 产物面相
+自检：若出现「以 GBK 误读 UTF\-8」高频产物的连续串，即判定编码错配并告警。
+.SH 作者
+windows\-internals\-toolkit <noreply@example.com>

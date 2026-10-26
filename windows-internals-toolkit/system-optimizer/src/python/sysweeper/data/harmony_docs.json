@@ -1,0 +1,188 @@
+{
+  "stage_model": {
+    "name": "Stage 应用模型（UIAbility / ExtensionAbility / AbilityStage）",
+    "org": "华为 HarmonyOS · OpenHarmony",
+    "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/",
+    "protocols": [
+      "Stage 模型应用组件生命周期（UIAbility / ExtensionAbility）",
+      "AbilityStage 进程内组件容器（HAP 级初始化与资源管理）",
+      "Want 意图协议（显式 Want / 隐式 Want 匹配规则）"
+    ],
+    "interfaces": [
+      "@ohos.app.ability.UIAbility（onCreate / onForeground / onBackground / onDestroy）",
+      "@ohos.app.ability.Want（意图载体）",
+      "module.json5（abilities / extensionAbilities 声明）",
+      "AbilityStage（onAcceptWant / onConfigurationUpdate）"
+    ],
+    "docs": [
+      "Stage 模型开发指南（应用组件与进程模型）",
+      "UIAbility 组件生命周期（foreground/background 状态迁移）",
+      "Want 意图匹配规则（显式/隐式，skills 过滤）",
+      "module.json5 配置文件说明（abilities / extensionAbilities）"
+    ],
+    "summary": "Stage 模型是鸿蒙推荐的应用模型：一个 HAP 对应一个 AbilityStage 进程容器，UIAbility 承载界面、ExtensionAbility 承载无界面扩展能力，组件间经 Want 意图调度。",
+    "advice": "核对应用组件与生命周期一律走官方 UIAbility/Want 接口；勿在 UIAbility 之外自管进程——系统按 Stage 模型统一调度，私自保活会被回收。"
+  },
+  "arkui": {
+    "name": "ArkUI 声明式 UI（ArkTS）",
+    "org": "华为 HarmonyOS · OpenHarmony",
+    "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/",
+    "protocols": [
+      "声明式开发范式（ArkTS 语言扩展：struct / builder / 装饰器）",
+      "状态管理协议（@State / @Prop / @Link / @Provide / @Observed）",
+      "组件布局与渲染协议（弹性布局、资源限定词适配）"
+    ],
+    "interfaces": [
+      "ArkTS 组件（Text / Column / Row / List / Grid …）",
+      "状态装饰器（@State / @Prop / @Link / @Provide）",
+      "资源访问（$r('app.string.xxx')、资源限定词目录）"
+    ],
+    "docs": [
+      "ArkUI 声明式开发（ArkTS 范式与组件体系）",
+      "状态管理（V1 装饰器 / V2 观测能力）",
+      "资源分类与访问（限定词与 $r 引用）"
+    ],
+    "summary": "ArkUI 以 ArkTS 声明式范式描述界面：状态驱动 UI 刷新，装饰器标注数据流（单向 @Prop、双向 @Link），资源经限定词目录按设备形态自动匹配。",
+    "advice": "UI 优化先核对状态管理粒度（避免过粗 @State 触发整树刷新）；资源勿硬编码尺寸/字符串，应走 $r 与限定词以适配多设备。"
+  },
+  "syscap": {
+    "name": "系统能力 SystemCapability（@ohos.* 与能力判定）",
+    "org": "华为 HarmonyOS · OpenHarmony",
+    "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-references/",
+    "protocols": [
+      "SystemCapability（SysCap）能力集声明与分级",
+      "@ohos.* 命名空间 API 分层（基础 / 系统 / 厂商）",
+      "能力判定协议 canIUse()（运行期 SysCap 探测）"
+    ],
+    "interfaces": [
+      "canIUse()（运行期能力判定，官方推荐）",
+      "@ohos.* 各模块 API（如 @ohos.hilog、@ohos.rpc）",
+      "syscap.json / module.json5 的 syscap 字段（构建期声明）"
+    ],
+    "docs": [
+      "SystemCapability 使用指南（能力声明与判定）",
+      "API 参考（@ohos.* 各模块）",
+      "canIUse 能力探测接口说明"
+    ],
+    "summary": "鸿蒙把设备能力抽象为 SysCap 能力集：构建期在 syscap.json/module.json5 声明，运行期用 canIUse() 判定，避免调用设备不支持的 @ohos.* API 而崩溃。",
+    "advice": "调用任何 @ohos.* API 前先用 canIUse() 判定，而不是 try/catch 兜底；低能力设备（如穿戴）上缺失能力要能优雅降级。"
+  },
+  "hilog": {
+    "name": "HiLog 日志系统（域 / 标签 / 级别）",
+    "org": "华为 HarmonyOS · OpenHarmony",
+    "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-setup-hilog",
+    "protocols": [
+      "HiLog 日志格式（domain 域 / tag 标签 / level 级别）",
+      "日志级别 D(DEBUG) / I(INFO) / W(WARN) / E(ERROR) / F(FATAL)",
+      "持久日志为编码后二进制 gz（需 hilogtool 解析为明文）"
+    ],
+    "interfaces": [
+      "hilog 命令（-L 级别 / -T 标签 / -D 域 / -w 落盘控制）",
+      "@ohos.hilog API（应用日志写入）",
+      "/data/log/hilog（设备日志持久目录）",
+      "hilogtool（gz 二进制转明文解析工具）"
+    ],
+    "docs": [
+      "日志分析 HiLog 指南（developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-setup-hilog）",
+      "hilogtool 工具说明（device.harmonyos.com/cn/docs/apiref/harmonyos-guides/hilog-tool）",
+      "@ohos.hilog API 参考（日志写入接口）"
+    ],
+    "summary": "HiLog 以「域(domain)+标签(tag)+级别(level)」三维组织日志，应用层常用域 0xD000；设备侧持久日志存于 /data/log/hilog，为编码后的 gz 二进制，须用 hilogtool 解析。",
+    "advice": "排障用 `hdc shell hilog -L E`（只看 Error 及以上）或 `-T <tag>` 过滤；回收日志走 hilog/hdc 官方接口，直接删 /data/log/hilog 会破坏日志轮转。"
+  },
+  "hdc": {
+    "name": "hdc 设备连接桥（HarmonyOS Device Connector）",
+    "org": "华为 HarmonyOS · OpenHarmony",
+    "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/",
+    "protocols": [
+      "hdc 三端架构：client（PC 进程）/ server（PC 常驻）/ daemon（设备侧）",
+      "设备发现与通道协议（USB / TCP 连接与命令通道）"
+    ],
+    "interfaces": [
+      "hdc list targets（列出已连接设备）",
+      "hdc shell（进入设备命令行，执行 hilog / rm 等）",
+      "hdc file recv / send（文件传输）",
+      "hdc install / uninstall（应用安装与卸载）"
+    ],
+    "docs": [
+      "hdc（HarmonyOS Device Connector）工具使用指南",
+      "hdc 命令参考（list targets / shell / file / install）",
+      "设备调试与日志查看流程"
+    ],
+    "summary": "hdc 是鸿蒙的官方命令行调试工具（对标 Android 的 adb），支持 Windows/Linux/macOS，用于设备交互调试、文件传输、日志查看与应用安装。",
+    "advice": "核对设备连接用 `hdc list targets`；命令与 adb 相似但不兼容（如 adb devices → hdc list targets），勿混用两套工具。"
+  },
+  "ipc_distributed": {
+    "name": "IPC/RPC 与分布式软总线",
+    "org": "华为 HarmonyOS · OpenHarmony",
+    "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/",
+    "protocols": [
+      "@ohos.rpc（进程间 IPC / 跨设备 RPC 远程调用）",
+      "分布式软总线（设备发现 / 认证 / 组网 / 传输）",
+      "跨设备 Want 与分布式数据同步"
+    ],
+    "interfaces": [
+      "@ohos.rpc（MessageSequence / IRemoteBroker / RemoteObject）",
+      "@ohos.distributedDeviceManager（可信设备发现与认证）",
+      "分布式数据管理（跨设备数据同步）"
+    ],
+    "docs": [
+      "IPC / RPC 开发指南（@ohos.rpc）",
+      "分布式设备管理 API（@ohos.distributedDeviceManager）",
+      "分布式软总线与跨设备调用说明"
+    ],
+    "summary": "鸿蒙以 @ohos.rpc 提供统一 IPC/RPC 能力，并借分布式软总线把调用延伸到跨设备：设备先经 distributedDeviceManager 发现与认证，再组网传输。",
+    "advice": "核对跨设备能力前先确认设备已组网认证；分布式调用耗电与延迟高于本地 IPC，非必要不要高频跨设备 RPC。"
+  },
+  "app_package": {
+    "name": "HAP / HSP 应用包与 ohpm / Hvigor 构建",
+    "org": "华为 HarmonyOS · OpenHarmony",
+    "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/",
+    "protocols": [
+      "HAP（Harmony Ability Package）/ HSP（Harmony Shared Package）/ HAR 结构",
+      "module.json5 与 app.json5 声明式配置",
+      "应用签名 profile（p7b / cer / p12）"
+    ],
+    "interfaces": [
+      "ohpm（OpenHarmony 包管理器，三方库安装）",
+      "hvigor / hvigorw（构建工具）",
+      "DevEco Studio（官方 IDE）",
+      "AppScope/app.json5、build-profile.json5、oh_modules/"
+    ],
+    "docs": [
+      "应用程序包结构（HAP / HSP / HAR 与多模块）",
+      "module.json5 / app.json5 配置说明",
+      "ohpm 三方库管理与 Hvigor 构建说明",
+      "应用签名与发布流程"
+    ],
+    "summary": "鸿蒙应用以 HAP 为部署单元、HSP/HAR 复用代码，配置集中在 module.json5 与 AppScope/app.json5，三方库由 ohpm 管理、产物由 Hvigor 构建。",
+    "advice": "清构建缓存只清生成目录（build/、.hvigor/、oh_modules 可重建）；勿删 AppScope/app.json5、module.json5 与签名文件（p12/cer/p7b），否则无法打包发布。"
+  },
+  "uniapp_harmony": {
+    "name": "uni-app 鸿蒙端（Harmony Next，HBuilderX 4.27+）",
+    "org": "DCloud uni-app",
+    "url": "https://uniapp.dcloud.net.cn/tutorial/harmony/intro.html",
+    "protocols": [
+      "uni-app 编译到 Harmony Next（自 HBuilderX 4.27 起支持）",
+      "仅支持 vue3 项目编译到鸿蒙（vue2 需先迁移 vue3）",
+      "条件编译（平台标识隔离鸿蒙端差异代码）"
+    ],
+    "interfaces": [
+      "HBuilderX 4.27+ / uni CLI（运行与发行）",
+      "调用鸿蒙原生 API、嵌入鸿蒙原生组件的桥接接口",
+      "内置模块（uni.* API）在鸿蒙端的支持度清单",
+      "manifest.json 鸿蒙相关配置"
+    ],
+    "docs": [
+      "概述：https://uniapp.dcloud.net.cn/tutorial/harmony/intro.html",
+      "运行和发行：https://uniapp.dcloud.net.cn/tutorial/harmony/runbuild.html",
+      "调用鸿蒙原生API：https://uniapp.dcloud.net.cn/tutorial/harmony/native-api.html",
+      "嵌入鸿蒙原生组件：https://uniapp.dcloud.net.cn/tutorial/harmony/native-component.html",
+      "内置模块说明：https://uniapp.dcloud.net.cn/tutorial/harmony/built-in-module.html",
+      "历史变更：https://uniapp.dcloud.net.cn/tutorial/harmony/history.html",
+      "vue2 项目迁移到 vue3：https://uniapp.dcloud.net.cn/tutorial/migration-to-vue3.html"
+    ],
+    "summary": "uni-app 自 HBuilderX 4.27 起支持把 vue3 项目编译到 Harmony Next：通过调用鸿蒙原生 API 与嵌入原生组件补齐能力，并以内置模块说明界定 uni.* API 在鸿蒙端的支持度。",
+    "advice": "vue2 项目必须先迁移 vue3 才能编译到鸿蒙；鸿蒙端差异用条件编译隔离，调用能力前查「内置模块说明」确认支持度，不要假设与 Android/iOS 端一致。"
+  }
+}

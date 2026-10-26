@@ -1,0 +1,21 @@
+{
+  "name": "uniapp-cleaner",
+  "appid": "__UNI__SYSWEEPER",
+  "description": "uni-app 端上存储清理页（基于 system-optimizer 的 uniapp 任务真实落地）",
+  "vueVersion": "3",
+  "app-plus": {
+    "usingComponents": true,
+    "nvueStyleCompiler": "uni-app"
+  },
+  "h5": {
+    "router": {
+      "base": "./"
+    }
+  },
+  "mp-weixin": {
+    "appid": "",
+    "setting": {
+      "urlCheck": false
+    }
+  }
+}

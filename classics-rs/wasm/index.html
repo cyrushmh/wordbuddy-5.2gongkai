@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>classics-rs · Web 版乱码安全解码</title>
+<style>
+  body { font-family: system-ui, "PingFang SC", "Microsoft YaHei", sans-serif; max-width: 760px; margin: 2rem auto; padding: 0 1rem; }
+  h1 { font-size: 1.4rem; }
+  textarea { width: 100%; height: 120px; font-family: ui-monospace, monospace; }
+  button { padding: .5rem 1rem; cursor: pointer; }
+  #out { white-space: pre-wrap; background: #f6f6f6; padding: 1rem; border-radius: 6px; min-height: 3rem; }
+  .meta { color: #666; font-size: .85rem; margin-top: .5rem; }
+  code { background:#eee; padding:0 4px; border-radius:3px; }
+</style>
+</head>
+<body>
+<h1>classics-rs · Web 版乱码安全解码</h1>
+<p class="meta">同一套 Rust 内核经 <code>wasm32-unknown-unknown</code> 编译，在浏览器内运行：严格 UTF-8 → 回退 GB18030 → 仍失败则标注。</p>
+<textarea id="in" placeholder="粘贴疑似乱码的文本或十六进制字节（如 D6 D0 B9 FA）…"></textarea>
+<div style="margin:.6rem 0">
+  <button id="decode">解码文本</button>
+  <button id="decodeHex">按十六进制字节解码</button>
+</div>
+<div id="out">（结果将显示在此）</div>
+<div class="meta" id="ver"></div>
+
+<script type="module">
+  const ex = {};
+  const wasmUrl = new URL('classics-wasm32-unknown-unknown.wasm', import.meta.url);
+  const { instance } = await WebAssembly.instantiateStreaming(fetch(wasmUrl), {});
+  Object.assign(ex, instance.exports);
+  const mem = () => ex.memory.buffer;
+
+  ex.classics_version && (() => {
+    const p = ex.classics_version();
+    document.getElementById('ver').textContent = '内核版本 ' +
+      new TextDecoder().decode(new Uint8Array(mem(), p, 16)).replace(/\0.*/, '');
+  })();
+
+  function decodeBytes(inputBytes) {
+    const m = mem();
+    new Uint8Array(m, ex.classics_inbuf_ptr(), inputBytes.length).set(inputBytes);
+    const n = ex.classics_decode_inbuf(inputBytes.length);
+    return new TextDecoder('utf-8').decode(new Uint8Array(m, ex.classics_outbuf_ptr(), n));
+  }
+
+  document.getElementById('decode').onclick = () => {
+    const s = document.getElementById('in').value;
+    document.getElementById('out').textContent = decodeBytes(new TextEncoder().encode(s));
+  };
+  document.getElementById('decodeHex').onclick = () => {
+    const hex = document.getElementById('in').value.trim().split(/[\s,]+/).filter(Boolean);
+    const bytes = new Uint8Array(hex.map(h => parseInt(h, 16)));
+    document.getElementById('out').textContent = decodeBytes(bytes);
+  };
+</script>
+</body>
+</html>

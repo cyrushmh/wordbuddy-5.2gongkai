@@ -1,0 +1,119 @@
+{
+  "openssh": {
+    "name": "OpenSSH（ssh / sshd / sftp / scp）",
+    "org": "OpenBSD / OpenSSH 项目",
+    "url": "https://www.openssh.com/manual.html",
+    "protocols": [
+      "SSH-2（RFC 4253 传输层，AES/ChaCha20 加密 + 严格密钥交换）",
+      "SSH 认证（RFC 4252：publickey 优先、password/interactive 次之）",
+      "SSH 连接（RFC 4254：shell/sftp/forwarding/agent 通道）",
+      "SFTP（SSH File Transfer Protocol，RFC 4254 子会话，非 FTP）"
+    ],
+    "interfaces": [
+      "ssh_config(5) / sshd_config(5)：客户端与服务端配置（PermitRootLogin / PasswordAuthentication / PubkeyAuthentication / KbdInteractiveAuthentication）",
+      "ssh-keygen(1)：ED25519/RSA 密钥对生成与指纹",
+      "authorized_keys(5)：服务端每个用户 ~/.ssh/authorized_keys 公钥清单",
+      "ssh-agent(1) / SSH_AUTH_SOCK：临时持有解密私钥，避免重复输口令",
+      "sftp-server(8)：服务端子系统，经 Subsystem sftp 启动"
+    ],
+    "docs": [
+      "https://www.openssh.com/manual.html — OpenSSH 官方手册总入口",
+      "https://www.rfc-editor.org/rfc/rfc4251 — SSH 协议架构（SSH-2 基础）",
+      "https://www.rfc-editor.org/rfc/rfc4252 — SSH 认证协议（推荐 publickey）",
+      "https://www.rfc-editor.org/rfc/rfc4253 — SSH 传输层协议（加密/完整性）",
+      "https://www.rfc-editor.org/rfc/rfc4254 — SSH 连接协议（通道/sftp/转发）",
+      "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-63B.pdf — NIST SP 800-63B 数字身份（密钥/口令认证强度）"
+    ],
+    "summary": "OpenSSH 是事实标准的加密远程 Shell 与文件传输实现；相较 telnet 全程加密、口令不裸奔。配置安全的关键在于：禁用口令登录改公钥、禁用 root 直登、仅留 SSH-2、用 ED25519 密钥。",
+    "advice": "优先用 SSH 替代 telnet；服务端 sshd_config 设 PasswordAuthentication no + PubkeyAuthentication yes + PermitRootLogin prohibit-password；客户端用 ssh-keygen -t ed25519，私钥权限 600。本工具只审计配置、给加固指引，不替你改写 sshd_config。"
+  },
+  "telnet": {
+    "name": "Telnet（telnet 客户端 / telnetd 服务）",
+    "org": "IETF / 各 Unix 发行版",
+    "url": "https://www.rfc-editor.org/rfc/rfc854",
+    "protocols": [
+      "Telnet 协议（RFC 854：NVT 网络虚拟终端，明文传输）",
+      "无传输层加密（RFC 854 时代无 TLS，用户名口令与数据全程明文）"
+    ],
+    "interfaces": [
+      "telnet(1)：交互式明文远程终端客户端",
+      "telnetd(8) / inetd：明文远程登录服务（多数发行版默认不装/不启用）",
+      "端口 23/tcp：Telnet 标准端口"
+    ],
+    "docs": [
+      "https://www.rfc-editor.org/rfc/rfc854 — Telnet 协议规范（明文 NVT）",
+      "https://www.rfc-editor.org/rfc/rfc855 — Telnet 选项规范",
+      "https://man.openbsd.org/telnet.1 — telnet(1) 手册（多系统同源）"
+    ],
+    "summary": "Telnet 是 1983 年的明文远程终端协议，用户名、口令与所有数据均明文传输，在任意不可信网络上可被嗅探。现代环境应一律用 SSH 替代，telnetd 服务应禁用，仅在调试串行/老设备时偶尔用客户端。",
+    "advice": "生产/日常远程管理一律用 SSH 替代 telnet；确认 telnetd 未监听 23 端口；仅在连接本地串行控制台或老式网管设备时临时用 telnet 客户端。本工具只检测 telnet 是否可用/是否在监听，给禁用指引，不替你停服务。"
+  },
+  "filezilla": {
+    "name": "FileZilla（Client / Server）",
+    "org": "FileZilla 项目（开源）",
+    "url": "https://wiki.filezilla-project.org/Documentation",
+    "protocols": [
+      "FTP（RFC 959：明文文件传输，口令与数据均不加密）",
+      "FTPS（RFC 4217：FTP over TLS/SSL，显式/隐式加密）",
+      "SFTP（SSH File Transfer Protocol，走 22 端口，加密，优先）",
+      "FTPES（显式 FTPS）"
+    ],
+    "interfaces": [
+      "sitemanager.xml：站点管理器配置（主机/协议/登录方式），位于用户配置目录",
+      "FileZilla Client 设置 → 接口设置 → 密码：可设「主密码」对站点口令二次加密",
+      "filezilla-client 命令行 / fzputtygen：PPK 密钥转换（PuTTY 格式）",
+      "服务器：FileZilla Server 用户/组配置（被动端口范围、TLS 证书）"
+    ],
+    "docs": [
+      "https://wiki.filezilla-project.org/Documentation — FileZilla 官方文档",
+      "https://wiki.filezilla-project.org/FileZilla_Settings — 设置（含主密码加密）",
+      "https://www.rfc-editor.org/rfc/rfc959 — FTP 协议（明文）",
+      "https://www.rfc-editor.org/rfc/rfc4217 — FTP over TLS（FTPS）"
+    ],
+    "summary": "FileZilla 是跨平台 FTP/SFTP/FTPS 客户端；风险点在：用明文 FTP 传凭据、站点管理器把口令以弱加密存储（无主密码时易被本地读出）。正确做法是连接协议选 SFTP（22 端口，基于 SSH 加密），并对站点管理器设主密码。",
+    "advice": "FileZilla 站点一律用 SFTP（协议选 SFTP，端口 22）而非明文 FTP；在设置里设「主密码」给站点口令二次加密；不把含口令的 sitemanager.xml 随意复制分发。本工具只检测配置路径与是否明文 FTP、给安全指引，不替你改站点配置、不读取/解密任何口令。"
+  },
+  "putty": {
+    "name": "PuTTY（Windows SSH/Telnet 客户端 + 工具集）",
+    "org": "Simon Tatham / PuTTY 项目",
+    "url": "https://www.chiark.greenend.org.uk/~sgtatham/putty/docs.html",
+    "protocols": [
+      "SSH-2（默认，加密远程 Shell，替代 telnet）",
+      "Telnet / Rlogin / Serial（明文/老协议，仅本地串行调试时用）",
+      "SCP/SFTP 文件传输（pscp/psftp）"
+    ],
+    "interfaces": [
+      "Session 注册表：Windows 注册表 HKCU\\Software\\SimonTatham\\PuTTY\\Sessions 存会话",
+      "ppk 密钥：PuTTY 私有密钥格式（pageant 代理持有）",
+      "puttygen：RSA/ED25519 密钥对生成与 PPK 转换",
+      "pageant：SSH 代理，临时持有解密私钥"
+    ],
+    "docs": [
+      "https://www.chiark.greenend.org.uk/~sgtatham/putty/docs.html — PuTTY 官方文档",
+      "https://www.chiark.greenend.org.uk/~sgtatham/putty/faq.html — PuTTY FAQ（密钥/代理）"
+    ],
+    "summary": "PuTTY 是 Windows 上最常用的 SSH 客户端；同样应默认 SSH-2、用 ED25519/ppk 公钥而非口令，并避免用其 Telnet 模式上不可信网。私钥放 pageant 而非明文落盘口令。",
+    "advice": "PuTTY 默认用 SSH 连接类型、用 puttygen 生成 ED25519 并设私钥口令；pageant 持有代理而非反复输口令；不要用 PuTTY 的 Telnet 模式访问不可信主机。本工具只检测 PuTTY 是否安装，不读注册表口令、不替你改会话。"
+  },
+  "ultravnc": {
+    "name": "UltraVNC（开源远程桌面：Server + Viewer，VNC/RFB 协议）",
+    "org": "UltraVNC 项目（GPL，个人/商用全免费）",
+    "url": "https://www.uvnc.com/ ; https://github.com/ultravnc/UltraVNC",
+    "protocols": [
+      "VNC/RFB 远程帧缓冲协议：Server（被控端）+ Viewer（主控端）双件套，装混淆即连不上",
+      "局域网同一网段输入内网 IP 直连；外网经转发服务器模式跨网段（无需公网 IP/端口映射）",
+      "内置双向文件传输：文件夹批量、断点续传、传输前自动压缩提速"
+    ],
+    "interfaces": [
+      "连接密码：每次连接专属验证密码——默认密码极易识破，必须自定义高强度",
+      "加密插件：AES / SecureVNC / MSRC4 多重加密，连接、桌面数据、传输文件全程加密",
+      "自研智能压缩：按实时带宽自动适配画质与帧率，弱网优先保操作流畅（防鼠标漂移/画面撕裂）",
+      "多显示器原生适配（双屏/多屏自由切换）；内置实时文字聊天；适配 Windows 安全模式远程"
+    ],
+    "docs": [
+      "docs/77 §3.1（batch-6 头条导入只读分析）"
+    ],
+    "summary": "GPL 全功能开放、无带宽限速、无广告捆绑的开源远程桌面；连接失败先查防火墙放行。",
+    "advice": "本仓 remote 子系统只读登记远程客户端生态位；不代装、不代连、不代传文件。"
+  }
+}

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Quantum XFCE Session
+Comment=XFCE 面向量子架构(ARCH=quantum)的会话：量子主题 / 守护进程 / 面板小程序
+Exec=/usr/bin/quantum-session
+Type=Application
+DesktopNames=XFCE
+Keywords=quantum;xfce;session;arch=quantum;

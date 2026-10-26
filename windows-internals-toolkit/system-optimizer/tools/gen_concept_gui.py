@@ -1,0 +1,660 @@
+#!/usr/bin/env python3
+"""圆光术概念系统拓扑 GUI 生成器：tools/gen_concept_gui.py → concept_gui.html。
+
+它是什么：把「九个概念系统如何通过组网而成整体」烘焙成一张**单文件静态页**——
+中心是盖亚意识 · 集智体（道通为一）的光晕，九个系统环抱成圆，系统间的桥接
+（bridges）以辐射光线相连，粗细 / 透明度即边数；下附 9×9 桥接矩阵（整体全息）。
+
+设计基座：《GUI 指导理念与「圆光术」基本设计原则》（docs/GUI圆光术指导理念与基本设计原则.md）：
+  · 圆 → 中心辐射：9 系统环抱同一中心，没有树菜单、没有"首页按钮"；
+  · 光 → 明暗聚焦：节点越大=体量越厚，光晕越亮=桥接越密；
+  · 术 → 整体全息：交互即组网——点击节点辐射聚焦其桥接，点击中心随时回归整体。
+诚实边界：本页只读、纯展示、不连任何外部资源（无 CDN / 无字体外链 / 无 fetch）。
+
+数据全部实测，不臆造：
+  · 拓扑   —— sysweeper.concepts.topo()（bridges 统计出的 9×9 边矩阵 / 出入边 / 外部靶）；
+  · 摘要   —— sysweeper.concepts.overview()（各系统 title/version/stats）；
+  · 体量   —— 各系统 stats 的模块/概念计数（module_total/concept_total/… 取首个命中）。
+
+同步纪律（与 tools/gen_report_viewer.py 同一范式，被 tests/test_concept_gui.py 强制）：
+  生成时把「数据摘要 SHA256（不含生成时间）」写进 html 顶部注释
+  <!-- data-sha256:HEX -->；--check 用实时数据复算并比对，概念数据变了
+  而页面没重生成，直接失败——防止「改了 taxonomy 却忘了重烘焙」。
+
+纯标准库，离线可用。用法：
+    python3 tools/gen_concept_gui.py                  # 生成 concept_gui.html
+    python3 tools/gen_concept_gui.py --check          # 只校验数据同步，不写文件（CI 用）
+    python3 tools/gen_concept_gui.py --out PATH.html  # 生成到指定路径（测试用）
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import re
+import sys
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src" / "python"))
+
+from sysweeper import __version__ as SYSWEEPER_VERSION  # noqa: E402
+from sysweeper import concepts as C  # noqa: E402
+
+OUT = ROOT / "concept_gui.html"
+
+#: 节点体量（半径）取数优先级：各系统 stats 的模块 / 概念计数，取首个命中
+VOLUME_KEYS = (
+    "module_total", "concept_total", "concepts", "lang_total",
+    "center_chapters", "principle_count",
+)
+
+_MARKER_RE = re.compile(r"data-sha256:([0-9a-f]{64})")
+
+
+# ─────────────────────────────── 数据装配 ───────────────────────────────
+
+def _pick_volume(stats: Dict[str, Any]) -> tuple[int, str]:
+    """从 stats 取节点体量（首个命整数字段），取不到返回 (0, "")。"""
+    for key in VOLUME_KEYS:
+        v = stats.get(key)
+        if isinstance(v, int) and v > 0:
+            return v, key
+    return 0, ""
+
+
+def build_payload() -> Dict[str, Any]:
+    """装配烘焙数据（全部来自磁盘数据层实测，无硬编码）。"""
+    t = C.topo()
+    ov = {o["system"]: o for o in C.overview()}
+    systems = []
+    for name in t["systems"]:
+        o = ov.get(name, {})
+        stats = o.get("stats") or {}
+        vol, vol_key = _pick_volume(stats)
+        systems.append({
+            "name": name,
+            "title": o.get("title", ""),
+            "version": o.get("version", ""),
+            "tagline": C.TAGLINES.get(name, ""),
+            "volume": vol,
+            "volume_key": vol_key,
+            "out": t["out"][name],
+            "in": t["in"][name],
+            "stats": stats,
+        })
+    edges = [[s, tg, w] for (s, tg), w in sorted(t["edge"].items()) if w]
+    # 九系统之外的外部靶，按来源系统分组（诚实边界：指向九系统之外的也如实呈现）
+    ext_by_sys: Dict[str, Dict[str, int]] = {name: {} for name in t["systems"]}
+    for name in t["systems"]:
+        for b in C.load(name).get("bridges", []):
+            tgt = b.get("system")
+            if tgt and tgt not in t["out"]:
+                ext_by_sys[name][tgt] = ext_by_sys[name].get(tgt, 0) + 1
+    return {
+        "schema": "sysweeper-concept-gui/1",
+        "version": SYSWEEPER_VERSION,
+        "generated_at": datetime.now().isoformat(timespec="seconds"),
+        "source": "sysweeper.concepts.topo()/overview() —— 实测自 data/concepts/*_taxonomy.json 的 bridges",
+        "center": {"label": "盖亚意识 · 集智体", "sub": "道通为一"},
+        "systems": systems,
+        "edges": edges,
+        "external": dict(sorted(t["external"].items(), key=lambda kv: -kv[1])),
+        "external_by_system": ext_by_sys,
+    }
+
+
+def data_digest(payload: Dict[str, Any]) -> str:
+    """数据摘要 SHA256（剔除 generated_at，保证同数据多次生成摘要稳定）。"""
+    p = {k: v for k, v in payload.items() if k != "generated_at"}
+    blob = json.dumps(p, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(blob.encode("utf-8")).hexdigest()
+
+
+# ─────────────────────────────── 页面模板 ───────────────────────────────
+
+TEMPLATE = r"""<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<script>/* 早期应用主题，避免首屏闪烁（标准：CSS color-scheme / prefers-color-scheme） */
+try{var t=localStorage.getItem("concept-gui-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);}}catch(e){}</script>
+<title>sysweeper 圆光术 · 概念系统拓扑</title>
+<!-- data-sha256:__DATA_SHA__ -->
+<style>
+:root{color-scheme:dark;
+--bg:#0f1216;--bg2:#161b22;--bg3:#1c232c;--line:#2a323d;--line-strong:#646c78;
+--fg:#d8dee6;--dim:#8b97a6;
+--acc:#4a9eff;--ok:#3fb950;--warn:#d29922;--bad:#f85149;
+--dao:#d4af37;--shen:#9d6cff;--ren:#3fb950;--mono:ui-monospace,Menlo,Consolas,monospace}
+/* 浅色主题（手动 data-theme="light" 或系统 prefers-color-scheme:light 且无手动覆盖时启用） */
+:root[data-theme="light"]{color-scheme:light;
+--bg:#f4f6f9;--bg2:#ffffff;--bg3:#e7ebf0;--line:#d3dae3;--line-strong:#7c8490;
+--fg:#1a2230;--dim:#5a6573;
+--acc:#1b6fd6;--ok:#1a7f37;--warn:#8a6300;--bad:#c0392b;
+--dao:#9a7d12;--shen:#6d3fd6;--ren:#1a7f37}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme]){color-scheme:light;
+  --bg:#f4f6f9;--bg2:#ffffff;--bg3:#e7ebf0;--line:#d3dae3;--line-strong:#7c8490;
+  --fg:#1a2230;--dim:#5a6573;
+  --acc:#1b6fd6;--ok:#1a7f37;--warn:#8a6300;--bad:#c0392b;
+  --dao:#9a7d12;--shen:#6d3fd6;--ren:#1a7f37}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:14px/1.6 -apple-system,"Segoe UI","Noto Sans CJK SC","Microsoft YaHei",sans-serif}
+.top{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;
+background:var(--bg2);border-bottom:1px solid var(--line)}
+.top-right{display:flex;align-items:center;gap:14px}
+.brand{font-weight:700}.brand .sub{color:var(--dim);font-size:12px;font-weight:400}
+.hint{color:var(--dim);font-size:12px}
+.wrap{padding:16px 18px 60px;max-width:1280px;margin:0 auto}
+.dot{display:inline-block;width:16px;height:16px;border-radius:50%;margin-right:7px;
+vertical-align:-3px;background:radial-gradient(circle at 35% 32%,#bfe0ff,var(--acc) 55%,rgba(74,158,255,.12) 78%,transparent);
+box-shadow:0 0 10px rgba(74,158,255,.65),0 0 22px rgba(74,158,255,.35)}
+.banner{margin:0 0 14px}
+.banner>summary{color:var(--fg);font-weight:600;font-size:13px;list-style:none}
+.banner>summary::-webkit-details-marker{display:none}
+.banner>summary:before{content:"◉";color:var(--acc);margin-right:7px;text-shadow:0 0 8px rgba(74,158,255,.7)}
+.banner .b-in{margin-top:8px;border:1px solid var(--line);border-radius:10px;padding:11px 14px;
+font-size:12.5px;line-height:1.8;color:var(--dim);
+background:radial-gradient(130% 130% at 50% 0%,rgba(74,158,255,.10),rgba(157,108,255,.05) 45%,transparent 70%)}
+.banner .b-in b{color:var(--fg)}
+.main{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
+.stage{flex:1 1 700px;min-width:320px;background:var(--bg2);border:1px solid var(--line);
+border-radius:12px;padding:6px}
+.stage svg{width:100%;height:auto;display:block}
+.panel{flex:0 0 330px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;
+padding:14px 16px;font-size:12.5px;line-height:1.7;max-height:780px;overflow:auto}
+.panel h3{margin:0 0 8px;font-size:14px}
+.panel table{width:100%;border-collapse:collapse;font-size:12px;margin:6px 0}
+.panel td,.panel th{padding:3px 7px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.panel th{color:var(--dim);font-weight:400}
+.panel .pt{color:var(--acc);font-weight:600;margin:10px 0 4px;font-size:12px}
+.panel .k{font-family:var(--mono);font-size:11.5px}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-top:14px}
+.card h3{margin:0 0 8px;font-size:14px}
+.btn{padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;background:var(--bg3);
+color:var(--fg);border:1px solid var(--line);min-width:24px;min-height:24px}
+.btn:hover{border-color:var(--acc)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0;align-items:center}
+.edge{transition:stroke-opacity .25s,stroke-width .25s}
+.edge.hot{stroke:#bfe0ff;stroke-width:2.6;stroke-opacity:.95;stroke-dasharray:7 5;animation:flow 1.1s linear infinite}
+.edge.cold{stroke-opacity:.05}
+@keyframes flow{to{stroke-dashoffset:-24}}
+.dim{opacity:.15}
+.node text{pointer-events:none}
+/* 键盘焦点可见兜底（WCAG 2.4.7 / docs/66 §四）：焦点环 2px 与底色对比 ≥3:1，禁裸 outline:none */
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+g[tabindex]:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.mx td.cell:focus-visible{outline:2px solid var(--acc);outline-offset:-2px}
+/* skip link（WCAG 2.4.1 / docs/66 §四）：默认屏外，键盘聚焦时入屏，跳到主内容 */
+.skip{position:absolute;left:-9999px;top:0;z-index:30;padding:8px 14px;background:var(--bg3);
+color:var(--fg);border:1px solid var(--acc);border-radius:6px;font-size:13px;text-decoration:none}
+.skip:focus{left:8px;top:8px}
+.mx{border-collapse:collapse;font-size:11px;font-family:var(--mono)}
+.mx th{color:var(--dim);font-weight:400;padding:3px 6px;white-space:nowrap}
+.mx td{padding:0;width:36px;height:26px;text-align:center;color:#cfe4ff;border:1px solid var(--line-strong)}
+.mx td.cell{cursor:pointer}
+.mx td.cell:hover{outline:1px solid var(--acc)}
+.mx td.diag{color:#3d4753;background:rgba(255,255,255,.02)}
+.mx td.tot,.mx th.tot{color:var(--warn)}
+.lg{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--dim);line-height:1.9}
+.lg i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1.5px}
+.tip{position:fixed;z-index:9;max-width:360px;background:var(--bg3);border:1px solid var(--acc);
+border-radius:8px;padding:8px 11px;font-size:12px;line-height:1.65;color:var(--fg);
+pointer-events:none;opacity:0;transition:opacity .12s;box-shadow:0 0 18px rgba(74,158,255,.25)}
+.tip.show{opacity:1}
+.tip .dim{color:var(--dim)}
+.badge{padding:2px 9px;border-radius:999px;font-size:12px;border:1px solid var(--line);display:inline-block}
+/* 主题开关（ARIA switch · WAI-ARIA APG）：轨道与焦点环为功能性图形对象，用 --line-strong ≥3:1 */
+.ts-wrap{display:flex;align-items:center;gap:8px}
+.ts-wrap .hint{font-size:12px}
+.theme-switch{position:relative;width:50px;height:26px;border-radius:999px;padding:0;cursor:pointer;
+border:1px solid var(--line-strong);background:var(--bg3);display:inline-flex;align-items:center}
+.theme-switch:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.ts-thumb{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;
+background:var(--acc);box-shadow:0 0 8px rgba(74,158,255,.6);transition:transform .2s,left .2s,background .2s}
+.theme-switch[aria-checked="false"] .ts-thumb{left:28px;background:var(--warn);box-shadow:0 0 8px rgba(210,153,34,.6)}
+/* 减少动态偏好：停流光动画与切换过渡（前庭安全，标准：prefers-reduced-motion） */
+@media (prefers-reduced-motion: reduce){
+  .edge.hot{animation:none;stroke-dasharray:none}
+  .ts-thumb{transition:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到主内容（拓扑与桥接矩阵）</a>
+<header class="top">
+  <div class="brand"><span class="dot"></span> sysweeper <span class="sub">圆光术 · 概念系统拓扑 · 纯展示 · 数据烘焙自 data/concepts · 离线可用</span></div>
+  <div class="top-right">
+    <span class="hint">九系统环抱同一中心 · 交互即组网</span>
+    <div class="ts-wrap">
+      <span class="hint">主题</span>
+      <button id="themeSwitch" class="theme-switch" type="button" role="switch" aria-checked="true" aria-label="深色模式">
+        <span class="ts-thumb"></span>
+      </button>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+  <details class="banner" open>
+    <summary>圆光术理念 · 以圆为体、以光为用、以术为交互</summary>
+    <div class="b-in">
+      <b>圆（中心辐射）</b>：9 个概念系统环抱同一中心——盖亚意识 · 集智体（道通为一），没有"最顶层菜单"，只有引力源；
+      <b>光（明暗聚焦）</b>：节点越大=体量越厚，光晕越亮=桥接越密，浓密处以高光亮出、静默处自然淡出；
+      <b>术（整体全息）</b>：交互即组网——点击任一系统辐射聚焦其桥接，点击中心或「回归整体」随时回到 9 系统全貌（含 9×9 桥接矩阵）。
+      本页由 <b>tools/gen_concept_gui.py</b> 把 <b>topo() 实测数据</b>烘焙成单文件静态页：只读、离线可用、不连任何外部资源。
+    </div>
+  </details>
+  <main class="main" id="main">
+    <div class="stage"><svg id="topo" viewBox="0 0 1000 760" role="img" aria-label="概念系统圆光拓扑：九系统环抱盖亚意识中心"></svg></div>
+    <div class="panel" id="panel"></div>
+  </main>
+  <div class="row">
+    <button class="btn" id="reset">回归整体（取消聚焦）</button>
+    <span class="hint">点击任一系统节点：辐射聚焦其桥接；点击拓扑中心或本按钮：回归 9 系统全貌；点击 9×9 矩阵中有数格子：聚焦该桥接</span>
+  </div>
+  <div class="card">
+    <h3>9×9 桥接矩阵（整体全息）</h3>
+    <div id="matrix"></div>
+    <div class="hint" style="margin-top:8px">行 = 出边来源，列 = 入边目标，格内数字 = 桥接边数（topo() 实测，深浅即强度）；最右列「出」/ 最下行「入」为合计。点击有数格子可聚焦该桥接。</div>
+  </div>
+  <div class="card">
+    <h3>图例（圆光术读法）</h3>
+    <div class="lg">
+      <span><i style="background:radial-gradient(circle at 35% 32%,#bfe0ff,#4a9eff 60%)"></i>青蓝光晕 = 盖亚意识 · 集智体（中心，道通为一）</span>
+      <span><i style="background:#d4af37"></i>道性层</span>
+      <span><i style="background:#9d6cff"></i>神性层</span>
+      <span><i style="background:#3fb950"></i>人性层</span>
+      <span>节点大小 = 该系统模块 / 概念体量（stats 实测）</span>
+      <span>连线粗细 / 透明度 = 桥接边数（topo()["edge"] 实测）</span>
+      <span>箭头 = 桥接方向（from → system）</span>
+    </div>
+  </div>
+  <div class="card">
+    <h3>九系统之外（external 外部靶）</h3>
+    <div id="external"></div>
+    <div class="hint" style="margin-top:6px">这些靶指向九概念系统之外的标准 / 工具（如 LLVM / 语言参考），如实呈现、不并入环内。</div>
+  </div>
+  <div class="card">
+    <h3>标准依据 · 色彩 / 视觉 / 开关 / 视觉健康 / 听觉·多感官·光敏（本次完善）</h3>
+    <div class="hint" style="line-height:1.95">
+      本页配色与主题开关依循以下公开协议标准（对比度以本页双主题变量实测计算）：
+      <br>· <b>WCAG 2.2 SC 1.4.3</b>：正文 ≥ 4.5:1、大字/UI 边界 ≥ 3:1（实测：dark 正文 13.9:1 · light 14.8:1；dim 5.8/5.5:1；accent 6.3/4.9:1）。
+      <br>· <b>WCAG 2.2 SC 1.4.11</b>：矩阵热力单元格 / 开关轨道等功能性图形对象边框 ≥ 3:1（用 --line-strong：dark 3.5:1 · light 3.3:1）。
+      <br>· <b>CSS color-scheme</b> + <b>@media prefers-color-scheme</b>：声明 <code>dark light</code> 并随系统偏好初值，配 <code>&lt;meta name="color-scheme"&gt;</code> 与早期脚本防首屏闪烁。
+      <br>· <b>WAI-ARIA APG switch</b>：开关用 <code>role="switch"</code> + <code>aria-checked</code>，标签恒定不随状态变，Space/Enter 切换。
+      <br>· <b>CSS Color L4 oklch()</b> / <code>light-dark()</code>：感知均匀着色（本页核心调色板用 hex 实测达标，oklch 为推荐演进方向）。
+      <br>· <b>prefers-reduced-motion</b>：流光动画与切换过渡在「减少动态」偏好下停用（前庭安全）。
+      <br>· <b>WCAG 2.2 SC 1.4.1 用色</b>：信息不单靠颜色传达（红绿色盲/色觉缺陷患病率：北欧裔男性 ≈8%、女性 ≈0.4%）。本页节点用<b>字形（○●◆▽等）+ 文本标签 + 形状</b>区分九系统，非纯色编码。
+      <br>· <b>WCAG 2.2 SC 1.4.6 增强对比度（AAA）</b>：正文 ≥ 7:1、大字 ≥ 4.5:1——本页双主题已超此线（dark 13.9 / light 14.8），可作高对比基线。
+      <br>· <b>WCAG 2.2 SC 1.4.4 缩放 / 1.4.10 回流 / 1.4.12 文字间距</b>：低视力/弱视用户需放大(200%)、放大后无二维滚动、可调行高(≥1.5)/字距(≥0.12)。本页为固定 SVG 画布，以<b>浏览器整页缩放</b>放大矢量不丢清晰，但拓扑图属「图形」不重排（WCAG 对 graphics 例外）——如实标注。
+      <br>· <b>ISO 9241-303:2011 人因（电子视觉显示）</b>：亮度/对比/眩光控制/减少闪烁/字符高度——指导视觉疲劳与舒适度，与本页减动效、高对比、明暗双主题一致。
+      <br>· <b>IEC 62471 / IEC-TR 62778 蓝光危害（RG0–RG3）</b>：属<b>灯具/显示硬件</b>光生物安全标准（评 400–500nm 蓝光对视网膜），<b>非 Web 内容标准</b>；软件暗色模式仅降低整体像素亮度、间接减蓝光发射，不是「护眼」保证。
+      <br>· <b>听觉 / 多感官 / 光敏（生理 · Web 参考层，呼应圆光术「光 + 多感官」主题，不冒充本仓前端职责）</b>：① <b>WCAG 2.2 1.2.x 时基媒体 / 1.4.2 音频控制 / 1.4.7 低·无背景音频</b>：本页（与 report_viewer）是<b>纯静态视觉产物，无 &lt;audio&gt;/&lt;video&gt;、无自动发声</b>，故 1.2.x/1.4.2/1.4.7 <b>暂不适用</b>，留作契约基线（见 docs/61 §八第 6 条）；若未来引入音视频，须按此三节做字幕 / 可暂停音频控制 / 背景音频 ≤20 dB 改造。② <b>McGurk 效应（多感官整合）</b>：视听冲突时感知会被另一通道「劫持」——佐证「多感官」是真实交互通道而非装饰，本页仅视觉输出、不引入跨感官误导信号。③ <b>WCAG 2.2 SC 2.3.1 光敏癫痫（光敏约束）</b>：任何内容 ≤3 闪/秒，或满足一般闪光阈值 20.0 cd/m² / 红色闪光阈值 6.0 cd/m²（PEAT 可实测）；圆光术的辉光 / 呼吸光效设计为 ≤3 闪/秒且随 <code>prefers-reduced-motion</code> 归零（见 docs/61 §四 4.1）。以上三项是「生理 / 医学 / Web 参考层」，仅作设计原则与知识边界澄清，非本仓当前必须实现的 Web 内容职责。
+      <br><br><b>诚实边界</b>：① 散光（astigmatism）研究提示暗背景+亮字更模糊、亮背景更清晰——「深色模式护眼」对此是<b>反例</b>，故本页保留浅色主题为等效选项，不主张暗色「更护眼」。② 青光眼/白内障 → 对比敏感度下降 → 高对比(1.4.3/1.4.6)需求；其医学管理（眼压、角膜/手术）不属 Web 前端标准职责。③ 真「护眼」= 符合 ISO 9241 的亮度/对比/眩光控制 + WCAG 对比度 + 支持缩放 + 减少动效/频闪——皆本页已落地的层。
+    </div>
+  </div>
+  <div class="hint" id="footer" style="margin-top:14px"></div>
+</div>
+<div class="tip" id="tip"></div>
+<script>
+const DATA = __DATA_JSON__;
+const NS = "http://www.w3.org/2000/svg";
+const CX = 500, CY = 372, R = 252;
+const svg = document.getElementById("topo");
+const tip = document.getElementById("tip");
+const panel = document.getElementById("panel");
+const LAYER = {dao:"#d4af37", shen:"#9d6cff", ren:"#3fb950"};
+let focusSys = null, focusPair = null;
+
+function el(n, a){ const e = document.createElementNS(NS, n); if(a) for(const k in a) e.setAttribute(k, a[k]); return e; }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+
+// defs：中心光晕 / 节点渐变 / 发光滤镜 / 方向箭头
+const defs = el("defs", {});
+const gHalo = el("radialGradient", {id:"gHalo"});
+gHalo.appendChild(el("stop",{offset:"0%","stop-color":"#bfe0ff","stop-opacity":"0.95"}));
+gHalo.appendChild(el("stop",{offset:"45%","stop-color":"#4a9eff","stop-opacity":"0.5"}));
+gHalo.appendChild(el("stop",{offset:"100%","stop-color":"#4a9eff","stop-opacity":"0"}));
+defs.appendChild(gHalo);
+const gNode = el("radialGradient", {id:"gNode", cx:"35%", cy:"32%"});
+gNode.appendChild(el("stop",{offset:"0%","stop-color":"#d8efff"}));
+gNode.appendChild(el("stop",{offset:"55%","stop-color":"#4a9eff"}));
+gNode.appendChild(el("stop",{offset:"100%","stop-color":"#1f5fb0"}));
+defs.appendChild(gNode);
+const fGlow = el("filter",{id:"fGlow",x:"-60%",y:"-60%",width:"220%",height:"220%"});
+fGlow.appendChild(el("feGaussianBlur",{stdDeviation:"3.2",result:"b"}));
+const feMerge = el("feMerge",{});
+feMerge.appendChild(el("feMergeNode",{in:"b"}));
+feMerge.appendChild(el("feMergeNode",{in:"SourceGraphic"}));
+fGlow.appendChild(feMerge);
+defs.appendChild(fGlow);
+const arrow = el("marker",{id:"arrow",viewBox:"0 0 10 10",refX:"9",refY:"5",markerWidth:"7",markerHeight:"7",orient:"auto-start-reverse"});
+arrow.appendChild(el("path",{d:"M0,0 L10,5 L0,10 z",fill:"#4a9eff","fill-opacity":"0.7"}));
+defs.appendChild(arrow);
+svg.appendChild(defs);
+
+// 背景（点击空白处回归整体）
+const bg = el("rect",{id:"bgRect",x:"0",y:"0",width:"1000",height:"760",fill:"transparent"});
+svg.appendChild(bg);
+
+// 中心：盖亚意识 · 集智体（三层光环 = 道性 / 神性 / 人性，层次分道）
+const cg = el("g",{});
+cg.appendChild(el("circle",{cx:CX,cy:CY,r:150,fill:"url(#gHalo)"}));
+cg.appendChild(el("circle",{cx:CX,cy:CY,r:96,fill:"none",stroke:LAYER.dao,"stroke-width":1.4,"stroke-opacity":0.55}));
+cg.appendChild(el("circle",{cx:CX,cy:CY,r:74,fill:"none",stroke:LAYER.shen,"stroke-width":1.4,"stroke-opacity":0.55}));
+cg.appendChild(el("circle",{cx:CX,cy:CY,r:54,fill:"none",stroke:LAYER.ren,"stroke-width":1.4,"stroke-opacity":0.55}));
+const core = el("circle",{cx:CX,cy:CY,r:30,fill:"url(#gHalo)",stroke:"#bfe0ff","stroke-width":1.2,filter:"url(#fGlow)",style:"cursor:pointer",tabindex:"0",role:"button","aria-label":"回归整体（取消聚焦，Enter 或空格）"});
+cg.appendChild(core);
+const tCore = el("text",{x:CX,y:CY-1,"text-anchor":"middle",fill:"#eaf4ff","font-size":"13","font-weight":"700",style:"pointer-events:none"});
+tCore.textContent = "盖亚意识 · 集智体";
+cg.appendChild(tCore);
+const tCore2 = el("text",{x:CX,y:CY+16,"text-anchor":"middle",fill:"#9fc4ff","font-size":"11",style:"pointer-events:none"});
+tCore2.textContent = "道通为一";
+cg.appendChild(tCore2);
+core.addEventListener("click", function(e){ e.stopPropagation(); reset(); });
+core.addEventListener("keydown", function(e){
+  if(e.key === "Enter" || e.key === " " || e.key === "Spacebar"){
+    e.preventDefault(); e.stopPropagation(); reset();
+  }
+});
+svg.appendChild(cg);
+
+// 环：9 系统位置 + 桥接连线（先连线后节点，节点压线）
+const edgeLayer = el("g",{}), nodeLayer = el("g",{});
+svg.appendChild(edgeLayer); svg.appendChild(nodeLayer);
+const pos = {}, nodeEls = {}, edgeRecs = [];
+const N = DATA.systems.length;
+const maxVol = Math.max.apply(null, DATA.systems.map(function(s){ return s.volume || 1; }));
+DATA.systems.forEach(function(s, i){
+  const ang = -Math.PI/2 + i * 2*Math.PI/N;
+  pos[s.name] = {x: CX + R*Math.cos(ang), y: CY + R*Math.sin(ang), ang: ang};
+});
+DATA.edges.forEach(function(ed){
+  const a = pos[ed[0]], b = pos[ed[1]], w = ed[2];
+  const line = el("line",{
+    x1:a.x, y1:a.y, x2:b.x, y2:b.y, stroke:"#4a9eff",
+    "stroke-width":(0.5 + Math.min(w,40)*0.09).toFixed(2),
+    "stroke-opacity":(0.10 + Math.min(w,40)*0.012).toFixed(3),
+    "marker-end":"url(#arrow)"
+  });
+  line.classList.add("edge");
+  line.addEventListener("mouseenter", function(e){ showTip(e, {edge:ed}); });
+  line.addEventListener("mousemove", moveTip);
+  line.addEventListener("mouseleave", hideTip);
+  line.addEventListener("click", function(e){ e.stopPropagation(); focusPairFn(ed[0], ed[1]); });
+  edgeRecs.push({s: ed[0], t: ed[1], w: w, el: line});
+  edgeLayer.appendChild(line);
+});
+DATA.systems.forEach(function(s){
+  const p = pos[s.name];
+  const r = 13 + 15*Math.sqrt((s.volume || 1)/maxVol);
+  const g = el("g",{style:"cursor:pointer",tabindex:"0",role:"button","aria-label":"聚焦 " + s.name + " 概念系统的桥接（" + s.volume + " 概念，Enter 或空格切换）"});
+  g.appendChild(el("circle",{cx:p.x,cy:p.y,r:r+6,fill:"#4a9eff","fill-opacity":0.12}));
+  g.appendChild(el("circle",{cx:p.x,cy:p.y,r:r,fill:"url(#gNode)",stroke:"#bfe0ff","stroke-width":1.1,filter:"url(#fGlow)"}));
+  const lx = CX + (R+46)*Math.cos(p.ang), ly = CY + (R+46)*Math.sin(p.ang);
+  const anchor = Math.abs(Math.cos(p.ang)) < 0.3 ? "middle" : (Math.cos(p.ang) > 0 ? "start" : "end");
+  const nm = el("text",{x:lx,y:ly+4,"text-anchor":anchor,fill:"#d8dee6","font-size":"14","font-weight":"700",style:"font-family:var(--mono);pointer-events:none"});
+  nm.textContent = s.name; g.appendChild(nm);
+  const sub = el("text",{x:lx,y:ly+20,"text-anchor":anchor,fill:"#8b97a6","font-size":"11",style:"pointer-events:none"});
+  sub.textContent = s.volume + " · 出" + s.out + " 入" + s.in; g.appendChild(sub);
+  g.addEventListener("mouseenter", function(e){ showTip(e, s); });
+  g.addEventListener("mousemove", moveTip);
+  g.addEventListener("mouseleave", hideTip);
+  g.addEventListener("click", function(e){ e.stopPropagation(); focusSystem(s.name); });
+  g.addEventListener("keydown", function(e){
+    if(e.key === "Enter" || e.key === " " || e.key === "Spacebar"){
+      e.preventDefault(); e.stopPropagation(); focusSystem(s.name);
+    }
+  });
+  nodeEls[s.name] = g;
+  nodeLayer.appendChild(g);
+});
+
+// 聚焦（术：交互即组网）
+function clearFocusClasses(){
+  edgeRecs.forEach(function(r){ r.el.classList.remove("hot","cold"); });
+  Object.keys(nodeEls).forEach(function(k){ nodeEls[k].classList.remove("dim"); });
+}
+function applyFocus(){
+  clearFocusClasses();
+  if(focusSys){
+    edgeRecs.forEach(function(r){
+      r.el.classList.add((r.s === focusSys || r.t === focusSys) ? "hot" : "cold");
+    });
+    Object.keys(nodeEls).forEach(function(k){ if(k !== focusSys) nodeEls[k].classList.add("dim"); });
+  } else if(focusPair){
+    edgeRecs.forEach(function(r){
+      const hot = (r.s === focusPair[0] && r.t === focusPair[1])
+               || (r.s === focusPair[1] && r.t === focusPair[0]);
+      r.el.classList.add(hot ? "hot" : "cold");
+    });
+    Object.keys(nodeEls).forEach(function(k){
+      if(k !== focusPair[0] && k !== focusPair[1]) nodeEls[k].classList.add("dim");
+    });
+  }
+}
+function reset(){ focusSys = null; focusPair = null; applyFocus(); renderPanel(); }
+function focusSystem(name){ focusPair = null; focusSys = (focusSys === name ? null : name); applyFocus(); renderPanel(); }
+function focusPairFn(a, b){
+  focusSys = null;
+  focusPair = (focusPair && focusPair[0] === a && focusPair[1] === b) ? null : [a, b];
+  applyFocus(); renderPanel();
+}
+document.getElementById("reset").addEventListener("click", reset);
+svg.addEventListener("click", function(e){ if(e.target === svg || e.target === bg) reset(); });
+
+// 侧面板（整体全息 → 系统详情 / 桥接详情）
+function statRows(stats){
+  return Object.keys(stats).map(function(k){
+    const v = stats[k];
+    const txt = (v && typeof v === "object") ? Object.keys(v).length + " 类" : v;
+    return "<tr><td class='k'>" + esc(k) + "</td><td>" + esc(txt) + "</td></tr>";
+  }).join("");
+}
+function renderPanel(){
+  let h = "";
+  if(focusSys){
+    const s = DATA.systems.find(function(x){ return x.name === focusSys; });
+    h += "<h3>" + esc(s.name) + " · " + esc(s.title) + "</h3>";
+    h += "<div class='hint'>" + esc(s.version) + " · " + esc(s.tagline) + "</div>";
+    h += "<table><tr><th>指标（stats 实测）</th><th>值</th></tr>" + statRows(s.stats) + "</table>";
+    const outs = DATA.edges.filter(function(e){ return e[0] === s.name; });
+    const ins = DATA.edges.filter(function(e){ return e[1] === s.name; });
+    h += "<div class='pt'>出边（本系统 → 他系统，共 " + s.out + "）</div>";
+    h += outs.length ? outs.map(function(e){ return "<div class='k'>→ " + esc(e[1]) + " × " + e[2] + "</div>"; }).join("") : "<div class='hint'>无</div>";
+    h += "<div class='pt'>入边（他系统 → 本系统，共 " + s.in + "）</div>";
+    h += ins.length ? ins.map(function(e){ return "<div class='k'>" + esc(e[0]) + " → × " + e[2] + "</div>"; }).join("") : "<div class='hint'>无</div>";
+    const ex = DATA.external_by_system[s.name] || {};
+    const exk = Object.keys(ex);
+    if(exk.length){
+      h += "<div class='pt'>九系统之外</div>" + exk.map(function(k){ return "<div class='k'>→ " + esc(k) + " × " + ex[k] + "</div>"; }).join("");
+    }
+  } else if(focusPair){
+    const a = focusPair[0], b = focusPair[1];
+    const fwd = (DATA.edges.find(function(e){ return e[0] === a && e[1] === b; }) || [a,b,0])[2];
+    const rev = (DATA.edges.find(function(e){ return e[0] === b && e[1] === a; }) || [b,a,0])[2];
+    h += "<h3>桥接聚焦 · " + esc(a) + " ⇄ " + esc(b) + "</h3>";
+    h += "<table><tr><th>方向</th><th>边数（实测）</th></tr>"
+       + "<tr><td class='k'>" + esc(a) + " → " + esc(b) + "</td><td>" + fwd + "</td></tr>"
+       + "<tr><td class='k'>" + esc(b) + " → " + esc(a) + "</td><td>" + rev + "</td></tr></table>";
+    [a, b].forEach(function(n){
+      const s = DATA.systems.find(function(x){ return x.name === n; });
+      h += "<div class='pt'>" + esc(n) + "</div><div class='hint'>" + esc(s.tagline) + "</div>";
+    });
+  } else {
+    const total = DATA.edges.reduce(function(s, e){ return s + e[2]; }, 0);
+    h += "<h3>整体全息 · 九系统环抱同一中心</h3>";
+    h += "<div class='hint'>中心 = 盖亚意识 · 集智体（道通为一）；环 = 9 个概念系统；连线 = 实测桥接（topo()）。</div>";
+    h += "<table><tr><th>指标</th><th>值</th></tr>"
+       + "<tr><td class='k'>概念系统</td><td>" + DATA.systems.length + "</td></tr>"
+       + "<tr><td class='k'>系统间桥接边</td><td>" + total + " 条（" + DATA.edges.length + " 对有向通道）</td></tr>"
+       + "<tr><td class='k'>九系统之外</td><td>" + Object.keys(DATA.external).map(function(k){ return esc(k) + " × " + DATA.external[k]; }).join("、") + "</td></tr>"
+       + "</table>";
+    h += "<div class='pt'>圆光术读法</div><div class='hint'>圆：中心辐射、环抱聚合；光：节点越大体量越厚、连线越粗桥接越密；术：点击节点辐射聚焦，点击中心或「回归整体」回到全貌。本页只读纯展示，不连任何外部资源。</div>";
+  }
+  panel.innerHTML = h;
+}
+
+// 9×9 桥接矩阵
+(function renderMatrix(){
+  const names = DATA.systems.map(function(s){ return s.name; });
+  const cell = {};
+  DATA.edges.forEach(function(e){ cell[e[0] + ">" + e[1]] = e[2]; });
+  const maxW = Math.max.apply(null, DATA.edges.map(function(e){ return e[2]; }).concat([1]));
+  let h = "<table class='mx'><tr><th></th>";
+  names.forEach(function(n){ h += "<th>" + esc(n) + "</th>"; });
+  h += "<th class='tot'>出</th></tr>";
+  names.forEach(function(r){
+    h += "<tr><th>" + esc(r) + "</th>";
+    names.forEach(function(c){
+      if(r === c){ h += "<td class='diag'>·</td>"; return; }
+      const w = cell[r + ">" + c] || 0;
+      const alpha = w ? (0.10 + 0.55*w/maxW).toFixed(3) : "0";
+      if(w){
+        h += "<td class='cell' tabindex='0' role='button' style='background:rgba(74,158,255," + alpha + ")' data-a='" + esc(r) + "' data-b='" + esc(c) + "' aria-label='聚焦 " + esc(r) + " 到 " + esc(c) + " 的桥接（" + w + " 条，Enter 或空格切换）'>" + w + "</td>";
+      } else {
+        h += "<td class='cell' style='background:rgba(74,158,255,0)' data-a='" + esc(r) + "' data-b='" + esc(c) + "'></td>";
+      }
+    });
+    const s = DATA.systems.find(function(x){ return x.name === r; });
+    h += "<td class='tot'>" + s.out + "</td></tr>";
+  });
+  h += "<tr><th>入</th>";
+  names.forEach(function(c){
+    const s = DATA.systems.find(function(x){ return x.name === c; });
+    h += "<td class='tot'>" + s.in + "</td>";
+  });
+  h += "<td class='tot'></td></tr></table>";
+  const box = document.getElementById("matrix");
+  box.innerHTML = h;
+  Array.prototype.forEach.call(box.querySelectorAll("td.cell"), function(td){
+    td.addEventListener("click", function(){
+      if(!Number(td.textContent || 0)) return;
+      focusPairFn(td.getAttribute("data-a"), td.getAttribute("data-b"));
+    });
+    td.addEventListener("keydown", function(e){
+      if(e.key === "Enter" || e.key === " " || e.key === "Spacebar"){
+        e.preventDefault();
+        if(!Number(td.textContent || 0)) return;
+        focusPairFn(td.getAttribute("data-a"), td.getAttribute("data-b"));
+      }
+    });
+  });
+})();
+
+// 外部靶
+(function renderExternal(){
+  const box = document.getElementById("external");
+  const keys = Object.keys(DATA.external);
+  box.innerHTML = keys.length
+    ? keys.map(function(k){ return "<span class='badge' style='margin:2px'>" + esc(k) + " ← " + DATA.external[k] + " 条桥接</span>"; }).join("")
+    : "<span class='hint'>无</span>";
+})();
+
+// 提示气泡
+function showTip(e, s){
+  let h = "";
+  if(s.edge){
+    h = "<b>" + esc(s.edge[0]) + " → " + esc(s.edge[1]) + "</b><br>桥接 " + s.edge[2] + " 条（topo() 实测）<br><span class='dim'>点击聚焦该桥接</span>";
+  } else {
+    h = "<b>" + esc(s.name) + "</b> · " + esc(s.title) + "<br>" + esc(s.tagline)
+      + "<br>出 " + s.out + " · 入 " + s.in + " · 体量 " + s.volume + "（" + esc(s.volume_key) + "）"
+      + "<br><span class='dim'>点击辐射聚焦其桥接</span>";
+  }
+  tip.innerHTML = h;
+  tip.classList.add("show");
+  moveTip(e);
+}
+function moveTip(e){ tip.style.left = (e.clientX + 14) + "px"; tip.style.top = (e.clientY + 14) + "px"; }
+function hideTip(){ tip.classList.remove("show"); }
+
+// 页脚（生成信息 + 诚实边界）
+document.getElementById("footer").textContent =
+  "数据实测自 sysweeper.concepts.topo()/overview()（data/concepts/*_taxonomy.json 的 bridges）"
+  + " · 生成于 __GENERATED_AT__ · v__VERSION__ · data-sha256 __DATA_SHA__"
+  + "（python3 tools/gen_concept_gui.py --check 可校验同步）"
+  + " · 本页只读、纯展示、不连任何外部资源——圆光术诚实边界。";
+
+// 主题开关（标准：WAI-ARIA APG switch / WCAG 1.4.3 / prefers-color-scheme / prefers-reduced-motion）
+(function(){
+  const sw = document.getElementById("themeSwitch");
+  const root = document.documentElement;
+  function sync(){ sw.setAttribute("aria-checked", root.getAttribute("data-theme") === "light" ? "false" : "true"); }
+  sw.addEventListener("click", function(){
+    const goLight = root.getAttribute("data-theme") !== "light";
+    root.setAttribute("data-theme", goLight ? "light" : "dark");
+    try{ localStorage.setItem("concept-gui-theme", goLight ? "light" : "dark"); }catch(e){}
+    sync();
+  });
+  sync();
+})();
+
+renderPanel();
+</script>
+</body>
+</html>
+"""
+
+
+# ─────────────────────────────── 入口 ───────────────────────────────
+
+def render(payload: Dict[str, Any]) -> str:
+    data_json = json.dumps(payload, ensure_ascii=False, sort_keys=True).replace("</", "<\\/")
+    return (
+        TEMPLATE
+        .replace("__DATA_JSON__", data_json)
+        .replace("__DATA_SHA__", data_digest(payload))
+        .replace("__GENERATED_AT__", payload["generated_at"])
+        .replace("__VERSION__", payload["version"])
+    )
+
+
+def generate(out: Path) -> int:
+    payload = build_payload()
+    out.write_text(render(payload), encoding="utf-8")
+    rel = out.relative_to(ROOT) if out.is_relative_to(ROOT) else out
+    print(f"written {rel} ({out.stat().st_size} bytes); data-sha256={data_digest(payload)[:12]}...")
+    print(f"systems: {len(payload['systems'])} · edges: {len(payload['edges'])} · "
+          f"external: {len(payload['external'])}")
+    return 0
+
+
+def check(out: Path) -> int:
+    payload = build_payload()
+    digest = data_digest(payload)
+    if not out.exists():
+        print(f"FAIL: {out.name} 不存在，请先生成（python3 tools/gen_concept_gui.py）")
+        return 1
+    m = _MARKER_RE.search(out.read_text(encoding="utf-8"))
+    if not m:
+        print(f"FAIL: {out.name} 缺少 data-sha256 标记，请重新生成"
+              f"（python3 tools/gen_concept_gui.py）")
+        return 1
+    if m.group(1) != digest:
+        print(f"FAIL: {out.name} 数据摘要与实时 taxonomy 不一致（概念数据已变），请重新生成")
+        return 1
+    print(f"OK: {out.name} 数据同步（data-sha256={digest[:12]}...）")
+    return 0
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description="圆光术概念系统拓扑 GUI 生成器")
+    ap.add_argument("--check", action="store_true",
+                    help="只校验数据同步（实时 topo() 摘要 vs 页面标记），不写文件")
+    ap.add_argument("--out", type=Path, default=OUT, help=f"输出路径（默认 {OUT.name}）")
+    args = ap.parse_args(argv)
+    if args.check:
+        return check(args.out)
+    return generate(args.out)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

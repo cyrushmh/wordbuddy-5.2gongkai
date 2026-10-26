@@ -1,0 +1,314 @@
+{
+  "iproute2": {
+    "name": "iproute2（Linux 新一代网络配置套件：ip / ss / tc）",
+    "org": "The Linux Kernel / iproute2 维护者（Stephen Hemminger 等）",
+    "url": "https://wiki.linuxfoundation.org/networking/iproute2",
+    "protocols": [
+      "netlink（rtnetlink：RTM_GETLINK / RTM_GETADDR / RTM_GETROUTE）与 generic netlink",
+      "ss 通过 NETLINK_SOCK_DIAG（或回退 /proc/net）读取套接字状态",
+      "ip 取代已废弃的 ifconfig/route/arp/netstat 等 net-tools 命令",
+      "tc 通过 rtnetlink(TC) 管理 qdisc/class/filter（流量控制）"
+    ],
+    "interfaces": [
+      "ip -br addr（接口与地址，简表）",
+      "ip -br link（链路层状态与 MTU）",
+      "ss -tunlp（TCP/UDP/UNIX 监听套接字，含进程）",
+      "ss -tinp（每套接字 TCP 内部信息：rtt / cwnd / retrans / 重传率）",
+      "ss -s（套接字统计汇总）"
+    ],
+    "docs": [
+      "ip(8) / ss(8) / tc(8) man（man7.org）",
+      "Linux kernel Documentation/networking/ 下的 rtnetlink 说明"
+    ],
+    "summary": "iproute2 是 Linux 网络配置的事实标准：ip 走 netlink 而非解析 ioctl，ss 走 sock_diag 而非 /proc 文本，比 net-tools 更快更准。排查连接、看监听端口、读每连接 TCP 指标（rtt/cwnd/重传）都用 ss 而非 netstat。",
+    "advice": "诊断用 ip -br addr / ip -br link / ss -tunlp / ss -tinp（只读，不改系统）；不要用已废弃的 ifconfig/netstat/route——它们读的是 /proc 旧接口，部分字段在新内核已不全。改地址/路由用 ip addr / ip route（属配置操作，按需 opt-in）。"
+  },
+  "ethtool": {
+    "name": "ethtool（网卡驱动与卸载特性查询/配置）",
+    "org": "The Linux Kernel / ethtool 维护者",
+    "url": "https://man7.org/linux/man-pages/man8/ethtool.8.html",
+    "protocols": [
+      "ETHTOOL ioctl（子集已迁移到 ethtool netlink：ETHTOOL_MSG_*）",
+      "卸载特性标志：GRO / GSO / TSO / LRO / UFO / SG / TSO_ECN / tx-checksumming",
+      "通道/环形队列：rx/tx rings（-l/-g）、中断聚合（-c）、私有标志（priv-flags）",
+      "驱动与固件信息（-i）、统计计数器（-S，含 NIC 内部 queue/error 计数）"
+    ],
+    "interfaces": [
+      "ethtool -k <if>（读当前卸载特性开关，只读）",
+      "ethtool -i <if>（读驱动/固件/总线，只读）",
+      "ethtool -l / -g <if>（读通道数/环形队列大小，只读）",
+      "ethtool -c <if>（读中断聚合参数，只读）",
+      "ethtool -S <if>（读 NIC 统计计数器，只读）",
+      "ethtool -K <if> gro on gso on tso on（写：开启卸载；写操作需 opt-in）",
+      "ethtool -C <if> rx-usecs N（写：调中断聚合；写操作需 opt-in）"
+    ],
+    "docs": [
+      "ethtool(8) man（man7.org）",
+      "Linux kernel Documentation/networking/ethtool-netlink.rst"
+    ],
+    "summary": "ethtool 是网卡特性的权威接口。GRO/TSO/GSO 让网卡/驱动做大部分分段卸载，极大降低 CPU；但转发的设备绝不能开 LRO（LRO 不修正校验和，跨网段会出错），且禁用 GRO/TSO 会显著掉吞吐。ethtool -k 只读看当前状态，ethtool -K 写配置。",
+    "advice": "只读诊断用 ethtool -k / -i / -l / -g / -c / -S（不改系统）；调优用 ethtool -K <if> 开/关具体卸载（写，opt-in）。转发场景务必关 LRO（LRO 不重算校验和）；终端/服务器场景保留 GRO/TSO/GSO。不要直接写 /sys 伪文件绕过 ethtool——ethtool 才是对接 ETHTOOL netlink 的正确路径。"
+  },
+  "ebpf": {
+    "name": "eBPF / bpftool（内核可编程数据面：XDP / tc-bpf / 探测）",
+    "org": "The Linux Kernel BPF / Cilium（bpftool）",
+    "url": "https://docs.kernel.org/bpf/index.html",
+    "protocols": [
+      "bpf() 系统调用：加载 BPF_PROG_TYPE_*（XDP / TC / kprobe / tracepoint / cgroup）",
+      "BPF_MAP_TYPE_*（哈希/数组/周长/lru 等，用于内核态与用户态共享状态）",
+      "libbpf 加载 ELF 中的 BPF 对象（SEC(\"xdp\") / SEC(\"classifier\")）",
+      "verifier：所有程序加载前经内核校验器静态验证（保证安全）"
+    ],
+    "interfaces": [
+      "bpftool prog list / show（列出已加载程序，只读）",
+      "bpftool map list（列出映射，只读）",
+      "bpftool net list（列出已 attach 的 XDP/tc/flow 程序，只读）",
+      "bpftool prog dump xlated（反汇编已加载程序，只读）",
+      "ip link set <if> xdp obj <o.o> / tc qdisc add ... clsact（加载，写操作，高级）"
+    ],
+    "docs": [
+      "BPF 与 XDP 文档（docs.kernel.org/bpf）",
+      "bpftool 文档（bpftool.readthedocs.io）"
+    ],
+    "summary": "eBPF 让程序安全注入内核数据面：XDP 在驱动收包最早点处理（DDoS 过滤/负载均衡），tc clsact 在 ingress/egress 挂 BPF。bpftool 是官方检视工具——list/show/net 全只读。已加载的 eBPF 程序常被 Cilium、Datadog、systemd、XDP 防火墙等依赖。",
+    "advice": "只读检视用 bpftool prog list / map list / net list（不改内核）。切勿 detach/删除不认识的程序——其它系统（Cilium/监控/防火墙）依赖它，删了会断网或丢观测。加载 XDP 属高级写操作（ip link set ... xdp / tc clsact），需明确意图+opt-in，且仅在自有机器上做。"
+  },
+  "tc": {
+    "name": "tc（流量控制：qdisc / class / filter，对抗缓冲膨胀）",
+    "org": "The Linux Kernel / iproute2（tc）",
+    "url": "https://man7.org/linux/man-pages/man8/tc.8.html",
+    "protocols": [
+      "rtnetlink(TC)：qdisc（排队规则）/ class（类）/ filter（分类器）",
+      "无类 qdisc：fq_codel / cake / pfifo_fast / tbf / sfq",
+      "有类 qdisc：htb（分层带宽）/ cbq",
+      "ingress/clsact：在收包路径挂 eBPF 或策略（tc 的 ingress 钩子）"
+    ],
+    "interfaces": [
+      "tc qdisc show（读当前根/各设备排队规则，只读）",
+      "tc -s qdisc show（读统计：backlog / drops / requeues，只读）",
+      "tc qdisc add dev <if> root fq_codel（写：出口挂 fq_codel，opt-in）",
+      "tc qdisc add dev <if> ingress（写：挂载 ingress 钩子，opt-in）",
+      "tc qdisc replace dev <if> root cake（写：换用 CAKE，opt-in）"
+    ],
+    "docs": [
+      "tc(8) man（man7.org）",
+      "bufferbloat.net：Cake / FQ-CoDel 项目文档（www.bufferbloat.net/projects/codel/wiki）"
+    ],
+    "summary": "tc 管排队规则。默认 pfifo_fast 在大带宽+高延迟下会「缓冲膨胀」（bufferbloat）：上传占满时延迟暴涨。fq_codel / CAKE 主动管理队列、降延迟而不牺牲吞吐，是缓解 bufferbloat 的标准做法。tc qdisc show 只读看现状，add/replace 写配置。",
+    "advice": "只读诊断用 tc qdisc show / tc -s qdisc show（看 backlog/drops，不改系统）。缓解 bufferbloat 用 tc qdisc add dev <if> root fq_codel（写，opt-in）。不要用 tc qdisc del 误删正在使用的根 qdisc——会瞬间断该设备出口。egress 用 root，ingress 路径要用 tc clsact 而非老的 ingress 仿类。"
+  },
+  "conntrack": {
+    "name": "conntrack / nf_conntrack（连接跟踪表）",
+    "org": "The netfilter.org 项目",
+    "url": "https://man7.org/linux/man-pages/man8/conntrack.8.html",
+    "protocols": [
+      "nf_conntrack 内核连接跟踪（状态机：NEW/ESTABLISHED/...）",
+      "/proc/sys/net/netfilter/nf_conntrack_max（表上限）",
+      "/proc/sys/net/netfilter/nf_conntrack_count（当前条目数，只读）",
+      "/proc/net/nf_conntrack（当前连接表，文本，只读）"
+    ],
+    "interfaces": [
+      "conntrack -S（读计数器统计：已建/失效/丢表，只读）",
+      "conntrack -L（列出当前连接，只读）",
+      "conntrack -E（事件流，只读监听）",
+      "cat /proc/sys/net/netfilter/nf_conntrack_count（读当前条目，只读）",
+      "sysctl -w net.netfilter.nf_conntrack_max=N（写：调上限，opt-in）"
+    ],
+    "docs": [
+      "conntrack(8) man（man7.org）",
+      "Netfilter 文档：nf_conntrack 与连接跟踪"
+    ],
+    "summary": "nf_conntrack 跟踪每条连接，防火墙/NAT 都依赖它。高并发（短连接、NAT 网关）下 count 逼近 max 会丢新连接（insert_failed 增长）。conntrack -S 只读看统计，调上限用 sysctl（写，opt-in）；也可缩短 nf_conntrack_tcp_timeout_established 让空闲连接更快过期。",
+    "advice": "只读监测用 conntrack -S / cat /proc/sys/net/netfilter/nf_conntrack_count（对照 nf_conntrack_max，不改系统）。逼近上限时调 net.netfilter.nf_conntrack_max（写，opt-in），或缩短 established 超时；不要清零/flush 正在用的连接表——会切断所有已建立连接。"
+  },
+  "nm_resolved": {
+    "name": "NetworkManager / systemd-networkd + systemd-resolved（连接与 DNS 管理）",
+    "org": "Red Hat（NetworkManager）/ systemd（networkd / resolved）",
+    "url": "https://networkmanager.dev/docs/",
+    "protocols": [
+      "NetworkManager：D-Bus（org.freedesktop.NetworkManager）+ nmcli(1) / nm-settings(5)",
+      "systemd-networkd：INI 单元（*.network / *.netdev），无 nmcli",
+      "systemd-resolved：/run/systemd/resolve/resolv.conf 与 stub 监听 127.0.0.53:53",
+      "DNS 安全：resolved 支持 DoT（DNS-over-TLS），NM 连接可配 DNS=+dot 服务器"
+    ],
+    "interfaces": [
+      "nmcli device status / nmcli con show（读连接状态，只读）",
+      "networkctl status（读 networkd 托管设备，只读）",
+      "resolvectl status / resolvectl dns（读当前 DNS 与解析状态，只读）",
+      "nmcli con mod <id> ipv4.dns \"1.1.1.1#dot\"（写：配 DoT，opt-in）",
+      "resolvectl query <name>（解析查询，只读）"
+    ],
+    "docs": [
+      "NetworkManager 文档（networkmanager.dev/docs）",
+      "systemd-resolved.service(8) / systemd-networkd.service(8)（freedesktop.org）"
+    ],
+    "summary": "现代发行版由 NetworkManager 或 systemd-networkd 管连接、systemd-resolved 管 DNS。/etc/resolv.conf 常被它们接管（符号链接到 stub），直接手改会被覆盖。DNS 安全（DoT）应在 NM 连接或 resolved 配置里设，而非手写 resolv.conf。",
+    "advice": "只读诊断用 nmcli / networkctl status / resolvectl status（看连接与 DNS，不改系统）。要启用 DoT，在 NM 连接里设 ipv4.dns=\"<server>#dot\"（写，opt-in），或在 resolved 配；不要直接编辑被接管的 /etc/resolv.conf——重启网络即被覆盖。"
+  },
+  "scaling": {
+    "name": "接收/发送侧缩放（RPS / RFS / XPS）与 netdev  backlog",
+    "org": "The Linux Kernel / networking（scaling.rst）",
+    "url": "https://docs.kernel.org/networking/scaling.html",
+    "protocols": [
+      "RPS：软件将接收软中断散到多 CPU（rps_cpus 掩码），弥补单队列网卡",
+      "RFS：按套接字 CPU 亲和把流导向同一 CPU（rps_sock_flow_entries + 每队列 rps_flow_cnt）",
+      "XPS：发送侧按 CPU 选 TX 队列（tx-<n>/xps_cpus 掩码），减少锁竞争",
+      "net.core.netdev_max_backlog：NAPI 收包软中断的 backlog 上限",
+      "sysfs：/sys/class/net/<dev>/queues/rx-<n>/rps_cpus 与 tx-<n>/xps_cpus"
+    ],
+    "interfaces": [
+      "cat /sys/class/net/<dev>/queues/rx-<n>/rps_cpus（读 RPS 掩码，只读）",
+      "cat /sys/class/net/<dev>/queues/tx-<n>/xps_cpus（读 XPS 掩码，只读）",
+      "sysctl net.core.netdev_max_backlog / net.core.rps_sock_flow_entries（读，只读）",
+      "echo <mask> > /sys/.../rps_cpus（写：开 RPS，opt-in）",
+      "sysctl -w net.core.rps_sock_flow_entries=N（写：开 RFS，opt-in）"
+    ],
+    "docs": [
+      "Linux kernel Documentation/networking/scaling.rst（RPS/RFS/XPS）",
+      "Linux kernel Documentation/networking/ip-sysctl.rst（net.core 参数）"
+    ],
+    "summary": "多核时代，单队列网卡的所有收包软中断只跑在一个 CPU 上会成为瓶颈。RPS 用软件把包散到多核（掩码位 = 允许处理的 CPU），XPS 在发送侧选 TX 队列。多队列网卡由驱动做 RSS（硬件），无需 RPS；RPS/RFS 主要补单队列场景。",
+    "advice": "只读诊断用 cat /sys/class/net/<dev>/queues/*/rps_cpus 与 sysctl net.core.*（看掩码，不改系统）。单队列网卡多核场景用 echo <cpumask> > rps_cpus 开 RPS（写，opt-in）；多队列网卡优先靠驱动 RSS，别硬套 RPS。掩码写错（含离线 CPU）可能不生效或降性能，先核对 CPU 拓扑再改。"
+  },
+  "l4s": {
+    "name": "L4S 低时延低丢包可扩展吞吐（DualQ / Prague）",
+    "org": "IETF（RFC 9330/9331/9332）/ Linux 内核 dualpi2、TCP Prague",
+    "url": "https://datatracker.ietf.org/doc/rfc9330/ / https://www.bufferbloat.net/projects/l4s/wiki",
+    "protocols": [
+      "RFC 9330 L4S 架构：L4S 与 Classic 流共存于同一网络，L4S 队列亚毫秒级排队时延",
+      "RFC 9331：IP 层 ECN，以 ECT(1) 标识 L4S 流（与 Classic 的 ECT(0) 区分）",
+      "RFC 9332 Dual-Queue Coupled AQM：DualQ（L4S+Classic 双队列）耦合标记概率 p_C=(p_CL/k)^2（k≈2）",
+      "Linux 内核 dualpi2 qdisc：实现 L4S 一侧的 PI2 控制 + Classic 一侧的 Coupled AQM",
+      "TCP Prague / 准确 ECN（AccECN，RFC 7560 反馈）：L4S 流的拥塞控制，需内核与对端协商支持"
+    ],
+    "interfaces": [
+      "tc qdisc show（读当前 qdisc，确认是否已有 dualpi2 / fq_codel / cake，只读）",
+      "tc qdisc add dev <if> root dualpi2（写：出口挂 dualpi2 实现 L4S，opt-in，需较新内核 net/sched/sch_dualpi2）",
+      "sysctl net.ipv4.tcp_ecn=1（写：开启 ECN，L4S 依赖 ECN；opt-in，详见 network_standards rfc3168/rfc9331）",
+      "ss -tinp（读每连接 ECN/重传指标，只读）"
+    ],
+    "docs": [
+      "RFC 9330/9331/9332（IETF Datatracker）",
+      "bufferbloat.net L4S 项目维基"
+    ],
+    "summary": "L4S 是 bufferbloat 缓解的演进：在经典 AQM（fq_codel/cake）之外，用 DualQ 把 L4S 流（ECT(1) + Scalable CC 如 Prague/BBRv2）与 Classic 流（Reno/Cubic）分队列，使 L4S 侧亚毫秒级排队时延且零拥塞丢包。RFC 9330/9331/9332 均为 2023-01：9330 为信息类架构，9331/9332 为实验性。部署需网络侧（dualpi2/cake）与主机侧（Prague/AccECN）两端支持。",
+    "advice": "诊断用 tc qdisc show / ss -tinp（只读，看当前队列与 ECN）。启用 L4S 用 tc qdisc add dev <if> root dualpi2（写，opt-in，需内核含 sch_dualpi2）；先用 fq_codel/cake 验证链路无 bufferbloat 再升级到 dualpi2。不要对 Classic 流开启 Prague——L4S 通过 ECT(1) 协商，强行标记 Classic 流会破坏耦合 AQM 的公平性。验证对端是否支持 L4S 后再全量启用。"
+  },
+  "wifi_ax_be": {
+    "name": "Wi-Fi 6（802.11ax）/ Wi-Fi 7（802.11be）能力诊断与共存",
+    "org": "IEEE（802.11ax-2021 / 802.11be-2024）/ Linux mac80211 + iw + iwlwifi/mt76",
+    "url": "https://standards.ieee.org/ieee/802.11ax/7027/ / https://standards.ieee.org/ieee/802.11be/10777/",
+    "protocols": [
+      "IEEE 802.11ax-2021（Wi-Fi 6，HE）：OFDMA、上行/下行 MU-MIMO、1024-QAM、TWT 目标唤醒时间，理论峰值 9.6 Gbit/s",
+      "IEEE 802.11be-2024（Wi-Fi 7，EHT）：320 MHz 信道（6 GHz）、4096-QAM、Multi-Link Operation (MLO) 多链路、前导码打孔、多 RU，理论峰值约 23 Gbit/s",
+      "BSS 着色（Spatial Reuse）、目标唤醒时间 TWT：降低高密度环境干扰与功耗",
+      "安全：WPA3 / SAE（同时代强制项），6 GHz 频段需 WPA3 与 PSC 信道"
+    ],
+    "interfaces": [
+      "iw dev <dev> info（读 PHY 类型/频段/信道，只读）",
+      "iw dev <dev> link（读当前连接速率/MCS/信号，只读）",
+      "iw list（读硬件能力：支持的 HE/EHT、频段、天线数，只读）",
+      "iw dev <dev> set bitrates（写：限速/固定 MCS，opt-in，慎用）",
+      "iw dev <dev> scan（写：触发扫描，opt-in，短时影响吞吐）"
+    ],
+    "docs": [
+      "IEEE 802.11ax-2021 / 802.11be-2024 标准页",
+      "Linux mac80211 / iwlwifi / mt76 驱动文档"
+    ],
+    "summary": "Wi-Fi 6/7 的关键不是峰值速率，而是高密度与低时延：OFDMA 把信道分给多设备、TWT 让设备约定唤醒、Wi-Fi 7 的 MLO 同时用 2.4/5/6 GHz。诊断先看 iw list 确认网卡与驱动是否支持 HE/EHT 与 6 GHz，再看 iw dev link 的实际 MCS/速率。6 GHz 仅有支持 WPA3 的设备可用。",
+    "advice": "只读诊断用 iw dev info / iw dev link / iw list（看能力与实际连接，不改系统）。不要随意 iw set bitrates 限速——会人为降低吞吐；确认覆盖差再考虑。Wi-Fi 7 的 MLO 由驱动/固件自动管理，用户侧无需手动绑定链路。安全基线：启用 WPA3/SAE，禁用 WPA1/2 个人（TKIP）；6 GHz 网络强制 WPA3。"
+  },
+  "ntp": {
+    "name": "NTP 网络时间协议（时钟同步与 NTS 认证）",
+    "org": "IETF（RFC 5905）/ chrony、ntpd、systemd-timesyncd",
+    "url": "https://datatracker.ietf.org/doc/rfc5905/ / https://chrony-project.org/",
+    "protocols": [
+      "RFC 5905 NTPv4：客户端-服务器/对称/广播模式，基于 UDP 123 的时间戳交换",
+      "NTP 精度通常毫秒级，适合通用服务器、桌面、IoT 的时钟同步",
+      "NTS（Network Time Security，RFC 8915）：为 NTP 增加 TLS+AEAD 的认证与时间来源完整性保护，防止时间欺骗",
+      "chrony：chronyd + chronyc（tracking/sources），优于传统 ntpd 的漂移处理"
+    ],
+    "interfaces": [
+      "chronyc tracking（读时钟偏移/根延迟/Leap，只读）",
+      "chronyc sources -v（读上游源与偏差，只读）",
+      "timedatectl status（读系统时钟与同步状态，只读）",
+      "chronyc makestep（写：立即步进校正大偏移，opt-in）",
+      "timedatectl set-ntp true（写：启用 NTP 同步守护进程，opt-in）"
+    ],
+    "docs": [
+      "RFC 5905（IETF Datatracker）",
+      "chrony 文档（chrony-project.org）"
+    ],
+    "summary": "NTP 是通用时钟同步事实标准（RFC 5905，Proposed Standard），毫秒级精度满足绝大多数系统。关键风险是时间欺骗——攻击者篡改时间会让 TLS 证书、日志时序、token 有效期错乱，因此对外暴露或高精度场景应启用 NTS（RFC 8915）认证。注：RFC 5909 并非 NTP，而是 Securing Neighbor Discovery Proxy。",
+    "advice": "只读诊断用 chronyc tracking / chronyc sources / timedatectl status（看偏移与同步源，不改系统）。启用/修正用 timedatectl set-ntp true 或 chronyc makestep（写，opt-in）。生产/安全场景优先配置 NTS 时间源（RFC 8915）而非裸 NTP 池；不要硬编码单一时间源——至少配置 3 个互异上游以容错。大偏移先 makestep 步进校正，再让 chronyd 缓慢驯服。"
+  },
+  "ptp": {
+    "name": "PTP 精确时间协议（亚微秒/亚纳秒同步）",
+    "org": "IEEE（1588-2019 / 802.1AS-2020）/ ITU-T（G.8271 / G.8275.1）/ linuxptp（ptp4l/phc2sys）",
+    "url": "https://standards.ieee.org/standard/1588-2019.html / https://github.com/richardcochran/linuxptp",
+    "protocols": [
+      "IEEE 1588-2019 PTP：基于硬件时间戳的精密同步，亚微秒乃至亚纳秒（取决于 profile 与网络）",
+      "IEEE 802.1AS-2020 gPTP：TSN 的 PTP profile，要求全双工/对等链路，沿途每桥均定时",
+      "ITU-T G.8271/G.8275.1：分组网相位/时间同步架构与 PTP 电信 profile（全定时支持）",
+      "PTP Hardware Clock（PHC）：网卡/交换机的硬件时钟，由 ptp4l 经 PPS/SYS 同步，再由 phc2sys 同步到系统时钟",
+      "SyncE（ITU-T G.8261/G.8262）：物理层频率基准，与 PTP（相位/时间）互补"
+    ],
+    "interfaces": [
+      "ethtool -T <if>（读网卡 PTP 硬件时间戳能力：硬件/软件/hw 收发，只读）",
+      "ptp4l -i <if> -m（读 PTP 状态/偏移/从钟锁定，只读）",
+      "phc2sys -a -r -m（读/同步 PHC 与系统时钟，运行时需 opt-in）",
+      "pmc（读 PTP 管理消息，只读）"
+    ],
+    "docs": [
+      "IEEE 1588-2019 / 802.1AS-2020 标准页",
+      "linuxptp 文档（richardcochran/linuxptp）",
+      "ITU-T G.8271 / G.8275.1 建议书"
+    ],
+    "summary": "PTP 把时间精度从 NTP 的毫秒级推到亚微秒乃至亚纳秒，用于 TSN、5G 前传、金融、广电、科学仪器。前提是网卡与交换机支持 PTP Hardware Clock（ethtool -T 可见）。典型部署：ptp4l 同步 PHC、phc2sys 把 PHC 对齐系统时钟。极端精度（亚纳秒、光纤长距）用 White Rabbit（CERN 对 1588 的扩展）。PTP 与 SyncE 互补：PTP 给相位/时间，SyncE 给高稳频率。",
+    "advice": "只读诊断用 ethtool -T <if> / ptp4l -m / pmc（看 PHC 能力与同步状态，不改系统）。启用 PTP 用 ptp4l + phc2sys（写/运行时，opt-in，需硬件 PHC 支持）。无 PHC 的网卡只能用软件时间戳，精度退化为近似 NTP，不值得上 PTP。高延迟地理分布式或跨光纤长距的亚纳秒需求，评估 White Rabbit 而非普通 PTP。不要把 PTP 当通用桌面时钟——普通服务器用 NTP/chrony 足够。"
+  },
+  "ipset": {
+    "name": "ipset（iptables 集合匹配：一条规则管万级黑名单）",
+    "org": "Linux 内核 netfilter 子系统（ipset 项目）",
+    "url": "https://ipset.netfilter.org/ ; https://www.netfilter.org/projects/ipset/",
+    "protocols": [
+      "原理：iptables filter 表按规则顺序线性匹配 O(n)，万级 -s DROP 平均匹配几千次；ipset 是内核态哈希表，iptables 只挂一条 -m set --match-set <name> src -j DROP，查找 O(1)",
+      "集合类型：hash:net 支持 IP/C 段/B 段（hash:ip 仅单 IP）；create 带 timeout 默认元素超时",
+      "批量导入：ipset restore < blacklist.txt（十万条几秒，别 for 循环逐条 -A）",
+      "动态封禁：ipset add <ip> timeout 3600 到期自动移除（timeout 即轻量自动解封）；auth.log→脚本→ipset add timeout 600 即最小 fail2ban（无 Python 依赖）",
+      "持久化：默认只在内存，重启全放行——ipset save > /etc/ipset.conf + ipset-persistent systemd 开机恢复（Debian/Ubuntu）；firewalld --permanent --new-ipset（RHEL 系）",
+      "演进：新内核推荐 nftables set（type ipv4_addr flags interval）；存量 iptables 环境 ipset 是最低风险改造"
+    ],
+    "interfaces": [
+      "挂链位置：被扫服务挂 INPUT（-I 插链头优先匹配）；转发网关挂 FORWARD",
+      "白名单优先：先 ACCEPT 白名单集合再 DROP 黑名单集合，防把自己关外面",
+      "自查线：iptables -L INPUT -n | wc -l——<200 忍、200~2000 该迁、>2000 直接上 ipset"
+    ],
+    "docs": [
+      "docs/77 §3.22"
+    ],
+    "summary": "黑名单超几百条就该用 ipset：哈希 O(1)、restore 秒级导入、timeout 自动解封、必须存盘。",
+    "advice": "与 f2b_refs（fail2ban 只读咨询）互补——本仓不代写封禁规则，配置建议以文本交还用户。"
+  },
+  "mqtt_lwt_keepalive": {
+    "name": "MQTT 遗嘱消息 + 心跳机制（四层防「假在线」）",
+    "org": "OASIS MQTT 标准（3.1.1 / 5.0）",
+    "url": "https://mqtt.org/mqtt-specification/ ; https://docs.oasis-open.org/mqtt/mqtt/v5.0/",
+    "protocols": [
+      "假在线问题：TCP 连接还在但设备已死——指令发出去没人收，数据「发成功」其实进黑洞",
+      "第一层 KeepAlive：1.5×超时判死；KeepAlive ≤ 离线 SLA ÷ 1.5 反推取值",
+      "第二层 LWT 遗嘱：连接建立时预注册，异常断开时代理自动发布（QoS≥1 + Retain 保证到达）；MQTT 5.0 有 WillDelay 可延迟发布，3.1.1 静默忽略该字段；WillDelay 必须 < SessionExpiry",
+      "第三层在线状态表：双向 Retain 对称设计（上线/下线都走 Retain 主题），订阅者拿到即最新状态",
+      "第四层应用层心跳：ping/pong + 单调序号 + Watchdog，序号断档即异常",
+      "细节：TCP KeepAlive 默认 7200s vs NAT 超时 5~10 分钟（NAT 表早过期、连接半开）；MQTTnet 5.x 移除 ManagedMqttClient，重连/重订阅/发送队列需业务层完全自管"
+    ],
+    "interfaces": [
+      "与 netsys meshchat 节点发现注册表、distcompute 看门狗重启同域（掉线判定+恢复语义）"
+    ],
+    "docs": [
+      "docs/77 §3.25"
+    ],
+    "summary": "遗嘱+心跳把「假在线」变成可判定：连接在≠设备在，状态必须双向对称可查。",
+    "advice": "只登记协议机制；不接 broker、不代发遗嘱。"
+  }
+}

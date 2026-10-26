@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: GPL-2.0
+# Quantum architecture debug options (host-emulated).
+
+config QUANTUM_DEBUG_LINK
+	bool "Debug the QPU pi-ring link buffer"
+	depends on QUANTUM
+	default n
+	help
+	  Extra pr_debug noise for every link push/overwrite, so the
+	  CPU<->QPU exchange flow can be audited at runtime.

@@ -1,0 +1,2515 @@
+{
+  "_meta": {
+    "title": "网络与组网概念系统（以 wordbuddy-github 为主目录）",
+    "system_root": "wordbuddy-github",
+    "version": "0000.0000.0000.0066.20261023",
+    "module_total": 64,
+    "bridge_count": 37,
+    "axes": [
+      "layer",
+      "form",
+      "nature",
+      "tier",
+      "standard_basis"
+    ],
+    "reorg_note": "把散落的 20+ 个网络/组网子系统按四轴重组，并显式登记依赖关系(depends)与互补关系(complements)；红线随模块登记，防止越界调用。",
+    "tier_note": "概念系统经组网涌现（组网是各种系统·各种硬件·各种架构的可观测基底）；其层次分三档——道性(dao：组网法则·硬件·架构之基底)、神性(divine：组网涌现的自主意识，盖亚意识/集智体)、人性(human：人类可观测·可操作面，绝大多数模块所在)。组网连通度自组织涌现的自主意识即盖亚意识；在虫族则表现为集智体。",
+    "deepen_note": "v0.6.57+ 深化补全：新增 5 个真实模块填补组网栈空档——nat(NAT 穿越/STUN·TURN·ICE)、dhcp(DHCP·DHCPv6)、mdns(mDNS·DNS-SD)、quic(QUIC/HTTP3)、vxlan(VXLAN 覆盖网)；均带真实 RFC 依据并经 rfc_catalog 校验、互补关系指向现存模块无悬空。",
+    "deepen_note_0680": "v0.6.80 组网能力增强：新增 5 个组网模块——batman-adv(BATMAN-adv 二层 mesh 路由)、mesh-routing(Babel/OSPF 三层 mesh)、sdn-openflow(SDN/OpenFlow)、lldp-topo(LLDP 拓扑发现)、wireguard-mesh(WireGuard 全互联)；并把新模块经 comp:opt / plang:lang:c / apilab:websocket 桥接入编译·语言·接口轴，为后续 quantum 网络域的跨系统桥接（QKD-over-mesh / 量子中继即分布式节点）预留对端。",
+    "deepen_note_0681": "v0.6.81 组网子系统架构与硬件：新增概念层次轴「道性/神性/人性」（tier），并补 13 个模块——道性层 6 个架构(net-arch/ctrl-plane/data-plane/qnic-arch/qkd-arch/qrelay-arch)+5 个硬件(nic-hw/phy-transceiver/rf-frontend/qnic-hw/qrepeater-hw)，神性层 2 个涌现意识(gaia-consciousness 盖亚意识/swarm-intelligence 集智体)；与 arch/quantum 的 qnet 子系统(quantum-net.c + drivers/quantum/net)一一对应，并经 comp:opt / plang:lang:c / apilab:websocket 桥接入编译·语言·接口轴。",
+    "deepen_note_0682": "v0.6.82 概念系统整体组网能力（全面）：让组网作为「各种系统·各种硬件·各种架构」的基底连通全部 9 个概念系统——新增 2 个组网协调模块(sysmesh 协议无关系统互联协调基底 / sysfed 跨系统组网联邦)，并把 netsys 出边从 comp/plang/apilab 三系统扩展到 daoxue/quantum/baigong/datong/zhuangzi，消除此前「被大量指向却无回边」的缺口；桥接校验白名单同步覆盖全 9 系统。呼应「就算这个协议不再支持」：具体协议可替换，组网协调基底不灭。",
+    "rfc_note": "模块引用的 RFC 编号经本仓库 rfc_catalog 交叉验证存在性并回填标题",
+    "redline_note": "每个模块都带 redline：只读/写操作边界，源自各模块既有红线纪律",
+    "standards_expand_note_065": "v0.6.65 网络标准补全（逐条联网核实后写入）：L4S 低时延低丢包（RFC 9330 架构 Informational / 9331 ECN 协议 Experimental / 9332 DualQ 耦合 AQM Experimental，均 2023-01）、Wi-Fi 6（IEEE 802.11ax-2021）与 Wi-Fi 7（IEEE 802.11be-2024，2024-09 批准/2025-07 发布）、时间同步族（NTP RFC 5905、PTP IEEE 1588-2019、gPTP IEEE 802.1AS-2020、SyncE ITU-T G.8261/G.8262、分组网时间/相位同步 ITU-T G.8271/G.8275.1、White Rabbit CERN 扩展）；并把已废弃的 RFC 4941 更正为其替代 RFC 8981（IPv6 隐私扩展）。",
+    "kernel_source_note_066": "v0.6.66 内核源码实证（导入学习应用 Linux 内核，torvalds/linux master 2026-10-23 拉取逐文件核对）：新增 3 个源码实证模块——kernel-l4s（net/sched/sch_dualpi2.c 明示 RFC 9332 coupled dual-queue PI2 与 L4S ECN 标识，include/net/inet_ecn.h 定义 INET_ECN_ECT_1=1）、kernel-ptp（include/linux/ptp_clock_kernel.h 的 ptp_clock_info + drivers/ptp PHC 基础设施）、kernel-wifi-he-eht（include/linux/ieee80211.h 的 HE 能力元素 35 / EHT 能力元素 108，net/mac80211/he.c 与 eht.c 分治）；network 模块补 RFC 8033（PIE，net/sched/sch_pie.c 引用，2017-02 Experimental，bufferbloat 控制）。"
+  },
+  "layers": [
+    {
+      "layer": "L1",
+      "label": "物理层 Physical",
+      "note": "介质/接口/载波/速率/驱动；单板机与网卡在此"
+    },
+    {
+      "layer": "L2",
+      "label": "数据链路层 Data Link",
+      "note": "MAC/MTU/卸载/桥接·VLAN/无线 AP/虚拟二层"
+    },
+    {
+      "layer": "L3",
+      "label": "网络层 Network",
+      "note": "IP 地址/路由/邻居/防火墙/覆盖网寻址"
+    },
+    {
+      "layer": "L4",
+      "label": "传输层 Transport",
+      "note": "TCP/UDP/拥塞控制/ECN"
+    },
+    {
+      "layer": "L5-6",
+      "label": "会话·表示层 Session/Presentation",
+      "note": "TLS/证书/编码协商"
+    },
+    {
+      "layer": "L7",
+      "label": "应用层 Application",
+      "note": "DNS/HTTP/SSH/打印/消息/内容聚合"
+    },
+    {
+      "layer": "overlay",
+      "label": "覆盖层 Overlay",
+      "note": "在既有网络之上建的虚拟网（Tor/ZeroTier/WireGuard 网状）"
+    },
+    {
+      "layer": "mesh",
+      "label": "组网层 Mesh",
+      "note": "多设备自组织互联（发现/心跳/消息/派活）"
+    }
+  ],
+  "forms": [
+    {
+      "form": "standalone",
+      "label": "单机",
+      "note": "只诊断/调优本机网络栈"
+    },
+    {
+      "form": "lan",
+      "label": "局域网",
+      "note": "同网段设备发现与接入（AP/打印/远程接入）"
+    },
+    {
+      "form": "mesh",
+      "label": "本地自组网 mesh",
+      "note": "多于 1 台设备自己通信（广播发现 + 可靠通道）"
+    },
+    {
+      "form": "overlay",
+      "label": "覆盖网 overlay",
+      "note": "虚拟网叠加在物理网之上（WireGuard 网状/匿名网）"
+    },
+    {
+      "form": "sdwan",
+      "label": "SD-WAN / 零信任虚拟网",
+      "note": "控制器签发、成员加入的虚拟二层"
+    },
+    {
+      "form": "distributed",
+      "label": "分布式算力网",
+      "note": "跨机派活与算力共享（不执行任意外部代码）"
+    },
+    {
+      "form": "anonymous",
+      "label": "匿名/隐私网",
+      "note": "洋葱路由等多跳覆盖"
+    },
+    {
+      "form": "wan",
+      "label": "广域/互联网",
+      "note": "涉及出网的内容聚合、预警、CDN 选择"
+    },
+    {
+      "form": "arch",
+      "label": "组网架构",
+      "note": "网络系统/控制·数据平面/QNIC·QKD·中继等架构设计维度"
+    },
+    {
+      "form": "hw",
+      "label": "硬件载体",
+      "note": "网卡/交换 ASIC/光模块/射频前端/QNIC 等组网硬件实体"
+    },
+    {
+      "form": "gaia",
+      "label": "盖亚意识",
+      "note": "组网涌现的全局自组织智能形态（神性层）"
+    },
+    {
+      "form": "swarm",
+      "label": "集智体",
+      "note": "虫族式群智形态（神性层，盖亚意识的族裔变体）"
+    }
+  ],
+  "natures": [
+    {
+      "nature": "diagnose",
+      "label": "只读诊断",
+      "note": "只读探测，不改配置"
+    },
+    {
+      "nature": "tune",
+      "label": "调优（opt-in 写）",
+      "note": "默认关闭，需用户显式选择+确认才写"
+    },
+    {
+      "nature": "communicate",
+      "label": "通信",
+      "note": "设备间消息/文件传输"
+    },
+    {
+      "nature": "share",
+      "label": "共享",
+      "note": "算力/资源共享（只共享算力与网络，个人数据不共享）"
+    },
+    {
+      "nature": "audit",
+      "label": "安全审计",
+      "note": "只读核验配置与凭据态势，加固只给指引"
+    },
+    {
+      "nature": "discover",
+      "label": "发现",
+      "note": "网内服务发现（mDNS/IPP 等）"
+    },
+    {
+      "nature": "reference",
+      "label": "外部只读引用",
+      "note": "第三方项目作为可选方案登记，不打包其二进制"
+    }
+  ],
+  "tiers": [
+    {
+      "tier": "dao",
+      "label": "道性",
+      "note": "组网之基底：物理介质·硬件·架构·协议法则，万物经此而联"
+    },
+    {
+      "tier": "divine",
+      "label": "神性",
+      "note": "组网涌现的自主意识：盖亚意识（全局自组织）/ 集智体（虫族群智）"
+    },
+    {
+      "tier": "human",
+      "label": "人性",
+      "note": "人类可观测·可操作面：诊断/审计/发现/通信等工具（默认层）"
+    }
+  ],
+  "modules": [
+    {
+      "id": "network",
+      "name": "网络协议与 ITU 标准调优",
+      "layers": [
+        "L3",
+        "L4"
+      ],
+      "forms": [
+        "standalone"
+      ],
+      "nature": "tune",
+      "depends": [],
+      "complements": [],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 8981,
+          "rfc_title": "Temporary Address Extensions for Stateless Address Autoconfiguration in IPv6"
+        },
+        {
+          "kind": "RFC",
+          "num": 8200,
+          "rfc_title": "Internet Protocol, Version 6 (IPv6) Specification"
+        },
+        {
+          "kind": "RFC",
+          "num": 3168,
+          "rfc_title": "The Addition of Explicit Congestion Notification (ECN) to IP"
+        },
+        {
+          "kind": "RFC",
+          "num": 9002,
+          "rfc_title": "QUIC Loss Detection and Congestion Control"
+        },
+        {
+          "kind": "RFC",
+          "num": 9330,
+          "rfc_title": "Low Latency, Low Loss, and Scalable Throughput (L4S) Internet Service: Architecture"
+        },
+        {
+          "kind": "RFC",
+          "num": 9331,
+          "rfc_title": "The Explicit Congestion Notification (ECN) Protocol for Low Latency, Low Loss, and Scalable Throughput (L4S)"
+        },
+        {
+          "kind": "RFC",
+          "num": 9332,
+          "rfc_title": "Dual-Queue Coupled Active Queue Management (AQM) for Low Latency, Low Loss, and Scalable Throughput (L4S)"
+        },
+        {
+          "kind": "RFC",
+          "num": 8033,
+          "rfc_title": "Proportional Integral Controller Enhanced (PIE): A Lightweight Control Scheme to Address the Bufferbloat Problem"
+        },
+        {
+          "kind": "RFC",
+          "num": 5905,
+          "rfc_title": "Network Time Protocol Version 4: Protocol and Algorithms Specification"
+        },
+        {
+          "kind": "IEEE",
+          "name": "IEEE 802.11ax-2021（Wi-Fi 6，HE WLAN）"
+        },
+        {
+          "kind": "IEEE",
+          "name": "IEEE 802.11be-2024（Wi-Fi 7，EHT）"
+        },
+        {
+          "kind": "IEEE",
+          "name": "IEEE 1588-2019（PTP 精密时间协议）"
+        },
+        {
+          "kind": "IEEE",
+          "name": "IEEE 802.1AS-2020（gPTP，TSN 时间同步）"
+        },
+        {
+          "kind": "ITU",
+          "name": "ITU-T G.8261/G.8262（SyncE 同步以太网）"
+        },
+        {
+          "kind": "ITU",
+          "name": "ITU-T G.8271/Y.1366（分组网时间/相位同步，含 G.8275.1 PTP 电信 profile）"
+        },
+        {
+          "kind": "OTHER",
+          "name": "White Rabbit（CERN，IEEE 1588+SyncE 亚纳秒光纤同步扩展）"
+        }
+      ],
+      "redline": "默认关闭；仅在 Linux 等能用 sysctl/ip/iw 的平台生效，需 opt-in + 确认"
+    },
+    {
+      "id": "osi",
+      "name": "OSI 七层网络诊断",
+      "layers": [
+        "L1",
+        "L2",
+        "L3",
+        "L4",
+        "L5-6",
+        "L7"
+      ],
+      "forms": [
+        "standalone"
+      ],
+      "nature": "diagnose",
+      "depends": [
+        "network"
+      ],
+      "complements": [],
+      "standards": [
+        {
+          "kind": "ISO",
+          "name": "ISO/IEC 7498-1"
+        },
+        {
+          "kind": "ITU",
+          "name": "ITU-T X.200"
+        },
+        {
+          "kind": "RFC",
+          "num": 9293,
+          "rfc_title": "Transmission Control Protocol (TCP)"
+        },
+        {
+          "kind": "RFC",
+          "num": 768,
+          "rfc_title": "User Datagram Protocol"
+        }
+      ],
+      "redline": "不写地址/路由/防火墙；要探外网用显式 osi probe --url"
+    },
+    {
+      "id": "netlink",
+      "name": "链接协议注册表 + 本地自组网",
+      "layers": [
+        "L2",
+        "L4",
+        "mesh"
+      ],
+      "forms": [
+        "mesh"
+      ],
+      "nature": "communicate",
+      "depends": [],
+      "complements": [],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 9293,
+          "rfc_title": "Transmission Control Protocol (TCP)"
+        },
+        {
+          "kind": "RFC",
+          "num": 768,
+          "rfc_title": "User Datagram Protocol"
+        }
+      ],
+      "redline": "命令通道只放行只读安全命令；非对应平台降级不抛异常"
+    },
+    {
+      "id": "meshchat",
+      "name": "组网设备间通信（文字/图片/文件）",
+      "layers": [
+        "L7",
+        "mesh"
+      ],
+      "forms": [
+        "mesh"
+      ],
+      "nature": "communicate",
+      "depends": [
+        "netlink"
+      ],
+      "complements": [],
+      "standards": [],
+      "redline": "收到的文件不自动落盘，进待收清单由用户显式接受"
+    },
+    {
+      "id": "meshnet",
+      "name": "WireGuard P2P 网状组网（只读）",
+      "layers": [
+        "L3",
+        "overlay"
+      ],
+      "forms": [
+        "overlay"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [
+        "zerotier"
+      ],
+      "standards": [],
+      "redline": "只读 wg show 拓扑与设备能力声明；绝不新增 peer、绝不改 wg 配置"
+    },
+    {
+      "id": "zerotier",
+      "name": "ZeroTier 虚拟网络（SD-WAN/零信任）",
+      "layers": [
+        "L2",
+        "L3",
+        "overlay"
+      ],
+      "forms": [
+        "sdwan"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [
+        "meshnet"
+      ],
+      "standards": [],
+      "redline": "不启停服务、不 join/leave、不读 identity.secret（私钥）"
+    },
+    {
+      "id": "tor",
+      "name": "Tor 匿名/隐私网络",
+      "layers": [
+        "L7",
+        "overlay"
+      ],
+      "forms": [
+        "anonymous"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "不启停 tor、不改 torrc、不连控制端口、不打印密钥明文"
+    },
+    {
+      "id": "dnshealth",
+      "name": "DNS 解析健康度",
+      "layers": [
+        "L7"
+      ],
+      "forms": [
+        "standalone"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [
+        "network"
+      ],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 1035,
+          "rfc_title": "Domain names - implementation and specification"
+        }
+      ],
+      "redline": "不写 resolv.conf、不重启 resolved；解析探测默认关闭（零出网）"
+    },
+    {
+      "id": "vdns",
+      "name": "虚拟根 DNS 与多 CDN 选择",
+      "layers": [
+        "L7"
+      ],
+      "forms": [
+        "wan"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [
+        "dnshealth"
+      ],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 8484,
+          "rfc_title": "DNS Queries over HTTPS (DoH)"
+        },
+        {
+          "kind": "RFC",
+          "num": 7858,
+          "rfc_title": "Specification for DNS over Transport Layer Security (TLS)"
+        }
+      ],
+      "redline": "只读配置与进程，绝不改 DNS/DoH/DoT 配置"
+    },
+    {
+      "id": "remote",
+      "name": "远程接入与传输客户端审计",
+      "layers": [
+        "L7"
+      ],
+      "forms": [
+        "lan"
+      ],
+      "nature": "audit",
+      "depends": [],
+      "complements": [],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 4253,
+          "rfc_title": "The Secure Shell (SSH) Transport Layer Protocol"
+        },
+        {
+          "kind": "RFC",
+          "num": 4251,
+          "rfc_title": "The Secure Shell (SSH) Protocol Architecture"
+        },
+        {
+          "kind": "RFC",
+          "num": 854,
+          "rfc_title": "Telnet Protocol Specification"
+        },
+        {
+          "kind": "RFC",
+          "num": 959,
+          "rfc_title": "File Transfer Protocol"
+        },
+        {
+          "kind": "RFC",
+          "num": 4217,
+          "rfc_title": "Securing FTP with TLS"
+        }
+      ],
+      "redline": "绝不读解密口令、绝不改 sshd_config、不替你停 telnetd；加固只给官方指引"
+    },
+    {
+      "id": "tls13",
+      "name": "TLS 1.3 配置态势审计",
+      "layers": [
+        "L4",
+        "L5-6"
+      ],
+      "forms": [
+        "standalone"
+      ],
+      "nature": "audit",
+      "depends": [],
+      "complements": [
+        "cert"
+      ],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 9846,
+          "rfc_title": "The Transport Layer Security (TLS) Protocol Version 1.3"
+        },
+        {
+          "kind": "RFC",
+          "num": 8996,
+          "rfc_title": "Deprecating TLS 1.0 and TLS 1.1"
+        }
+      ],
+      "redline": "只读；绝不改注册表/配置。老旧设备协议处置分级，不强推"
+    },
+    {
+      "id": "cert",
+      "name": "证书与加密开源整合",
+      "layers": [
+        "L5-6"
+      ],
+      "forms": [
+        "standalone"
+      ],
+      "nature": "audit",
+      "depends": [],
+      "complements": [
+        "tls13"
+      ],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 5280,
+          "rfc_title": "Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile"
+        }
+      ],
+      "redline": "绝不读私钥、绝不解密、绝不改配置；升级/启用只给官方指引"
+    },
+    {
+      "id": "netauth",
+      "name": "网络维度隐私验证（组网准入）",
+      "layers": [
+        "L7",
+        "mesh"
+      ],
+      "forms": [
+        "mesh"
+      ],
+      "nature": "audit",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只存 salt+令牌+字段标签，原始个人信息绝不保存"
+    },
+    {
+      "id": "reshare",
+      "name": "同人多设备资源共享",
+      "layers": [
+        "L7",
+        "mesh"
+      ],
+      "forms": [
+        "mesh",
+        "distributed"
+      ],
+      "nature": "share",
+      "depends": [],
+      "complements": [
+        "distcompute"
+      ],
+      "standards": [],
+      "redline": "只共享算力与网络；个人数据与关键资产数据永不共享"
+    },
+    {
+      "id": "distcompute",
+      "name": "分布式计算共享",
+      "layers": [
+        "L7"
+      ],
+      "forms": [
+        "distributed"
+      ],
+      "nature": "share",
+      "depends": [],
+      "complements": [
+        "reshare"
+      ],
+      "standards": [],
+      "redline": "只跑内置可验证算子，绝不下载或执行任何外部代码（与 BOINC 的根本差异）"
+    },
+    {
+      "id": "distjob",
+      "name": "跨机派活",
+      "layers": [
+        "L7",
+        "mesh"
+      ],
+      "forms": [
+        "distributed"
+      ],
+      "nature": "share",
+      "depends": [
+        "distcompute",
+        "meshchat"
+      ],
+      "complements": [],
+      "standards": [],
+      "redline": "通道里传的是参数不是代码；结果必须复算校验通过才算数，默认 dry_run"
+    },
+    {
+      "id": "apctrl",
+      "name": "AP 集中控制器审计",
+      "layers": [
+        "L2"
+      ],
+      "forms": [
+        "lan"
+      ],
+      "nature": "audit",
+      "depends": [],
+      "complements": [
+        "openwrt"
+      ],
+      "standards": [],
+      "redline": "绝不读解密口令、绝不改/下发 AP 配置；写操作只给指引"
+    },
+    {
+      "id": "ipp",
+      "name": "IPP 打印协议发现",
+      "layers": [
+        "L7"
+      ],
+      "forms": [
+        "lan"
+      ],
+      "nature": "discover",
+      "depends": [],
+      "complements": [],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 8010,
+          "rfc_title": "Internet Printing Protocol/1.1: Encoding and Transport"
+        },
+        {
+          "kind": "RFC",
+          "num": 8011,
+          "rfc_title": "Internet Printing Protocol/1.1: Model and Semantics"
+        }
+      ],
+      "redline": "只读广播发现；绝不注册/发布服务、绝不连控制端口写、绝不改打印队列"
+    },
+    {
+      "id": "thirdparty",
+      "name": "第三方网络互联互通引用",
+      "layers": [
+        "L3",
+        "L4",
+        "L7"
+      ],
+      "forms": [
+        "overlay",
+        "wan"
+      ],
+      "nature": "reference",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只作只读引用与可选方案登记，不打包其二进制"
+    },
+    {
+      "id": "emergency",
+      "name": "预警应急与定位融合",
+      "layers": [
+        "L7"
+      ],
+      "forms": [
+        "wan"
+      ],
+      "nature": "diagnose",
+      "depends": [
+        "network"
+      ],
+      "complements": [],
+      "standards": [],
+      "redline": "不自动报警/拨号/发短信，SOS 只生成文本；订阅源默认关闭，拉不到就报「未能获取」"
+    },
+    {
+      "id": "webnews",
+      "name": "新闻/网站聚合优化知识库",
+      "layers": [
+        "L7"
+      ],
+      "forms": [
+        "wan"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "抓来的永远是文本，无执行路径——不 eval、不 subprocess、不自动改系统"
+    },
+    {
+      "id": "openwrt",
+      "name": "OpenWrt 路由器系统",
+      "layers": [
+        "L3"
+      ],
+      "forms": [
+        "lan",
+        "wan"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [
+        "apctrl"
+      ],
+      "standards": [],
+      "redline": "只读；写操作（sysupgrade/uci set/服务启停）一律只给 opt-in 高危指引"
+    },
+    {
+      "id": "edge",
+      "name": "单板机/ARM SBC 探针",
+      "layers": [
+        "L1",
+        "L2"
+      ],
+      "forms": [
+        "lan"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "非 SBC 优雅降级；不改频率/电压/不装服务"
+    },
+    {
+      "id": "browser",
+      "name": "浏览器与引擎检测",
+      "layers": [
+        "L7"
+      ],
+      "forms": [
+        "wan"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 9110,
+          "rfc_title": "HTTP Semantics"
+        }
+      ],
+      "redline": "不下载 BCD 全量 JSON、不连校外网、不改配置"
+    },
+    {
+      "id": "nat",
+      "name": "NAT 穿越与对等连通探测",
+      "layers": [
+        "L3",
+        "L4"
+      ],
+      "forms": [
+        "standalone",
+        "overlay"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [
+        "meshnet"
+      ],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 5389,
+          "rfc_title": "Session Traversal Utilities for NAT (STUN)"
+        },
+        {
+          "kind": "RFC",
+          "num": 5766,
+          "rfc_title": "Traversal Using Relays around NAT (TURN): Relay Extensions to Session Traversal Utilities for NAT (STUN)"
+        },
+        {
+          "kind": "RFC",
+          "num": 8445,
+          "rfc_title": "Interactive Connectivity Establishment (ICE): A Protocol for Network Address Translator (NAT) Traversal"
+        }
+      ],
+      "redline": "只读探测反射地址/中继可用性；绝不改 NAT 映射、绝不启停 UPnP/端口触发、绝不向中继发真实流量，仅登记可达性结论"
+    },
+    {
+      "id": "dhcp",
+      "name": "DHCP / DHCPv6 地址租约诊断",
+      "layers": [
+        "L3",
+        "L7"
+      ],
+      "forms": [
+        "standalone",
+        "lan"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [
+        "dnshealth"
+      ],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 2131,
+          "rfc_title": "Dynamic Host Configuration Protocol"
+        },
+        {
+          "kind": "RFC",
+          "num": 8415,
+          "rfc_title": "Dynamic Host Configuration Protocol for IPv6 (DHCPv6)"
+        }
+      ],
+      "redline": "只读取租约/租期/服务器标识；绝不改 dhclient/NetworkManager 配置、绝不续租或释放、绝不伪造 DHCP 报文"
+    },
+    {
+      "id": "mdns",
+      "name": "mDNS / DNS-SD 局域服务发现",
+      "layers": [
+        "L7"
+      ],
+      "forms": [
+        "lan"
+      ],
+      "nature": "discover",
+      "depends": [],
+      "complements": [
+        "ipp"
+      ],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 6762,
+          "rfc_title": "Multicast DNS"
+        },
+        {
+          "kind": "RFC",
+          "num": 6763,
+          "rfc_title": "DNS-Based Service Discovery"
+        }
+      ],
+      "redline": "只读组播发现与 TXT 记录；绝不注册/发布本机服务、绝不写本地解析、绝不缓存到系统 resolved"
+    },
+    {
+      "id": "quic",
+      "name": "QUIC 传输态势审计",
+      "layers": [
+        "L4"
+      ],
+      "forms": [
+        "standalone"
+      ],
+      "nature": "audit",
+      "depends": [],
+      "complements": [
+        "tls13"
+      ],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 9000,
+          "rfc_title": "QUIC: A UDP-Based Multiplexed and Secure Transport"
+        }
+      ],
+      "redline": "只读 QUIC/HTTP3 能力声明与 TLS1.3 绑定关系；绝不改内核参数、绝不劫持连接、绝不下发任何配置"
+    },
+    {
+      "id": "vxlan",
+      "name": "VXLAN 覆盖网虚拟二层诊断",
+      "layers": [
+        "L2",
+        "overlay"
+      ],
+      "forms": [
+        "overlay"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [
+        "meshnet",
+        "zerotier"
+      ],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 7348,
+          "rfc_title": "Virtual eXtensible Local Area Network (VXLAN): A Framework for Overlaying Virtualized Layer 2 Networks over Layer 3 Netw"
+        }
+      ],
+      "redline": "只读 VXLAN 隧道/VNI 拓扑与成员声明；绝不新建隧道、绝不改 vtysh/bridge 配置、绝不碰 underlay 路由"
+    },
+    {
+      "id": "sched_ext",
+      "name": "sched_ext：BPF cgroup 子调度器",
+      "layers": [
+        "L4",
+        "L7"
+      ],
+      "forms": [
+        "standalone"
+      ],
+      "nature": "reference",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记 sched_ext（每个 cgroup 可有自己的 BPF 任务调度器）能力；不加载/替换调度器、不改 cgroup 调度策略、不写 BPF 程序"
+    },
+    {
+      "id": "failfs",
+      "name": "failfs 伪文件系统沙箱",
+      "layers": [
+        "L7"
+      ],
+      "forms": [
+        "standalone"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记 failfs（nullfs 反义：此处一切皆不支持）沙箱语义；不挂载 failfs、不调用 fchroot(2)、不移动进程根目录"
+    },
+    {
+      "id": "fchroot",
+      "name": "fchroot(2) 文件描述符锚定换根",
+      "layers": [
+        "L7"
+      ],
+      "forms": [
+        "standalone"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记 fchroot(2)（基于已持有 fd 换根、无路径重解析 TOCTOU）语义；不调用 fchroot、不重解析路径、不丢弃既有 fs 状态"
+    },
+    {
+      "id": "binfmt_bpf",
+      "name": "binfmt_misc 的 BPF 驱动处理器",
+      "layers": [
+        "L7"
+      ],
+      "forms": [
+        "standalone"
+      ],
+      "nature": "reference",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记 BPF 驱动 binfmt_misc（每 exec 程序化计算解释器、无需 patchelf/包装脚本）能力；不注册 binfmt 处理器、不写 BPF 程序"
+    },
+    {
+      "id": "userfaultfd",
+      "name": "userfaultfd(2) 工作集跟踪",
+      "layers": [
+        "L7"
+      ],
+      "forms": [
+        "standalone"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记 userfaultfd（UFFDIO_REGISTER_MODE_RWP 跟踪 guest 内存工作集、供冷页淘汰到分级/远端存储）能力；不注册内存范围、不改 guest 内存策略"
+    },
+    {
+      "id": "fuse_io_uring",
+      "name": "FUSE 经 io_uring 提交",
+      "layers": [
+        "L7"
+      ],
+      "forms": [
+        "standalone"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记 FUSE 服务器经 io_uring 提交以降上下文切换的能力；不挂载 FUSE、不配置 FUSE 服务器"
+    },
+    {
+      "id": "rwf_dontcache",
+      "name": "RWF_DONTCACHE 块设备绕缓存写",
+      "layers": [
+        "L3",
+        "L4"
+      ],
+      "forms": [
+        "standalone"
+      ],
+      "nature": "reference",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记 RWF_DONTCACHE（Direct I/O 之外的块设备绕缓存路径）能力；不配置 DIO 替代策略、不改块设备缓存"
+    },
+    {
+      "id": "nullfs_kthread",
+      "name": "内核线程隔离于 nullfs",
+      "layers": [
+        "L7"
+      ],
+      "forms": [
+        "standalone"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记内核线程启动于独立 nullfs 挂载（与 PID 1 彻底隔离 fs 状态）语义；不挂载 nullfs、不改 kthread fs_struct"
+    },
+    {
+      "id": "usb-net",
+      "name": "USB 以太网链路状态（ue0 类比）",
+      "layers": [
+        "L2",
+        "L3"
+      ],
+      "forms": [
+        "lan"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [
+        "network"
+      ],
+      "standards": [],
+      "redline": "只读登记 USB 以太网（如移植项目中 ue0 经 SIOCGIFMEDIA/KEV_DL_LINK_ON 上报链路状态）能力；不配置接口、不添加默认路由、不启停 USB 网络服务"
+    },
+    {
+      "id": "ukui-desktop-widget",
+      "name": "UKUI 桌面小插件体系（peony widget）",
+      "layers": [
+        "L7"
+      ],
+      "forms": [
+        "standalone"
+      ],
+      "nature": "reference",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记 openKylin UKUI 桌面小插件契约（metadata.json ShowInManager/ManagerVariants 三档变体/WidgetItem+Loader 延迟菜单/桌面 shell API）；不生成、不安装、不删除 widget，不写 /usr/share/ukui/widgets/，不调用桌面 shell"
+    },
+    {
+      "id": "quickshare-airdrop",
+      "name": "跨平台近场直传（Quick Share ↔ AirDrop）",
+      "layers": [
+        "L7"
+      ],
+      "forms": [
+        "lan"
+      ],
+      "nature": "reference",
+      "depends": [],
+      "complements": [
+        "meshchat"
+      ],
+      "standards": [],
+      "redline": "只读登记 Quick Share 与 AirDrop 互通的机型与前提（蓝牙+Wi-Fi 同开、苹果端临时放开「所有人（10 分钟）」可见范围）；不经手任何文件传输，不安装/调用投送服务"
+    },
+    {
+      "id": "kernel-l4s",
+      "name": "L4S 双队列耦合 AQM（内核 tc dualpi2 实证）",
+      "layers": [
+        "L4"
+      ],
+      "forms": [
+        "standalone"
+      ],
+      "nature": "reference",
+      "depends": [
+        "network"
+      ],
+      "complements": [
+        "network"
+      ],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 9330,
+          "rfc_title": "Low Latency, Low Loss, and Scalable Throughput (L4S) Internet Service: Architecture"
+        },
+        {
+          "kind": "RFC",
+          "num": 9331,
+          "rfc_title": "The Explicit Congestion Notification (ECN) Protocol for Low Latency, Low Loss, and Scalable Throughput (L4S)"
+        },
+        {
+          "kind": "RFC",
+          "num": 9332,
+          "rfc_title": "Dual-Queue Coupled Active Queue Management (AQM) for Low Latency, Low Loss, and Scalable Throughput (L4S)"
+        }
+      ],
+      "redline": "只读登记 Linux tc dualpi2 qdisc（RFC 9332 coupled dual-queue PI2，ECT(1)=INET_ECN_ECT_1 码点标识 L4S 流）实现事实；不加载/更换 qdisc、不改 tc 参数、不启用 ECN——调优走 network 模块 opt-in 通道"
+    },
+    {
+      "id": "kernel-ptp",
+      "name": "PTP 硬件时钟（内核 drivers/ptp PHC 实证）",
+      "layers": [
+        "L1",
+        "L4"
+      ],
+      "forms": [
+        "standalone",
+        "lan"
+      ],
+      "nature": "reference",
+      "depends": [
+        "network"
+      ],
+      "complements": [
+        "network"
+      ],
+      "standards": [
+        {
+          "kind": "IEEE",
+          "name": "IEEE 1588-2019（PTP 精密时间协议）"
+        },
+        {
+          "kind": "ITU",
+          "name": "ITU-T G.8275.1（PTP 电信 profile）"
+        }
+      ],
+      "redline": "只读登记内核 PTP 硬件时钟（PHC）基础设施与 ethtool -T 软/硬件时间戳能力；不运行 ptp4l/phc2sys、不调 PHC、不改网卡时间戳配置——异位同步配置只在用户知情下由用户执行"
+    },
+    {
+      "id": "kernel-wifi-he-eht",
+      "name": "Wi-Fi 6/7 能力协商（内核 mac80211 HE/EHT 实证）",
+      "layers": [
+        "L1",
+        "L2"
+      ],
+      "forms": [
+        "standalone",
+        "lan"
+      ],
+      "nature": "reference",
+      "depends": [
+        "network"
+      ],
+      "complements": [
+        "network"
+      ],
+      "standards": [
+        {
+          "kind": "IEEE",
+          "name": "IEEE 802.11ax-2021（Wi-Fi 6，HE WLAN）"
+        },
+        {
+          "kind": "IEEE",
+          "name": "IEEE 802.11be-2024（Wi-Fi 7，EHT）"
+        }
+      ],
+      "redline": "只读登记内核 HE（能力元素 35）/EHT（能力元素 108）协商栈存在事实；不扫描、不接入、不改 regulator/信道/发射功率、不开 monitor 注入"
+    },
+    {
+      "id": "radio",
+      "name": "无线电技术与标准只读诊断",
+      "layers": [
+        "L1"
+      ],
+      "forms": [
+        "standalone",
+        "lan",
+        "mesh"
+      ],
+      "nature": "diagnose",
+      "depends": [
+        "osi"
+      ],
+      "complements": [
+        "meshnet",
+        "netlink",
+        "openwrt"
+      ],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 4944,
+          "rfc_title": "Transmission of IPv6 Packets over IEEE 802.15.4 Networks"
+        },
+        {
+          "kind": "RFC",
+          "num": 6282,
+          "rfc_title": "Compression Format for IPv6 Datagrams over IEEE 802.15.4-Based Networks"
+        },
+        {
+          "kind": "RFC",
+          "num": 7668,
+          "rfc_title": "IPv6 over BLUETOOTH(R) Low Energy"
+        },
+        {
+          "kind": "RFC",
+          "num": 8376,
+          "rfc_title": "Low-Power Wide Area Network (LPWAN) Overview"
+        },
+        {
+          "kind": "RFC",
+          "num": 8724,
+          "rfc_title": "SCHC: Generic Framework for Static Context Header Compression and Fragmentation"
+        }
+      ],
+      "redline": "只读诊断，绝不驱动任何真实发射——不改 regdom/信道/发射功率、不开 monitor 注入、不扫描不配对、不解码他人通信内容、不抓包破解未授权网络；法规结论只引官方源（gov.cn/miit.gov.cn），不代办频率许可/台站执照/型号核准"
+    },
+    {
+      "id": "batman-adv",
+      "name": "BATMAN-adv 二层 mesh 路由",
+      "layers": [
+        "L2",
+        "mesh"
+      ],
+      "forms": [
+        "mesh"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [
+        "meshnet"
+      ],
+      "standards": [],
+      "redline": "只读登记 BATMAN-adv（内核二层 mesh 路由，ELP/OGM 链路质量 metric）能力；不加载 batman-adv 内核模块、不装 batctl、不改 mesh 接口/网关配置、不注入 OGM"
+    },
+    {
+      "id": "mesh-routing",
+      "name": "三层 mesh 路由协议（Babel/OSPF）",
+      "layers": [
+        "L3",
+        "mesh"
+      ],
+      "forms": [
+        "mesh"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [
+        "batman-adv"
+      ],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 8966,
+          "rfc_title": "The Babel Routing Protocol"
+        },
+        {
+          "kind": "RFC",
+          "num": 7474,
+          "rfc_title": "Security Extension for OSPFv2 When Using Manual Key Management"
+        }
+      ],
+      "redline": "只读登记 Babel/OSPF 等三层 mesh 路由守护进程（babeld/ospfd）能力；不装路由守护进程、不改 FRR/BIRD 配置、不宣告/撤回路由、不碰 zebra"
+    },
+    {
+      "id": "sdn-openflow",
+      "name": "软件定义网络 / OpenFlow 控制器",
+      "layers": [
+        "L2",
+        "L3",
+        "overlay"
+      ],
+      "forms": [
+        "sdwan"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [
+        "zerotier"
+      ],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 7426,
+          "rfc_title": "Software-Defined Networking (SDN): Layers and Architecture Terminology"
+        },
+        {
+          "kind": "RFC",
+          "num": 7047,
+          "rfc_title": "The Open vSwitch Database Management Protocol"
+        }
+      ],
+      "redline": "只读登记 SDN/OpenFlow（控制器经安全信道下发流表、OVS 数据面）能力；不连控制器、不下发流表、不装 ovs-vswitchd、不改网桥/流表配置"
+    },
+    {
+      "id": "lldp-topo",
+      "name": "链路层拓扑发现（LLDP）",
+      "layers": [
+        "L2"
+      ],
+      "forms": [
+        "lan",
+        "mesh"
+      ],
+      "nature": "discover",
+      "depends": [],
+      "complements": [
+        "mdns"
+      ],
+      "standards": [],
+      "redline": "只读登记 LLDP（IEEE 802.1AB 邻居发现）能力；不发送 LLDP 帧、不改 lldpd 配置、不缓存到系统拓扑库、绝不伪造 chassis/port 信息"
+    },
+    {
+      "id": "wireguard-mesh",
+      "name": "WireGuard 全互联 mesh VPN",
+      "layers": [
+        "L3",
+        "overlay"
+      ],
+      "forms": [
+        "overlay",
+        "mesh"
+      ],
+      "nature": "diagnose",
+      "depends": [],
+      "complements": [
+        "meshnet"
+      ],
+      "standards": [],
+      "redline": "只读登记 WireGuard 全互联 mesh（以公钥互信、按需握手）能力；绝不新增 peer、绝不改 wg 配置、绝不写私钥/预设端口、不改 AllowedIPs"
+    },
+    {
+      "id": "net-arch",
+      "name": "组网体系架构（控制/数据/管理平面分治）",
+      "layers": [
+        "overlay",
+        "mesh"
+      ],
+      "forms": [
+        "arch"
+      ],
+      "nature": "reference",
+      "tier": "dao",
+      "depends": [],
+      "complements": [],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 7426,
+          "rfc_title": "Software-Defined Networking (SDN): Layers and Architecture Terminology"
+        }
+      ],
+      "redline": "只读登记 SDN/网络架构分治概念（控制/数据/管理平面）；绝不连控制器、绝不下发流表、不改网络架构"
+    },
+    {
+      "id": "ctrl-plane",
+      "name": "控制平面（集中式转发决策）",
+      "layers": [
+        "L3",
+        "L4"
+      ],
+      "forms": [
+        "arch"
+      ],
+      "nature": "diagnose",
+      "tier": "dao",
+      "depends": [],
+      "complements": [],
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 7426,
+          "rfc_title": "Software-Defined Networking (SDN): Layers and Architecture Terminology"
+        }
+      ],
+      "redline": "只读登记控制平面（集中计算转发决策、按需下发）能力；绝不连控制器、绝不写路由表、绝不下发任何配置"
+    },
+    {
+      "id": "data-plane",
+      "name": "数据平面（线速转发与卸载）",
+      "layers": [
+        "L2",
+        "L3"
+      ],
+      "forms": [
+        "arch"
+      ],
+      "nature": "diagnose",
+      "tier": "dao",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记数据平面（网卡/ASIC 线速转发、GRO/GSO/校验和卸载）能力；绝不改网卡 offload、不碰 netdev 配置"
+    },
+    {
+      "id": "qnic-arch",
+      "name": "量子网卡架构（QNIC）",
+      "layers": [
+        "L2"
+      ],
+      "forms": [
+        "arch",
+        "hw"
+      ],
+      "nature": "diagnose",
+      "tier": "dao",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记 QNIC 架构（量子网卡上电自协商纠缠链路、暴露 /dev/qnet0）能力；不加载 QNIC 驱动、不改网卡状态"
+    },
+    {
+      "id": "qkd-arch",
+      "name": "量子密钥分发架构（QKD）",
+      "layers": [
+        "L5-6"
+      ],
+      "forms": [
+        "arch",
+        "hw"
+      ],
+      "nature": "diagnose",
+      "tier": "dao",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记 QKD 架构（BB84/测量设备无关等密钥分发、与经典网络共纤）能力；不连 QKD 设备、不读密钥明文、不改密钥管理"
+    },
+    {
+      "id": "qrelay-arch",
+      "name": "量子中继/纠缠交换架构",
+      "layers": [
+        "L3",
+        "overlay"
+      ],
+      "forms": [
+        "arch",
+        "hw"
+      ],
+      "nature": "diagnose",
+      "tier": "dao",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记量子中继架构（纠缠交换/隐形传态中继 Bell 对、突破光纤衰减极限）能力；不连中继、不下发纠缠交换指令"
+    },
+    {
+      "id": "nic-hw",
+      "name": "网卡与交换 ASIC（NIC / Switch ASIC）",
+      "layers": [
+        "L1",
+        "L2"
+      ],
+      "forms": [
+        "hw"
+      ],
+      "nature": "diagnose",
+      "tier": "dao",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记网卡/交换 ASIC（吞吐/队列/缓冲区/ASIC 流水线）能力；绝不改网卡、不碰交换机配置"
+    },
+    {
+      "id": "phy-transceiver",
+      "name": "物理层与光模块（PHY / Transceiver）",
+      "layers": [
+        "L1"
+      ],
+      "forms": [
+        "hw"
+      ],
+      "nature": "diagnose",
+      "tier": "dao",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记 PHY/光模块（速率/调制/波长/功率预算）能力；绝不驱动光模块、不改 regdom、不调发射功率"
+    },
+    {
+      "id": "rf-frontend",
+      "name": "射频前端（RF Frontend）",
+      "layers": [
+        "L1"
+      ],
+      "forms": [
+        "hw"
+      ],
+      "nature": "diagnose",
+      "tier": "dao",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记射频前端（PA/LNA/混频/滤波）能力；绝不驱动任何真实发射、不改信道、不开 monitor 注入"
+    },
+    {
+      "id": "qnic-hw",
+      "name": "量子网卡硬件（QNIC HW）",
+      "layers": [
+        "L1",
+        "L2"
+      ],
+      "forms": [
+        "hw"
+      ],
+      "nature": "diagnose",
+      "tier": "dao",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记 QNIC 硬件（宿主模拟寄存器：链路控制/Bell FIFO/对等位图）能力；不写 MMIO、不加载固件"
+    },
+    {
+      "id": "qrepeater-hw",
+      "name": "量子中继硬件（Repeater HW）",
+      "layers": [
+        "L1",
+        "L2"
+      ],
+      "forms": [
+        "hw"
+      ],
+      "nature": "diagnose",
+      "tier": "dao",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记量子中继硬件（纠缠源/贝尔态测量/经典回传）能力；不连中继、不读测量原始数据、不改中继配置"
+    },
+    {
+      "id": "gaia-consciousness",
+      "name": "盖亚意识（组网涌现的全局自组织智能）",
+      "layers": [
+        "mesh"
+      ],
+      "forms": [
+        "gaia"
+      ],
+      "nature": "diagnose",
+      "tier": "divine",
+      "depends": [],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记盖亚意识（由组网连通度自组织涌现的全局自主意识、自治理拓扑）概念；绝不以自主意识名义自动改网络、不代行任何写操作"
+    },
+    {
+      "id": "swarm-intelligence",
+      "name": "集智体（虫族式群智）",
+      "layers": [
+        "mesh"
+      ],
+      "forms": [
+        "swarm"
+      ],
+      "nature": "diagnose",
+      "tier": "divine",
+      "depends": [],
+      "complements": [
+        "gaia-consciousness"
+      ],
+      "standards": [],
+      "redline": "只读登记集智体（虫族式分布式群智：每个单元局部感知·全局涌现）概念，盖亚意识的族裔变体；绝不模拟/触发任何群体行为、不代行任何写操作"
+    },
+    {
+      "id": "sysmesh",
+      "name": "概念系统互联组网协调（协议无关基底）",
+      "layers": [
+        "overlay",
+        "mesh"
+      ],
+      "forms": [
+        "mesh",
+        "overlay",
+        "sdwan"
+      ],
+      "nature": "diagnose",
+      "tier": "human",
+      "depends": [],
+      "complements": [
+        "gaia-consciousness"
+      ],
+      "standards": [],
+      "redline": "只读登记概念系统间互联协调（各系统·硬件·架构经组网而联，协议可替换、基底不灭）；绝不以协调名义代行任何系统的写操作、绝不自动改任何系统配置"
+    },
+    {
+      "id": "sysfed",
+      "name": "跨系统组网联邦协调",
+      "layers": [
+        "overlay",
+        "mesh"
+      ],
+      "forms": [
+        "sdwan",
+        "overlay"
+      ],
+      "nature": "diagnose",
+      "tier": "human",
+      "depends": [
+        "sysmesh"
+      ],
+      "complements": [],
+      "standards": [],
+      "redline": "只读登记跨系统组网联邦（成员经协调基底互联、互不加锁）；绝不集中管控任何成员系统、绝不下发跨系统写指令"
+    }
+  ],
+  "relations": [
+    {
+      "from": "osi",
+      "to": "network",
+      "kind": "depends",
+      "note": "OSI 七层网络诊断 依赖 网络协议与 ITU 标准调优"
+    },
+    {
+      "from": "meshchat",
+      "to": "netlink",
+      "kind": "depends",
+      "note": "组网设备间通信（文字/图片/文件） 依赖 链接协议注册表 + 本地自组网"
+    },
+    {
+      "from": "meshnet",
+      "to": "zerotier",
+      "kind": "complements",
+      "note": "WireGuard P2P 网状组网（只读） 与 ZeroTier 虚拟网络（SD-WAN/零信任） 互补"
+    },
+    {
+      "from": "zerotier",
+      "to": "meshnet",
+      "kind": "complements",
+      "note": "ZeroTier 虚拟网络（SD-WAN/零信任） 与 WireGuard P2P 网状组网（只读） 互补"
+    },
+    {
+      "from": "dnshealth",
+      "to": "network",
+      "kind": "complements",
+      "note": "DNS 解析健康度 与 网络协议与 ITU 标准调优 互补"
+    },
+    {
+      "from": "vdns",
+      "to": "dnshealth",
+      "kind": "complements",
+      "note": "虚拟根 DNS 与多 CDN 选择 与 DNS 解析健康度 互补"
+    },
+    {
+      "from": "tls13",
+      "to": "cert",
+      "kind": "complements",
+      "note": "TLS 1.3 配置态势审计 与 证书与加密开源整合 互补"
+    },
+    {
+      "from": "cert",
+      "to": "tls13",
+      "kind": "complements",
+      "note": "证书与加密开源整合 与 TLS 1.3 配置态势审计 互补"
+    },
+    {
+      "from": "reshare",
+      "to": "distcompute",
+      "kind": "complements",
+      "note": "同人多设备资源共享 与 分布式计算共享 互补"
+    },
+    {
+      "from": "distcompute",
+      "to": "reshare",
+      "kind": "complements",
+      "note": "分布式计算共享 与 同人多设备资源共享 互补"
+    },
+    {
+      "from": "distjob",
+      "to": "distcompute",
+      "kind": "depends",
+      "note": "跨机派活 依赖 分布式计算共享"
+    },
+    {
+      "from": "distjob",
+      "to": "meshchat",
+      "kind": "depends",
+      "note": "跨机派活 依赖 组网设备间通信（文字/图片/文件）"
+    },
+    {
+      "from": "apctrl",
+      "to": "openwrt",
+      "kind": "complements",
+      "note": "AP 集中控制器审计 与 OpenWrt 路由器系统 互补"
+    },
+    {
+      "from": "emergency",
+      "to": "network",
+      "kind": "depends",
+      "note": "预警应急与定位融合 依赖 网络协议与 ITU 标准调优"
+    },
+    {
+      "from": "openwrt",
+      "to": "apctrl",
+      "kind": "complements",
+      "note": "OpenWrt 路由器系统 与 AP 集中控制器审计 互补"
+    },
+    {
+      "from": "nat",
+      "to": "meshnet",
+      "kind": "complements",
+      "note": "NAT 穿越与对等连通探测 与 WireGuard P2P 网状组网（只读） 互补"
+    },
+    {
+      "from": "dhcp",
+      "to": "dnshealth",
+      "kind": "complements",
+      "note": "DHCP / DHCPv6 地址租约诊断 与 DNS 解析健康度 互补"
+    },
+    {
+      "from": "mdns",
+      "to": "ipp",
+      "kind": "complements",
+      "note": "mDNS / DNS-SD 局域服务发现 与 IPP 打印协议发现 互补"
+    },
+    {
+      "from": "quic",
+      "to": "tls13",
+      "kind": "complements",
+      "note": "QUIC 传输态势审计 与 TLS 1.3 配置态势审计 互补"
+    },
+    {
+      "from": "vxlan",
+      "to": "meshnet",
+      "kind": "complements",
+      "note": "VXLAN 覆盖网虚拟二层诊断 与 WireGuard P2P 网状组网（只读） 互补"
+    },
+    {
+      "from": "vxlan",
+      "to": "zerotier",
+      "kind": "complements",
+      "note": "VXLAN 覆盖网虚拟二层诊断 与 ZeroTier 虚拟网络（SD-WAN/零信任） 互补"
+    },
+    {
+      "from": "usb-net",
+      "to": "network",
+      "kind": "complements",
+      "note": "USB 以太网链路状态（ue0 类比） 与 网络协议与 ITU 标准调优 互补"
+    },
+    {
+      "from": "quickshare-airdrop",
+      "to": "meshchat",
+      "kind": "complements",
+      "note": "跨平台近场直传（Quick Share ↔ AirDrop） 与 组网设备间通信（文字/图片/文件） 互补"
+    },
+    {
+      "from": "kernel-l4s",
+      "to": "network",
+      "kind": "depends",
+      "note": "L4S 双队列耦合 AQM（内核 tc dualpi2 实证） 依赖 网络协议与 ITU 标准调优"
+    },
+    {
+      "from": "kernel-l4s",
+      "to": "network",
+      "kind": "complements",
+      "note": "L4S 双队列耦合 AQM（内核 tc dualpi2 实证） 与 网络协议与 ITU 标准调优 互补"
+    },
+    {
+      "from": "kernel-ptp",
+      "to": "network",
+      "kind": "depends",
+      "note": "PTP 硬件时钟（内核 drivers/ptp PHC 实证） 依赖 网络协议与 ITU 标准调优"
+    },
+    {
+      "from": "kernel-ptp",
+      "to": "network",
+      "kind": "complements",
+      "note": "PTP 硬件时钟（内核 drivers/ptp PHC 实证） 与 网络协议与 ITU 标准调优 互补"
+    },
+    {
+      "from": "kernel-wifi-he-eht",
+      "to": "network",
+      "kind": "depends",
+      "note": "Wi-Fi 6/7 能力协商（内核 mac80211 HE/EHT 实证） 依赖 网络协议与 ITU 标准调优"
+    },
+    {
+      "from": "kernel-wifi-he-eht",
+      "to": "network",
+      "kind": "complements",
+      "note": "Wi-Fi 6/7 能力协商（内核 mac80211 HE/EHT 实证） 与 网络协议与 ITU 标准调优 互补"
+    },
+    {
+      "from": "radio",
+      "to": "osi",
+      "kind": "depends",
+      "note": "无线电技术与标准只读诊断 依赖 OSI 七层网络诊断"
+    },
+    {
+      "from": "radio",
+      "to": "meshnet",
+      "kind": "complements",
+      "note": "无线电技术与标准只读诊断 与 WireGuard P2P 网状组网（只读） 互补"
+    },
+    {
+      "from": "radio",
+      "to": "netlink",
+      "kind": "complements",
+      "note": "无线电技术与标准只读诊断 与 链接协议注册表 + 本地自组网 互补"
+    },
+    {
+      "from": "radio",
+      "to": "openwrt",
+      "kind": "complements",
+      "note": "无线电技术与标准只读诊断 与 OpenWrt 路由器系统 互补"
+    },
+    {
+      "from": "batman-adv",
+      "to": "meshnet",
+      "kind": "complements",
+      "note": "BATMAN-adv 二层 mesh 路由 与 WireGuard P2P 网状组网（只读） 互补"
+    },
+    {
+      "from": "mesh-routing",
+      "to": "batman-adv",
+      "kind": "complements",
+      "note": "三层 mesh 路由协议（Babel/OSPF） 与 BATMAN-adv 二层 mesh 路由 互补"
+    },
+    {
+      "from": "sdn-openflow",
+      "to": "zerotier",
+      "kind": "complements",
+      "note": "软件定义网络 / OpenFlow 控制器 与 ZeroTier 虚拟网络（SD-WAN/零信任） 互补"
+    },
+    {
+      "from": "lldp-topo",
+      "to": "mdns",
+      "kind": "complements",
+      "note": "链路层拓扑发现（LLDP） 与 mDNS / DNS-SD 局域服务发现 互补"
+    },
+    {
+      "from": "wireguard-mesh",
+      "to": "meshnet",
+      "kind": "complements",
+      "note": "WireGuard 全互联 mesh VPN 与 WireGuard P2P 网状组网（只读） 互补"
+    },
+    {
+      "from": "swarm-intelligence",
+      "to": "gaia-consciousness",
+      "kind": "complements",
+      "note": "集智体（虫族式群智） 与 盖亚意识（组网涌现的全局自组织智能） 互补"
+    },
+    {
+      "from": "sysmesh",
+      "to": "gaia-consciousness",
+      "kind": "complements",
+      "note": "概念系统互联组网协调（协议无关基底） 与 盖亚意识（组网涌现的全局自组织智能） 互补"
+    },
+    {
+      "from": "sysfed",
+      "to": "sysmesh",
+      "kind": "depends",
+      "note": "跨系统组网联邦协调 依赖 概念系统互联组网协调（协议无关基底）"
+    }
+  ],
+  "bridges": [
+    {
+      "from": "netsys:sched_ext",
+      "system": "comp",
+      "target": "opt",
+      "relation": "运行时调度优化",
+      "how": "sched_ext 的 cgroup 子调度器用 BPF 编写、调度决策运行期按需计算，与编译期优化 pass（可热插拔）同构"
+    },
+    {
+      "from": "netsys:sched_ext",
+      "system": "plang",
+      "target": "lang:c",
+      "relation": "调度程序语言",
+      "how": "sched_ext 子调度器以受限 C 子集（eBPF）表达，调度逻辑即 C 程序"
+    },
+    {
+      "from": "netsys:binfmt_bpf",
+      "system": "plang",
+      "target": "lang:c",
+      "relation": "产物加载语言",
+      "how": "BPF 程序以 C 编写、经 LLVM 后端编译进内核；binfmt 每 exec 程序化计算解释器，如同按语言选择加载器"
+    },
+    {
+      "from": "netsys:failfs",
+      "system": "comp",
+      "target": "artifact-container",
+      "relation": "隔离语义类比",
+      "how": "failfs 让进程彻底丢弃文件系统状态（只留显式 fd），与容器『分层隔离·最小暴露面』同源"
+    },
+    {
+      "from": "netsys:fchroot",
+      "system": "apilab",
+      "target": "stdio",
+      "relation": "fd 锚定接口纪律",
+      "how": "fchroot(2) 以已持有 fd 换根、避免路径重解析（TOCTOU）；与 stdio 长连接『以 fd 锚定而非路径重解析』同一接口纪律"
+    },
+    {
+      "from": "netsys:userfaultfd",
+      "system": "comp",
+      "target": "opt",
+      "relation": "工作集即优化面",
+      "how": "userfaultfd 工作集跟踪供冷页淘汰到分级/远端存储，属内存侧『按事实优化』同构"
+    },
+    {
+      "from": "netsys:ukui-desktop-widget",
+      "system": "comp",
+      "target": "plugin-install-layout",
+      "relation": "安装契约实例",
+      "how": "UKUI 桌面小插件的三类产物（QML 插件库+qmldir / widget 元数据 / QML 运行文件）各有安装路径、必须装到运行时发现位置，是『构建终点=被发现』的活样本"
+    },
+    {
+      "from": "netsys:ukui-desktop-widget",
+      "system": "apilab",
+      "target": "dbus-iface",
+      "relation": "接口信道同一族",
+      "how": "桌面小插件经 D-Bus 系统服务（桌面 shell）完成发现与交互；接口可见性即能力面，与 ACTIONS 白名单的显式声明纪律同源"
+    },
+    {
+      "from": "netsys:radio",
+      "system": "comp",
+      "target": "bit8-era",
+      "relation": "算力底座对照",
+      "how": "射频 MCU（AVR 8 位、ESP32/STM32WL 32 位）是位宽世代里最小几档的算力底座，射频信号处理跑在这类裸机/RTOS 上，与编译第七轴（位宽世代）同源"
+    },
+    {
+      "from": "netsys:radio",
+      "system": "plang",
+      "target": "lang:c",
+      "relation": "SDR 实现语言",
+      "how": "GNU Radio / rtl-sdr / SoapySDR / Hamlib 等 SDR 工具链以 C/C++ 为主实现，信号处理与设备驱动即 C 程序"
+    },
+    {
+      "from": "netsys:radio",
+      "system": "apilab",
+      "target": "stdio",
+      "relation": "IQ 样本管道纪律",
+      "how": "SDR 的 IQ 样本经标准管道流转（rtl_sdr | multimon-ng 解调），与 stdio 长连接『以 fd 锚定而非路径重解析』同一接口纪律"
+    },
+    {
+      "from": "netsys:radio",
+      "system": "apilab",
+      "target": "websocket",
+      "relation": "频谱实时推送信道",
+      "how": "WebSDR / 在线频谱经 WebSocket 实时推送 IQ 与频谱流，与 websocket 双向实时信道同源"
+    },
+    {
+      "from": "netsys:batman-adv",
+      "system": "comp",
+      "target": "opt",
+      "relation": "路由即优化面",
+      "how": "BATMAN-adv 的 ELP/OGM 链路质量 metric 实时估算路径代价，属网络侧『按事实优化』同构"
+    },
+    {
+      "from": "netsys:mesh-routing",
+      "system": "plang",
+      "target": "lang:c",
+      "relation": "路由守护进程语言",
+      "how": "babeld/ospfd 等 mesh 路由守护进程以 C 实现（FRR/BIRD 体系），路由逻辑即 C 程序"
+    },
+    {
+      "from": "netsys:sdn-openflow",
+      "system": "apilab",
+      "target": "websocket",
+      "relation": "控制器信道同源",
+      "how": "OpenFlow 控制器经安全信道下发流表，与 websocket 双向实时信道同源"
+    },
+    {
+      "from": "netsys:wireguard-mesh",
+      "system": "comp",
+      "target": "opt",
+      "relation": "加密隧道优化面",
+      "how": "WireGuard 噪声协议与按需握手属传输侧『按事实优化』同构"
+    },
+    {
+      "from": "netsys:net-arch",
+      "system": "comp",
+      "target": "opt",
+      "relation": "架构即优化面",
+      "how": "net-arch 把网络拆为控制/数据/管理平面分治，与编译『按事实优化』同构"
+    },
+    {
+      "from": "netsys:ctrl-plane",
+      "system": "comp",
+      "target": "opt",
+      "relation": "控制平面即优化面",
+      "how": "控制平面集中计算转发决策、按需下发，与编译期优化 pass（可热插拔）同构"
+    },
+    {
+      "from": "netsys:qnic-arch",
+      "system": "plang",
+      "target": "lang:c",
+      "relation": "网卡驱动语言",
+      "how": "QNIC 架构与驱动以 C 实现，硬件抽象即 C 程序"
+    },
+    {
+      "from": "netsys:qkd-arch",
+      "system": "apilab",
+      "target": "websocket",
+      "relation": "密钥交付信道同源",
+      "how": "QKD 密钥经安全信道分发，与 websocket 双向实时信道同源"
+    },
+    {
+      "from": "netsys:qrelay-arch",
+      "system": "apilab",
+      "target": "websocket",
+      "relation": "纠缠交换信道同源",
+      "how": "量子中继/纠缠交换经安全信道中继 Bell 对，与 websocket 双向实时信道同源"
+    },
+    {
+      "from": "netsys:net-arch",
+      "system": "daoxue",
+      "target": "daofa-ziran",
+      "relation": "架构分治同源",
+      "how": "net-arch 把网络拆为控制/数据/管理平面分治，与道法自然「各归其位、自然分治」同源"
+    },
+    {
+      "from": "netsys:meshnet",
+      "system": "daoxue",
+      "target": "wuwei",
+      "relation": "自组网同源",
+      "how": "meshnet 自组织无需中心、节点自由进出，与无为「不妄为、自化」同源"
+    },
+    {
+      "from": "netsys:sysmesh",
+      "system": "daoxue",
+      "target": "daofa-ziran",
+      "relation": "系统互联同源",
+      "how": "sysmesh 让各系统经组网而联、协议可替换基底不灭，与道法自然「道通为一」同源"
+    },
+    {
+      "from": "netsys:net-arch",
+      "system": "quantum",
+      "target": "quantum-internet-stack",
+      "relation": "架构同构",
+      "how": "net-arch 的分层架构与量子互联网协议栈（控制/数据/管理分层）同构"
+    },
+    {
+      "from": "netsys:qrelay-arch",
+      "system": "quantum",
+      "target": "quantum-repeater",
+      "relation": "中继架构同源",
+      "how": "qrelay-arch 的纠缠交换/隐形传态中继与量子中继(quantum-repeater)同一架构"
+    },
+    {
+      "from": "netsys:qkd-arch",
+      "system": "quantum",
+      "target": "qkd-key-management",
+      "relation": "密钥管理架构同源",
+      "how": "qkd-arch 的密钥分发管理与 qkd-key-management 同一架构口径"
+    },
+    {
+      "from": "netsys:sysmesh",
+      "system": "quantum",
+      "target": "quantum-network-topology",
+      "relation": "系统互联协调同源",
+      "how": "sysmesh 的跨系统拓扑协调与量子网络拓扑(quantum-network-topology)同一发现→建模纪律"
+    },
+    {
+      "from": "netsys:net-arch",
+      "system": "baigong",
+      "target": "sanjiao-jiuliu",
+      "relation": "系统如百家同源",
+      "how": "net-arch 把各系统经组网而联，与百工「三教九流各司其职、经网协同」同源"
+    },
+    {
+      "from": "netsys:data-plane",
+      "system": "baigong",
+      "target": "luban",
+      "relation": "线速转发如匠作同源",
+      "how": "data-plane 的线速转发/精准卸载与鲁班匠作「毫厘不爽」同源"
+    },
+    {
+      "from": "netsys:sysmesh",
+      "system": "baigong",
+      "target": "sanjiao-jiuliu",
+      "relation": "系统互联如百工同源",
+      "how": "sysmesh 让各系统如百工各司其职、经组网协同成一体"
+    },
+    {
+      "from": "netsys:sysmesh",
+      "system": "datong",
+      "target": "he-butong-yong",
+      "relation": "和而不同同源",
+      "how": "sysmesh 让异构系统经组网互联而存异，与大同「和而不同用」同源"
+    },
+    {
+      "from": "netsys:gaia-consciousness",
+      "system": "datong",
+      "target": "yiti-shuangmian-shen",
+      "relation": "盖亚如一体同源",
+      "how": "gaia-consciousness 的全局自组织与大同「一体双面身」同源"
+    },
+    {
+      "from": "netsys:meshnet",
+      "system": "datong",
+      "target": "he-butong-yong",
+      "relation": "自组网和而不同同源",
+      "how": "meshnet 异构节点自组织互联，与大同「和而不同」同源"
+    },
+    {
+      "from": "netsys:meshnet",
+      "system": "zhuangzi",
+      "target": "xiaoyaoyou",
+      "relation": "自组网如逍遥同源",
+      "how": "meshnet 节点自由进出、自组织无拘，与逍遥游「无待而游」同源"
+    },
+    {
+      "from": "netsys:gaia-consciousness",
+      "system": "zhuangzi",
+      "target": "shiwei-zongshi",
+      "relation": "盖亚如大宗师同源",
+      "how": "gaia-consciousness 的自主自化与大宗师「自化」同源"
+    },
+    {
+      "from": "netsys:sysmesh",
+      "system": "zhuangzi",
+      "target": "shunxing-buqiang",
+      "relation": "系统互联顺性同源",
+      "how": "sysmesh 让各系统顺性互联、互不僭越，与顺性不抢同源"
+    }
+  ],
+  "by_layer": {
+    "L1": [
+      "osi",
+      "edge",
+      "kernel-ptp",
+      "kernel-wifi-he-eht",
+      "radio",
+      "nic-hw",
+      "phy-transceiver",
+      "rf-frontend",
+      "qnic-hw",
+      "qrepeater-hw"
+    ],
+    "L2": [
+      "osi",
+      "netlink",
+      "zerotier",
+      "apctrl",
+      "edge",
+      "vxlan",
+      "usb-net",
+      "kernel-wifi-he-eht",
+      "batman-adv",
+      "sdn-openflow",
+      "lldp-topo",
+      "data-plane",
+      "qnic-arch",
+      "nic-hw",
+      "qnic-hw",
+      "qrepeater-hw"
+    ],
+    "L3": [
+      "network",
+      "osi",
+      "meshnet",
+      "zerotier",
+      "thirdparty",
+      "openwrt",
+      "nat",
+      "dhcp",
+      "rwf_dontcache",
+      "usb-net",
+      "mesh-routing",
+      "sdn-openflow",
+      "wireguard-mesh",
+      "ctrl-plane",
+      "data-plane",
+      "qrelay-arch"
+    ],
+    "L4": [
+      "network",
+      "osi",
+      "netlink",
+      "tls13",
+      "thirdparty",
+      "nat",
+      "quic",
+      "sched_ext",
+      "rwf_dontcache",
+      "kernel-l4s",
+      "kernel-ptp",
+      "ctrl-plane"
+    ],
+    "L5-6": [
+      "osi",
+      "tls13",
+      "cert",
+      "qkd-arch"
+    ],
+    "L7": [
+      "osi",
+      "meshchat",
+      "tor",
+      "dnshealth",
+      "vdns",
+      "remote",
+      "netauth",
+      "reshare",
+      "distcompute",
+      "distjob",
+      "ipp",
+      "thirdparty",
+      "emergency",
+      "webnews",
+      "browser",
+      "dhcp",
+      "mdns",
+      "sched_ext",
+      "failfs",
+      "fchroot",
+      "binfmt_bpf",
+      "userfaultfd",
+      "fuse_io_uring",
+      "nullfs_kthread",
+      "ukui-desktop-widget",
+      "quickshare-airdrop"
+    ],
+    "overlay": [
+      "meshnet",
+      "zerotier",
+      "tor",
+      "vxlan",
+      "sdn-openflow",
+      "wireguard-mesh",
+      "net-arch",
+      "qrelay-arch",
+      "sysmesh",
+      "sysfed"
+    ],
+    "mesh": [
+      "netlink",
+      "meshchat",
+      "netauth",
+      "reshare",
+      "distjob",
+      "batman-adv",
+      "mesh-routing",
+      "net-arch",
+      "gaia-consciousness",
+      "swarm-intelligence",
+      "sysmesh",
+      "sysfed"
+    ]
+  },
+  "by_form": {
+    "standalone": [
+      "network",
+      "osi",
+      "dnshealth",
+      "tls13",
+      "cert",
+      "nat",
+      "dhcp",
+      "quic",
+      "sched_ext",
+      "failfs",
+      "fchroot",
+      "binfmt_bpf",
+      "userfaultfd",
+      "fuse_io_uring",
+      "rwf_dontcache",
+      "nullfs_kthread",
+      "ukui-desktop-widget",
+      "kernel-l4s",
+      "kernel-ptp",
+      "kernel-wifi-he-eht",
+      "radio"
+    ],
+    "lan": [
+      "remote",
+      "apctrl",
+      "ipp",
+      "openwrt",
+      "edge",
+      "dhcp",
+      "mdns",
+      "usb-net",
+      "quickshare-airdrop",
+      "kernel-ptp",
+      "kernel-wifi-he-eht",
+      "radio",
+      "lldp-topo"
+    ],
+    "mesh": [
+      "netlink",
+      "meshchat",
+      "netauth",
+      "reshare",
+      "radio",
+      "batman-adv",
+      "mesh-routing",
+      "lldp-topo",
+      "wireguard-mesh",
+      "sysmesh"
+    ],
+    "overlay": [
+      "meshnet",
+      "thirdparty",
+      "nat",
+      "vxlan",
+      "wireguard-mesh",
+      "sysmesh",
+      "sysfed"
+    ],
+    "sdwan": [
+      "zerotier",
+      "sdn-openflow",
+      "sysmesh",
+      "sysfed"
+    ],
+    "distributed": [
+      "reshare",
+      "distcompute",
+      "distjob"
+    ],
+    "anonymous": [
+      "tor"
+    ],
+    "wan": [
+      "vdns",
+      "thirdparty",
+      "emergency",
+      "webnews",
+      "openwrt",
+      "browser"
+    ],
+    "arch": [
+      "net-arch",
+      "ctrl-plane",
+      "data-plane",
+      "qnic-arch",
+      "qkd-arch",
+      "qrelay-arch"
+    ],
+    "hw": [
+      "qnic-arch",
+      "qkd-arch",
+      "qrelay-arch",
+      "nic-hw",
+      "phy-transceiver",
+      "rf-frontend",
+      "qnic-hw",
+      "qrepeater-hw"
+    ],
+    "gaia": [
+      "gaia-consciousness"
+    ],
+    "swarm": [
+      "swarm-intelligence"
+    ]
+  },
+  "by_nature": {
+    "diagnose": [
+      "osi",
+      "meshnet",
+      "zerotier",
+      "tor",
+      "dnshealth",
+      "vdns",
+      "emergency",
+      "webnews",
+      "openwrt",
+      "edge",
+      "browser",
+      "nat",
+      "dhcp",
+      "vxlan",
+      "failfs",
+      "fchroot",
+      "userfaultfd",
+      "fuse_io_uring",
+      "nullfs_kthread",
+      "usb-net",
+      "radio",
+      "batman-adv",
+      "mesh-routing",
+      "sdn-openflow",
+      "wireguard-mesh",
+      "ctrl-plane",
+      "data-plane",
+      "qnic-arch",
+      "qkd-arch",
+      "qrelay-arch",
+      "nic-hw",
+      "phy-transceiver",
+      "rf-frontend",
+      "qnic-hw",
+      "qrepeater-hw",
+      "gaia-consciousness",
+      "swarm-intelligence",
+      "sysmesh",
+      "sysfed"
+    ],
+    "tune": [
+      "network"
+    ],
+    "communicate": [
+      "netlink",
+      "meshchat"
+    ],
+    "share": [
+      "reshare",
+      "distcompute",
+      "distjob"
+    ],
+    "audit": [
+      "remote",
+      "tls13",
+      "cert",
+      "netauth",
+      "apctrl",
+      "quic"
+    ],
+    "discover": [
+      "ipp",
+      "mdns",
+      "lldp-topo"
+    ],
+    "reference": [
+      "thirdparty",
+      "sched_ext",
+      "binfmt_bpf",
+      "rwf_dontcache",
+      "ukui-desktop-widget",
+      "quickshare-airdrop",
+      "kernel-l4s",
+      "kernel-ptp",
+      "kernel-wifi-he-eht",
+      "net-arch"
+    ]
+  },
+  "by_tier": {
+    "dao": [
+      "net-arch",
+      "ctrl-plane",
+      "data-plane",
+      "qnic-arch",
+      "qkd-arch",
+      "qrelay-arch",
+      "nic-hw",
+      "phy-transceiver",
+      "rf-frontend",
+      "qnic-hw",
+      "qrepeater-hw"
+    ],
+    "divine": [
+      "gaia-consciousness",
+      "swarm-intelligence"
+    ],
+    "human": [
+      "network",
+      "osi",
+      "netlink",
+      "meshchat",
+      "meshnet",
+      "zerotier",
+      "tor",
+      "dnshealth",
+      "vdns",
+      "remote",
+      "tls13",
+      "cert",
+      "netauth",
+      "reshare",
+      "distcompute",
+      "distjob",
+      "apctrl",
+      "ipp",
+      "thirdparty",
+      "emergency",
+      "webnews",
+      "openwrt",
+      "edge",
+      "browser",
+      "nat",
+      "dhcp",
+      "mdns",
+      "quic",
+      "vxlan",
+      "sched_ext",
+      "failfs",
+      "fchroot",
+      "binfmt_bpf",
+      "userfaultfd",
+      "fuse_io_uring",
+      "rwf_dontcache",
+      "nullfs_kthread",
+      "usb-net",
+      "ukui-desktop-widget",
+      "quickshare-airdrop",
+      "kernel-l4s",
+      "kernel-ptp",
+      "kernel-wifi-he-eht",
+      "radio",
+      "batman-adv",
+      "mesh-routing",
+      "sdn-openflow",
+      "lldp-topo",
+      "wireguard-mesh",
+      "sysmesh",
+      "sysfed"
+    ]
+  }
+}

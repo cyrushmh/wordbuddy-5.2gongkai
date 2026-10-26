@@ -1,0 +1,14 @@
+{
+  "title": "IPP 打印协议发现知识库（ipp）",
+  "sources": [
+    "RFC 8010（IPP 编码）/ RFC 8011（IPP 模型与语义）",
+    "IPP Everywhere（PWG 5100.14，驱动无关打印）",
+    "PWG 标准打印（AirPrint / IPP-over-USB 同源思路）"
+  ],
+  "discovery": {
+    "cups": "lpstat -v 列已配置打印机队列；/etc/cups 是否就绪",
+    "mdns": "avahi-browse -rt _ipp._tcp 发现网内 IPP 打印机",
+    "localweb": "localhost:631 CUPS 管理页（只读探一次，绝不连控制端口写）"
+  },
+  "compliance": "本子系统只读发现：绝不 lpadmin 加打印机、绝不改 CUPS 配置、绝不发布 mDNS 服务"
+}

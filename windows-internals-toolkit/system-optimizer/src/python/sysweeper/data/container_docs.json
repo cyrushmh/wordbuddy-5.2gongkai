@@ -1,0 +1,164 @@
+{
+  "docker": {
+    "name": "Docker Engine（容器引擎：dockerd / containerd / runc 分层）",
+    "org": "Docker, Inc. / Moby",
+    "url": "https://docs.docker.com/reference/cli/docker/system/prune/",
+    "protocols": [
+      "OCI 运行时规范（config.json + runtime.json，由 runc/crun 执行）",
+      "Docker 镜像清单 mediaType vnd.docker.distribution.manifest.v2+json（含 manifest 与 manifestlist）",
+      "Docker Engine API（本地 Unix socket /var/run/docker.sock，REST/JSON over HTTP）",
+      "镜像层 tar+gzip + 内容寻址（diff_id / chain_id）"
+    ],
+    "interfaces": [
+      "docker system df（磁盘占用：镜像/容器/卷/构建缓存四项）",
+      "docker system prune -a -f（组合清理：悬空镜像+停止容器+网络）",
+      "docker image prune -a -f / docker container prune -f / docker volume prune -f / docker builder prune -f",
+      "数据根 /var/lib/docker（overlay2 存储驱动、buildkit、volumes、network）"
+    ],
+    "docs": [
+      "docker system prune 参考（组合清理语义）",
+      "docker system df 参考（磁盘占用四项口径）",
+      "docker build cache pruning（builder prune 语义）",
+      "OCI image-spec / runtime-spec（镜像分层与内容寻址）",
+      "存储驱动 overlay2（写时复制与 chain_id）"
+    ],
+    "summary": "Docker 以 dockerd 为守护进程，实际容器经 containerd→runc 按 OCI 规范启动；镜像分层存于 /var/lib/docker/overlay2，构建缓存在 buildkit，卷在 /var/lib/docker/volumes。悬空镜像、停止容器、未用卷、build cache 是典型空间杀手。",
+    "advice": "清理严格走官方接口：docker image prune -f（悬空镜像）、docker container prune -f（停止容器）、docker volume prune -f（未用卷，需确认）、docker builder prune -f（buildkit 缓存）、docker system prune -a -f（组合）。绝不直接 rm -rf /var/lib/docker——会破坏 overlay2 层与 chain_id 一致性，dockerd 可能无法恢复。"
+  },
+  "podman": {
+    "name": "Podman（无守护进程容器引擎，CLI 兼容 docker）",
+    "org": "Red Hat / Containers.org",
+    "url": "https://docs.podman.io/en/latest/markdown/podman-system-prune.1.html",
+    "protocols": [
+      "OCI 运行时规范（runc/crun 直接执行，无中间 daemon）",
+      "兼容 Docker 镜像格式与 manifest（registries.conf 声明镜像源）",
+      "rootless：crun + slirp4netns + fuse-overlayfs + user namespace（每用户独立）",
+      "兼容 Docker Engine API（podman-docker 兼容层 / podman.sock）"
+    ],
+    "interfaces": [
+      "podman system df（磁盘占用，与 docker 同语义）",
+      "podman system prune -a -f（组合清理）",
+      "podman image prune -a -f / podman volume prune -f / podman container prune -f",
+      "数据根 /var/lib/containers/storage（默认 rootless：~/.local/share/containers/storage）"
+    ],
+    "docs": [
+      "podman-system-prune（组合清理语义）",
+      "podman-image-prune（悬空/未使用镜像）",
+      "podman-volume-prune（未用卷）",
+      "OCI runtime-spec（runc/crun 直接执行）"
+    ],
+    "summary": "Podman 无守护进程，直接以 runc/crun 起容器，默认 rootless 依托 user namespace 与 fuse-overlayfs。镜像/层存于 /var/lib/containers/storage（graph driver overlay），清理与 docker 同语义但接口名不同（podman image prune 而非 docker image prune）。",
+    "advice": "走官方接口：podman image prune -a -f、podman volume prune -f、podman system prune -a -f。rootless 模式数据在 ~/.local/share/containers——注意别用 root 的 podman 清用户目录（权限不对会漏清或报错）。"
+  },
+  "containerd": {
+    "name": "containerd（工业级容器运行时，Kubernetes CRI 后端）",
+    "org": "CNCF / containerd",
+    "url": "https://containerd.io/docs/",
+    "protocols": [
+      "OCI 运行时规范（shim + runc 直接执行）",
+      "插件式架构：services（images/tasks/containers/leases/snapshots）",
+      "Content Store（内容寻址 blob 存储）+ Snapshotter（overlayfs/devmapper/btrfs）",
+      "nerdctl 兼容 docker CLI；ctr 为底层调试 CLI"
+    ],
+    "interfaces": [
+      "nerdctl system prune -a（docker 语义的组合清理）",
+      "nerdctl images / nerdctl ps / nerdctl volume ls（列表）",
+      "ctr images ls / ctr containers ls / ctr snapshots ls（底层）",
+      "数据根 /var/lib/containerd（io.containerd.content.v1 + snapshot 元数据）"
+    ],
+    "docs": [
+      "containerd.io 官方文档",
+      "nerdctl command-reference（system prune 等）",
+      "OCI image-spec（content store 与 digest）"
+    ],
+    "summary": "containerd 是 Kubernetes 默认 CRI 运行时，以 content store（内容寻址）+ snapshotter 管理镜像层与容器可写层。没有 docker 那套系统级 prune，需借助 nerdctl 或直接操作 content store 回收孤儿 blob。",
+    "advice": "装了 nerdctl 就走 nerdctl system prune；否则用 ctr images rm + ctr snapshots rm 回收，或用垃圾回收 ctr content prune / ctr snapshots prune（仅删无 lease 引用的孤儿）。绝不直接删 /var/lib/containerd/io.containerd.content.v1.content 下文件（破坏内容寻址，导致镜像 digest 校验失败）。"
+  },
+  "buildkit": {
+    "name": "BuildKit（镜像构建引擎与构建缓存）",
+    "org": "Moby / Docker",
+    "url": "https://github.com/moby/buildkit",
+    "protocols": [
+      "OCI 镜像构建（前端 LLB 有向无环图 + 缓存 import-cache/export-cache）",
+      "buildkitd gRPC + 内容寻址缓存（由 diffID 索引，overlayfs/containerd 后端）",
+      "Buildx（docker buildx 驱动，默认 docker-container / kubernetes / remote）"
+    ],
+    "interfaces": [
+      "docker builder prune -a -f（清空 buildkit 构建缓存）",
+      "docker buildx prune -a -f（清空 buildx 缓存）",
+      "数据根 /var/lib/docker/buildkit（buildkitd 元数据与 cache）",
+      "DOCKER_BUILDKIT=1 + --build-arg BUILDKIT_INLINE_CACHE（内联缓存）"
+    ],
+    "docs": [
+      "moby/buildkit（构建缓存语义）",
+      "docker build cache use（builder prune 语义）"
+    ],
+    "summary": "BuildKit 负责镜像构建，缓存按内容寻址存于 /var/lib/docker/buildkit（或 containerd 的 buildkit namespace），随构建次数累积极易膨胀。docker builder prune 是官方回收接口。",
+    "advice": "用 docker builder prune -a -f 或 docker buildx prune -a -f 回收构建缓存。不要手动删 buildkit 目录（缓存元数据与层引用耦合，直接删会让 buildkitd 状态不一致）。"
+  },
+  "oci": {
+    "name": "OCI 开放容器倡议规范（Image Spec / Runtime Spec）",
+    "org": "Open Container Initiative (OCI)",
+    "url": "https://github.com/opencontainers/image-spec",
+    "protocols": [
+      "Image Spec：manifest（config + layers）、image index、descriptor（digest+size+mediaType）",
+      "Runtime Spec：config.json（进程/挂载/linux 命名空间/用户）、runtime.json（生命周期状态）",
+      "内容寻址：digest=sha256:… 贯穿 manifest/config/layer，保证不可变与共享"
+    ],
+    "interfaces": [
+      "skopeo（镜像复制/检查/删除，支持 oci 与 docker 两种格式）",
+      "umoci / oci-image-tool（解包/验证 OCI 镜像）",
+      "runc（按 runtime.json 启动容器）"
+    ],
+    "docs": [
+      "opencontainers/image-spec（manifest 与 descriptor）",
+      "opencontainers/runtime-spec（config.json 与生命周期）"
+    ],
+    "summary": "OCI 是容器镜像与运行时的共同标准。所有运行时（docker/podman/containerd）的镜像分层、digest、diff_id 都遵循 Image Spec；容器启动配置遵循 Runtime Spec。理解 OCI 是判断「能否安全清理」的前提——内容寻址意味着同一层被多镜像共享，删层须看引用计数。",
+    "advice": "通过 skopeo inspect/delete 操作 OCI 镜像仓库；清理共享层时依赖运行时的 GC（docker/podman/containerd 各自的内容寻址回收），不要按文件名手动删层——digest 共享，误删会让其他镜像失效。"
+  },
+  "lxc": {
+    "name": "LXC / LXD（系统容器与虚拟机管理器）",
+    "org": "Canonical / linuxcontainers.org",
+    "url": "https://linuxcontainers.org/lxc/",
+    "protocols": [
+      "LXC：liblxc（应用容器，直接跑在宿主命名空间之外）",
+      "LXD：守护进程 + REST API（/1.0）+ 客户端 lxc；镜像别名与远程 remote",
+      "存储池：ZFS / Btrfs / LVM / dir 后端，卷为存储池内对象"
+    ],
+    "interfaces": [
+      "lxc image list / lxc image delete（未使用镜像回收）",
+      "lxc storage volume list / lxc storage volume rm（卷删除）",
+      "lxc launch / lxc delete / lxc stop（容器生命周期）",
+      "数据根 /var/lib/lxd（或 snap 安装：/var/snap/lxd/common/lxd）"
+    ],
+    "docs": [
+      "linuxcontainers.org/lxc（liblxc）",
+      "lxd storage_delete_volume（卷删除语义）"
+    ],
+    "summary": "LXC 是系统级容器（一个容器≈一个轻量 VM），LXD 在其上加了镜像仓库与存储池抽象。空间占用主要来自停止/未使用容器的可写层与存储池内的镜像、卷。与 OCI 容器不同，LXC 不走镜像分层共享，而是每容器独立可写层或存储池卷。",
+    "advice": "用 lxc image delete 回收未使用镜像、lxc storage volume rm 删孤儿卷、lxc delete 删停止容器；存储池（ZFS/Btrfs/LVM）缩容须走对应后端命令（zfs destroy / lxc storage volume rm），不要直接删 /var/lib/lxd 下目录。"
+  },
+  "cri": {
+    "name": "CRI 容器运行时接口（kubelet 与 containerd / CRI-O 之间）",
+    "org": "Kubernetes SIG Node / CNCF",
+    "url": "https://kubernetes.io/docs/tasks/debug/debug-cluster/crictl/",
+    "protocols": [
+      "CRI gRPC：RuntimeService + ImageService（PodSandbox/Container/Image 生命周期）",
+      "Pod 沙箱（pause 容器）+ 共享 IPC/network namespace",
+      "CRI-O（专为 Kubernetes 的轻量运行时）/ containerd（CRI 插件）"
+    ],
+    "interfaces": [
+      "crictl images（列出镜像）/ crictl rmi（删除未用镜像）",
+      "crictl ps / crictl rm / crictl pods / crictl stopp",
+      "crictl info（运行时信息与 sandboxImage）",
+      "配置 /etc/crictl.yaml（runtime-endpoint: unix:///run/containerd/containerd.sock）"
+    ],
+    "docs": [
+      "kubernetes.io crictl 任务指南",
+      "cri-tools crictl.md（命令参考）"
+    ],
+    "summary": "CRI 是 kubelet 与容器运行时之间的标准接口。crictl 是 CRI 的调试 CLI，可直接列/删镜像与容器（作用于底层 containerd 或 CRI-O）。在 Kubernetes 节点上做清理要用 crictl 而非 docker——节点上可能根本没装 docker。",
+    "advice": "用 crictl rmi 回收未用镜像、crictl rm 删退出容器；注意 crictl 默认不动运行中的 Pod（pause 沙箱）。Kubernetes 节点更稳妥的镜像回收是设 kubelet --image-gc-high-threshold，而非手动 rmi 影响调度。"
+  }
+}

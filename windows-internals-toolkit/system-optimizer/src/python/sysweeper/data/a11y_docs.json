@@ -1,0 +1,162 @@
+{
+  "orca_atspi": {
+    "name": "Orca 屏幕阅读器 / AT-SPI2",
+    "org": "GNOME / freedesktop.org (XDG)",
+    "url": "https://docs.gnome.org/orca/stable/",
+    "protocols": ["AT-SPI2 ( Assistive Technology Service Provider Interface )", "D-Bus"],
+    "interfaces": [
+      "org.a11y.Bus（无障碍总线）",
+      "org.a11y.atspi.Registry",
+      "org.a11y.atspi.Accessible",
+      "org.a11y.atspi.Component / Text / Value / Action / Selection",
+      "org.gnome.desktop.a11y.applications screen-reader-enabled（GSettings）",
+      "orca --replace / orca --no-setup（命令行）"
+    ],
+    "docs": [
+      "https://docs.gnome.org/orca/stable/",
+      "https://www.freedesktop.org/wiki/Accessibility/AT-SPI2/",
+      "https://help.gnome.org/users/orca/stable/"
+    ],
+    "summary": "Linux 桌面主流屏幕阅读器，通过 D-Bus 上的 AT-SPI2 总线读取应用的无障碍树。",
+    "advice": "只读探测：检查 org.a11y.Bus 是否存在、gsettings screen-reader-enabled 是否为 true、~/.config/orca 或 ~/.local/share/orca 配置目录。启用走 orca --replace，属用户态命令，可逆。"
+  },
+  "windows_narrator_uia": {
+    "name": "Windows 讲述人 (Narrator) / UI Automation",
+    "org": "Microsoft",
+    "url": "https://learn.microsoft.com/windows/win32/winauto/entry-uiauto-win32",
+    "protocols": ["UI Automation (UIA)", "MSAA (Microsoft Active Accessibility)"],
+    "interfaces": [
+      "IUIAutomation / IUIAutomationElement（COM 接口）",
+      "UIA_ControlTypePropertyId / UIA_NamePropertyId 等属性",
+      "注册表 HKCU\\Software\\Microsoft\\Narrator（Narrator 用户设置）",
+      "注册表 HKCU\\Control Panel\\Accessibility（BlindAccess 等辅助功能标志）",
+      "设置 → 辅助功能 → 讲述人（Windows 设置 URI: ms-settings:easeofaccess-narrator）"
+    ],
+    "docs": [
+      "https://learn.microsoft.com/windows/win32/winauto/entry-uiauto-win32",
+      "https://support.microsoft.com/windows/complete-guide-to-narrator-e4397a0d-ef4f-206b-cc6c-2b0e2c0e6f5b",
+      "https://learn.microsoft.com/windows/win32/winauto/uiauto-msaa"
+    ],
+    "summary": "Windows 内置屏幕阅读器 + UI 自动化框架，应用通过 UIA/MSAA 暴露无障碍树。",
+    "advice": "只读探测：winreg 读 HKCU\\Software\\Microsoft\\Narrator 与 HKCU\\Control Panel\\Accessibility\\BlindAccess；非 Windows 平台直接降级为指引。启用建议走「设置 → 辅助功能 → 讲述人」或 Win+Ctrl+Enter，避免直接改注册表。"
+  },
+  "macos_voiceover": {
+    "name": "macOS VoiceOver / Accessibility API (AX)",
+    "org": "Apple",
+    "url": "https://developer.apple.com/documentation/appkit/nsaccessibility",
+    "protocols": ["NSAccessibility (AX) API", "AppleScript / Mac Automation"],
+    "interfaces": [
+      "NSAccessibilityProtocol（AXUIElement 属性：AXRole/AXTitle/AXValue）",
+      "com.apple.universalaccess（defaults 域）",
+      "defaults read com.apple.universalaccess voiceOverOnOffKey",
+      "系统设置 → 辅助功能 → VoiceOver（x-apple.systempreferences:com.apple.Accessibility-Settings.extension）"
+    ],
+    "docs": [
+      "https://developer.apple.com/documentation/appkit/nsaccessibility",
+      "https://support.apple.com/guide/voiceover/welcome/mac",
+      "https://developer.apple.com/accessibility/"
+    ],
+    "summary": "macOS/iOS 通用屏幕阅读器，基于 NSAccessibility（AX）属性树；用户开关存放于 com.apple.universalaccess 域。",
+    "advice": "只读探测：defaults read com.apple.universalaccess voiceOverOnOffKey；或 osascript 查询「系统设置」辅助功能状态。启用建议走系统设置面板或 Cmd+F5，不写 defaults（避免破坏用户偏好）。"
+  },
+  "android_talkback": {
+    "name": "Android TalkBack / AccessibilityService",
+    "org": "Google / Open Handset Alliance (AOSP)",
+    "url": "https://developer.android.com/reference/android/accessibilityservice/AccessibilityService",
+    "protocols": ["Android AccessibilityService Framework", "ADB settings (Secure)"],
+    "interfaces": [
+      "android.accessibilityservice.AccessibilityService",
+      "AccessibilityEvent / AccessibilityNodeInfo",
+      "adb shell settings get secure enabled_accessibility_services",
+      "adb shell settings get secure accessibility_enabled",
+      "adb shell am startservice（启停无障碍服务）"
+    ],
+    "docs": [
+      "https://developer.android.com/reference/android/accessibilityservice/AccessibilityService",
+      "https://support.google.com/accessibility/android/answer/6283677",
+      "https://developer.android.com/guide/topics/ui/accessibility/service"
+    ],
+    "summary": "Android 无障碍服务框架；TalkBack 为官方屏幕阅读器，通过 AccessibilityNodeInfo 树朗读界面。",
+    "advice": "只读探测：adb shell settings get secure accessibility_enabled / enabled_accessibility_services（需设备已授权调试）。启用走「设置 → 无障碍 → TalkBack」；用 adb 写 settings put secure 属变更操作，默认关闭（opt_in）。"
+  },
+  "ios_voiceover": {
+    "name": "iOS VoiceOver / UIAccessibility",
+    "org": "Apple",
+    "url": "https://developer.apple.com/documentation/uikit/uiaccessibility",
+    "protocols": ["UIAccessibility", "libimobiledevice (lockdown/usbmux)"],
+    "interfaces": [
+      "UIAccessibilityIsVoiceOverRunning()（应用内 API）",
+      "UIAccessibilityPostNotification（朗读通知）",
+      "ideviceinfo -k ...（只读设备信息，需配对）",
+      "设置 → 辅助功能 → 语音内容 → VoiceOver"
+    ],
+    "docs": [
+      "https://developer.apple.com/documentation/uikit/uiaccessibility",
+      "https://support.apple.com/guide/iphone/turn-on-and-practice-voiceover-iph3e2e2281/ios",
+      "https://developer.apple.com/accessibility/ios/"
+    ],
+    "summary": "iOS 屏幕阅读器，基于 UIAccessibility 属性树；本机侧只能通过配对后的只读通道（如 libimobiledevice）查询有限信息。",
+    "advice": "只读探测：无配对设备时降级为「请在设备上操作」的指引。启用必须在设备端「设置 → 辅助功能 → VoiceOver」手动完成（iOS 不允许主机直接开启），本工具只给指引，不改设备状态。"
+  },
+  "harmony_a11y": {
+    "name": "HarmonyOS 无障碍（屏幕朗读 / AccessibilityExtensionAbility）",
+    "org": "华为 / OpenAtom Foundation（OpenHarmony）",
+    "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/accessibility-extension-ability",
+    "protocols": ["HarmonyOS Accessibility (AccessibilityExtensionAbility)", "hdc shell"],
+    "interfaces": [
+      "AccessibilityExtensionAbility（无障碍扩展能力）",
+      "hdc shell（HarmonyOS Device Connector，只读查询）",
+      "设置 → 辅助功能 → 无障碍 → 屏幕朗读（ScreenReader）"
+    ],
+    "docs": [
+      "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/accessibility-extension-ability",
+      "https://gitee.com/openharmony/docs",
+      "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/accessibility-overview"
+    ],
+    "summary": "鸿蒙通过 AccessibilityExtensionAbility 提供无障碍扩展；系统内置「屏幕朗读」对应 TalkBack/VoiceOver 角色。",
+    "advice": "只读探测：hdc 可用时查询设备与无障碍相关状态；无设备则降级为指引。启用必须在设备端「设置 → 辅助功能 → 无障碍 → 屏幕朗读」手动完成，工具只给指引。"
+  },
+  "wcag": {
+    "name": "WCAG 2.2（Web Content Accessibility Guidelines）",
+    "org": "W3C",
+    "url": "https://www.w3.org/TR/WCAG22/",
+    "protocols": ["WCAG 2.2", "WAI-ARIA 1.2"],
+    "interfaces": [
+      "成功准则 A/AA/AAA 三级",
+      "WAI-ARIA 角色与属性（role/aria-label/aria-live）"
+    ],
+    "docs": [
+      "https://www.w3.org/TR/WCAG22/",
+      "https://www.w3.org/TR/wai-aria-1.2/",
+      "https://www.w3.org/WAI/standards-guidelines/wcag/"
+    ],
+    "summary": "无障碍内容的国际基准，多系统适配时的共同目标：可感知、可操作、可理解、健壮性。",
+    "advice": "作为跨系统一致性校验的参照：本工具只做只读探测与指引，不做合规判定；对比度/替代文本等建议人工复核。"
+  },
+  "iso_9241_171": {
+    "name": "ISO 9241-171（人机交互无障碍）",
+    "org": "ISO/IEC",
+    "url": "https://www.iso.org/standard/76302.html",
+    "protocols": ["ISO 9241-171:2008"],
+    "interfaces": ["软件无障碍通用设计要求"],
+    "docs": [
+      "https://www.iso.org/standard/76302.html",
+      "https://www.iso.org/obp/ui/#iso:std:iso:9241:-171:ed-1:v1:en"
+    ],
+    "summary": "人机系统交互工效学第 171 部分：软件无障碍的通用设计指导。",
+    "advice": "多系统适配的目标基线；工具只引用不做判定。"
+  },
+  "gb_t_37668": {
+    "name": "GB/T 37668-2019（信息技术 互联网内容无障碍可访问性技术要求与测试方法）",
+    "org": "国家标准化管理委员会（SAC）",
+    "url": "https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=1B1A9E33D8B0A2B1B0C4A6A8C0F0C2B1",
+    "protocols": ["GB/T 37668-2019"],
+    "interfaces": ["Web 内容无障碍技术要求与测试方法"],
+    "docs": [
+      "https://www.samr.gov.cn/",
+      "https://www.cesi.cn/"
+    ],
+    "summary": "国内互联网内容无障碍可访问性的技术要求与评测方法，与 WCAG 对标。",
+    "advice": "面向国内合规场景引用；工具只引用不做判定。"
+  }
+}

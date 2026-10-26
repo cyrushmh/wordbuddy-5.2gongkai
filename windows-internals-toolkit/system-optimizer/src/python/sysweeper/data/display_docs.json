@@ -1,0 +1,16 @@
+{
+  "title": "现代设备显示与 GPU 知识库（display）",
+  "sources": [
+    "freedesktop XDG_SESSION_TYPE（会话类型：x11/wayland/tty）",
+    "Vulkan（Khronos）/ OpenGL（glxinfo）渲染后端",
+    "RandR（xrandr 分辨率）/ Wayland 合成器"
+  ],
+  "display_server": {
+    "tty": "控制台虚拟终端（Ctrl+Alt+F2..F6），无图形时兜底，始终保留",
+    "x11": "传统 Xorg 会话",
+    "wayland": "现代合成器会话（GNOME/KDE Wayland）"
+  },
+  "gpu": "lspci 抽 VGA/3D；vulkaninfo/glxinfo 看渲染后端；开源栈优先（Mesa + amdgpu/i915/nouveau）",
+  "terminal_retained": "控制台/本地终端/SSH 远程终端始终可用，推进图形化不移除这些入口",
+  "compliance": "本子系统只读观测：绝不装 GPU 驱动、绝不切 Wayland、绝不改显示配置"
+}

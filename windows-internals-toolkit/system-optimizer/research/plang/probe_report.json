@@ -1,0 +1,322 @@
+{
+  "_meta": {
+    "title": "编程语言「整体能力」实测探针",
+    "system": "wordbuddy-github（概念系统主目录）",
+    "contract": [
+      "LANG",
+      "LITERALS",
+      "OPS",
+      "CONTROL",
+      "FUNC",
+      "DATA",
+      "IO",
+      "ERROR",
+      "CONCURRENCY"
+    ],
+    "contract_note": "每种语言跑同一个 8 面能力契约；本机无工具链的一律标「未实测」，不臆造结果",
+    "total": 15,
+    "passed": 15
+  },
+  "results": [
+    {
+      "id": "python",
+      "name": "Python",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "python.py",
+      "output": "LANG=Python\nLITERALS=42,hi,True,None\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=ZeroDivisionError\nCONCURRENCY=[0, 1, 4, 9]",
+      "kv": {
+        "LANG": "Python",
+        "LITERALS": "42,hi,True,None",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "ZeroDivisionError",
+        "CONCURRENCY": "[0, 1, 4, 9]"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "javascript",
+      "name": "JavaScript",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "javascript.js",
+      "output": "LANG=JavaScript\nLITERALS=42,hi,true,null\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=SyntaxError\nCONCURRENCY=[0,1,4,9]",
+      "kv": {
+        "LANG": "JavaScript",
+        "LITERALS": "42,hi,true,null",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "SyntaxError",
+        "CONCURRENCY": "[0,1,4,9]"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "typescript",
+      "name": "TypeScript",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "typescript.ts",
+      "output": "LANG=TypeScript\nLITERALS=42,hi,true,null\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=SyntaxError\nCONCURRENCY=[0,1,4,9]",
+      "kv": {
+        "LANG": "TypeScript",
+        "LITERALS": "42,hi,true,null",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "SyntaxError",
+        "CONCURRENCY": "[0,1,4,9]"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "go",
+      "name": "Go",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "go.go",
+      "output": "LANG=Go\nLITERALS=42,hi,true,<nil>\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=*fs.PathError\nCONCURRENCY=[0 1 4 9]",
+      "kv": {
+        "LANG": "Go",
+        "LITERALS": "42,hi,true,<nil>",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "*fs.PathError",
+        "CONCURRENCY": "[0 1 4 9]"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "rust",
+      "name": "Rust",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "rust.rs",
+      "output": "LANG=Rust\nLITERALS=42,hi,true,None\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=NotFound\nCONCURRENCY=[0, 1, 4, 9]",
+      "kv": {
+        "LANG": "Rust",
+        "LITERALS": "42,hi,true,None",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "NotFound",
+        "CONCURRENCY": "[0, 1, 4, 9]"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "c",
+      "name": "C",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "c.c",
+      "output": "LANG=C\nLITERALS=42,hi,1,(nil)\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=fopen-EACCES\nCONCURRENCY=0,1,4,9",
+      "kv": {
+        "LANG": "C",
+        "LITERALS": "42,hi,1,(nil)",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "fopen-EACCES",
+        "CONCURRENCY": "0,1,4,9"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "cpp",
+      "name": "C++",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "cpp.cpp",
+      "output": "LANG=C++\nLITERALS=42,hi,1,0\nOPS=44\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=std::exception\nCONCURRENCY=0,1,4,9",
+      "kv": {
+        "LANG": "C++",
+        "LITERALS": "42,hi,1,0",
+        "OPS": "44",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "std::exception",
+        "CONCURRENCY": "0,1,4,9"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "java",
+      "name": "Java",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "Main.java",
+      "output": "LANG=Java\nLITERALS=42,hi,true,null\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=NoSuchFileException\nCONCURRENCY=[0, 1, 4, 9]",
+      "kv": {
+        "LANG": "Java",
+        "LITERALS": "42,hi,true,null",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "NoSuchFileException",
+        "CONCURRENCY": "[0, 1, 4, 9]"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "ruby",
+      "name": "Ruby",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "ruby.rb",
+      "output": "LANG=Ruby\nLITERALS=42,hi,true,\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=ArgumentError\nCONCURRENCY=[0, 1, 4, 9]",
+      "kv": {
+        "LANG": "Ruby",
+        "LITERALS": "42,hi,true,",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "ArgumentError",
+        "CONCURRENCY": "[0, 1, 4, 9]"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "perl",
+      "name": "Perl",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "perl.pl",
+      "output": "LANG=Perl\nLITERALS=42,hi,1,\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=die\nCONCURRENCY=n/a(核心无原生线程)",
+      "kv": {
+        "LANG": "Perl",
+        "LITERALS": "42,hi,1,",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "die",
+        "CONCURRENCY": "n/a(核心无原生线程)"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "bash",
+      "name": "Bash",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "bash.sh",
+      "output": "LANG=Bash\nLITERALS=42,hi,true,\nOPS=44\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=exit-status\nCONCURRENCY=0,1,4,9",
+      "kv": {
+        "LANG": "Bash",
+        "LITERALS": "42,hi,true,",
+        "OPS": "44",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "exit-status",
+        "CONCURRENCY": "0,1,4,9"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "awk",
+      "name": "AWK",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "awk.awk",
+      "output": "LANG=AWK\nLITERALS=42,hi,1,\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=getline-status\nCONCURRENCY=n/a(单线程)",
+      "kv": {
+        "LANG": "AWK",
+        "LITERALS": "42,hi,1,",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "getline-status",
+        "CONCURRENCY": "n/a(单线程)"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "tcl",
+      "name": "Tcl",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "tcl.tcl",
+      "output": "LANG=Tcl\nLITERALS=42,hi,1,\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=catch\nCONCURRENCY=n/a(事件循环无原生线程)",
+      "kv": {
+        "LANG": "Tcl",
+        "LITERALS": "42,hi,1,",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "catch",
+        "CONCURRENCY": "n/a(事件循环无原生线程)"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "fsharp",
+      "name": "F#",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "fsharp.fsx",
+      "output": "LANG=F#\nLITERALS=42,hi,true,None\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=Exception\nCONCURRENCY=[0; 1; 4; 9]",
+      "kv": {
+        "LANG": "F#",
+        "LITERALS": "42,hi,true,None",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "Exception",
+        "CONCURRENCY": "[0; 1; 4; 9]"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "makefile",
+      "name": "Makefile",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "makefile.mk",
+      "output": "LANG=Makefile\nLITERALS=42,hi,1,\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=5,1\nIO=ok\nERROR=exit-status\nCONCURRENCY=0 1 4 9",
+      "kv": {
+        "LANG": "Makefile",
+        "LITERALS": "42,hi,1,",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "5,1",
+        "IO": "ok",
+        "ERROR": "exit-status",
+        "CONCURRENCY": "0 1 4 9"
+      },
+      "returncode": 0
+    }
+  ]
+}

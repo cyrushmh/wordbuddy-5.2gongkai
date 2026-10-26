@@ -1,0 +1,92 @@
+:root {
+  --bg: #f7f5f0;
+  --card: #ffffff;
+  --ink: #2b2b2b;
+  --ink-soft: #6b6b6b;
+  --line: #e6e1d6;
+  --accent: #8a5a2b;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Serif SC", serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.7;
+}
+.site-header, .reader-header {
+  text-align: center;
+  padding: 2.5rem 1rem 1rem;
+  border-bottom: 1px solid var(--line);
+}
+.site-header h1 { margin: 0; font-size: 2rem; }
+.subtitle { color: var(--ink-soft); margin: 0.3rem 0 0; }
+.topnav { display: flex; gap: 1rem; justify-content: center; margin-bottom: 0.6rem; }
+.topnav a { color: var(--ink-soft); text-decoration: none; font-size: 0.95rem; padding: 0.2rem 0.6rem; border-radius: 999px; }
+.topnav a.active, .topnav a:hover { color: #fff; background: var(--accent); }
+.search-box { display: block; margin: 0.8rem auto 0; max-width: 360px; width: 90%; padding: 0.5rem 0.9rem; border: 1px solid var(--line); border-radius: 999px; font-size: 1rem; outline: none; }
+.search-box:focus { border-color: var(--accent); }
+.results { max-width: 720px; margin: 1.5rem auto; padding: 0 1.2rem; }
+.result { display: block; padding: 0.9rem 1rem; margin-bottom: 0.8rem; background: var(--card); border: 1px solid var(--line); border-radius: 12px; text-decoration: none; color: inherit; }
+.result:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+.r-head { font-weight: 600; }
+.r-book { color: var(--accent); }
+.r-snippet { color: var(--ink-soft); font-size: 0.9rem; margin-top: 0.3rem; }
+mark { background: #ffe9a8; padding: 0 0.1em; }
+.shelf {
+  max-width: 880px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+.card {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+.cover { font-size: 2.4rem; line-height: 1; }
+.meta h2 { margin: 0 0 0.2rem; font-size: 1.15rem; }
+.author { margin: 0; color: var(--accent); font-size: 0.9rem; }
+.blurb { margin: 0.4rem 0 0; color: var(--ink-soft); font-size: 0.9rem; }
+.count { margin: 0.4rem 0 0; color: var(--ink-soft); font-size: 0.8rem; }
+.loading, .empty, .error { color: var(--ink-soft); text-align: center; }
+.site-footer { text-align: center; color: var(--ink-soft); font-size: 0.8rem; padding: 2rem 1rem; }
+
+/* 阅读页 */
+.reader-body { background: #fbfaf6; }
+.reader-header { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+.reader-header h1 { margin: 0; font-size: 1.4rem; }
+.back { color: var(--accent); text-decoration: none; }
+.chapter {
+  max-width: 720px;
+  margin: 1.5rem auto;
+  padding: 0 1.2rem;
+  font-size: 1.05rem;
+}
+.chapter h1 { font-size: 1.6rem; }
+.chapter h2 { font-size: 1.3rem; }
+.chapter h3 { font-size: 1.1rem; }
+.chapter p { margin: 0.9rem 0; text-indent: 2em; }
+.chapter code { background: #eee; padding: 0 0.3em; border-radius: 4px; }
+.pager {
+  max-width: 720px;
+  margin: 2rem auto;
+  padding: 0 1.2rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+}
+.pager a { color: var(--accent); text-decoration: none; }
+.ch-title { color: var(--ink-soft); font-size: 0.9rem; }

@@ -1,0 +1,13 @@
+[
+  {
+    "id": "sample",
+    "title": "示例：星海拾遗",
+    "author": "佚名",
+    "cover": "🌌",
+    "blurb": "一部用于演示小说网站骨架的示例作品。",
+    "chapters": [
+      { "title": "绪论", "file": "sample/绪论.md" },
+      { "title": "第一章 起风", "file": "sample/第一章-起风.md" }
+    ]
+  }
+]

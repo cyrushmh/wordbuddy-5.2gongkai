@@ -1,0 +1,1049 @@
+{
+ "meta": {
+  "name": "MongoDB 权威指南（第2版）知识索引",
+  "version": "1.0",
+  "built_utc": "2026-10-17T17:20:00Z",
+  "book": {
+   "title": "MongoDB权威指南（第2版）",
+   "author": "Kristina Chodorow",
+   "translators": [
+    "邓强",
+    "王明辉"
+   ],
+   "isbn": "978-7-115-34108-2",
+   "publisher": "人民邮电出版社 · 图灵文化（O'Reilly 授权简体中文版，2014）",
+   "pages": 802,
+   "pdf_sha256": "438dfdc46ae96f0a5ef2cc0fa48664b6e332b910572affa6c05d90eddf6e7cbf"
+  },
+  "copyright_note": "本 PDF 版权页明确声明：「您购买的图灵电子书仅供您个人使用，未经授权，不得以任何方式复制和传播本书内容」。",
+  "archiving_note": "PDF 原件与提取全文按版权声明不入库；本库仅含结构性目录与自行概括的知识条目（读书笔记级），不复制正文段落。",
+  "discipline": "章节体系取自 PDF 目录（结构性索引）；知识条目为通用技术知识的自行概括（读书笔记级），不复制正文段落；每条标注所属章节编号",
+  "sources": [
+   "research/mongodb/manifest.json",
+   "research/mongodb/mongo_book_facts.json"
+  ],
+  "counts": {
+   "parts": 6,
+   "chapters": 23,
+   "appendixes": 2,
+   "concepts": 43,
+   "sysops": 16,
+   "concept_categories": 9
+  }
+ },
+ "parts": [
+  {
+   "id": "p1",
+   "name": "第一部分 MongoDB介绍",
+   "chapters": [
+    1,
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "id": "p2",
+   "name": "第二部分 设计应用",
+   "chapters": [
+    5,
+    6,
+    7,
+    8
+   ]
+  },
+  {
+   "id": "p3",
+   "name": "第三部分 复制",
+   "chapters": [
+    9,
+    10,
+    11,
+    12
+   ]
+  },
+  {
+   "id": "p4",
+   "name": "第四部分 分片",
+   "chapters": [
+    13,
+    14,
+    15,
+    16
+   ]
+  },
+  {
+   "id": "p5",
+   "name": "第五部分 应用管理",
+   "chapters": [
+    17,
+    18,
+    19
+   ]
+  },
+  {
+   "id": "p6",
+   "name": "第六部分 服务器管理",
+   "chapters": [
+    20,
+    21,
+    22,
+    23
+   ]
+  }
+ ],
+ "chapters": [
+  {
+   "no": 1,
+   "part": "p1",
+   "title": "MongoDB简介",
+   "sections": [
+    "1.1 易于使用",
+    "1.2 易于扩展",
+    "1.3 丰富的功能",
+    "1.4 卓越的性能",
+    "1.5 小结"
+   ]
+  },
+  {
+   "no": 2,
+   "part": "p1",
+   "title": "MongoDB基础知识",
+   "sections": [
+    "2.1 文档",
+    "2.2 集合",
+    "2.2.1 动态模式",
+    "2.2.2 命名",
+    "2.3 数据库",
+    "2.4 启动MongoDB",
+    "2.5 MongoDB shell简介",
+    "2.5.1 运行shell",
+    "2.5.2 MongoDB客户端",
+    "2.5.3 shell中的基本操作",
+    "2.6 数据类型",
+    "2.6.1 基本数据类型",
+    "2.6.2 日期",
+    "2.6.3 数组",
+    "2.6.4 内嵌文档",
+    "2.6.5 _id和ObjectId",
+    "2.7 使用MongoDB Shell",
+    "2.7.1 shell小贴士",
+    "2.7.2 使用shell执行脚本",
+    "2.7.3 创建.mongorc.js文件",
+    "2.7.4 定制shell提示",
+    "2.7.5 编辑复合变量",
+    "2.7.6 集合命名注意事项"
+   ]
+  },
+  {
+   "no": 3,
+   "part": "p1",
+   "title": "创建、更新和删除文档",
+   "sections": [
+    "3.1 插入并保存文档",
+    "3.1.1 批量插入",
+    "3.1.2 插入校验",
+    "3.2 删除文档",
+    "删除速度",
+    "3.3 更新文档",
+    "3.3.1 文档替换",
+    "3.3.2 使用修改器",
+    "3.3.3 upsert",
+    "3.3.4 更新多个文档",
+    "3.3.5 返回被更新的文档",
+    "3.4 写入安全机制"
+   ]
+  },
+  {
+   "no": 4,
+   "part": "p1",
+   "title": "查询",
+   "sections": [
+    "4.1 find简介",
+    "4.1.1 指定需要返回的键",
+    "4.1.2 限制",
+    "4.2 查询条件",
+    "4.2.1 查询条件",
+    "4.2.2 OR查询",
+    "4.2.3 $not",
+    "4.2.4 条件语义",
+    "4.3 特定类型的查询",
+    "4.3.1 null",
+    "4.3.2 正则表达式",
+    "4.3.3 查询数组",
+    "4.3.4 查询内嵌文档",
+    "4.4 $where查询",
+    "服务器端脚本",
+    "4.5 游标",
+    "4.5.1 limit、skip和sort",
+    "4.5.2 避免使用skip略过大量结果",
+    "4.5.3 高级查询选项",
+    "4.5.4 获取一致结果",
+    "4.5.5 游标生命周期",
+    "4.6 数据库命令",
+    "数据库命令工作原理"
+   ]
+  },
+  {
+   "no": 5,
+   "part": "p2",
+   "title": "索引",
+   "sections": [
+    "5.1 索引简介",
+    "5.1.1 复合索引简介",
+    "5.1.2 使用复合索引",
+    "5.1.3 $操作符如何使用索引",
+    "5.1.4 索引对象和数组",
+    "5.1.5 索引基数",
+    "5.2 使用explain()和hint()",
+    "查询优化器",
+    "5.3 何时不应该使用索引",
+    "5.4 索引类型",
+    "5.4.1 唯一索引",
+    "5.4.2 稀疏索引",
+    "5.5 索引管理",
+    "5.5.1 标识索引",
+    "5.5.2 修改索引"
+   ]
+  },
+  {
+   "no": 6,
+   "part": "p2",
+   "title": "特殊的索引和集合",
+   "sections": [
+    "6.1 固定集合",
+    "6.1.1 创建固定集合",
+    "6.1.2 自然排序",
+    "6.1.3 循环游标",
+    "6.1.4 没有_id索引的集合",
+    "6.2 TTL索引",
+    "6.3 全文本索引",
+    "6.3.1 搜索语法",
+    "6.3.2 优化全文本搜索",
+    "6.3.3 在其他语言中搜索",
+    "6.4 地理空间索引",
+    "6.4.1 地理空间查询的类型",
+    "6.4.2 复合地理空间索引",
+    "6.4.3 2D索引",
+    "6.5 使用GridFS存储文件",
+    "6.5.1 GridFS入门",
+    "6.5.2 在MongoDB驱动程序中使用GridFS",
+    "6.5.3 揭开GridFS的面纱"
+   ]
+  },
+  {
+   "no": 7,
+   "part": "p2",
+   "title": "聚合",
+   "sections": [
+    "7.1 聚合框架",
+    "7.2 管道操作符",
+    "7.2.1 $match",
+    "7.2.2 $project",
+    "7.2.3 $group",
+    "7.2.4 $unwind",
+    "7.2.5 $sort",
+    "7.2.6 $limit",
+    "7.2.7 $skip",
+    "7.2.8 使用管道",
+    "7.3 MapReduce",
+    "7.3.1 示例1：找出集合中的所有键",
+    "7.3.2 示例2：网页分类",
+    "7.3.3 MongoDB和MapReduce",
+    "7.4 聚合命令",
+    "7.4.1 count",
+    "7.4.2 distinct",
+    "7.4.3 group"
+   ]
+  },
+  {
+   "no": 8,
+   "part": "p2",
+   "title": "应用程序设计",
+   "sections": [
+    "8.1 范式化与反范式化",
+    "8.1.1 数据表示的例子",
+    "8.1.2 基数",
+    "8.1.3 好友、粉丝，以及其他的麻烦事项",
+    "8.2 优化数据操作",
+    "8.2.1 优化文档增长",
+    "8.2.2 删除旧数据",
+    "8.3 数据库和集合的设计",
+    "8.4 一致性管理",
+    "8.5 模式迁移",
+    "8.6 不适合使用MongoDB的场景"
+   ]
+  },
+  {
+   "no": 9,
+   "part": "p3",
+   "title": "创建副本集",
+   "sections": [
+    "9.1 复制简介",
+    "9.2 建立副本集",
+    "9.3 配置副本集",
+    "9.3.1 rs辅助函数",
+    "9.3.2 网络注意事项",
+    "9.4 修改副本集配置",
+    "9.5 设计副本集",
+    "选举机制",
+    "9.6 成员配置选项",
+    "9.6.1 选举仲裁者",
+    "9.6.2 优先级",
+    "9.6.3 隐藏成员",
+    "9.6.4 延迟备份节点",
+    "9.6.5 创建索引"
+   ]
+  },
+  {
+   "no": 10,
+   "part": "p3",
+   "title": "副本集的组成",
+   "sections": [
+    "10.1 同步",
+    "10.1.1 初始化同步",
+    "10.1.2 处理陈旧数据",
+    "10.2 心跳",
+    "成员状态",
+    "10.3 选举",
+    "10.4 回滚",
+    "如果回滚失败"
+   ]
+  },
+  {
+   "no": 11,
+   "part": "p3",
+   "title": "从应用程序连接副本集",
+   "sections": [
+    "11.1 客户端到副本集的连接",
+    "11.2 等待写入复制",
+    "11.2.1 可能导致错误的原因",
+    "11.2.2 \"w\"的其他值",
+    "11.3 自定义复制保证规则",
+    "11.3.1 保证复制到每个数据中心的一台服务器上",
+    "11.3.2 保证写操作被复制到可见节点中的“大多数”",
+    "11.3.3 创建其他规则",
+    "11.4 将读请求发送到备份节点",
+    "11.4.1 出于一致性考虑",
+    "11.4.2 出于负载的考虑",
+    "11.4.3 何时可以从备份节点读取数据"
+   ]
+  },
+  {
+   "no": 12,
+   "part": "p3",
+   "title": "管理",
+   "sections": [
+    "12.1 以单机模式启动成员",
+    "12.2 副本集配置",
+    "12.2.1 创建副本集",
+    "12.2.2 修改副本集成员",
+    "12.2.3 创建比较大的副本集",
+    "12.2.4 强制重新配置",
+    "12.3 修改成员状态",
+    "12.3.1 把主节点变为备份节点",
+    "12.3.2 阻止选举",
+    "12.3.3 使用维护模式",
+    "12.4 监控复制",
+    "12.4.1 获取状态",
+    "12.4.2 复制图谱",
+    "12.4.3 复制循环",
+    "12.4.4 禁用复制链",
+    "12.4.5 计算延迟",
+    "12.4.6 调整oplog大小",
+    "12.4.7 从延迟备份节点中恢复",
+    "12.4.8 创建索引",
+    "12.4.9 在预算有限的情况下进行复制",
+    "12.4.10 主节点如何跟踪延迟",
+    "12.5 主从模式",
+    "12.5.1 从主从模式切换到副本集模式",
+    "12.5.2 让副本集模仿主从模式的行为"
+   ]
+  },
+  {
+   "no": 13,
+   "part": "p4",
+   "title": "分片",
+   "sections": [
+    "13.1 分片简介",
+    "13.2 理解集群的组件",
+    "13.3 快速建立一个简单的集群"
+   ]
+  },
+  {
+   "no": 14,
+   "part": "p4",
+   "title": "配置分片",
+   "sections": [
+    "14.1 何时分片",
+    "14.2 启动服务器",
+    "14.2.1 配置服务器",
+    "14.2.2 mongos进程",
+    "14.2.3 将副本集转换为分片",
+    "14.2.4 增加集群容量",
+    "14.2.5 数据分片",
+    "14.3 MongoDB如何追踪集群数据",
+    "14.3.1 块范围",
+    "14.3.2 拆分块",
+    "14.4 均衡器"
+   ]
+  },
+  {
+   "no": 15,
+   "part": "p4",
+   "title": "选择片键",
+   "sections": [
+    "15.1 检查使用情况",
+    "15.2 数据分发",
+    "15.2.1 升序片键",
+    "15.2.2 随机分发的片键",
+    "15.2.3 基于位置的片键",
+    "15.3 片键策略",
+    "15.3.1 散列片键",
+    "15.3.2 GridFS的散列片键",
+    "15.3.3 流水策略",
+    "15.3.4 多热点",
+    "15.4 片键规则和指导方针",
+    "15.4.1 片键限制",
+    "15.4.2 片键的势",
+    "15.5 控制数据分发",
+    "15.5.1 对多个数据库和集合使用一个集群",
+    "15.5.2 手动分片"
+   ]
+  },
+  {
+   "no": 16,
+   "part": "p4",
+   "title": "分片管理",
+   "sections": [
+    "16.1 检查集群状态",
+    "16.1.1 使用sh.status查看集群摘要信息",
+    "16.1.2 检查配置信息",
+    "16.2 查看网络连接",
+    "16.2.1 查看连接统计",
+    "16.2.2 限制连接数量",
+    "16.3 服务器管理",
+    "16.3.1 添加服务器",
+    "16.3.2 修改分片的服务器",
+    "16.3.3 删除分片",
+    "16.3.4 修改配置服务器",
+    "16.4 数据均衡",
+    "16.4.1 均衡器",
+    "16.4.2 修改块大小",
+    "16.4.3 移动块",
+    "16.4.4 特大块",
+    "16.4.5 刷新配置"
+   ]
+  },
+  {
+   "no": 17,
+   "part": "p5",
+   "title": "了解应用的动态",
+   "sections": [
+    "17.1 了解正在进行的操作",
+    "17.1.1 寻找有问题的操作",
+    "17.1.2 终止操作的执行",
+    "17.1.3 假象",
+    "17.1.4 避免幽灵操作",
+    "17.2 使用系统分析器",
+    "17.3 计算空间消耗",
+    "17.3.1 文档",
+    "17.3.2 集合",
+    "17.3.3 数据库",
+    "17.4 使用mongotop和mongostat"
+   ]
+  },
+  {
+   "no": 18,
+   "part": "p5",
+   "title": "数据管理",
+   "sections": [
+    "18.1 配置身份验证",
+    "18.1.1 身份验证基本原理",
+    "18.1.2 配置身份验证",
+    "18.1.3 身份验证的工作原理",
+    "18.2 建立和删除索引",
+    "18.2.1 在独立的服务器上建立索引",
+    "18.2.2 在副本集上建立索引",
+    "18.2.3 在分片集群上建立索引",
+    "18.2.4 删除索引",
+    "18.2.5 注意内存溢出杀手",
+    "18.3 预热数据",
+    "18.3.1 将数据库移至内存",
+    "18.3.2 将集合移至内存",
+    "18.3.3 自定义预热",
+    "18.4 压缩数据",
+    "18.5 移动集合",
+    "18.6 预分配数据文件"
+   ]
+  },
+  {
+   "no": 19,
+   "part": "p5",
+   "title": "持久性",
+   "sections": [
+    "19.1 日记系统的用途",
+    "19.1.1 批量提交写入操作",
+    "19.1.2 设定提交时间间隔",
+    "19.2 关闭日记系统",
+    "19.2.1 替换数据文件",
+    "19.2.2 修复数据文件",
+    "19.2.3 关于mongod.lock文件",
+    "19.2.4 隐蔽的异常退出",
+    "19.3 MongoDB无法保证的事项",
+    "19.4 检验数据损坏",
+    "19.5 副本集中的持久性"
+   ]
+  },
+  {
+   "no": 20,
+   "part": "p6",
+   "title": "启动和停止MongoDB",
+   "sections": [
+    "20.1 从命令行启动",
+    "使用配置文件",
+    "20.2 停止MongoDB",
+    "20.3 安全性",
+    "20.3.1 数据加密",
+    "20.3.2 SSL安全连接",
+    "20.4 日志"
+   ]
+  },
+  {
+   "no": 21,
+   "part": "p6",
+   "title": "监控MongoDB",
+   "sections": [
+    "21.1 监控内存使用状况",
+    "21.1.1 有关电脑内存的介绍",
+    "21.1.2 跟踪监测内存使用状况",
+    "21.1.3 跟踪监测缺页中断",
+    "21.1.4 减少索引树的脱靶次数",
+    "21.1.5 IO延迟",
+    "21.1.6 跟踪监测后台刷新平均时间",
+    "21.2 计算工作集的大小",
+    "一些工作集的例子",
+    "21.3 跟踪监测性能状况",
+    "跟踪监测空余空间",
+    "21.4 监控副本集"
+   ]
+  },
+  {
+   "no": 22,
+   "part": "p6",
+   "title": "备份",
+   "sections": [
+    "22.1 对服务器进行备份",
+    "22.1.1 文件系统快照",
+    "22.1.2 复制数据文件",
+    "22.1.3 使用mongodump",
+    "22.2 对副本集进行备份",
+    "22.3 对分片集群进行备份",
+    "22.3.1 备份和恢复整个集群",
+    "22.3.2 备份和恢复单独的分片",
+    "22.4 使用mongooplog进行增量备份"
+   ]
+  },
+  {
+   "no": 23,
+   "part": "p6",
+   "title": "部署MongoDB",
+   "sections": [
+    "23.1 设计系统结构",
+    "23.1.1 选择存储介质",
+    "23.1.2 推荐的RAID配置",
+    "23.1.3 CPU",
+    "23.1.4 选择操作系统",
+    "23.1.5 交换空间",
+    "23.1.6 文件系统",
+    "23.2 虚拟化",
+    "23.2.1 禁止内存过度分配",
+    "23.2.2 神秘的内存",
+    "23.2.3 处理网络磁盘的IO问题",
+    "23.2.4 使用非网络磁盘",
+    "23.3 系统配置",
+    "23.3.1 禁用NUMA",
+    "23.3.2 更智能地预读取数据",
+    "23.3.3 禁用大内存页面",
+    "23.3.4 选择一种磁盘调度算法",
+    "23.3.5 不要记录访问时间",
+    "23.3.6 修改限制",
+    "23.4 网络配置",
+    "23.5 系统管理",
+    "23.5.1 时钟同步",
+    "23.5.2 OOM Killer",
+    "23.5.3 关闭定期任务"
+   ]
+  }
+ ],
+ "appendixes": [
+  {
+   "id": "A",
+   "title": "安装MongoDB"
+  },
+  {
+   "id": "B",
+   "title": "深入MongoDB"
+  }
+ ],
+ "concepts": [
+  {
+   "id": "doc-model",
+   "category": "model",
+   "name": "文档（document）",
+   "chapter": 2,
+   "desc": "MongoDB 的基本数据单元是 BSON 文档（键/值对有序集合），等价于关系库的一行但可内嵌结构与数组；键不能含 \\0，区分类型与大小写。"
+  },
+  {
+   "id": "collection",
+   "category": "model",
+   "name": "集合（collection）与动态模式",
+   "chapter": 2,
+   "desc": "集合是文档的容器；同一集合内文档结构可不同（动态模式），但实践中应保持结构一致以便索引与应用维护。"
+  },
+  {
+   "id": "database",
+   "category": "model",
+   "name": "数据库（database）与命名",
+   "chapter": 2,
+   "desc": "多个集合组成数据库；库名/集合名有保留字与长度限制，system. 前缀为内部集合保留，命名空间为「库名.集合名」。"
+  },
+  {
+   "id": "objectid",
+   "category": "model",
+   "name": "_id 与 ObjectId",
+   "chapter": 2,
+   "desc": "每个文档必须有 _id（集合内唯一）；默认 ObjectId 为 12 字节：4 字节时间戳 + 3 字节机器标识 + 2 字节进程 ID + 3 字节计数器，含创建时间信息。"
+  },
+  {
+   "id": "bson-types",
+   "category": "model",
+   "name": "BSON 数据类型",
+   "chapter": 2,
+   "desc": "含 null、布尔、数值（默认 64 位浮点/32 位与 64 位整数）、字符串、日期（UTC 毫秒，非本地时区）、正则表达式、数组、内嵌文档、ObjectId、二进制、代码等。"
+  },
+  {
+   "id": "crud-insert",
+   "category": "crud",
+   "name": "插入与批量插入",
+   "chapter": 3,
+   "desc": "insert 单条、批量插入一次送多文档可显著降低网络往返；驱动对批量有消息大小上限，超限需分批。"
+  },
+  {
+   "id": "crud-modifiers",
+   "category": "crud",
+   "name": "更新修改器",
+   "chapter": 3,
+   "desc": "$set/$unset 改字段、$inc 增减数值、$push/$addToSet/$pull 操作数组、$rename 改名；用修改器可只改必要字段，避免整文档替换带来的开销与并发覆盖。"
+  },
+  {
+   "id": "crud-upsert",
+   "category": "crud",
+   "name": "upsert 与多文档更新",
+   "chapter": 3,
+   "desc": "upsert 在无匹配时插入；默认只更新首个匹配文档，更新多个需显式开启多文档更新；可用 findAndModify 取回被更新文档。"
+  },
+  {
+   "id": "write-concern",
+   "category": "crud",
+   "name": "写入安全机制（write concern）",
+   "chapter": 3,
+   "desc": "以 w（写入确认的节点数/majority）与 j（是否等待 journal 落盘）控制持久性与延迟权衡；越严格越慢，需在业务容忍度内选择。"
+  },
+  {
+   "id": "query-basics",
+   "category": "query",
+   "name": "find 与投影",
+   "chapter": 4,
+   "desc": "find(查询, 投影) 返回游标；投影可指定返回或排除的键（_id 默认返回），减少网络与反序列化成本。"
+  },
+  {
+   "id": "query-operators",
+   "category": "query",
+   "name": "查询条件操作符",
+   "chapter": 4,
+   "desc": "$lt/$lte/$gt/$gte/$ne 比较、$in/$nin 集合成员、$or/$and/$nor 逻辑组合、$not 取反、$exists 存在性、$mod 取模；范围条件应放在可命中索引的键上。"
+  },
+  {
+   "id": "query-array-embed",
+   "category": "query",
+   "name": "数组与内嵌文档查询",
+   "chapter": 4,
+   "desc": "数组用 $all（全含）、$size（长度）、$slice（返回切片）；内嵌文档精确匹配要求完全一致，$elemMatch 可在同一数组元素内组合多条件。"
+  },
+  {
+   "id": "query-where",
+   "category": "query",
+   "name": "$where 与服务器端脚本",
+   "chapter": 4,
+   "desc": "可用 JS 表达式做任意条件，但无法使用索引、需全表扫描且执行成本高，仅作兜底手段。"
+  },
+  {
+   "id": "cursor",
+   "category": "query",
+   "name": "游标与分页",
+   "chapter": 4,
+   "desc": "游标惰性取批次；limit/skip/sort 用于分页，skip 大量结果代价高，应改用基于上一页最后值的范围查询；游标超时或耗尽后销毁。"
+  },
+  {
+   "id": "index-basics",
+   "category": "index",
+   "name": "索引与复合索引",
+   "chapter": 5,
+   "desc": "索引是有序结构，可加速查询与排序；复合索引遵循最左前缀，方向（升/降）需与排序匹配；索引基数越高越有选择性。"
+  },
+  {
+   "id": "index-explain",
+   "category": "index",
+   "name": "explain() / hint() 与查询优化器",
+   "chapter": 5,
+   "desc": "explain 显示执行计划与扫描/返回比；hint 强制使用指定索引；优化器会并行试多个计划并缓存胜者，计划会因数据变化重估。"
+  },
+  {
+   "id": "index-types",
+   "category": "index",
+   "name": "唯一索引与稀疏索引",
+   "chapter": 5,
+   "desc": "唯一索引保证键值唯一（缺失键视为 null，故重复缺失会冲突）；稀疏索引跳过无该键的文档，可与唯一组合允许多个文档缺失该键。"
+  },
+  {
+   "id": "ttl-index",
+   "category": "index",
+   "name": "TTL 索引（自动过期）",
+   "chapter": 6,
+   "desc": "在日期字段建 TTL 索引可让文档到期自动删除（后台任务周期清理，存在延迟），适合会话、日志等短生命周期数据。"
+  },
+  {
+   "id": "capped",
+   "category": "index",
+   "name": "固定集合（capped collection）",
+   "chapter": 6,
+   "desc": "固定大小、按插入顺序循环覆盖写入；支持自然排序与尾部游标（tailable cursor），适合日志与消息队列式用法。"
+  },
+  {
+   "id": "text-index",
+   "category": "index",
+   "name": "全文本索引",
+   "chapter": 6,
+   "desc": "对字符串字段建文本索引支持词干化与权重搜索；每集合最多一个文本索引，可复合多字段并设置权重，语言影响词干规则。"
+  },
+  {
+   "id": "geo-index",
+   "category": "index",
+   "name": "地理空间索引（2dsphere / 2d）",
+   "chapter": 6,
+   "desc": "2dsphere 支持 GeoJSON 的球面几何（相交/包含/邻近），2d 用于平面坐标；可与普通字段复合，先过滤其他条件再算距离更高效。"
+  },
+  {
+   "id": "gridfs",
+   "category": "index",
+   "name": "GridFS 存文件",
+   "chapter": 6,
+   "desc": "将大文件分块存 fs.chunks 并用 fs.files 存元数据，突破单文档 16MB 限制；适合大文件与部分读取，小文件放文档内更省事。"
+  },
+  {
+   "id": "agg-framework",
+   "category": "aggregate",
+   "name": "聚合框架管道",
+   "chapter": 7,
+   "desc": "$match 过滤 → $project 投影/计算 → $group 分组聚合 → $unwind 拆数组 → $sort/$limit/$skip 整形；尽早 $match/$project 减少后续阶段数据量。"
+  },
+  {
+   "id": "mapreduce",
+   "category": "aggregate",
+   "name": "MapReduce",
+   "chapter": 7,
+   "desc": "用 JS 的 map/reduce/finalize 处理复杂逻辑，灵活但慢于聚合框架；适合无法用管道表达的一次性分析任务。"
+  },
+  {
+   "id": "agg-commands",
+   "category": "aggregate",
+   "name": "count / distinct / group",
+   "chapter": 7,
+   "desc": "简单计数、去重取值与分组可用这三个轻量命令；count 在带条件时可能不准（分片迁移中），distinct 结果受内存限制。"
+  },
+  {
+   "id": "schema-design",
+   "category": "design",
+   "name": "范式化与反范式化",
+   "chapter": 8,
+   "desc": "按基数（一对少/一对多/一对非常多）与访问模式决定内嵌还是引用：少的、读多写少的、需与父文档原子读取的倾向内嵌；多的或独立访问的用引用。"
+  },
+  {
+   "id": "doc-growth",
+   "category": "design",
+   "name": "文档增长与填充因子",
+   "chapter": 8,
+   "desc": "文档就地增长会导致移动（更耗 IO）；可用预分配字段、调整填充因子或将频繁增长部分拆到独立集合来规避。"
+  },
+  {
+   "id": "consistency",
+   "category": "design",
+   "name": "一致性管理与模式迁移",
+   "chapter": 8,
+   "desc": "无事务时靠写入顺序、版本字段与后台脚本做最终一致；模式迁移要双写兼容、灰度回填，并让应用容忍新旧结构并存。"
+  },
+  {
+   "id": "not-fit",
+   "category": "design",
+   "name": "不适合 MongoDB 的场景",
+   "chapter": 8,
+   "desc": "需要跨文档强事务、复杂 join、高度规范化与严格约束的 OLTP 场景并非其所长（本版为 2013/2014 时点认知）。"
+  },
+  {
+   "id": "replica-basics",
+   "category": "replica",
+   "name": "副本集与成员角色",
+   "chapter": 9,
+   "desc": "副本集是一组保持同数据的 mongod；主节点（primary）接受写，从节点（secondary）异步复制，仲裁者（arbiter）只投票不存数据。"
+  },
+  {
+   "id": "replica-members",
+   "category": "replica",
+   "name": "成员配置选项",
+   "chapter": 9,
+   "desc": "优先级（priority）影响选举、隐藏成员（hidden）不服务客户端读、延迟节点（slaveDelay）保留历史数据用于误操作回滚、非投票成员可扩容读能力。"
+  },
+  {
+   "id": "replica-sync",
+   "category": "replica",
+   "name": "同步、oplog 与初始化同步",
+   "chapter": 10,
+   "desc": "从节点通过 oplog（固定集合，记录主节点写操作）重放实现同步；新成员走初始化同步（全量克隆 + 增量 oplog）；陈旧数据超出 oplog 窗口需重新全量同步。"
+  },
+  {
+   "id": "replica-election",
+   "category": "replica",
+   "name": "心跳、选举与回滚",
+   "chapter": 10,
+   "desc": "成员间心跳维持状态（PRIMARY/SECONDARY/RECOVERING 等）；主节点失联触发选举（多数派投票）；主节点未复制出去的写在回退时会回滚，回滚过大需人工介入。"
+  },
+  {
+   "id": "replica-w",
+   "category": "replica",
+   "name": "写关注与读偏好",
+   "chapter": 11,
+   "desc": "w 可设为具体数字、majority 或自定义规则（如按数据中心/标签）；读偏好决定可否从从节点读，从从节点读需接受数据滞后。"
+  },
+  {
+   "id": "replica-admin",
+   "category": "replica",
+   "name": "副本集运维",
+   "chapter": 12,
+   "desc": "单机模式启动便于维护、rs.* 辅助函数改配置、维护模式（replSetMaintenance）、强制重配置、oplog 大小调整与复制延迟监控。"
+  },
+  {
+   "id": "sharding-basics",
+   "category": "sharding",
+   "name": "分片集群组件",
+   "chapter": 13,
+   "desc": "mongos 路由、config server 存元数据、shard（通常为副本集）存实际数据；应用连 mongos，数据按片键分布到各 shard。"
+  },
+  {
+   "id": "sharding-chunk",
+   "category": "sharding",
+   "name": "块（chunk）与均衡器",
+   "chapter": 14,
+   "desc": "数据按片键范围切成块，块达阈值触发拆分，均衡器在 shard 间迁移块以维持均衡；迁移对应用透明但有 IO 与延迟成本。"
+  },
+  {
+   "id": "shard-key",
+   "category": "sharding",
+   "name": "片键选择",
+   "chapter": 15,
+   "desc": "升序片键（时间戳/ObjectId）导致写入集中单分片；随机片键分布均匀但范围查询要广播；散列片键均衡而丧失范围局部性；应兼顾写分散、读定向与足够势（cardinality）。"
+  },
+  {
+   "id": "sharding-admin",
+   "category": "sharding",
+   "name": "分片管理",
+   "chapter": 16,
+   "desc": "sh.status 看集群摘要、config 库存配置、可增删分片/改块大小/手动移动块、特大块（jumbo chunk）需拆分后才能迁移。"
+  },
+  {
+   "id": "admin-monitor",
+   "category": "admin",
+   "name": "监控与诊断",
+   "chapter": 17,
+   "desc": "db.currentOp 看在跑的操作、killOp 终止、系统分析器（profiler）记录慢查询、mongostat/mongotop 看吞吐与集合耗时、db.stats 系列算空间消耗。"
+  },
+  {
+   "id": "admin-data",
+   "category": "admin",
+   "name": "数据管理与索引构建",
+   "chapter": 18,
+   "desc": "启用身份验证后再建用户；大集合建索引应在副本集按成员滚动或在后台构建，避免阻塞；可预热数据到内存、压缩（compact）与预分配数据文件。"
+  },
+  {
+   "id": "durability",
+   "category": "admin",
+   "name": "持久性与 journal",
+   "chapter": 19,
+   "desc": "journal 预写日志保证崩溃后可恢复；批量提交与 commitIntervalMs 权衡持久性与吞吐；异常退出后 mongod.lock 与修复流程要按规程处理，journal 不保证跨副本集的写入不丢。"
+  },
+  {
+   "id": "backup",
+   "category": "admin",
+   "name": "备份策略",
+   "chapter": 22,
+   "desc": "文件系统快照（需 journal 与一致性点）、复制数据文件、mongodump（逻辑备份，慢但灵活）、mongooplog 增量备份；副本集优先从从节点备份，分片集群需协调各分片与配置服务器的一致性时间点。"
+  }
+ ],
+ "categories": {
+  "admin": "管理与持久性",
+  "aggregate": "聚合",
+  "crud": "增删改",
+  "design": "应用设计",
+  "index": "索引与特殊集合",
+  "model": "数据模型",
+  "query": "查询",
+  "replica": "复制",
+  "sharding": "分片"
+ },
+ "sysops": [
+  {
+   "id": "media",
+   "chapter": 23,
+   "section": "23.1.1",
+   "name": "选择存储介质",
+   "desc": "磁盘 IO 是 MongoDB 主要瓶颈；优先 SSD，避免把数据放在网络存储/远程文件系统上。",
+   "sysweeper_task": null,
+   "sysweeper_cmd": "storage"
+  },
+  {
+   "id": "raid",
+   "chapter": 23,
+   "section": "23.1.2",
+   "name": "推荐的 RAID 配置",
+   "desc": "推荐 RAID-10（兼顾冗余与随机写性能），避免 RAID-5/6 的写惩罚；阵列卡需启用写缓存并有电池/电容保护。",
+   "sysweeper_task": null,
+   "sysweeper_cmd": "storage"
+  },
+  {
+   "id": "cpu",
+   "chapter": 23,
+   "section": "23.1.3",
+   "name": "CPU 选择",
+   "desc": "MongoDB 少做计算、多受 IO 与内存制约；并发高时多核有益，单核主频影响单查询延迟，不必一味堆核数。",
+   "sysweeper_task": null,
+   "sysweeper_cmd": "hardware"
+  },
+  {
+   "id": "swap",
+   "chapter": 23,
+   "section": "23.1.5",
+   "name": "交换空间",
+   "desc": "应配置 swap 以防 OOM，但工作集不应落到 swap；可下调 swappiness 让内核尽量不换出。",
+   "sysweeper_task": "linux_swappiness",
+   "sysweeper_cmd": "linux"
+  },
+  {
+   "id": "fs",
+   "chapter": 23,
+   "section": "23.1.6",
+   "name": "文件系统",
+   "desc": "推荐 ext4 或 XFS（XFS 在大文件与并发上表现好），并按数据库负载调整挂载参数。",
+   "sysweeper_task": null,
+   "sysweeper_cmd": "storage"
+  },
+  {
+   "id": "virt-mem",
+   "chapter": 23,
+   "section": "23.2.1",
+   "name": "虚拟化：禁止内存过度分配",
+   "desc": "虚拟机环境要确保分配给 MongoDB 的内存不被宿主机过度承诺（overcommit），避免 ballooning 导致工作集被挤出。",
+   "sysweeper_task": null,
+   "sysweeper_cmd": "virt"
+  },
+  {
+   "id": "numa",
+   "chapter": 23,
+   "section": "23.3.1",
+   "name": "禁用 NUMA",
+   "desc": "NUMA 下内存分配不均会导致 mongod 性能抖动甚至 swap；应使用 numactl --interleave=all 或关闭 zone_reclaim_mode。",
+   "sysweeper_task": null,
+   "sysweeper_cmd": "kernel"
+  },
+  {
+   "id": "readahead",
+   "chapter": 23,
+   "section": "23.3.2",
+   "name": "调整预读取（readahead）",
+   "desc": "数据库随机读场景下默认的大预读会浪费 IO；SSD/随机负载应把块设备 readahead 调小（常见 16-32 扇区量级）。",
+   "sysweeper_task": null,
+   "sysweeper_cmd": "storage"
+  },
+  {
+   "id": "thp",
+   "chapter": 23,
+   "section": "23.3.3",
+   "name": "禁用大内存页面（THP）",
+   "desc": "透明大页会造成延迟抖动与额外内存压力，数据库主机应关闭 THP（defrag 策略或 never）。",
+   "sysweeper_task": "linux_thp_compaction",
+   "sysweeper_cmd": "linux"
+  },
+  {
+   "id": "io-sched",
+   "chapter": 23,
+   "section": "23.3.4",
+   "name": "选择磁盘调度算法",
+   "desc": "SSD/NVMe 宜用 none 或 mq-deadline（NVMe 默认 none），减少调度开销与延迟。",
+   "sysweeper_task": "linux_io_scheduler",
+   "sysweeper_cmd": "linux"
+  },
+  {
+   "id": "noatime",
+   "chapter": 23,
+   "section": "23.3.5",
+   "name": "不要记录访问时间",
+   "desc": "挂载加 noatime 避免每次读都写 atime，白白增加写 IO。",
+   "sysweeper_task": null,
+   "sysweeper_cmd": "storage"
+  },
+  {
+   "id": "ulimit",
+   "chapter": 23,
+   "section": "23.3.6",
+   "name": "修改资源限制",
+   "desc": "提高 mongod 用户的 ulimit（文件描述符、进程数），否则连接数与文件句柄会成为瓶颈。",
+   "sysweeper_task": null,
+   "sysweeper_cmd": "settings"
+  },
+  {
+   "id": "net",
+   "chapter": 23,
+   "section": "23.4",
+   "name": "网络配置",
+   "desc": "副本集/分片依赖稳定低延迟网络；需保证带宽、关闭省电与中断合并副作用、注意跨数据中心时延对选举与写关注的影响。",
+   "sysweeper_task": null,
+   "sysweeper_cmd": "network"
+  },
+  {
+   "id": "clock",
+   "chapter": 23,
+   "section": "23.5.1",
+   "name": "时钟同步",
+   "desc": "集群各节点必须 NTP 时钟同步：选举、oplog 与延迟计算、TTL 都依赖时间一致。",
+   "sysweeper_task": null,
+   "sysweeper_cmd": "chrono"
+  },
+  {
+   "id": "oom",
+   "chapter": 23,
+   "section": "23.5.2",
+   "name": "OOM Killer",
+   "desc": "数据库主机应调低被 OOM 杀掉的概率（合理内存规划 + 调整 oom_score_adj），避免 mongod 被无预警终止。",
+   "sysweeper_task": null,
+   "sysweeper_cmd": "kernel"
+  },
+  {
+   "id": "cron",
+   "chapter": 23,
+   "section": "23.5.3",
+   "name": "关闭定期任务",
+   "desc": "避免在数据库主机跑占用 IO/CPU 的定期任务（备份、日志切割、病毒扫描）与业务高峰叠加。",
+   "sysweeper_task": null,
+   "sysweeper_cmd": "settings"
+  }
+ ]
+}

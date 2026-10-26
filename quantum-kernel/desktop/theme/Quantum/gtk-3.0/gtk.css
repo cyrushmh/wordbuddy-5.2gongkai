@@ -1,0 +1,64 @@
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * 量子架构 XFCE 会话默认主题（GTK 3 部分）。
+ * 色系取自量子语义：相干绿(#3fe0a8) — 叠加紫(#9b6cff) — 基态墨(#0e1726)。
+ * 这是轻量「覆盖主题」：只重定义关键配色，不重排控件，兼容 XFCE 默认引擎。
+ */
+@define-color quantum_base      #0e1726;
+@define-color quantum_base2     #14233a;
+@define-color quantum_fg        #d8e6f2;
+@define-color quantum_cohere    #3fe0a8;
+@define-color quantum_superpose #9b6cff;
+@define-color quantum_accent    #4fd1ff;
+
+window,
+dialog,
+messagedialog,
+.background {
+	background-color: @quantum_base;
+	color: @quantum_fg;
+}
+
+headerbar,
+.titlebar {
+	background-color: @quantum_base2;
+	color: @quantum_fg;
+	border-bottom: 1px solid @quantum_superpose;
+}
+
+button {
+	background-color: @quantum_base2;
+	color: @quantum_fg;
+	border: 1px solid @quantum_superpose;
+	border-radius: 4px;
+}
+button:hover {
+	background-color: @quantum_cohere;
+	color: @quantum_base;
+}
+
+entry,
+spinbutton,
+combobox {
+	background-color: @quantum_base2;
+	color: @quantum_fg;
+	border: 1px solid @quantum_accent;
+}
+
+notebook tab {
+	background-color: @quantum_base2;
+	color: @quantum_fg;
+}
+notebook tab:checked {
+	color: @quantum_cohere;
+	border-bottom: 2px solid @quantum_cohere;
+}
+
+scrollbar slider {
+	background-color: @quantum_superpose;
+}
+
+tooltip {
+	background-color: @quantum_base2;
+	color: @quantum_cohere;
+}

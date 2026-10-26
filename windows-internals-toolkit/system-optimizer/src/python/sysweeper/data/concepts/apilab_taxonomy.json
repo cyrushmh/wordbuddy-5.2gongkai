@@ -1,0 +1,802 @@
+{
+  "_meta": {
+    "schema": "apilab_taxonomy/v1",
+    "built_by": "research/apilab/build_apilab.py",
+    "main_root": "wordbuddy-github",
+    "title": "接口 API 概念系统（以 wordbuddy-github 为主目录）",
+    "system_root": "wordbuddy-github",
+    "version": "0000.0000.0000.0064.20261023",
+    "concept_total": 36,
+    "axes": [
+      "style",
+      "spec",
+      "transport",
+      "auth",
+      "repo-face"
+    ],
+    "bridge_count": 19,
+    "rfc_note": "RFC 编号经本仓库 rfc_catalog 交叉验证存在性并回填标题",
+    "honesty": "repo-face 轴的条目以当前仓库实测事实登记（构建时从 argparse 与 webapi.py 读出子命令数/ACTIONS 数），不写无法核实的数字；未落地的风格/规约/传输条目（graphql/grpc/wsdl 等）刻意不设落地桥接，宁可孤立也不臆造关系（v0.6.62）。",
+    "redline_note": "认证条目登记处置纪律：令牌禁入 URL/localStorage、私钥不明文、访问令牌短时效 + 服务端刷新。",
+    "generated_at": "2026-10-25T08:06:29.043969+00:00"
+  },
+  "domains": [
+    {
+      "domain": "style",
+      "label": "接口风格",
+      "note": "客户端与服务端的交互范式：REST / GraphQL / gRPC / WebSocket / SSE / MQ / Webhook / JSON-RPC / CLI 契约"
+    },
+    {
+      "domain": "spec",
+      "label": "规约标准",
+      "note": "接口的书面契约：OpenAPI / GraphQL SDL / Protobuf IDL / JSON Schema / AsyncAPI / WSDL·SOAP（遗留）"
+    },
+    {
+      "domain": "transport",
+      "label": "传输绑定",
+      "note": "接口跑在什么信道上：HTTP/1.1·HTTP/2·HTTP/3·QUIC·WebSocket·TCP·stdio/unix socket"
+    },
+    {
+      "domain": "auth",
+      "label": "认证授权",
+      "note": "谁来调用、能干什么：Basic / Bearer·JWT / OAuth 2.0 / API Key / mTLS"
+    },
+    {
+      "domain": "repo-face",
+      "label": "本仓库接口面",
+      "note": "sysweeper 自身对外的接口：CLI 子命令契约 / plugins API / webapi JSONL 白名单 / report schema / report_viewer"
+    }
+  ],
+  "concepts": [
+    {
+      "id": "rest",
+      "name": "REST",
+      "domain": "style",
+      "gist": "资源 + 统一接口 + 无状态：URI 命名资源，HTTP 方法表达操作。",
+      "detail": "Richardson 成熟度模型 0-3 级；HATEOAS 是最高级但很少落地；实际工程多停在 L2（资源化 + 方法语义）。",
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 9110,
+          "rfc_title": "HTTP Semantics"
+        }
+      ],
+      "bridges": [],
+      "engineering": "落法：本仓库 webapi 不用 URI 资源语义（一行一请求的 JSONL），只取其「无状态 + 显式契约」——每个 ACTION 是一次显式调用、服务端不存会话；令牌绝不上 URI 查询串（RFC 6749 §2.3 的反面模型，见 auth-redlines）。"
+    },
+    {
+      "id": "graphql",
+      "name": "GraphQL",
+      "domain": "style",
+      "gist": "客户端声明要什么字段，服务端按 schema 解析执行一次取回。",
+      "detail": "强类型 schema + 解析器；N+1 查询与缓存比 REST 更难；适合聚合多数据源的 BFF 层。",
+      "standards": [],
+      "bridges": [],
+      "engineering": "落法：未落地（webapi 无 schema 查询面）。若将来加查询面，schema 必须是单一事实源而非手抄，否则必然与 ACTIONS 白名单两套定义走偏。"
+    },
+    {
+      "id": "grpc",
+      "name": "gRPC",
+      "domain": "style",
+      "gist": "HTTP/2 之上的 Protobuf IDL 服务定义，四类流式方法。",
+      "detail": "IDL 先生成多语言桩；适合内部服务间低延迟调用；浏览器需 grpc-web 代理。",
+      "standards": [
+        {
+          "kind": "other",
+          "name": "Protobuf IDL"
+        }
+      ],
+      "bridges": [],
+      "engineering": "落法：未落地。三端并存（Python 逻辑 / Deno 外壳 / Go 侧工具）目前靠 JSONL 文本契约 + review 保一致；若要跨语言强类型调用，IDL 先行的收益最大。"
+    },
+    {
+      "id": "websocket",
+      "name": "WebSocket",
+      "domain": "style",
+      "gist": "HTTP 升级后的全双工长连接：双向推拉、心跳保活。",
+      "detail": "RFC 6455 定义握手帧协议；断线重连与背压是工程必备；本仓库 GUI↔Python 侧未用 WS，webapi 走 JSONL 长连接（见 repo-face）。",
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 6455,
+          "rfc_title": "The WebSocket Protocol"
+        }
+      ],
+      "bridges": [],
+      "engineering": "落法：未落地。GUI 与 Python 侧是同进程直调，Deno↔Python 是 stdin/stdout JSONL 长连接，二者都不是 WS；若将来引入 WS，心跳 + 断线重连 + 背压三者必须同时补齐（只做其一等于没做）。"
+    },
+    {
+      "id": "sse",
+      "name": "SSE（Server-Sent Events）",
+      "domain": "style",
+      "gist": "服务端单向推送：HTTP 长响应 + text/event-stream，自动重连内建。",
+      "detail": "比 WebSocket 轻（无需升级帧）；仅服务端→客户端单向；适合日志流/进度条类场景。",
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 9110,
+          "rfc_title": "HTTP Semantics"
+        }
+      ],
+      "bridges": [],
+      "engineering": "落法：未落地。日志流/清理进度这类单向场景应优先 SSE 而非 WS（不必握手升级、自带重连），当前进度信息由 GUI 侧直接读返回值渲染。"
+    },
+    {
+      "id": "mq",
+      "name": "消息队列（MQ /  Pub-Sub）",
+      "domain": "style",
+      "gist": "异步解耦：生产者发主题，消费者按各自节奏拉取。",
+      "detail": "At-least-once / At-most-once / Exactly-once 语义按系统选；死信队列与重试策略是可靠性三件套。",
+      "standards": [],
+      "bridges": [
+        {
+          "system": "netsys",
+          "target": "module:meshchat",
+          "relation": "本地同构",
+          "how": "meshchat 的待收清单即本地版「信箱」：消息不自动落盘、用户显式接受"
+        }
+      ],
+      "engineering": "落法：无中间件依赖（纯标准库、离线优先是一条红线）。本地落法即 meshchat 的「待收清单」——本地版信箱：消息不自动落盘，须用户显式接受（已桥接 netsys:meshchat）。"
+    },
+    {
+      "id": "webhook",
+      "name": "Webhook",
+      "domain": "style",
+      "gist": "反向 API：服务端有事时回调用户提供的 HTTP 端点。",
+      "detail": "安全三件套：签名校验（HMAC）、重放窗口、幂等键；失败重试与死信不可省。",
+      "standards": [],
+      "bridges": [],
+      "engineering": "落法：本仓库不开任何出站回调（红线：对前端只暴露只读诊断与用户配置文件读写）。若将来必须接，HMAC 签名 + 重放窗口 + 幂等键 + 死信队列四件缺一不可。"
+    },
+    {
+      "id": "jsonrpc",
+      "name": "JSON-RPC 2.0",
+      "domain": "style",
+      "gist": "极简 JSON 调用协议：method/params/id 四字段，通知无响应。",
+      "detail": "适合进程间/工具调用场景；LSP 即 JSON-RPC over stdio 的著名实例；本仓库 webapi 的 JSONL 信封同属这一族（见 repo-face）。",
+      "standards": [],
+      "bridges": [],
+      "engineering": "落法：形似 JSON-RPC 但刻意不做——无请求 id、无批量、无通知；一行请求一行响应便于逐条断言，出错只回 ok=false 而不断开循环——「永不抛异常打断循环」是这一层的硬要求。"
+    },
+    {
+      "id": "cli-contract",
+      "name": "CLI 契约",
+      "domain": "style",
+      "gist": "命令行即接口：子命令 + 位置参数 + 选项 + 退出码 + stderr。",
+      "detail": "POSIX 约定（--help/--version/退出码语义）；脚本消费要求输出可解析（--json）；人类与机器双模输出是成熟 CLI 的标志。",
+      "bridges": [
+        {
+          "system": "daoxue",
+          "target": "principle:xin-yan-bu-mei",
+          "relation": "理念映射",
+          "how": "退出码与错误信息如实：失败给明示原因与码，不吞异常"
+        }
+      ],
+      "engineering": "落法：argparse 子命令即对外 API 契约，新增子命令必须进 cli.build_parser()，其总数由各系统构建期实测登记（当前 107），数字漂移即 --check 失败；--help / --version / 退出码沿用 POSIX 语义，输出可解析便于脚本消费。"
+    },
+    {
+      "id": "openapi",
+      "name": "OpenAPI Specification",
+      "domain": "spec",
+      "gist": "REST 接口的机器可读规约：路径/模型/安全方案/示例。",
+      "detail": "3.x 与 Swagger 2.0 差异大（schema 键重构）；规约可生成客户端桩、文档与 mock server；「规约漂移」需 CI 校验。",
+      "standards": [],
+      "bridges": [],
+      "engineering": "落法：未发布 OpenAPI 文档。若补，应由 webapi.ACTIONS 白名单机械反译为 paths，而不是手写第二份真相（与 datong「一契三端」同思路，见 datong:sanwei-yiti）。"
+    },
+    {
+      "id": "graphql-sdl",
+      "name": "GraphQL SDL",
+      "domain": "spec",
+      "gist": "GraphQL 的 schema 即契约：type/query/mutation/subscription。",
+      "detail": "introspection 让契约自描述；版本演进走「字段弃用」而非 URL 版本号。",
+      "standards": [],
+      "bridges": [],
+      "engineering": "落法：未落地。任何 SDL 都应从既有白名单与数据模型生成，禁止手抄定义。"
+    },
+    {
+      "id": "protobuf-idl",
+      "name": "Protobuf IDL",
+      "domain": "spec",
+      "gist": ".proto 定义服务与消息，代码生成跨语言桩。",
+      "detail": "字段编号即兼容契约（只加不重排）；proto3 与 proto2 语义差异；gRPC 服务定义直接寄生其上。",
+      "standards": [],
+      "bridges": [],
+      "engineering": "落法：未落地。src/go 为纯标准库实现，无 protobuf 依赖；三端契约走 JSONL 文本层，不强耦合 IDL 工具链。"
+    },
+    {
+      "id": "json-schema",
+      "name": "JSON Schema",
+      "domain": "spec",
+      "gist": "JSON 数据的校验词汇：type/required/pattern/组合子。",
+      "detail": "draft 演进（draft-07 常用，2020-12 为现行系列）；OpenAPI 的模型层即其子集方言。",
+      "standards": [],
+      "bridges": [],
+      "engineering": "落法：report.build_report() 的 {disk:{before,after}, tasks[]} 应以 JSON Schema 固化，report_viewer 消费端据此校验；契约改动必须同步 schema，否则 HTML 侧重生成后 sha256 守护会先一步报错。"
+    },
+    {
+      "id": "asyncapi",
+      "name": "AsyncAPI",
+      "domain": "spec",
+      "gist": "事件驱动接口的规约：channel/message/bindings 描述异步面。",
+      "detail": "与 OpenAPI 同源思路落到 MQ/WS 类异步接口；codegen 生态小于 OpenAPI。",
+      "standards": [],
+      "bridges": [],
+      "engineering": "落法：未落地。webapi 目前是同步「一问一答」，无异步任务队列；若将来引入长任务，先按 AsyncAPI 登记信道与消息，再写代码，别倒过来。"
+    },
+    {
+      "id": "wsdl",
+      "name": "WSDL / SOAP（遗留）",
+      "domain": "spec",
+      "gist": "XML 时代的重契约：WSDL 描述 + SOAP 信封 + WS-* 栈。",
+      "detail": "企业集成里仍大量存在；SOAP 1.1/1.2 信封结构不同；登记为「需能读能改」而非「新项目首选」。",
+      "standards": [],
+      "bridges": [],
+      "engineering": "落法：遗留口径，不建议新写。万一要接遗留 SOAP 服务，用单一包装器隔离在适配边界内，不让老协议污染主契约。"
+    },
+    {
+      "id": "http11",
+      "name": "HTTP/1.1",
+      "domain": "transport",
+      "gist": "文本协议 + 持久连接；队头阻塞限制并行度。",
+      "detail": "RFC 9112；方法/语义见 RFC 9110；升级 WebSocket 也从此握手。",
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 9112,
+          "rfc_title": "HTTP/1.1"
+        },
+        {
+          "kind": "RFC",
+          "num": 9110,
+          "rfc_title": "HTTP Semantics"
+        }
+      ],
+      "bridges": [],
+      "engineering": "落法：真落地——Deno 控制台（console.ts）监听本机 HTTP 对外提供页面；Python 侧不直接监听端口，避免两条 TCP 契约并存。"
+    },
+    {
+      "id": "http2",
+      "name": "HTTP/2",
+      "domain": "transport",
+      "gist": "二进制帧 + 多路复用 + HPACK 头部压缩 + 服务端推送。",
+      "detail": "RFC 9113；TCP 层队头阻塞仍在（应用层多路复用解决的是 HTTP 层）；h2c（明文）与 h2（TLS ALPN）两条协商路径。",
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 9113,
+          "rfc_title": "HTTP/2"
+        }
+      ],
+      "bridges": [],
+      "engineering": "落法：未启用。是否升级由 Deno 外壳决定，本仓库不承诺 h2；Python 侧不经 HTTP，故不受其影响。"
+    },
+    {
+      "id": "http3",
+      "name": "HTTP/3（QUIC）",
+      "domain": "transport",
+      "gist": "基于 QUIC 的 HTTP：UDP 上自研可靠传输，连接迁移抗网间切换。",
+      "detail": "RFC 9114（HTTP/3）+ RFC 9000（QUIC）；QPack 头部压缩；0-RTT 有重放风险，敏感操作勿开。",
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 9114,
+          "rfc_title": "HTTP/3"
+        },
+        {
+          "kind": "RFC",
+          "num": 9000,
+          "rfc_title": "QUIC: A UDP-Based Multiplexed and Secure Transport"
+        }
+      ],
+      "bridges": [],
+      "engineering": "落法：未启用。HTTP/3 依赖 QUIC 栈，纯标准库 Python 侧无实现，此处仅作认知登记。"
+    },
+    {
+      "id": "tcp",
+      "name": "TCP",
+      "domain": "transport",
+      "gist": "有序可靠字节流：握手/拥塞/重传/四次挥手。",
+      "detail": "RFC 9293；上层一切（HTTP/MQ/WSS）的地基；调优面在 sysctl（缓冲区/拥塞算法）。",
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 9293,
+          "rfc_title": "Transmission Control Protocol (TCP)"
+        }
+      ],
+      "bridges": [
+        {
+          "system": "netsys",
+          "target": "module:network",
+          "relation": "同层知识",
+          "how": "network 任务的 L4 调优即 TCP 参数面"
+        }
+      ],
+      "engineering": "落法：真落地——这是本仓库唯一的网络段：Deno 监听本机 TCP 承接浏览器请求，再落到Python 的 stdin/stdout；浏览器从未直接接触 Python。"
+    },
+    {
+      "id": "stdio",
+      "name": "stdio 进程间通道",
+      "domain": "transport",
+      "gist": "子进程 stdin/stdout 双向管道：零网络依赖的本地接口。",
+      "detail": "JSON-RPC over stdio（LSP 模式）；缓冲与阻塞是主要坑；本仓库 webapi 亦以 stdin 行为入口之一。",
+      "bridges": [
+        {
+          "system": "daoxue",
+          "target": "principle:pu",
+          "relation": "理念映射",
+          "how": "最小依赖面：能本地行就不开网络端口"
+        }
+      ],
+      "engineering": "落法：真落地——webapi 的长连接跑在 stdin/stdout 上（JSONL），一个 Python 进程复用多次调用，省掉每次冷启动；这也是为什么必须「永不抛异常打断循环」。"
+    },
+    {
+      "id": "unix-socket",
+      "name": "Unix Domain Socket",
+      "domain": "transport",
+      "gist": "本机具名套接字：比 TCP 回环少协议栈开销，可用文件权限管访问。",
+      "detail": "Docker/systemd/Chrome 的本地 IPC 常客；abstract namespace（Linux）无文件节点；权限位即鉴权面。",
+      "bridges": [],
+      "engineering": "落法：未落地。本机 IPC 若将来要选，Unix domain socket 比 localhost TCP 更省心——无端口占用冲突，且能用文件权限直接做访问控制。"
+    },
+    {
+      "id": "auth-basic",
+      "name": "HTTP Basic（RFC 7617）",
+      "domain": "auth",
+      "gist": "user:pass Base64 随请求直送——只配 TLS 下可用。",
+      "detail": "无过期无撤销，泄露即长期有效；现代系统仅用于内部/一次性场景；口令必须加盐哈希存储（禁明文）。",
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 7617,
+          "rfc_title": "The 'Basic' HTTP Authentication Scheme"
+        }
+      ],
+      "bridges": [],
+      "engineering": "落法：不建议。Basic 凭据随每次请求发送，仅在 HTTPS 下勉强可用；本仓库无密码传输场景，不为它留位置。"
+    },
+    {
+      "id": "auth-bearer-jwt",
+      "name": "Bearer + JWT（RFC 7519 / 6750）",
+      "domain": "auth",
+      "gist": "自包含令牌：签名/加密声明的 JWT，Bearer 方式发送。",
+      "detail": "无状态可验但「发出去难收回」——短时效 + 刷新令牌 + 可撤销清单（jti）是标准补丁；禁把令牌放 URL 查询参数（日志外泄面）。",
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 7519,
+          "rfc_title": "JSON Web Token (JWT)"
+        },
+        {
+          "kind": "RFC",
+          "num": 6750,
+          "rfc_title": "The OAuth 2.0 Authorization Framework: Bearer Token Usage"
+        }
+      ],
+      "bridges": [
+        {
+          "system": "daoxue",
+          "target": "principle:zhi-bu-zhi",
+          "relation": "理念映射",
+          "how": "声明可信度按已验证事实：验签失败即拒，不猜不降级"
+        }
+      ],
+      "engineering": "落法：口径登记（未落地）。若将来要跨域/远端调用：短时效访问令牌 + 服务端刷新令牌，令牌不进 localStorage、不进 URL，优先 httpOnly Cookie 或内存态。"
+    },
+    {
+      "id": "auth-oauth2",
+      "name": "OAuth 2.0（RFC 6749）",
+      "domain": "auth",
+      "gist": "委托授权框架：授权码/PKCE、客户端凭证、设备码等流程。",
+      "detail": "Authorization Code + PKCE 是现行默认；scope 最小化；令牌绑定 mTLS（RFC 8705）防重放。",
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 6749,
+          "rfc_title": "The OAuth 2.0 Authorization Framework"
+        }
+      ],
+      "bridges": [],
+      "engineering": "落法：未落地。若要接第三方授权，走授权码 + PKCE（RFC 6749/6750），令牌绝不上 URL 查询串——本条与 auth-redlines 同源，都是「令牌不得随 URL 走」。"
+    },
+    {
+      "id": "auth-api-key",
+      "name": "API Key",
+      "domain": "auth",
+      "gist": "最简单的 bearer 形态：一长随机串标识调用方。",
+      "detail": "无用户语义、无细粒度授权；须支持轮换与吊销；与 IP 白名单/额度联用控风险。",
+      "bridges": [],
+      "engineering": "落法：未落地。当前靠 ACTIONS 白名单 + 只读动作最小面来约束，而不是靠凭据；即便将来加 key，它也只是限速与审计标签，不当作授权凭据本身。"
+    },
+    {
+      "id": "auth-mtls",
+      "name": "mTLS（X.509）",
+      "domain": "auth",
+      "gist": "双向证书认证：客户端也出示证书，链路层即鉴权。",
+      "detail": "RFC 5280 证书体系；零信任内网骨干；吊销靠 CRL/OCSP；私钥绝不明文落日志（仓库既有红线一致）。",
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 5280,
+          "rfc_title": "Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile"
+        }
+      ],
+      "bridges": [
+        {
+          "system": "netsys",
+          "target": "module:cert",
+          "relation": "同域",
+          "how": "cert 任务的证书审计即 mTLS 信任链的只读体检"
+        }
+      ],
+      "engineering": "落法：未落地。mTLS 适合内网服务间双向鉴权（RFC 8705），但引入证书管理会动摇「纯标准库、离线优先」的定位，收益不抵成本。"
+    },
+    {
+      "id": "auth-redlines",
+      "name": "认证存放红线",
+      "domain": "auth",
+      "gist": "令牌/密钥的处置纪律：存放、传输、日志三面。",
+      "detail": "禁入 URL 查询参数、禁入 localStorage（XSS 面）、禁打印明文；访问令牌短时效 + 服务端刷新令牌是基线架构。",
+      "bridges": [
+        {
+          "system": "netsys",
+          "target": "module:zerotier",
+          "relation": "红线同源",
+          "how": "zerotier 模块「不读 identity.secret 私钥」与令牌红线同族"
+        }
+      ],
+      "engineering": "落法：红线总纲——白名单入口（认不出即拒，无 getattr 兜底）+ opt-in 双确认 + 令牌禁入 URL/localStorage + 访问令牌短时效且服务端刷新 + 破坏性操作二次确认。webapi 这一层比 GUI 更严：只暴露只读诊断与用户配置文件读写（datong 神恩如狱、耆那不害两条已桥接到此）。"
+    },
+    {
+      "id": "repo-cli",
+      "name": "CLI 子命令契约",
+      "domain": "repo-face",
+      "gist": "`python -m sysweeper <子命令>` 即本仓库的主接口面：100+ 子命令。",
+      "detail": "发现靠 `--help`；稳定面见下方 repo-face-facts（构建时从argparse 实际读出子命令清单）；全局选项 --platform/--category/--risk；退出码 0/1/2 语义（成功/业务错误/用法错误）。",
+      "standards": [],
+      "bridges": [
+        {
+          "system": "daoxue",
+          "target": "principle:daofa-ziran",
+          "relation": "理念映射",
+          "how": "接口跟着平台本性走：--platform 决定可用子集，非全平台硬套"
+        }
+      ],
+      "engineering": "落法：argparse 单一入口，CLI 与 GUI、webapi 三方共享同一套 native 能力，避免同一件事写三份实现后逐渐各异（这是同一能力写三份后各奔前程的根因）。"
+    },
+    {
+      "id": "repo-plugins",
+      "name": "plugins API（register_native）",
+      "domain": "repo-face",
+      "gist": "插件只能注册进白名单的原生入口：effective_allowlist() 静态审读。",
+      "detail": "manifest 的 native 字段必须在 allowlist 内，否则加载拒绝；register_native 显式登记新入口——红线：无兜底动态派发。",
+      "standards": [],
+      "bridges": [
+        {
+          "system": "daoxue",
+          "target": "principle:shou-zhong",
+          "relation": "理念映射",
+          "how": "插件面「守中」：默认封闭，显式白名单才开"
+        }
+      ],
+      "engineering": "落法：native/plugins.py 的静态 NATIVE_ALLOWLIST + register_native() 运行时显式登记——后者只收 sysweeper.native 下**已存在**的零参只读函数；manifest 的 native 字段必须在白名单内；绝不导入/执行插件自带代码，杜绝 shell 注入。"
+    },
+    {
+      "id": "repo-webapi",
+      "name": "webapi JSONL 白名单协议",
+      "domain": "repo-face",
+      "gist": "一行请求 JSON → 一行响应 JSON；dispatch 只认 ACTIONS 白名单。",
+      "detail": "ACTIONS 白名单见 repo-face-facts（构建时从 webapi.py 读出实际条数）；认不出的 action 一律拒绝，无 getattr 兜底；长连接复用进程省冷启动。",
+      "standards": [],
+      "bridges": [
+        {
+          "system": "daoxue",
+          "target": "principle:xin-yan-bu-mei",
+          "relation": "理念映射",
+          "how": "拒绝即明示：白名单外动作给错误码与说明，不静默忽略"
+        }
+      ],
+      "engineering": "落法：Python 当逻辑层、Deno 只做 HTTP 外壳，格局不变；ACTIONS 白名单制，dispatch 认不出的 action 一律拒绝，无 getattr 兜底派发；诊断正文按 max_chars 截断，防超长输出灌爆前端。"
+    },
+    {
+      "id": "repo-report",
+      "name": "report schema",
+      "domain": "repo-face",
+      "gist": "report 产物结构：disk.before/after + tasks[]，可渲染 markdown/ASCII 图。",
+      "detail": "render_markdown / render_bars 渲染前后对比；GUI 与 report_viewer同源消费该结构；schema 变更须保持向后兼容（只加字段）。",
+      "standards": [],
+      "bridges": [
+        {
+          "system": "daoxue",
+          "target": "principle:sheng-er-bu-you",
+          "relation": "理念映射",
+          "how": "加字段不改旧义：演进式兼容，不持有旧消费者"
+        }
+      ],
+      "engineering": "落法：report.build_report() → {disk:{before,after}, tasks[]}，render_markdown / render_bars 渲染的是同一份结构，保证 CLI/GUI/Deno 三端口径同源不同形。"
+    },
+    {
+      "id": "repo-report-viewer",
+      "name": "report_viewer.html（Deno Deploy）",
+      "domain": "repo-face",
+      "gist": "静态报告查看页：由 tools/gen_report_viewer.py 生成，sha256 受守护。",
+      "detail": "构建产物不进手改（scripts/check_repo_guard.py 校验 source-sha256）；改动必须重生成并同步哈希，防「生成物与源漂移」。",
+      "standards": [],
+      "bridges": [
+        {
+          "system": "daoxue",
+          "target": "principle:fan-zhe",
+          "relation": "理念映射",
+          "how": "「反者道之动」：生成物漂移会被守护脚本反向检出"
+        }
+      ],
+      "engineering": "落法：report_viewer.html 由 tools/gen_report_viewer.py 从 report_viewer.ts 生成并经 sha256 守护，手改立即失败——「单一事实源」在这里是被机器强制的；分享前须提示隐私（含磁盘/路径/子任务明细）。"
+    },
+    {
+      "id": "c-abi",
+      "name": "稳定 C ABI（应用二进制接口）",
+      "domain": "style",
+      "gist": "以 C 调用约定作为跨语言/跨实现的稳定接口边界：能力一律经 C ABI 暴露，实现（CUDA/CUDA-off/CPU）可替换而不破坏调用方。",
+      "detail": "SonicBoom 把整库能力经稳定 C ABI（libsonicboom.so）暴露，GNU Guile 等宿主语言经 FFI 调 C；C ABI 的稳定边界让底层实现可插拔、不污染接口面。",
+      "standards": [],
+      "bridges": [
+        {
+          "system": "plang",
+          "target": "lang:c",
+          "relation": "接口基座语言",
+          "how": "C ABI 即以 C 调用约定为边界；宿主语言经 FFI 调 C 实现"
+        }
+      ],
+      "engineering": "落法：本仓库 webapi 即一种稳定 ABI——ACTIONS 白名单是契约边界，Python 逻辑层可整体替换（Deno 外壳、Go 侧工具）而不破坏调用方；与『C ABI 让实现可插拔』同源。令牌禁入 URL/localStorage 即 ABI 的红线纪律。"
+    },
+    {
+      "id": "guile-ffi",
+      "name": "GNU Guile 一等语言（Scheme FFI）",
+      "domain": "style",
+      "gist": "把 GNU Guile（Scheme）作为框架的一等脚本/DSL 语言，宿主经 FFI 调原生实现。",
+      "detail": "SonicBoom 以 Guile 为 first-class 语言编排 C++/CUDA 内核；Scheme 表达式即配置即程序，契合『声明即代码』的工程取向。",
+      "standards": [],
+      "bridges": [
+        {
+          "system": "plang",
+          "target": "lang:c",
+          "relation": "FFI 基座",
+          "how": "Guile 经 FFI 调 C ABI 暴露的原生实现，C 为接口基座"
+        }
+      ],
+      "engineering": "落法：未落地为本仓库脚本语言，但同思路已见于 CLI 子命令契约——argparse 子命令即对外 API，Deno/Python/Go 三方共享同一 native 能力，声明即调用；不引入第二套解释器以免契约漂移。"
+    },
+    {
+      "id": "fchroot-syscall",
+      "name": "fchroot(2) 系统调用",
+      "domain": "transport",
+      "gist": "基于已持有文件描述符的换根系统调用：避免重新解析调用方已持有 fd 的路径，无 TOCTOU；与现代 fd 基 API（open_tree/OPEN_TREE_CLONE）同构。",
+      "detail": "Linux 7.3 新增 fchroot(2)，进程可将根目录移到 failfs（fchroot(FD_FAILFS_ROOT)），此后所有绝对路径/绝对符号链接查找均失败；须先把每条路径锚定在显式 fd 上。",
+      "standards": [],
+      "bridges": [
+        {
+          "system": "netsys",
+          "target": "module:fchroot",
+          "relation": "内核特性↔接口面",
+          "how": "fchroot(2) 即 netsys:fchroot 模块登记的内核能力，在接口层同口径登记"
+        }
+      ],
+      "engineering": "落法：本仓库 webapi 的 stdio 长连接即『以 fd 锚定、不重解析路径』的同一接口纪律——一个 Python 进程复用 stdin/stdout 多次调用，绝不重开连接重解析地址；fchroot(2) 的内核语义在此被登记为接口面参照。"
+    },
+    {
+      "id": "dbus-iface",
+      "name": "D-Bus 桌面系统接口",
+      "domain": "transport",
+      "gist": "Linux 桌面本机 IPC 总线：对象路径 + 接口 + 信号三要素，系统服务（如 UKUI Framework）以 org.ukui.* 名暴露能力，技能/插件经调用这些接口落地。",
+      "detail": "与 stdio/unix socket 同属本机信道，但多了服务发现（知名名 ↔ 唯一连接名）与信号广播语义；openKylin 技能仓库的设备控制（/Devices/Power、/Devices/Screen）与 UI 个性化（/UI/Theme、/UI/Wallpaper）即以 UKUI Framework D-Bus 接口为落点——接口可见性即能力面，调不动的接口等于不存在。",
+      "standards": [],
+      "bridges": [
+        {
+          "system": "netsys",
+          "target": "module:ukui-desktop-widget",
+          "relation": "接口消费者",
+          "how": "UKUI 桌面小插件经桌面 shell（D-Bus 系统服务）完成添加/移除/尺寸切换等交互"
+        },
+        {
+          "system": "netsys",
+          "target": "module:sysmesh",
+          "relation": "接口协调同源",
+          "how": "接口面经组网互联协调（sysmesh）：D-Bus/WebSocket 等信道即能力面，与系统互联协调同一『以 fd/信道锚定而非路径重解析』纪律"
+        }
+      ],
+      "engineering": "落法：未落地，本仓库不监听也不调用 D-Bus。但接口纪律同源——webapi 的 ACTIONS 白名单与 D-Bus 的接口可见性一样，都是『显式声明的能力面』：调用方只能走声明入口，不允许 getattr 兜底派发（对应 D-Bus 未导出的接口不可达）；将来若接入桌面侧，先登记接口白名单再写调用。"
+    }
+  ],
+  "bridges": [
+    {
+      "from": "apilab:mq",
+      "system": "netsys",
+      "target": "module:meshchat",
+      "relation": "本地同构",
+      "how": "meshchat 的待收清单即本地版「信箱」：消息不自动落盘、用户显式接受"
+    },
+    {
+      "from": "apilab:cli-contract",
+      "system": "daoxue",
+      "target": "principle:xin-yan-bu-mei",
+      "relation": "理念映射",
+      "how": "退出码与错误信息如实：失败给明示原因与码，不吞异常"
+    },
+    {
+      "from": "apilab:tcp",
+      "system": "netsys",
+      "target": "module:network",
+      "relation": "同层知识",
+      "how": "network 任务的 L4 调优即 TCP 参数面"
+    },
+    {
+      "from": "apilab:stdio",
+      "system": "daoxue",
+      "target": "principle:pu",
+      "relation": "理念映射",
+      "how": "最小依赖面：能本地行就不开网络端口"
+    },
+    {
+      "from": "apilab:auth-bearer-jwt",
+      "system": "daoxue",
+      "target": "principle:zhi-bu-zhi",
+      "relation": "理念映射",
+      "how": "声明可信度按已验证事实：验签失败即拒，不猜不降级"
+    },
+    {
+      "from": "apilab:auth-mtls",
+      "system": "netsys",
+      "target": "module:cert",
+      "relation": "同域",
+      "how": "cert 任务的证书审计即 mTLS 信任链的只读体检"
+    },
+    {
+      "from": "apilab:auth-redlines",
+      "system": "netsys",
+      "target": "module:zerotier",
+      "relation": "红线同源",
+      "how": "zerotier 模块「不读 identity.secret 私钥」与令牌红线同族"
+    },
+    {
+      "from": "apilab:repo-cli",
+      "system": "daoxue",
+      "target": "principle:daofa-ziran",
+      "relation": "理念映射",
+      "how": "接口跟着平台本性走：--platform 决定可用子集，非全平台硬套"
+    },
+    {
+      "from": "apilab:repo-plugins",
+      "system": "daoxue",
+      "target": "principle:shou-zhong",
+      "relation": "理念映射",
+      "how": "插件面「守中」：默认封闭，显式白名单才开"
+    },
+    {
+      "from": "apilab:repo-webapi",
+      "system": "daoxue",
+      "target": "principle:xin-yan-bu-mei",
+      "relation": "理念映射",
+      "how": "拒绝即明示：白名单外动作给错误码与说明，不静默忽略"
+    },
+    {
+      "from": "apilab:repo-report",
+      "system": "daoxue",
+      "target": "principle:sheng-er-bu-you",
+      "relation": "理念映射",
+      "how": "加字段不改旧义：演进式兼容，不持有旧消费者"
+    },
+    {
+      "from": "apilab:repo-report-viewer",
+      "system": "daoxue",
+      "target": "principle:fan-zhe",
+      "relation": "理念映射",
+      "how": "「反者道之动」：生成物漂移会被守护脚本反向检出"
+    },
+    {
+      "from": "apilab:c-abi",
+      "system": "plang",
+      "target": "lang:c",
+      "relation": "接口基座语言",
+      "how": "C ABI 即以 C 调用约定为边界；宿主语言经 FFI 调 C 实现"
+    },
+    {
+      "from": "apilab:guile-ffi",
+      "system": "plang",
+      "target": "lang:c",
+      "relation": "FFI 基座",
+      "how": "Guile 经 FFI 调 C ABI 暴露的原生实现，C 为接口基座"
+    },
+    {
+      "from": "apilab:fchroot-syscall",
+      "system": "netsys",
+      "target": "module:fchroot",
+      "relation": "内核特性↔接口面",
+      "how": "fchroot(2) 即 netsys:fchroot 模块登记的内核能力，在接口层同口径登记"
+    },
+    {
+      "from": "apilab:dbus-iface",
+      "system": "netsys",
+      "target": "module:ukui-desktop-widget",
+      "relation": "接口消费者",
+      "how": "UKUI 桌面小插件经桌面 shell（D-Bus 系统服务）完成添加/移除/尺寸切换等交互"
+    },
+    {
+      "from": "apilab:dbus-iface",
+      "system": "netsys",
+      "target": "module:sysmesh",
+      "relation": "接口协调同源",
+      "how": "接口面经组网互联协调（sysmesh）：D-Bus/WebSocket 等信道即能力面，与系统互联协调同一『以 fd/信道锚定而非路径重解析』纪律"
+    },
+    {
+      "from": "apilab:openapi",
+      "system": "datong",
+      "target": "principle:he-butong-yong",
+      "relation": "翻译",
+      "how": "OpenAPI 多版本契约并存共荣 ↔ 和而不同：API 新旧版本并行、渐进废弃"
+    },
+    {
+      "from": "apilab:websocket",
+      "system": "datong",
+      "target": "concept:bo",
+      "relation": "翻译",
+      "how": "WebSocket 一处发布处处到达 ↔ 波：无远弗届的传播协议"
+    }
+  ],
+  "by_domain": {
+    "style": [
+      "rest",
+      "graphql",
+      "grpc",
+      "websocket",
+      "sse",
+      "mq",
+      "webhook",
+      "jsonrpc",
+      "cli-contract",
+      "c-abi",
+      "guile-ffi"
+    ],
+    "spec": [
+      "openapi",
+      "graphql-sdl",
+      "protobuf-idl",
+      "json-schema",
+      "asyncapi",
+      "wsdl"
+    ],
+    "transport": [
+      "http11",
+      "http2",
+      "http3",
+      "tcp",
+      "stdio",
+      "unix-socket",
+      "fchroot-syscall",
+      "dbus-iface"
+    ],
+    "auth": [
+      "auth-basic",
+      "auth-bearer-jwt",
+      "auth-oauth2",
+      "auth-api-key",
+      "auth-mtls",
+      "auth-redlines"
+    ],
+    "repo-face": [
+      "repo-cli",
+      "repo-plugins",
+      "repo-webapi",
+      "repo-report",
+      "repo-report-viewer"
+    ]
+  },
+  "repo_face_facts": {
+    "cli_subcommands": 128,
+    "webapi_actions": 29,
+    "webapi_protocol": "JSONL（一行请求 JSON → 一行响应 JSON；ACTIONS 白名单制，无 getattr 兜底派发）",
+    "plugins_api": "native/plugins.py：effective_allowlist() 静态白名单 + register_native() 显式扩展；manifest native 字段必须在白名单内",
+    "report_schema": "report.build_report() → {disk:{before,after}, tasks[]}；render_markdown/render_bars 渲染",
+    "report_viewer_guard": "tools/gen_report_viewer.py 生成 + check_repo_guard.py sha256 守护（漂移即失败）"
+  }
+}

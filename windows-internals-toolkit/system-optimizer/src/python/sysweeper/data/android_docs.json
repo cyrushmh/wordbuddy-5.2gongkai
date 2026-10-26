@@ -1,0 +1,275 @@
+{
+  "adb": {
+    "name": "ADB（Android Debug Bridge：PC↔device 官方调试桥）",
+    "org": "AOSP / Google Android",
+    "url": "https://developer.android.com/tools/adb",
+    "protocols": [
+      "ADB 由 PC 端 adb client + 本机 adb server（TCP :5037）+ 设备端 adbd 守护三段组成",
+      "连接通道：USB（设备端 usb 服务）或 Wi-Fi（adb tcpip 5555 / 配对码），传输走 USB 批量端点或 TCP",
+      "设备发现：adb devices -l 列出（序列号 + 状态 device/unauthorized/offline）；首次连需设备端点「允许调试」授权",
+      "命令多路复用：adb shell <cmd> 在设备 shell 执行；adb exec-out / adb push / adb pull 走文件通道",
+      "与桌面平台不同：Android 系统分区不可被 PC 直接写，所有「系统接口」都经 adb 向设备发指令，设备侧由 framework 校验权限"
+    ],
+    "interfaces": [
+      "adb version / adb devices -l（看版本与已连设备，只读）",
+      "adb get-state（看连接状态，只读）",
+      "adb shell <cmd>（在设备执行命令，写系统与否取决于具体子命令）",
+      "adb shell settings / pm / am / dumpsys / svc / wm / logcat（各系统服务接口，见下列条目）",
+      "adb bugreport / adb logcat（诊断导出，只读）"
+    ],
+    "docs": [
+      "Android 开发者文档：Android Debug Bridge (adb)",
+      "AOSP platform/system/core：adbd 与 adb protocol"
+    ],
+    "summary": "ADB 是 Android 的官方调试桥，是 PC 管理安卓设备的标准「系统接口」：client-server 架构，设备端是 adbd。所有优化动作（清缓存、trim、改设置）都得经它发到设备侧，由 framework 决定能不能做——这与 Windows/macOS 直接读写注册表/plist 完全不同。未授权或无设备时任何 adb 命令都拿不到 device 状态，工具应优雅降级为手动指引。",
+    "advice": "只读核对用 adb devices -l / adb get-state（确认设备在线与已授权）；诊断用 adb bugreport / adb logcat -d。真正优化一律用各系统服务的官方子命令（settings / pm / am / dumpsys / svc / wm），绝不 `adb shell rm -rf /system` 或 `adb remount` 后手改系统分区——未 root 设备根本不可写，已 root 设备这么干会失稳。本工具探测只读，写接口只调官方子命令且只往安全方向写。"
+  },
+  "settings_provider": {
+    "name": "SettingsProvider（settings global/system/secure：系统设置数据库）",
+    "org": "AOSP / Google Android（frameworks/base SettingsProvider）",
+    "url": "https://developer.android.com/reference/android/provider/Settings",
+    "protocols": [
+      "三类命名空间：Global（跨用户全局，如窗口动画缩放）、System（系统级，如屏幕超时）、Secure（含用户隐私，如位置开关），权限各异",
+      "统一由 SettingsProvider 经 Binder 提供；命令行入口是 `settings get/put/list <namespace> <key> [value]`",
+      "底层是 content:// 的 Settings 表（settings_global / settings_system / settings_secure），`settings` 命令只是封装",
+      "部分 key 受签名/特权保护：put 需 android.permission.WRITE_SECURE_SETTINGS（adb shell 默认持有，普通 App 不持有）",
+      "与桌面不同：Android 没有注册表/plist 这种单文件配置；设置分散在 SettingsProvider + 各服务属性里"
+    ],
+    "interfaces": [
+      "settings list global|system|secure（列全部 key/value，只读）",
+      "settings get <ns> <key>（读单项，只读）",
+      "settings put <ns> <key> <value>（写单项，写；adb shell 默认可写非隐私项）",
+      "content query --uri content://settings/global（经 content 命令直查，只读）"
+    ],
+    "docs": [
+      "Android 开发者参考：android.provider.Settings",
+      "AOSP SettingsProvider 源码与 settings 命令（frameworks/base/cmds/settings）"
+    ],
+    "summary": "Android 的系统设置集中在 SettingsProvider：分 global/system/secure 三张表，命令行用 `settings` 读写，底层是 content:// 的 Settings 表。这正是 Android 版的「系统配置接口」——窗口动画缩放、屏幕超时、自适应电池开关都在这儿。adb shell 默认能 put 多数非隐私项，但 secure 里含隐私的 key 受保护。",
+    "advice": "只读核对用 settings list global / settings get <ns> <key>（看清当前值再决定）；调优用 settings put（如 window_animation_scale / transition_animation_scale / animator_duration_scale 调成 0 让界面更跟手）。只动 global/system 里的体验项，绝不碰 secure 里含隐私或安全开关的 key（如 USB 调试、未知来源）。本工具写接口只往安全方向（如关闭动画、调大休眠超时）且可随时改回。"
+  },
+  "pm": {
+    "name": "PackageManager（pm：应用包管理接口）",
+    "org": "AOSP / Google Android（frameworks/base PackageManager）",
+    "url": "https://developer.android.com/studio/command-line/adb#pm",
+    "protocols": [
+      "包以 Android package name 标识（如 com.android.chrome）；安装态由 PackageManager 服务维护，非文件直接管理",
+      "缓存与数据分离：应用私有数据在 /data/data/<pkg>，缓存是其中可丢弃的部分；`pm trim-caches <bytes>` 释放已装应用缓存",
+      "禁用/卸载：`pm disable-user --user 0 <pkg>`（仅对当前用户停用、可恢复）、`pm uninstall -k <pkg>`（-k 保留数据），均比 root 删系统分区安全",
+      "app 休眠（Android 12+）：`cmd package set-app-hibernate <pkg> true` 撤销权限并停后台",
+      "dexopt/compile：`pm compile`、`cmd package compile` 影响运行时性能（ART）"
+    ],
+    "interfaces": [
+      "pm list packages [-3|-u|-f]（列包，只读）",
+      "pm path <pkg> / pm dump <pkg>（看安装路径与状态，只读）",
+      "pm trim-caches <bytes>（释放应用缓存，写；只清缓存不删数据）",
+      "pm clear <pkg>（清数据+缓存，写；等于设置里的「清除存储」）",
+      "pm disable-user --user 0 <pkg> / cmd package set-app-hibernate <pkg> true（停用/休眠，写）"
+    ],
+    "docs": [
+      "Android 开发者文档：adb 的 pm 命令",
+      "AOSP PackageManagerService 与 pm 命令源码"
+    ],
+    "summary": "Android 的应用由 PackageManager 管，不是简单的文件目录。清空间优先 `pm trim-caches`（只放缓存、不碰数据），需要彻底重置某 App 才 `pm clear`（等于设置里的清除存储）。关掉不用的预装用 `pm disable-user --user 0`（只停用、可恢复），比 root 删系统分区稳得多。Android 12+ 还能对久不用的 App 休眠以省电省空间。",
+    "advice": "只读核对用 pm list packages -3（列第三方）/ pm path <pkg>。释放空间用 pm trim-caches（大数值=尽量多清），或设置里逐 App 清缓存；释放数据才 pm clear（会丢账号缓存，需重登）。禁用预装用 pm disable-user --user 0（可恢复，别用 uninstall 删系统关键包）。本工具写接口只 trim 缓存与休眠久不用的 App，不卸载、不删 /system。"
+  },
+  "am": {
+    "name": "ActivityManager（am：活动与进程调度接口）",
+    "org": "AOSP / Google Android（frameworks/base ActivityManager）",
+    "url": "https://developer.android.com/studio/command-line/adb#am",
+    "protocols": [
+      "am 经 Binder 调 ActivityManagerService：启动 Activity/Service、发广播、强制停止",
+      "am kill-all：杀掉所有后台（非前台/可见）进程，等价于一次「内存回收」，前台 App 不受影响",
+      "am force-stop <pkg>：强停某应用（清其进程与待调度任务），比 kill 更彻底但仍是用户态",
+      "am start / am broadcast：触发组件，用于诊断或拉动某功能（如 am broadcast 唤醒同步）",
+      "与桌面不同：Android 进程由 LMK（Low Memory Killer）+ AMS 协同回收，am 只是向 AMS 发指令"
+    ],
+    "interfaces": [
+      "am stack list / am get-config（看任务栈与配置，只读）",
+      "am kill-all（杀所有后台进程，写；只后台）",
+      "am force-stop <pkg>（强停某应用，写）",
+      "am start / am broadcast <intent>（触发组件，写/诊断）"
+    ],
+    "docs": [
+      "Android 开发者文档：adb 的 am 命令",
+      "AOSP ActivityManagerService 与 am 命令源码"
+    ],
+    "summary": "am 是 ActivityManager 的命令入口：启动组件、发广播、强停应用。想回收内存用 `am kill-all`（只清后台、前台不碰），卡死的应用用 `am force-stop`。这是用户态的操作，不涉及 root 或系统分区，比桌面上的 kill -9 更「讲规矩」——由 AMS 决定怎么收。",
+    "advice": "只读核对用 am stack list（看当前任务栈）。内存回收用 am kill-all（只杀后台，前台 App 照常）；对某卡死 App 用 am force-stop <pkg>。不要对正在前台、或带设备管理员/无障碍/闹钟角色的应用 force-stop，可能触发重新拉起或短暂失效。本工具写接口只做后台内存回收（kill-all），不做强停关键应用。"
+  },
+  "dumpsys": {
+    "name": "dumpsys（系统服务状态导出：batterystats/meminfo/netstats）",
+    "org": "AOSP / Google Android（frameworks/native cmd/dumpsys）",
+    "url": "https://developer.android.com/studio/command-line/dumpsys",
+    "protocols": [
+      "dumpsys 向指定系统服务要 dump（Binder 调用 service 的 dump()），结果由服务自定格式",
+      "batterystats：电量统计（各 UID 的唤醒/CPU/传感器/网络），`--reset` 清零统计便于重新测量",
+      "meminfo：内存占用（按进程与类别），`dumpsys meminfo <pkg>` 看单应用",
+      "netstats：网络流量统计（按 UID/接口/周期），`--reset` 清计数器",
+      "与桌面不同：Android 没有 /proc/meminfo 之外的统一统计入口，dumpsys 是 framework 层的「状态快照」接口"
+    ],
+    "interfaces": [
+      "dumpsys batterystats（看电量统计，只读）",
+      "dumpsys batterystats --reset（清零电量统计，写；只清计数器）",
+      "dumpsys meminfo [<pkg>]（看内存，只读）",
+      "dumpsys netstats [--reset]（看/清网络统计，只读或只清计数器）"
+    ],
+    "docs": [
+      "Android 开发者文档：dumpsys",
+      "AOSP BatteryStats / NetworkStatsService / ActivityManager 的 dump 实现"
+    ],
+    "summary": "dumpsys 是 Android 的「系统服务状态快照」接口：向 batterystats/meminfo/netstats 等服务要 dump。电量、内存、流量统计都从这儿拿。它既能读（诊断），也能 `--reset` 清零统计（便于重新开始测量，不删任何数据）。",
+    "advice": "只读核对用 dumpsys batterystats / dumpsys meminfo / dumpsys netstats（看当前统计，不改）。重新测量前用 dumpsys batterystats --reset 或 --reset 清计数器（只清统计，不删文件、不影响运行）。本工具写接口只做「复位统计计数」，不做任何删除或停止服务。"
+  },
+  "getprop": {
+    "name": "系统属性（getprop：build.prop + 运行时属性）",
+    "org": "AOSP / Google Android（property_service）",
+    "url": "https://developer.android.com/reference/android/os/Build",
+    "protocols": [
+      "系统属性是 key=value 的全局键值表，由 init 的 property_service 维护；build.prop 在启动早期加载",
+      "读取：`getprop [key]`，常用 ro.build.version.release（Android 版本）、ro.product.model（机型）、ro.product.cpu.abi（ABI）",
+      "运行时属性分 ro.（只读，启动定）、persist.（持久化）、ctl.（控制服务启停）等前缀，权限与生命周期各异",
+      "写运行时属性用 `setprop`，但 persist.* 需特权、多数 ro.* 不可改——这是「识别环境」而非「调优」的接口",
+      "与桌面不同：Android 不用 /etc/os-release 当主源，而是 ro.build.* 这一组属性定位版本与机型"
+    ],
+    "interfaces": [
+      "getprop（列全部，只读）",
+      "getprop ro.build.version.release / ro.product.model / ro.product.cpu.abi（读专项，只读）",
+      "setprop <key> <value>（写运行时属性，写；ro.* 不可改，需特权）"
+    ],
+    "docs": [
+      "Android 开发者参考：android.os.Build",
+      "AOSP system/core init 与 property_service 源码"
+    ],
+    "summary": "Android 用系统属性（getprop）暴露版本、机型、ABI 等基础信息，ro.build.* 这组属性就是它的「发行版标识」（对应桌面 /etc/os-release）。优化前先 getprop 确认版本与机型，才知道命令是否兼容。运行时属性可 setprop，但 ro.* 不可改、persist.* 需特权——所以它是「识别环境」的接口，不是主要调优入口。",
+    "advice": "只读核对用 getprop / getprop ro.build.version.release（定位版本与机型）；本工具只用它识别环境，绝不用 setprop 改 ro.*（不可改且改了也白改）或乱设 persist.*（可能触发重启或失稳）。调优请走 settings/pm/svc 等官方子命令。本工具只做只读探测。"
+  },
+  "svc": {
+    "name": "svc（无线/数据/NFC 服务开关：wifi/data/nfc）",
+    "org": "AOSP / Google Android（frameworks/base telephony 与 connectivity）",
+    "url": "https://developer.android.com/reference/android/net/wifi/WifiManager",
+    "protocols": [
+      "svc 是向连接/电话服务发开关指令的命令行入口：svc wifi / data / nfc enable|disable",
+      "wifi/data：经 WifiManager / Telephony 切换射频状态；enable 即打开对应无线",
+      "nfc：经 NfcManager 开关 NFC 射频（用于支付/读卡），enable 只开不关",
+      "与桌面不同：Android 把无线当成受权限管的服务，开关走 svc 而非直接 ifconfig/rfkill（虽底层有，但 adb 不该直接动）",
+      "安全方向：开无线/开 NFC 是安全的（只启用、不暴露数据）；关无线/关 NFC 是「减功能」，本工具不主动关"
+    ],
+    "interfaces": [
+      "svc wifi enable|disable（开/关 Wi-Fi，写）",
+      "svc data enable|disable（开/关移动数据，写）",
+      "svc nfc enable|disable（开/关 NFC，写）",
+      "settings get global wifi_on（看状态，只读）"
+    ],
+    "docs": [
+      "Android 开发者参考：WifiManager / NfcManager",
+      "AOSP svc 命令（frameworks/base/cmds/svc）"
+    ],
+    "summary": "svc 是 Android 控制无线射频的命令行入口：wifi/data/nfc 的 enable/disable。它经 WifiManager/Telephony/NfcManager 调服务，不是直接操作网卡。对优化工具而言，安全方向是「开」（联网、NFC 支付可用），而不是「关」——关无线/数据可能是用户主动选择，工具不该替用户切断。",
+    "advice": "只读核对用 settings get global wifi_on / mobile_data（看当前开关）。本工具写接口只「启用」无线/NFC（svc wifi enable / svc nfc enable），绝不主动 disable 用户的网络连接或 NFC——那是减功能、可能误伤支付与同步。需要关请用户在设置里自行操作。本工具只往安全方向写。"
+  },
+  "wm": {
+    "name": "WindowManager（wm：显示尺寸/密度/边距）",
+    "org": "AOSP / Google Android（frameworks/base WindowManager）",
+    "url": "https://developer.android.com/reference/android/view/Display",
+    "protocols": [
+      "wm 经 WindowManager 调显示配置：wm size（逻辑分辨率）、wm density（DPI）、wm overscan（边距）",
+      "wm size reset / wm density reset：把显示尺寸/密度恢复为设备的物理默认，是「修复」而非「调优」",
+      "wm size WxH / wm density N：可临时改显示（用于适配或测试），但设错可能让界面无法点按",
+      "与桌面不同：Android 显示是逻辑分辨率 + DPI 两层，且 per-display；改错了比桌面更危险（可能点不到按钮）",
+      "安全方向：reset 回默认永不丢数据；乱设具体值有「界面不可点」风险，本工具只 reset 不自定义"
+    ],
+    "interfaces": [
+      "wm size / wm density（看当前，只读）",
+      "wm size reset / wm density reset（恢复默认，写；修复性）",
+      "wm size WxH / wm density N（自定义，写；有不可点风险）"
+    ],
+    "docs": [
+      "Android 开发者参考：android.view.Display / WindowManager",
+      "AOSP wm 命令（frameworks/base/cmds/wm）"
+    ],
+    "summary": "wm 是 Android 的显示配置入口：逻辑分辨率（size）、DPI（density）、边距（overscan）。它比桌面显示设置更「底层」——设错分辨率/DPI 可能让界面元素点不到。最安全的写操作是 `wm size reset` / `wm density reset`，把显示恢复成设备物理默认，等于「修回出厂显示」，不丢任何数据。",
+    "advice": "只读核对用 wm size / wm density（看当前显示参数）。本工具写接口只做 reset（wm size reset / wm density reset）恢复默认显示，绝不自定义设一个具体 WxH 或 DPI——那有「界面不可点、需恢复出厂」风险。用户要临时改显示请自行在设置或开发者选项里调。本工具只往「恢复默认」这个安全方向写。"
+  },
+  "logcat": {
+    "name": "logcat / logd（日志缓冲：环形缓冲与导出）",
+    "org": "AOSP / Google Android（system/core logcat + logd）",
+    "url": "https://developer.android.com/tools/logcat",
+    "protocols": [
+      "Android 日志由 logd 守护管环形缓冲（main/system/radio/events/crash 等缓冲区），logcat 是读取/控制入口",
+      "读取：logcat -d（dump 当前缓冲，只读）、logcat -t N（最近 N 行）、logcat -b <buf>（指定缓冲）",
+      "清除：logcat -c 清空所有缓冲（只清日志、不删文件、不影响 App 运行），常用于排障前清场",
+      "缓冲是环形且有大小上限，满了自动覆盖最旧；清场不影响系统分区或用户数据",
+      "与桌面不同：Android 没有 /var/log 下的持久日志文件为主，日志默认在内存环形缓冲里"
+    ],
+    "interfaces": [
+      "logcat -d（dump 缓冲，只读）",
+      "logcat -t 50（最近 50 行，只读）",
+      "logcat -b all -v time（带时间看全部缓冲，只读）",
+      "logcat -c（清空缓冲，写；只清日志）"
+    ],
+    "docs": [
+      "Android 开发者文档：Logcat 命令行工具",
+      "AOSP system/core logcat 与 logd 源码"
+    ],
+    "summary": "Android 日志默认存在 logd 的环形缓冲（内存里），不是 /var/log 持久文件。logcat 是读写入口：看日志用 logcat -d/-t，排障前常用 logcat -c 清场（只清日志、不碰文件、不影响 App）。环形缓冲满了自动覆盖最旧，清场不丢任何用户数据。",
+    "advice": "只读核对用 logcat -d / logcat -t 50 / logcat -b all -v time（看当前日志，不改）。排障前用 logcat -c 清空缓冲（只清日志、不影响运行，可随时重新产生）；回收空间靠它有限——日志在内存里，清了也只省内存缓冲、不省磁盘。本工具写接口只做 logcat -c 清空日志缓冲，绝不 rm 任何日志文件。"
+  },
+  "accessibility": {
+    "name": "Android 无障碍框架（AccessibilityService / AccessibilityManager）",
+    "org": "AOSP / Google Android",
+    "url": "https://developer.android.com/guide/topics/ui/accessibility",
+    "protocols": [
+      "服务注册：无障碍服务（AccessibilityService）以声明式 XML 声明 capabilityFilter 与 eventTypes，由系统 AccessibilityManager 统一调度",
+      "事件流：系统把窗口状态/内容变化/手势等事件经 onAccessibilityEvent 推给已启用服务（读屏类靠此朗读界面元素）",
+      "全局开关：settings secure accessibility_enabled 为总闸，enabled_accessibility_services 为启用服务清单（冒号分隔 component）",
+      "系统分类：视觉（TalkBack/放大镜/高对比/色彩校正/大字体）、听觉（字幕/助听）、运动（移除动画/触控超时延长）、认知（字体/对比度）四类",
+      "本工具定位：**只读**——只 settings get 读开关状态，绝不 settings put 开启任何无障碍服务"
+    ],
+    "interfaces": [
+      "settings get secure accessibility_enabled（总开关，只读）",
+      "settings get secure enabled_accessibility_services（已启用服务列表，只读）",
+      "settings get system font_scale（字体缩放，API 1+）",
+      "settings get system font_weight_adjustment（字重，API 28+）",
+      "settings get secure accessibility_display_magnification_enabled（放大镜，API 17+）",
+      "settings get secure accessibility_display_daltonizer_enabled（色彩校正，API 26+）",
+      "settings get secure accessibility_high_text_contrast（高对比度文本，API 29+）",
+      "settings get secure ui_night_mode（深色模式，API 29+）",
+      "settings get global window/transition/animator_animation_scale（动画缩放，API 17+，适老防眩晕）",
+      "settings get system haptic_feedback_enabled / sound_effects_enabled（非视觉反馈确认）",
+      "settings get secure night_display_activated（护眼夜览，API 28+）",
+      "dumpsys accessibility（服务全量快照，只读）"
+    ],
+    "docs": [
+      "Android 开发者文档：Accessibility（无障碍总览）",
+      "AOSP frameworks/base：AccessibilityManagerService / AccessibilityService",
+      "WCAG 2.1 / WCAG 2.2（Web Content Accessibility Guidelines，含 1.4.3 对比度、1.4.4 调整文字大小）"
+    ],
+    "summary": "面向老年人与残障用户的系统级无障碍：放大字体、放大镜、高对比度、深色模式、读屏（TalkBack）、移除动画、触感/提示音反馈。Android 自 8.0（API 26）起补齐色彩校正，9/10 补齐字重与高对比度。",
+    "advice": "本工具只读探测这些开关的当前状态并给建议，绝不代为开启——替长辈改无障碍设置属于改变其使用习惯，应由本人或当面确认后进行。版本不支持的开关要明说「此版本无」，不要伪装已开启。"
+  },
+  "eyecare": {
+    "name": "屏幕护眼与显示偏好（Display / WindowManager / 夜览）",
+    "org": "AOSP / Google Android",
+    "url": "https://source.android.com/docs/core/display",
+    "protocols": [
+      "亮度：Settings.System.SCREEN_BRIGHTNESS 为手动亮度（0–255），无值/255 交由自动亮度（SensorManager + DisplayPowerController）接管",
+      "息屏：Settings.System.SCREEN_OFF_TIMEOUT 为毫秒数；0 表示永不熄屏（前台需求），实现方通常强制一个上限",
+      "夜览/护眼：Android 9（API 28）起以 Settings.Secure 的 night_display_activated / night_mode 暴露色彩温度降低；部分厂商只在自家显示设置里提供，不进 settings 表",
+      "字号：Settings.System.FONT_SCALE 为全局字体缩放系数，各应用经 Configuration.fontScale 生效；API 28 起另有 FONT_WEIGHT_ADJUSTMENT"
+    ],
+    "interfaces": [
+      "settings get system screen_brightness（手动亮度，只读）",
+      "settings get system screen_off_timeout（息屏毫秒，只读）",
+      "settings get secure night_display_activated / night_mode（护眼夜览，API 28+，只读）",
+      "wm size / wm density（物理显示尺寸与密度，只读；reset 只恢复默认）",
+      "dumpsys display（显示设备/模式完整快照，只读）"
+    ],
+    "docs": [
+      "AOSP Documentation/core/display（显示子系统架构）",
+      "Android 开发者文档：Accessibility 的视觉类设置"
+    ],
+    "summary": "老年用户对亮度与对比度的需求显著高于平均人群（老花降低对比敏感度、白内障畏光），本探针只读汇报当前亮度、息屏超时与夜览状态。",
+    "advice": "只报状态不改设置。给出建议时注意：亮度拉高更耗电；息屏调长对电量与误触都有影响，需与长辈本人确认后再改。API 28 以下无夜览开关，改用亮度与降低深色背景应用等效替代。"
+  }
+}

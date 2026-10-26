@@ -1,0 +1,19 @@
+SPDX-License-Identifier: AGPL-3.0-or-later
+官方全文: https://www.gnu.org/licenses/agpl-3.0.txt
+
+GNU AFFERO GENERAL PUBLIC LICENSE
+Version 3, 19 November 2007
+Copyright (C) 2007 Free Software Foundation, Inc.
+https://www.gnu.org/licenses/agpl-3.0.txt
+
+核心条款摘要（AGPL v3 = GPL v3 + 网络条款）:
+1. 继承 GPL v3 全部 copyleft 义务。
+2. **额外条款**：即便仅以网络服务形式提供（不“分发”二进制），也必须向使用该服务的用户
+   提供完整对应源代码——即“SaaS/网络使用”同样触发源码提供义务。
+3. 与 GPL v3 兼容；与专有服务化部署冲突（需整体开源其网络服务代码）。
+
+------------------------------------------------------------------------------
+本文档引用该许可证的项目: daeuniverse/dae（AGPL-3.0）
+用途: 网络互联互通——基于 eBPF 的 Linux 高性能透明代理。
+合规提示: 若将其作为网络服务对外提供，依 AGPL 须向用户公开对应源码；
+          本工具不打包其二进制，用户需自行按 AGPL-3.0 条款安装使用。

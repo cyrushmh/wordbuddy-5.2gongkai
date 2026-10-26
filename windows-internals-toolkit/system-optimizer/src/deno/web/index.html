@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sysweeper 本机 Web 控制台</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">◈</span>
+    <span class="name">sysweeper</span>
+    <span class="sub">本机 Web 控制台</span>
+  </div>
+  <div class="status">
+    <span id="backend" class="pill">后端: 检测中…</span>
+    <span id="readonly" class="pill pill-safe">只读诊断</span>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="tab active" data-view="overview">总览</button>
+  <button class="tab" data-view="settings">参数与阈值</button>
+  <button class="tab" data-view="subsystems">子系统开关</button>
+  <button class="tab" data-view="diagnose">单子系统诊断</button>
+  <button class="tab" data-view="import">导入</button>
+  <button class="tab" data-view="history">变更留痕</button>
+  <button class="tab" data-view="report">快照报告</button>
+  <button class="tab" data-view="profiles">档位与评分</button>
+</nav>
+
+<main>
+  <!-- ── 总览 ── -->
+  <section class="view active" id="view-overview">
+    <div class="row">
+      <button id="ov-refresh" class="btn primary">刷新总览</button>
+      <span class="hint">跑一遍全量只读总览（子系统多，可能要十几秒）</span>
+    </div>
+    <div id="ov-host" class="card"></div>
+    <div id="ov-tally" class="cards"></div>
+    <div class="card">
+      <h3>系统统筹总览</h3>
+      <pre id="ov-sysmap" class="out">点「刷新总览」载入</pre>
+    </div>
+  </section>
+
+  <!-- ── 参数与阈值 ── -->
+  <section class="view" id="view-settings">
+    <div class="row">
+      <button id="st-refresh" class="btn">刷新</button>
+      <button id="st-save" class="btn primary">保存改动</button>
+      <button id="st-reset" class="btn danger">全部恢复默认</button>
+      <span id="st-changed" class="hint"></span>
+    </div>
+    <div class="row">
+      <input id="st-filter" class="input" placeholder="过滤（key / 标签 / 分组）" style="max-width:320px">
+      <span class="hint">● = 与默认值不同；改了会有高亮，保存才落盘</span>
+    </div>
+    <div id="st-list"></div>
+  </section>
+
+  <!-- ── 子系统开关 ── -->
+  <section class="view" id="view-subsystems">
+    <div class="row">
+      <button id="ss-refresh" class="btn">刷新</button>
+      <button id="ss-all-on" class="btn">全部开启</button>
+      <button id="ss-all-off" class="btn">全部关闭</button>
+      <input id="ss-filter" class="input" placeholder="过滤（key / 标签 / 层）" style="max-width:320px">
+      <span id="ss-count" class="hint"></span>
+    </div>
+    <div id="ss-list"></div>
+  </section>
+
+  <!-- ── 单子系统诊断 ── -->
+  <section class="view" id="view-diagnose">
+    <div class="row">
+      <select id="dg-key" class="input" style="max-width:340px"></select>
+      <button id="dg-run" class="btn primary">跑诊断</button>
+      <span class="hint">只读；跑的是 GUI/CLI 同款诊断函数</span>
+    </div>
+    <div id="dg-result"></div>
+  </section>
+
+  <!-- ── 导入 ── -->
+  <section class="view" id="view-import">
+    <div class="row">
+      <select id="im-source" class="input" style="max-width:200px"></select>
+      <input id="im-path" class="input" placeholder="file / qr 来源的文件路径" style="max-width:340px">
+      <button id="im-read" class="btn primary">读取</button>
+      <button id="im-load" class="btn">载入为参数</button>
+    </div>
+    <div id="im-caps" class="card"></div>
+    <div class="card">
+      <h3>导入内容</h3>
+      <pre id="im-text" class="out">（尚未读取）</pre>
+    </div>
+    <div id="im-msg" class="hint"></div>
+  </section>
+
+  <!-- ── 变更留痕 ── -->
+  <section class="view" id="view-history">
+    <div class="row">
+      <button id="hs-refresh" class="btn">刷新</button>
+      <button id="hs-clear" class="btn danger">清空留痕</button>
+      <span class="hint">只记参数键与旧/新值 + 来源，绝不记导入全文</span>
+    </div>
+    <div id="hs-list"></div>
+  </section>
+
+  <!-- ── 快照报告 ── -->
+  <section class="view" id="view-report">
+    <div class="row">
+      <button id="rp-build" class="btn primary">生成快照</button>
+      <button id="rp-download" class="btn">下载 JSON</button>
+      <button id="rp-copy" class="btn">复制到剪贴板</button>
+      <span class="hint">可脱离本机阅读的只读报告；拿到远端报告查看器里也能渲染</span>
+    </div>
+    <div class="row">
+      <label class="chk"><input type="checkbox" id="rp-diagnose" checked> 含逐项诊断正文</label>
+      <label class="chk"><input type="checkbox" id="rp-sysmap" checked> 含总览正文</label>
+      <label class="chk"><input type="checkbox" id="rp-history" checked> 含变更留痕</label>
+    </div>
+    <div id="rp-summary" class="cards"></div>
+    <div class="card">
+      <h3>报告 JSON</h3>
+      <pre id="rp-text" class="out">（尚未生成）</pre>
+    </div>
+  </section>
+
+  <!-- ── 档位与评分 ── -->
+  <section class="view" id="view-profiles">
+    <div class="row">
+      <button id="pf-refresh" class="btn primary">刷新</button>
+      <span class="hint">任务档位（大而全 / 小而全）+ 量化评分 + 内核只读体检；全部只读</span>
+    </div>
+
+    <div class="card">
+      <h3>量化评分（加权求和 + Shannon 熵）</h3>
+      <div id="pf-stats" class="cards">点「刷新」载入</div>
+      <table id="pf-parts"></table>
+      <div id="pf-gaps" class="hint"></div>
+    </div>
+
+    <div class="card">
+      <h3>任务档位</h3>
+      <table id="pf-table"></table>
+      <div class="hint">小而全（minimal）必须是大而全（full）的子集；选档位≠授权执行</div>
+    </div>
+
+    <div class="card">
+      <h3>档位详情 / 对比</h3>
+      <div class="row">
+        <select id="pf-name" class="input" style="max-width:220px"></select>
+        <select id="pf-against" class="input" style="max-width:220px"></select>
+        <button id="pf-show" class="btn">看详情</button>
+        <button id="pf-cmp" class="btn">两档对比</button>
+      </div>
+      <pre id="pf-detail" class="out">（尚未查询）</pre>
+    </div>
+
+    <div class="card">
+      <h3>内核 module / firmware / eBPF 只读体检</h3>
+      <div class="row">
+        <button id="pf-kmod" class="btn">跑内核只读体检</button>
+        <span id="pf-kmod-status" class="hint"></span>
+      </div>
+      <pre id="pf-kmod-out" class="out">（尚未运行）</pre>
+    </div>
+
+    <div class="card">
+      <h3>OpenJDK / JVM 只读体检</h3>
+      <div class="row">
+        <button id="pf-jdk" class="btn">跑 JDK/JVM 体检</button>
+        <span id="pf-jdk-status" class="hint"></span>
+      </div>
+      <pre id="pf-jdk-out" class="out">（尚未运行）</pre>
+    </div>
+  </section>
+</main>
+
+<div id="toast" class="toast"></div>
+
+<script src="/app.js"></script>
+</body>
+</html>

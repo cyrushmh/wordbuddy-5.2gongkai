@@ -1,0 +1,33 @@
+Source: classics
+Section: utils
+Priority: optional
+Maintainer: WordBuddy Authors <noreply@example.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+Homepage: https://github.com/cyrushmh/wordbuddy-github
+
+Package: classics
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, classics-data (>= ${source:Version})
+Description: 典籍阅读与乱码安全解码命令行工具（UTF-8 优先，GB18030 回退）
+ 复用本仓库 TextEncoding 哲学的 Linux 原生 CLI：先严格校验 UTF-8，
+ 失败再回退严格 GB18030，仍失败则明确标注而不假装成功。
+ .
+ 提供四个子命令：list 列出已装典籍、show 阅读整本、
+ decode 安全解码任意文本、lint 扫描乱码指纹与非法 UTF-8。
+ .
+ 对应 iOS/macOS 的 TextEncoding.decodeSafe 与 HarmonyOS 的
+ decodeTextSafe，把"编码防护落到用户路径"延伸到 Linux 端。
+
+Package: classics-data
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends}
+Description: 典籍文本数据（架构无关，供 classics 使用）
+ classics 的典籍原文数据，安装到 /usr/share/classics/。
+ 纯文本、不含任何编译产物，故为 Architecture: all——
+ 在 amd64 / arm64 等各架构上共用同一份包，不随架构重复打包
+ （借鉴 Arch 的 man-pages-zh_cn 这类 arch=any 纯文档/数据包范式）。
+ .
+ 拆分后：升级典籍内容只需重发本数据包，不必重编各架构的二进制包。

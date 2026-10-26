@@ -1,0 +1,60 @@
+===== #690 DJGPP GCC 32 位 DOS C 编译路径闭合证据 =====
+日期: 2026-10-26T04:13:57Z
+
+----- 1. 工具链来源 -----
+上游: andrewwutw/build-djgpp release v3.4 (2023-06-12), Linux64 预构建 GCC 12.2.0
+资产: djgpp-linux64-gcc1220.tar.bz2
+sha256: 8464f17017d6ab1b2bb2df4ed82357b5bf692e6e2b7fee37e315638f3d505f00
+字节数: 80596981
+bzip2 完整性: OK
+apt 侧: apt-cache search djgpp 仅 binutils-djgpp(as/ld)——GCC/libc/stub 不在 apt
+
+----- 2. 交叉编译器版本 -----
+i586-pc-msdosdjgpp-gcc (GCC) 12.2.0
+GNU ld (GNU Binutils) 2.30
+GNU assembler (GNU Binutils) 2.30
+
+----- 3. ANSI C 编译（hello32c.c → hello32c.exe） -----
+命令: i586-pc-msdosdjgpp-gcc -O2 -Wall -Wextra -o hello32c.exe hello32c.c
+gcc 退出码=0
+-rwxr-xr-x 1 root root 197852 Oct 26 12:14 hello32c.exe
+hello32c.exe: MS-DOS executable, MZ for MS-DOS, COFF for MS-DOS, DJGPP go32 DOS extender
+
+----- 4. 独立交叉核对：objdump 反汇编（printf/exit 调用链） -----
+    3da2:	e8 09 3f 00 00       	call   7cb0 <__exit>
+    3f81:	e8 9a 9a 00 00       	call   da20 <_exit>
+    4200:	e8 1b 98 00 00       	call   da20 <_exit>
+    428c:	e8 8f 97 00 00       	call   da20 <_exit>
+    42a7:	e8 74 97 00 00       	call   da20 <_exit>
+    44c2:	e8 59 95 00 00       	call   da20 <_exit>
+    4954:	e8 c7 90 00 00       	call   da20 <_exit>
+    57bf:	e8 5c 82 00 00       	call   da20 <_exit>
+反汇编总指令行数: 24212
+
+----- 5. dosbox 0.74-3 无头实跑（DPMI 宿主 CWSDPMI + autoexec cwd=C:） -----
+配置: dpmi=true + CWSDPMI.EXE(21KB, csdpmi7b.zip) + [autoexec] mount c / c: / cd \
+调用: SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy timeout 60 dosbox -conf dosbox-dpmi.conf -c 'hello32c.exe > C:\OUT.TXT' -c 'exit'
+dosbox 退出码=0
+
+----- 6. 宿主机回读 OUT.TXT（stdout 流证据，经 DOS 重定向） -----
+字节 18:
+Z32C-RT-OK55
+FB
+
+----- 7. 宿主机回读 Z32C.TXT（文件回读证据，fopen/fprintf/fclose 经 DPMI） -----
+-rw-r--r-- 1 root root 16 Oct 26 12:14 Z32C.TXT
+hex:
+00000000: 5a33 3243 2d52 542d 4f4b 3535 0a46 420a  Z32C-RT-OK55.FB.
+文本:
+Z32C-RT-OK55
+FB
+
+----- 8. 设计值独立复算 -----
+msg 长度=10 字符和=0x29C
+0x55 + 0x29C + 0x0A = 0xFB
+
+----- 9. 诚实边界 -----
+· dosbox 0.74-3 的 dpmi=true 不被 DJGPP 12.2 go32 桩接受，须自带 CWSDPMI.EXE(csdpmi7b)。
+· DOS 批处理 + CWSDPMI 下 %ERRORLEVEL% 不 propagate 且 dosbox 退出挂起(rc=124)，
+  故进程完成证据取直跑 dosbox rc=0 + 两文件写全(fclose 成功)；退出码面不做伪证。
+· 程序 return 0 → DJGPP exit → int 21h AH=4Ch 经 DPMI 反射（与上批手写 hello32.exe 同路径）。

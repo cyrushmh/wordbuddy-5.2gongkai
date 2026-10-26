@@ -1,0 +1,790 @@
+{
+  "_meta": {
+    "schema": "sciences_taxonomy/v1",
+    "built_by": "research/sciences/build_sciences.py",
+    "main_root": "wordbuddy-github",
+    "title": "sciences 概念系统（材料/热/气候/环境/物理/化学/生物·科学方法，以 wordbuddy-github 为主目录）",
+    "system_root": "wordbuddy-github",
+    "version": "0000.0000.0000.0067.20261025",
+    "canon": "七门自然科学 + 科学方法：材料/热/气候/环境/物理/化学/生物为 protec 工程保护的科学底座，方法论七原则（可证伪/可重复/对照/溯因/定量/同行评审/不确定度）为 protec 保护原则的科学依据",
+    "axes": [
+      "materials",
+      "thermodynamics",
+      "climatology",
+      "environmental",
+      "physics",
+      "chemistry",
+      "biology",
+      "methodology"
+    ],
+    "concept_total": 32,
+    "principle_total": 7,
+    "bridge_count": 18,
+    "honesty": "只读登记、科学表述按通行口径、不臆造实测数字；桥接只作科学原理 ↔ 工程保护/编译/量子/网络/工程伦理的结构翻译，不宣称等同；未核对原典/版次者统一挂needs_verify；应急定位 ETA 按置信下限诚实标注（v0.6.67）",
+    "redline_note": "科学先于工程：先列不可（白名单）再论可行；不确定度诚实标注；可重复/可证伪是可信前提；错误提示必给下一步",
+    "generated_at": "2026-10-26T05:19:11.449506+00:00"
+  },
+  "layers": [
+    {
+      "role": "materials",
+      "domain": "materials",
+      "tier": 1,
+      "count": 4,
+      "canon": "材料学",
+      "sense": "腐蚀/相变/疲劳/蠕变 4 条"
+    },
+    {
+      "role": "thermodynamics",
+      "domain": "thermodynamics",
+      "tier": 1,
+      "count": 4,
+      "canon": "热力学",
+      "sense": "定律/热传导/熵/相平衡 4 条"
+    },
+    {
+      "role": "climatology",
+      "domain": "climatology",
+      "tier": 1,
+      "count": 4,
+      "canon": "气候学",
+      "sense": "温室效应/洋流/ENSO/碳循环 4 条"
+    },
+    {
+      "role": "environmental",
+      "domain": "environmental",
+      "tier": 1,
+      "count": 3,
+      "canon": "环境学",
+      "sense": "污染/生态/可持续 3 条"
+    },
+    {
+      "role": "physics",
+      "domain": "physics",
+      "tier": 1,
+      "count": 3,
+      "canon": "物理",
+      "sense": "电磁/量子/力学 3 条"
+    },
+    {
+      "role": "chemistry",
+      "domain": "chemistry",
+      "tier": 1,
+      "count": 3,
+      "canon": "化学",
+      "sense": "电化学/反应动力学/元素周期 3 条"
+    },
+    {
+      "role": "biology",
+      "domain": "biology",
+      "tier": 1,
+      "count": 4,
+      "canon": "生物",
+      "sense": "细胞/进化/基因/生物圈 4 条"
+    },
+    {
+      "role": "methodology",
+      "domain": "methodology",
+      "tier": 2,
+      "count": 7,
+      "canon": "科学方法",
+      "sense": "可证伪/可重复/对照/溯因/定量/同行评审/不确定度 7 条（= principles）"
+    }
+  ],
+  "domains": [
+    {
+      "domain": "materials",
+      "label": "材料学",
+      "note": "设备材料的失效与相变基础：腐蚀/相变/疲劳/蠕变"
+    },
+    {
+      "domain": "thermodynamics",
+      "label": "热力学",
+      "note": "能量与熵：定律/热传导/熵/相平衡"
+    },
+    {
+      "domain": "climatology",
+      "label": "气候学",
+      "note": "地球气候系统：温室效应/洋流/ENSO/碳循环"
+    },
+    {
+      "domain": "environmental",
+      "label": "环境学",
+      "note": "污染/生态/可持续，与 IEC 60721 环境分类配套"
+    },
+    {
+      "domain": "physics",
+      "label": "物理",
+      "note": "电磁/量子/力学——protec 电气与防护的物理底座"
+    },
+    {
+      "domain": "chemistry",
+      "label": "化学",
+      "note": "电化学/反应动力学/元素周期——腐蚀与接地的化学底座"
+    },
+    {
+      "domain": "biology",
+      "label": "生物",
+      "note": "细胞/进化/基因/生物圈——自组织与适应范式"
+    },
+    {
+      "domain": "methodology",
+      "label": "科学方法",
+      "note": "七条方法论原则（= principles）：可证伪/可重复/对照/溯因/定量/同行评审/不确定度"
+    }
+  ],
+  "concepts": [
+    {
+      "id": "corrosion",
+      "domain": "materials",
+      "name": "腐蚀",
+      "gist": "金属与环境介质发生电化学/化学反应的渐进破坏。",
+      "detail": "电化学腐蚀分阴阳极两半反应，潮湿+电解质（盐雾/凝露）加速；点蚀/缝隙腐蚀/应力腐蚀开裂为隐蔽高危形态；钝化膜与涂层是抗蚀主线。",
+      "engineering": "工程落法：抗蚀材料/涂镀层/排水防潮，与 protec:corrosion 同源。",
+      "standards": [
+        "IEC 60068-2-11",
+        "ISO 9223",
+        "GB/T 10125"
+      ],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "phase-transition",
+      "domain": "materials",
+      "name": "相变",
+      "gist": "物质在温压条件下固/液/气相等结构转变。",
+      "detail": "相图刻画平衡态；马氏体相变、熔融、玻璃化转变直接决定材料可用温度窗口；相变伴随体积/潜热变化，影响尺寸与热管理。",
+      "engineering": "工程落法：按相图定工作温区、避开相变温区选材料（protec:material-selection）。",
+      "standards": [
+        "GB/T 2423"
+      ],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "fatigue",
+      "domain": "materials",
+      "name": "疲劳",
+      "gist": "循环应力下低于屈服强度的反复加载致裂纹扩展。",
+      "detail": "高周（S-N 曲线）/低周（应变控制）两范式；焊点/弹片/支架高发；振动与温度循环叠加。",
+      "engineering": "工程落法：避应力集中、留寿命裕度、定期更换（protec:fatigue 同源）。",
+      "standards": [
+        "ISO 1099",
+        "GB/T 3075"
+      ],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "creep",
+      "domain": "materials",
+      "name": "蠕变",
+      "gist": "高温/长期载荷下的缓慢塑性变形。",
+      "detail": "蠕变三阶段（初/稳/加速）；塑料/焊料/紧固件在高温显著；预紧力随蠕变松弛致松脱。",
+      "engineering": "工程落法：抗蠕变材料、控温、定期复紧（protec:creep 同源）。",
+      "standards": [
+        "GB/T 2039"
+      ],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "thermo-laws",
+      "domain": "thermodynamics",
+      "name": "热力学定律",
+      "gist": "能量守恒与熵增：第一定律守恒、第二定律指向不可逆。",
+      "detail": "零/一/二/三定律分别定温标、守恒、熵增、绝对零度；第二定律约束一切热机效率上限，也是设备散热与热老化的根本约束。",
+      "engineering": "工程落法：热设计必须给散热通路与热裕度（protec:thermal-aging 同源）。",
+      "standards": [
+        "ASHRAE TC9.9"
+      ],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "heat-transfer",
+      "domain": "thermodynamics",
+      "name": "热传导",
+      "gist": "导热/对流/辐射三种传热机制。",
+      "detail": "傅里叶导热、牛顿对流、斯特藩-玻尔兹曼辐射；设备散热靠三者协同；接触热阻是界面温升主因（与 protec:contact-heating 同类）。",
+      "engineering": "工程落法：导热界面材料、风道/ heatsink、温度越限降频（protec:thermal-aging）。",
+      "standards": [
+        "ASHRAE TC9.9",
+        "GB 50174"
+      ],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "entropy",
+      "domain": "thermodynamics",
+      "name": "熵",
+      "gist": "系统无序度的度量，过程总是趋向熵增。",
+      "detail": "克劳修斯/玻尔兹曼两种表述；信息熵与热力学熵同构；熵增即不可逆，是寿命与耗散的判据。",
+      "engineering": "工程落法：不可逆损耗即老化，降耗=延寿（protec:derating 同源）。",
+      "standards": [],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "phase-equilibrium",
+      "domain": "thermodynamics",
+      "name": "相平衡",
+      "gist": "多相共存的热力学平衡条件（化学势相等）。",
+      "detail": "吉布斯相律约束自由度；相平衡决定材料在服役环境下的稳定相，是相变与腐蚀热力学基础。",
+      "engineering": "工程落法：选服役环境下稳定相的材料、避相分离（protec:material-selection）。",
+      "standards": [],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "greenhouse",
+      "domain": "climatology",
+      "name": "温室效应",
+      "gist": "大气温室气体吸收地表长波辐射致地表增温。",
+      "detail": "CO₂/CH₄/H₂O 吸收红外；增强的温室效应驱动全球变暖；数据中心/设备散热与室外气候强相关，需按 ASHRAE 包络定温控。",
+      "engineering": "工程落法：按气候带定温控与散热策略（protec:ashrae-thermal 同源）。",
+      "standards": [
+        "ASHRAE TC9.9",
+        "GB 50174"
+      ],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "ocean-circulation",
+      "domain": "climatology",
+      "name": "洋流",
+      "gist": "海洋环流在全球尺度输运热量与碳。",
+      "detail": "温盐环流（AMOC）等调节气候；其减弱会改变区域气候与极端事件频率，影响户外设备的环境基线。",
+      "engineering": "工程落法：户外设备环境等级随气候带动态调整（protec:iec60721-class）。",
+      "standards": [
+        "IEC 60721"
+      ],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "enso",
+      "domain": "climatology",
+      "name": "ENSO",
+      "gist": "厄尔尼诺-南方涛动：赤道太平洋海温的准周期振荡。",
+      "detail": "厄尔尼诺/拉尼娜改变全球降水与温度格局，致极端天气频次变化；是环境适应性设计的低频背景。",
+      "engineering": "工程落法：极端环境工况取 ENSO 相位的最不利组合定防护（protec:ip-code）。",
+      "standards": [
+        "IEC 60721"
+      ],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "carbon-cycle",
+      "domain": "climatology",
+      "name": "碳循环",
+      "gist": "碳在大气/海洋/陆地间的交换与封存。",
+      "detail": "光合/呼吸/风化/燃烧收支；人为排放打破平衡致累积；碳基线决定长期环境分类与可持续约束。",
+      "engineering": "工程落法：环境分类含碳/化学腐蚀基线（protec:iec60721-class 同源）。",
+      "standards": [
+        "IEC 60721",
+        "ISO 14040"
+      ],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "pollution",
+      "domain": "environmental",
+      "name": "污染",
+      "gist": "有害物质进入环境并超阈值的累积。",
+      "detail": "气/水/土/电磁多介质；污染物（盐雾/硫化物/粉尘）直接加速腐蚀与绝缘下降；环境分级即污染分级。",
+      "engineering": "工程落法：按污染等级定 IP 与三防（protec:humidity-ingress 同源）。",
+      "standards": [
+        "IEC 60721",
+        "GB/T 2423"
+      ],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "ecology",
+      "domain": "environmental",
+      "name": "生态",
+      "gist": "生物与其环境的相互关系的网络。",
+      "detail": "食物链/种群动态/生态位；设备退役与材料流动对局部生态有影响；生态网络与netsys 组网在「节点-链路-冗余」结构上可互文。",
+      "engineering": "工程落法：冗余拓扑抗单点失效（netsys:meshnet 互文；protec:redundancy）。",
+      "standards": [
+        "ISO 14040"
+      ],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "sustainability",
+      "domain": "environmental",
+      "name": "可持续",
+      "gist": "满足当代而不损后代的发展约束。",
+      "detail": "能源/材料/全生命周期视角；与降额延寿、可维护同构——延长设备寿命即减碳减废。",
+      "engineering": "工程落法：延寿（降额/可维护）即可持续（protec:derating/maintainability）。",
+      "standards": [
+        "ISO 14040"
+      ],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "electromagnetism",
+      "domain": "physics",
+      "name": "电磁",
+      "gist": "电与磁统一于麦克斯韦方程组。",
+      "detail": "库仑/高斯/安培/法拉第-麦克斯韦；电磁波以光速传播；电生磁、磁生电是电机、变压器与无线的基础，也是 protec 电气安全的物理底座。",
+      "engineering": "工程落法：EMC/接地/屏蔽（protec:grounding-rcd 同源）。",
+      "standards": [
+        "IEC 61000"
+      ],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "quantum-physics",
+      "domain": "physics",
+      "name": "量子",
+      "gist": "微观粒子的叠加/纠缠/离散测度。",
+      "detail": "波函数/测不准/量子比特；量子测度的离散性与「可证伪」在方法论上同构；是 quantum 概念系统的科学底座。",
+      "engineering": "工程落法：可测即可控（quantum:measurement 同构；protec:monitoring）。",
+      "standards": [],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "mechanics",
+      "domain": "physics",
+      "name": "力学",
+      "gist": "力与运动的牛顿/连续介质框架。",
+      "detail": "静力/动力/振动/强度；应力集中是疲劳与蠕变的诱发源；振动环境是设备寿命的关键工况。",
+      "engineering": "工程落法：避应力集中、抗振设计（protec:fatigue/creep 同源）。",
+      "standards": [
+        "GB/T 3075"
+      ],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "electrochemistry",
+      "domain": "chemistry",
+      "name": "电化学",
+      "gist": "化学能与电能经氧化还原反应互换。",
+      "detail": "电极电势/能斯特方程；原电池（电偶腐蚀）、电解、电池充放电皆属此；是腐蚀、接地漏电流与电池衰减的化学本体。",
+      "engineering": "工程落法：异种金属隔离、限漏电流、电池管理（protec:galvanic-corrosion/grounding-rcd/battery_degradation 同源）。",
+      "standards": [
+        "IEC 62619",
+        "GB/T 31485"
+      ],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "reaction-kinetics",
+      "domain": "chemistry",
+      "name": "反应动力学",
+      "gist": "反应速率随浓度/温度/催化剂变化。",
+      "detail": "阿伦尼乌斯定律（温度每升 10K 速率约翻倍）是热老化/蠕变的定量核心；活化能决定寿命模型。",
+      "engineering": "工程落法：按动力学定寿命模型与维护周期（protec:thermal-aging/derating）。",
+      "standards": [],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "periodic-table",
+      "domain": "chemistry",
+      "name": "元素周期",
+      "gist": "元素性质随原子序数周期性变化。",
+      "detail": "电负性/电极电势/活泼性周期律；选材与防电偶腐蚀的底层依据——电位差大者不宜直接搭接。",
+      "engineering": "工程落法：按周期律选异种金属配对（protec:material-selection/galvanic-corrosion 同源）。",
+      "standards": [],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "cell",
+      "domain": "biology",
+      "name": "细胞",
+      "gist": "生命的基本结构与功能单元。",
+      "detail": "细胞膜/代谢/分裂；细胞的「界面屏障」与设备 enclosure 在隔离原理上可互文；稳态（homeostasis）与设备热稳态同构。",
+      "engineering": "工程落法：界面隔离 + 稳态控制（protec:enclosure/monitoring 互文）。",
+      "standards": [],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "evolution",
+      "domain": "biology",
+      "name": "进化",
+      "gist": "种群经变异-选择-遗传的适应性改变。",
+      "detail": "自然选择塑造适应；系统经「变异-筛选」的演化与编译/构建的迭代同源（comp:make）。",
+      "engineering": "工程落法：迭代筛选式构建与回归（comp:make 翻译）。",
+      "standards": [],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "genetics",
+      "domain": "biology",
+      "name": "基因",
+      "gist": "遗传信息的存储与表达。",
+      "detail": "DNA 编码/转录/翻译；信息编码与接口契约（schema）在「结构即信息」上同构（apilab:json-schema）。",
+      "engineering": "工程落法：契约即编码、向后兼容（apilab:json-schema 翻译）。",
+      "standards": [],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "biosphere",
+      "domain": "biology",
+      "name": "生物圈",
+      "gist": "地球全部生命与其环境的耦合系统。",
+      "detail": "盖亚假说视地球为自调节整体——与 netsys 盖亚意识/集智体、大同「人类一体」在「整体自组织」上互文。",
+      "engineering": "工程落法：系统作为自调节整体、跨端同口径（netsys/sysmesh；protec:monitoring）。",
+      "standards": [],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "falsifiability",
+      "domain": "methodology",
+      "name": "可证伪",
+      "gist": "一个主张须能被观测证伪才算科学。",
+      "detail": "波普尔判据：不可证伪的命题（如纯诗化表达）不属科学断言；工程上对应「先列不可（白名单）再论可行」，与量子纠错缓解同构。",
+      "engineering": "工程落法：先定红线/禁区再谈可用（quantum:mitigation 同构；protec:enclosure）。",
+      "standards": [],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "reproducibility",
+      "domain": "methodology",
+      "name": "可重复",
+      "gist": "实验须在他人处可独立重现。",
+      "detail": "可重复是可信任的前提；工程上对应「定时构建/巡检可复现」——每日自检如日礼。",
+      "engineering": "工程落法：定时构建/检查可复现（comp:make 翻译；protec:maintainability）。",
+      "standards": [],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "controlled-experiment",
+      "domain": "methodology",
+      "name": "对照",
+      "gist": "设对照组隔离变量以确证因果。",
+      "detail": "对照/随机/盲法是确证因果的支柱；工程上对应 A/B 与故障注入对照，避免把相关当因果。",
+      "engineering": "工程落法：变更前后对照、故障注入对照（protec:monitoring 同源）。",
+      "standards": [],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "abductive-reasoning",
+      "domain": "methodology",
+      "name": "溯因",
+      "gist": "由现象反推最省解释（最佳说明推理）。",
+      "detail": "皮尔士三推理之一；根因分析即溯因；与百工「锦囊策略」的谋定而后动同源。",
+      "engineering": "工程落法：根因分析/故障定位（baigong:jinnang-celue 翻译；protec:monitoring）。",
+      "standards": [],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "quantification",
+      "domain": "methodology",
+      "name": "定量",
+      "gist": "以可测数值表达，避免模糊断言。",
+      "detail": "定量使结论可比较可验证；接口契约（schema）把语义定量为结构，与 JSON Schema 同源。",
+      "engineering": "工程落法：契约定量、schema 即测度（apilab:json-schema 翻译；protec:monitoring）。",
+      "standards": [],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "peer-review",
+      "domain": "methodology",
+      "name": "同行评审",
+      "gist": "结论须经独立同行批判验证。",
+      "detail": "评审是纠错的集体机制；与百工「精审明辩」的工前审验同源——不可说者不说、可言者说清。",
+      "engineering": "工程落法：变更评审/代码评审（baigong:jingshen-mingbian 翻译；protec:enclosure）。",
+      "standards": [],
+      "canon_refs": [],
+      "bridges": []
+    },
+    {
+      "id": "uncertainty",
+      "domain": "methodology",
+      "name": "不确定度",
+      "gist": "任何测量都有误差，须声明置信区间。",
+      "detail": "不确定度论要求诚实标注精度；应急定位 ETA 须给置信下限（floor）而非虚假高精度，与「中道取中」同源。",
+      "engineering": "工程落法：定位/预测给置信下限、不报虚假精度（protec:locate-fuse；datong:zhongdao-rong）。",
+      "standards": [],
+      "canon_refs": [],
+      "bridges": []
+    }
+  ],
+  "by_domain": {
+    "materials": [
+      "corrosion",
+      "phase-transition",
+      "fatigue",
+      "creep"
+    ],
+    "thermodynamics": [
+      "thermo-laws",
+      "heat-transfer",
+      "entropy",
+      "phase-equilibrium"
+    ],
+    "climatology": [
+      "greenhouse",
+      "ocean-circulation",
+      "enso",
+      "carbon-cycle"
+    ],
+    "environmental": [
+      "pollution",
+      "ecology",
+      "sustainability"
+    ],
+    "physics": [
+      "electromagnetism",
+      "quantum-physics",
+      "mechanics"
+    ],
+    "chemistry": [
+      "electrochemistry",
+      "reaction-kinetics",
+      "periodic-table"
+    ],
+    "biology": [
+      "cell",
+      "evolution",
+      "genetics",
+      "biosphere"
+    ],
+    "methodology": [
+      "falsifiability",
+      "reproducibility",
+      "controlled-experiment",
+      "abductive-reasoning",
+      "quantification",
+      "peer-review",
+      "uncertainty"
+    ]
+  },
+  "principles": [
+    {
+      "id": "falsifiability",
+      "name": "可证伪",
+      "gist": "一个主张须能被观测证伪才算科学。",
+      "engineering": "工程落法：先定红线/禁区再谈可用（quantum:mitigation 同构；protec:enclosure）。",
+      "canon_refs": []
+    },
+    {
+      "id": "reproducibility",
+      "name": "可重复",
+      "gist": "实验须在他人处可独立重现。",
+      "engineering": "工程落法：定时构建/检查可复现（comp:make 翻译；protec:maintainability）。",
+      "canon_refs": []
+    },
+    {
+      "id": "controlled-experiment",
+      "name": "对照",
+      "gist": "设对照组隔离变量以确证因果。",
+      "engineering": "工程落法：变更前后对照、故障注入对照（protec:monitoring 同源）。",
+      "canon_refs": []
+    },
+    {
+      "id": "abductive-reasoning",
+      "name": "溯因",
+      "gist": "由现象反推最省解释（最佳说明推理）。",
+      "engineering": "工程落法：根因分析/故障定位（baigong:jinnang-celue 翻译；protec:monitoring）。",
+      "canon_refs": []
+    },
+    {
+      "id": "quantification",
+      "name": "定量",
+      "gist": "以可测数值表达，避免模糊断言。",
+      "engineering": "工程落法：契约定量、schema 即测度（apilab:json-schema 翻译；protec:monitoring）。",
+      "canon_refs": []
+    },
+    {
+      "id": "peer-review",
+      "name": "同行评审",
+      "gist": "结论须经独立同行批判验证。",
+      "engineering": "工程落法：变更评审/代码评审（baigong:jingshen-mingbian 翻译；protec:enclosure）。",
+      "canon_refs": []
+    },
+    {
+      "id": "uncertainty",
+      "name": "不确定度",
+      "gist": "任何测量都有误差，须声明置信区间。",
+      "engineering": "工程落法：定位/预测给置信下限、不报虚假精度（protec:locate-fuse；datong:zhongdao-rong）。",
+      "canon_refs": []
+    }
+  ],
+  "bridges": [
+    {
+      "from": "sciences:corrosion",
+      "system": "protec",
+      "target": "concept:corrosion",
+      "relation": "同源",
+      "how": "材料学腐蚀 = protec 腐蚀：同一电化学失效，科学侧解释、工程侧防护"
+    },
+    {
+      "from": "sciences:fatigue",
+      "system": "protec",
+      "target": "concept:fatigue",
+      "relation": "同源",
+      "how": "材料学疲劳 = protec 疲劳：机理同源"
+    },
+    {
+      "from": "sciences:creep",
+      "system": "protec",
+      "target": "concept:creep",
+      "relation": "同源",
+      "how": "材料学蠕变 = protec 蠕变：高温慢变形同源"
+    },
+    {
+      "from": "sciences:thermo-laws",
+      "system": "protec",
+      "target": "concept:thermal-aging",
+      "relation": "翻译",
+      "how": "热力学第二定律（不可逆）→ protec 热老化：散热裕度即对抗熵增"
+    },
+    {
+      "from": "sciences:heat-transfer",
+      "system": "protec",
+      "target": "concept:contact-heating",
+      "relation": "翻译",
+      "how": "接触热阻（界面温升）→ protec 接触高阻发热：同属界面热失控"
+    },
+    {
+      "from": "sciences:electrochemistry",
+      "system": "protec",
+      "target": "concept:galvanic-corrosion",
+      "relation": "翻译",
+      "how": "电化学原电池 → protec 电偶腐蚀：异种金属电位差"
+    },
+    {
+      "from": "sciences:electrochemistry",
+      "system": "protec",
+      "target": "concept:grounding-rcd",
+      "relation": "翻译",
+      "how": "电化学漏电流 → protec 接地/RCD：毫安级漏电流防护"
+    },
+    {
+      "from": "sciences:greenhouse",
+      "system": "protec",
+      "target": "concept:ashrae-thermal",
+      "relation": "翻译",
+      "how": "温室增温 → protec ASHRAE 温控：室外气候定进风包络"
+    },
+    {
+      "from": "sciences:carbon-cycle",
+      "system": "protec",
+      "target": "concept:iec60721-class",
+      "relation": "翻译",
+      "how": "碳/化学基线 → protec IEC 60721 环境分类"
+    },
+    {
+      "from": "sciences:pollution",
+      "system": "protec",
+      "target": "concept:humidity-ingress",
+      "relation": "翻译",
+      "how": "盐雾/硫化物污染 → protec 湿气侵入：三防与 IP 对抗"
+    },
+    {
+      "from": "sciences:falsifiability",
+      "system": "quantum",
+      "target": "concept:mitigation",
+      "relation": "同构",
+      "how": "可证伪（先列不可）→ 量子纠错缓解：先列不可再论可行"
+    },
+    {
+      "from": "sciences:reproducibility",
+      "system": "comp",
+      "target": "concept:make",
+      "relation": "翻译",
+      "how": "可重复实验 → 定时构建/巡检可复现（每日自检如日礼）"
+    },
+    {
+      "from": "sciences:abductive-reasoning",
+      "system": "baigong",
+      "target": "principle:jinnang-celue",
+      "relation": "翻译",
+      "how": "溯因根因分析 ↔ 锦囊策略：谋定而后动"
+    },
+    {
+      "from": "sciences:quantification",
+      "system": "apilab",
+      "target": "concept:json-schema",
+      "relation": "翻译",
+      "how": "定量（数值化）→ JSON Schema：契约即测度"
+    },
+    {
+      "from": "sciences:peer-review",
+      "system": "baigong",
+      "target": "principle:jingshen-mingbian",
+      "relation": "翻译",
+      "how": "同行评审 ↔ 精审明辩：工前审验、不可说者不说"
+    },
+    {
+      "from": "sciences:uncertainty",
+      "system": "datong",
+      "target": "concept:zhongdao-rong",
+      "relation": "翻译",
+      "how": "不确定度（给置信区间）→ 中道取中：不报虚假精度"
+    },
+    {
+      "from": "sciences:evolution",
+      "system": "comp",
+      "target": "concept:pipeline-overview",
+      "relation": "翻译",
+      "how": "变异-选择演化 ↔ 构建-回归迭代：筛选式演进"
+    },
+    {
+      "from": "sciences:ecology",
+      "system": "netsys",
+      "target": "module:meshnet",
+      "relation": "互文",
+      "how": "生态网络（节点-链路-冗余）↔ meshnet：抗单点失效"
+    }
+  ],
+  "needs_verify": [
+    {
+      "item": "标准编号与最新版次",
+      "status": "通行口径登记",
+      "note": "IEC/ASHRAE/ISO/GB 等编号按通行口径登记，未逐条核对最新版次"
+    },
+    {
+      "item": "温室效应与设备温控映射",
+      "status": "结构性翻译",
+      "note": "将全球温室效应翻译为设备 ASHRAE 温控约束，非气候学等效断言"
+    },
+    {
+      "item": "量子-可证伪同构",
+      "status": "比较框架自定",
+      "note": "可测度与可证伪仅作结构同构登记，物理/科学内涵各自独立"
+    }
+  ],
+  "user_face_facts": {
+    "cli_subcommands": 128,
+    "webapi_actions": 29,
+    "gui_windows": 112,
+    "deno_console_version": "0000.0000.0000.0034.20261026",
+    "deno_report_viewer_version": "0000.0000.0000.0034.20261026",
+    "lang_total": 161,
+    "probe_verified": 15,
+    "comp_lang_needs": 16,
+    "webapi_protocol": "JSONL 白名单协议（一行请求 JSON → 一行响应 JSON）",
+    "gui_note": "tkinter GUI：show_* 面板窗口（概念系统中心/各子系统面板）",
+    "deno_note": "Deno Web 控制台（console.ts）+ 报告查看器（report_viewer.ts），与 Python 侧经 webapi JSONL 衔接",
+    "lang_note": "语言面：plang 161 条语言（其中 probe 实测 15 种）；--check 与磁盘登记值逐键比对",
+    "concept_systems": 11
+  }
+}

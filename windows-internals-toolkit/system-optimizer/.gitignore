@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+dist/
+build/
+.venv/
+
+# 经典思想（道枢）治理层：源文本（用户提供的 PDF 经 pdftotext 提取）不入库，
+# 只入库 research/daoxue/build_daoxue.py 构建出的结构化元数据 data/daoxue_taxonomy.json
+/research/daoxue/sources/
+
+# docker-compose 运行时产物：宿主 ./reports 卷（36 号档），只读诊断的报告落点
+/reports/
+
+# sysweeper-go 交叉编译二进制（CGO_ENABLED=0 纯 Go 交叉编译，CI 重建并发布到 Release）
+src/go/sysweeper-go-*

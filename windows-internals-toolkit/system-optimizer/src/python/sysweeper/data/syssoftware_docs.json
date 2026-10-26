@@ -1,0 +1,195 @@
+{
+  "systemd": {
+    "name": "systemd 系统与服务管理器（单元 / D-Bus / journal）",
+    "org": "freedesktop.org · systemd",
+    "url": "https://systemd.io/",
+    "protocols": [
+      "单元文件指令（systemd.unit(5)、systemd.service(5)）",
+      "D-Bus 接口 org.freedesktop.systemd1（Manager / Unit 对象）",
+      "日志字段协议（systemd.journal-fields(7)）"
+    ],
+    "interfaces": [
+      "systemctl(1)（单元生命周期）",
+      "journalctl(1)（日志查询与 --vacuum 回收）",
+      "systemd-analyze(1)（启动耗时与关键链）",
+      "busctl(1)（D-Bus 自省与调用）",
+      "/run/systemd/system、/etc/systemd/system"
+    ],
+    "docs": [
+      "systemd.unit(5)（单元文件格式与全部指令）",
+      "systemd.service(5)（服务单元：Type/ExecStart/Restart）",
+      "systemd-journald.service(8)（日志服务与持久化配置）",
+      "systemd-analyze(1)（blame / critical-chain / plot）",
+      "org.freedesktop.systemd1(5)（systemd D-Bus API）"
+    ],
+    "summary": "systemd 以单元文件声明服务、挂载、定时器等资源，并通过 D-Bus 暴露 org.freedesktop.systemd1 供程序化控制；日志由 journald 以二进制字段化格式持久化。",
+    "advice": "优化与清理一律走官方接口：查启动耗时用 `systemd-analyze blame`，回收日志用 `journalctl --vacuum-size/--vacuum-time`（优于直接删 /var/log/journal）。单元改动后需 `systemctl daemon-reload`。"
+  },
+  "dbus": {
+    "name": "D-Bus 消息总线（进程间通信）",
+    "org": "freedesktop.org",
+    "url": "https://www.freedesktop.org/wiki/Software/dbus/",
+    "protocols": [
+      "D-Bus Specification（消息格式、方法/信号/属性）",
+      "标准接口 org.freedesktop.DBus.Introspectable（自省 XML）",
+      "标准接口 org.freedesktop.DBus.Properties（属性读写）"
+    ],
+    "interfaces": [
+      "busctl(1)（列出总线名、自省、调用方法）",
+      "dbus-send(1) / dbus-monitor(1)（发送与监听消息）",
+      "系统总线 /run/dbus/system_bus_socket",
+      "会话总线 $DBUS_SESSION_BUS_ADDRESS"
+    ],
+    "docs": [
+      "D-Bus Specification（freedesktop.org，消息协议权威规范）",
+      "dbus-daemon(1)（总线守护进程与配置）",
+      "busctl(1)（总线自省与调用工具）",
+      "sd-bus（systemd 的 D-Bus 客户端库文档）"
+    ],
+    "summary": "D-Bus 是 Linux 桌面与系统服务的事实标准 IPC：一份规范同时定义系统总线与会话总线，服务以「总线名 + 对象路径 + 接口」三元组寻址，并可通过 Introspectable 自省。",
+    "advice": "核对服务一律用 `busctl list`（系统总线）/`busctl --user list`（会话总线）按官方规范自省，避免猜测总线名；D-Bus 只做通信，清理应针对具体服务（如 journal、缓存）而非总线本身。"
+  },
+  "networkmanager": {
+    "name": "NetworkManager 网络管理（D-Bus 配置接口）",
+    "org": "freedesktop.org · GNOME",
+    "url": "https://networkmanager.dev/",
+    "protocols": [
+      "D-Bus 接口 org.freedesktop.NetworkManager（设备/连接管理）",
+      "D-Bus 接口 org.freedesktop.NetworkManager.Settings（连接配置）",
+      "连接配置格式 nm-settings(5)（keyfile / ifcfg）"
+    ],
+    "interfaces": [
+      "nmcli(1)（命令行主控工具，覆盖全部 D-Bus 能力）",
+      "nmtui(1)（文本界面）",
+      "/etc/NetworkManager/NetworkManager.conf",
+      "/etc/NetworkManager/system-connections/"
+    ],
+    "docs": [
+      "NetworkManager(8)（守护进程与主配置）",
+      "NetworkManager.conf(5)（全局配置，含 dns / dhcp 段）",
+      "nm-settings(5)（连接属性与 keyfile 格式）",
+      "nmcli(1)（命令与 D-Bus 属性映射）",
+      "org.freedesktop.NetworkManager(5)（D-Bus API 参考）"
+    ],
+    "summary": "NetworkManager 把网卡、Wi-Fi、VPN 等抽象为「设备 + 连接」，全部能力经 org.freedesktop.NetworkManager 暴露；用户配置以 keyfile 持久化于 /etc/NetworkManager/system-connections。",
+    "advice": "调优走官方接口：`nmcli general status` 看全局状态、`nmcli connection show` 核对连接、NetworkManager.conf 的 [main].dns 调整 DNS 后端（默认 systemd-resolved）。勿手工改 /etc/resolv.conf（会被覆盖）。"
+  },
+  "pipewire": {
+    "name": "PipeWire 多媒体服务（音视频图与协议）",
+    "org": "freedesktop.org · PipeWire",
+    "url": "https://pipewire.org/",
+    "protocols": [
+      "PipeWire 原生协议（基于 SPA 插件的节点/端口/链路图）",
+      "D-Bus 接口 org.pipewire（守护进程与会话管理）",
+      "兼容层协议：PulseAudio / JACK / ALSA 替代"
+    ],
+    "interfaces": [
+      "pw-cli(1)（查询与操作图：info / ls）",
+      "pw-top(1)（实时查看各节点负载与延迟）",
+      "pw-metadata(1)（读写全局元数据，如默认设备）",
+      "/etc/pipewire/、~/.config/pipewire/"
+    ],
+    "docs": [
+      "PipeWire 文档（docs.pipewire.org，守护进程与配置）",
+      "pipewire.conf(5)（主配置：缓冲、时钟、默认采样率）",
+      "SPA 文档（Simple Plugin API，插件与格式协商）",
+      "wireplumber 文档（会话管理器策略与规则）"
+    ],
+    "summary": "PipeWire 以 SPA 插件统一处理音频与视频，把设备抽象为节点并通过端口链接成图；替代 PulseAudio/JACK 的同时提供低延迟与沙箱安全（Portal）。",
+    "advice": "核对用 `pw-cli info` / `pw-top`（官方工具，反映真实节点图）；延迟与缓冲在 pipewire.conf 或 wireplumber 策略中调整。排查音频优先看节点图与采样率匹配，而非重启守护进程。"
+  },
+  "bluez": {
+    "name": "BlueZ 蓝牙协议栈（D-Bus 接口）",
+    "org": "官方 Linux 蓝牙协议栈（BlueZ）",
+    "url": "http://www.bluez.org/",
+    "protocols": [
+      "D-Bus 接口 org.bluez（Adapter1 / Device1 / Battery1 等）",
+      "Bluetooth Core Specification（SIG，底层射频与协议）",
+      "GATT / ATT（低功耗属性协议）"
+    ],
+    "interfaces": [
+      "bluetoothctl(1)（交互式控制器/设备管理）",
+      "bluetoothd(8)（守护进程，提供 org.bluez）",
+      "systemctl（启停 bluetooth.service）",
+      "/var/lib/bluetooth/（配对与密钥持久化）"
+    ],
+    "docs": [
+      "bluetoothd(8)（守护进程与 D-Bus 接口注册）",
+      "bluetoothctl(1)（官方管理工具与命令集）",
+      "org.bluez.Adapter1(5) / org.bluez.Device1(5)（D-Bus API）",
+      "Bluetooth Core Specification（SIG，协议层权威规范）"
+    ],
+    "summary": "BlueZ 是 Linux 官方蓝牙协议栈，把适配器与设备经 org.bluez 暴露在 D-Bus 上；配对信息与链路密钥持久化于 /var/lib/bluetooth。",
+    "advice": "核对设备用 `bluetoothctl list` / `bluetoothctl devices`；不需要蓝牙时可停 bluetooth.service 省电（属官方 service 单元管理）。清 /var/lib/bluetooth 会丢全部配对，务必谨慎。"
+  },
+  "udev": {
+    "name": "udev 设备管理（规则与硬件数据库）",
+    "org": "freedesktop.org · systemd",
+    "url": "https://www.freedesktop.org/wiki/Software/systemd/",
+    "protocols": [
+      "udev 规则语法（udev(7)：匹配键 MATCH / 赋值键 ASSIGN）",
+      "硬件数据库 hwdb（.hwdb 文件与 udevadm hwdb 二进制索引）",
+      "内核 uevent 事件（netlink kobject uevent）"
+    ],
+    "interfaces": [
+      "udevadm(1)（info / monitor / trigger / hwdb / control）",
+      "/etc/udev/rules.d/（管理员自定义规则）",
+      "/run/udev/、/sys（设备属性源）"
+    ],
+    "docs": [
+      "udev(7)（规则语法与匹配/赋值键权威说明）",
+      "udevadm(8)（管理与调试工具）",
+      "systemd-udevd.service(8)（设备事件守护进程）",
+      "hwdb(7)（硬件数据库文件格式与查询）"
+    ],
+    "summary": "udev 在用户态接收内核 uevent，按 /etc/udev/rules.d 下的规则为设备命名、建符号链接、设权限；hwdb 提供厂商/型号级的属性覆盖。",
+    "advice": "核对设备属性用 `udevadm info`（只读、按官方规则语义）；新增规则后 `udevadm control --reload` 再 `udevadm trigger`。误写规则会导致网卡命名变化或设备无权限，改前先备份。"
+  },
+  "polkit": {
+    "name": "polkit 授权框架（策略与 D-Bus 判定）",
+    "org": "freedesktop.org",
+    "url": "https://www.freedesktop.org/wiki/Software/polkit/",
+    "protocols": [
+      "D-Bus 接口 org.freedesktop.PolicyKit1（Authority 判定）",
+      "策略 action 定义（.policy XML，含 allow_any/allow_inactive/allow_active）",
+      "JS 规则脚本（.rules，/etc/polkit-1/rules.d/）"
+    ],
+    "interfaces": [
+      "pkaction(1)（列出已注册 action 与默认授权）",
+      "pkexec(1)（以授权方式提权执行）",
+      "pkcheck(1)（查询某进程授权结果）",
+      "/usr/share/polkit-1/actions/、/etc/polkit-1/rules.d/"
+    ],
+    "docs": [
+      "polkit(8)（框架总览与判定流程）",
+      "pkaction(1)（action 查询工具）",
+      "org.freedesktop.PolicyKit1(5)（D-Bus API 参考）",
+      "polkit 策略文件格式（.policy XML schema）"
+    ],
+    "summary": "polkit 让无特权进程经 D-Bus 向特权服务申请授权：服务注册 action，polkit 按 .policy 默认值与管理员 .rules 判定 allow/deny/auth_admin。",
+    "advice": "审计授权用 `pkaction`（只读列出全部 action 与默认策略，官方接口）；收紧权限应新增 /etc/polkit-1/rules.d/*.rules，不要改 /usr/share 下发行版自带 .policy（升级会被覆盖）。"
+  },
+  "wayland": {
+    "name": "Wayland 显示协议（合成器与扩展协议）",
+    "org": "freedesktop.org · Wayland",
+    "url": "https://wayland.freedesktop.org/",
+    "protocols": [
+      "wayland.xml 核心协议（wl_compositor / wl_surface / wl_seat 等）",
+      "xdg-shell 协议（窗口生命周期与状态，桌面通用）",
+      "扩展协议：xdg-decoration、linux-dmabuf、wp-fractional-scale、idle-inhibit 等"
+    ],
+    "interfaces": [
+      "WAYLAND_DISPLAY / XDG_RUNTIME_DIR（会话套接字）",
+      "wayland-info(1)（列出合成器支持的全部全局接口）",
+      "weston(1) / 各合成器（KWin、Mutter、wlroots 系）"
+    ],
+    "docs": [
+      "Wayland 协议规范（wayland.freedesktop.org/docs）",
+      "xdg-shell 协议（窗口管理标准扩展）",
+      "wayland-client / libwayland 文档（客户端开发）",
+      "wlroots 文档（合成器实现与协议支持矩阵）"
+    ],
+    "summary": "Wayland 以「合成器即显示服务器」取代 X11：客户端经 wayland.xml 定义的接口协商 surface 与输入，桌面行为（窗口状态、装饰）由 xdg-shell 等扩展协议标准化。",
+    "advice": "核对合成器能力用 `wayland-info`（按协议列出全局接口，只读）；$WAYLAND_DISPLAY 非空即当前为 Wayland 会话（X11 兼容走 XWayland）。缺失扩展协议会导致窗口装饰/缩放异常，属合成器支持范围而非配置问题。"
+  }
+}

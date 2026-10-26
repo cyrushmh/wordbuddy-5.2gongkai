@@ -1,0 +1,23 @@
+xfce4-quantum (0001.0000.0000.0000.20261024) unstable; urgency=medium
+
+  * 版本号体系迁移：semver 0.6.84 → 去中心化 odometer 格式
+    （NNNN.NNNN.NNNN.NNNN.YYYYMMDD，见 system-optimizer version.py）；
+    迁移首版 A 段置 1，保证 dpkg 版本序不降级，此后纯 odometer 递增。
+
+ -- Quantum Packaging <packaging@quantum-arch.local>  Sat, 24 Oct 2026 03:10:00 +0800
+
+xfce4-quantum (0.6.84) unstable; urgency=medium
+
+  * quantum-core 接入 /proc/quantum-net：解析量子组网快照（QNIC/链路/对等/
+    纠缠交换/拓扑变化/盖亚层），state.json 新增 net 段，DBus 新增 GetNetStats。
+  * 新增 Quantum Net Genmon 面板小程序（host 缺接口时优雅降级、不伪造）。
+  * 面板注入脚本与桌面设置入口同步纳入组网维度（三个 Genmon）。
+
+ -- Quantum Packaging <packaging@quantum-arch.local>  Thu, 22 Oct 2026 12:13:55 +0800
+
+xfce4-quantum (0.6.80) unstable; urgency=medium
+
+  * 量子架构 XFCE 桌面基座：量子会话 / 守护进程 / 面板小程序 / 主题。
+  * 面向量子架构(ARCH=quantum)的可构建 Debian 元包（双二进制包 quantum-core + xfce4-quantum）。
+
+ -- Quantum Packaging <packaging@quantum-arch.local>  Thu, 22 Oct 2026 12:13:55 +0800

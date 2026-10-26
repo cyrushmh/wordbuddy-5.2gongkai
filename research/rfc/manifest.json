@@ -1,0 +1,53 @@
+{
+  "source": "https://www.rfc-editor.org/rfc-index.txt",
+  "source_kind": "official-rfc-editor-index",
+  "fetched_utc": "2026-10-17T12:47:02Z",
+  "bytes": 2027473,
+  "lines": 42904,
+  "sha256": "24cc02402437a1e0c3679b879cbc2f9f933a99ec4f8a846f4a96f12e295726b5",
+  "license_note": "IETF RFC 索引为公开规范性文献目录，本文件仅作索引存档，不复制 RFC 正文",
+  "note": "一次全量拉取即得全文（服务端忽略 Range 头，返回完整文件），未分片断点续传",
+  "harvest_history": [
+    {
+      "utc": "2026-10-17T12:47:02Z",
+      "script": "research/harvest/rfc_index_harvest.py",
+      "entries": 10036,
+      "note": "v1 首采：七字段 n/t/d/a/f/s/doi + also，关数字段因脚本 bug（无冒号段整段当键）静默丢失"
+    },
+    {
+      "utc": "2026-10-25T00:00:00Z",
+      "script": "research/harvest/rfc_index_harvest.py",
+      "entries": 10036,
+      "note": "v2 重采：修复无冒号关系段解析（Obsoletes/Obsoleted by/Updates/Updated by/Also 整词前缀匹配），关数字段覆盖 obs=1265 oby=1384 upd=1293 udy=1242 also=449，悬空指针 0；与 v1 逐字段回归零差异",
+      "report": "research/rfc/rfc_index_harvest_report.json"
+    }
+  ],
+  "topic_index": {
+    "script": "research/rfc/build_rfc_topic_index.py",
+    "input": "data/rfc_standards.json",
+    "output": "data/rfc_topic_index.json",
+    "method": "标题关键词规则匹配（heuristic，非 IETF 官方分类）",
+    "traceability": "每条命中记录 rule_id；--check 模式对磁盘产物做七项断言（含按规则重算比对），篡改可发现",
+    "domains": 13,
+    "rules": 89,
+    "classified": 6319,
+    "unclassified": 3529,
+    "note": "一条 RFC 可归多域（如 DNS over IPv6 同归 dns 与 ip-core）；未命中任何规则者如实留在 unclassified，不强行 100% 覆盖"
+  },
+  "wg_index": {
+    "script": "research/rfc/build_rfc_wg_index.py",
+    "input": ["rfc-index.xml (rfc-editor 官方)", "harvest/ietf_wg_list.json (datatracker WG/area 名录)"],
+    "output": "data/rfc_wg_index.json",
+    "method": "官方 WG/RG 归属（来自 draft 段 draft-ietf-{wg}-* / draft-irtf-{rg}-* / draft-iab-* + datatracker 标签），第二索引源",
+    "source": "https://www.rfc-editor.org/rfc-index.xml",
+    "wg_list_source": "https://datatracker.ietf.org/api/v1/group/group/",
+    "traceability": "--check 模式对磁盘产物做对账断言（名单可加载/area 映射有效/归属键存在且 issued/覆盖闭合/模态一致率∈(0,1)）",
+    "wg_count": 571,
+    "wg_covered": 6432,
+    "wg_coverage": 0.653,
+    "area_count": 16,
+    "kind_counts": {"legacy": 1467, "wg": 6302, "independent": 1808, "iab": 141, "rg": 130},
+    "reconciliation": "与 heuristic 主题域层模态一致率 81.8%（共同分类 3908/4778）；两层互补：WG 给官方归口，heuristic 兜独立投稿/IAB/早期 Legacy",
+    "note": "非 WG 归属（legacy/independent）如实留 w=None，不臆造；area 名用 datatracker 代码（sec/rtg/int/app/art/rai/wit/tsv…）"
+  }
+}

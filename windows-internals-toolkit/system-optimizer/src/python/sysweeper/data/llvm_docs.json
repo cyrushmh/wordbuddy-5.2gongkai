@@ -1,0 +1,36 @@
+{
+  "title": "LLVM 工具链与交叉编译知识库（llvm）",
+  "sources": [
+    "LLVM 项目（clang / lld / MLIR / compiler-rt）",
+    "LLVM Target Triple 规范（arch-vendor-os-abi，如 aarch64-linux-gnu）",
+    "GNU/Mingw-w64 交叉编译 sysroot 约定"
+  ],
+  "tools": {
+    "clang": "C/C++/ObjC 前端（--version / --target=<triple>）",
+    "lld": "LLVM 链接器（ld.lld），跨平台统一链接",
+    "mlir": "多级中间表示（mlir-opt / mlir-translate），多面体优化类",
+    "llvm-config": "--targets-built 实读本机已构建目标三元组"
+  },
+  "targets": [
+    "aarch64-linux-gnu",
+    "armv7l-linux-gnueabihf",
+    "riscv64-linux-gnu",
+    "x86_64-w64-mingw32",
+    "wasm32-unknown-unknown",
+    "i686-linux-gnu",
+    "powerpc64le-linux-gnu",
+    "loongarch64-linux-gnu"
+  ],
+  "changelog": [
+    {
+      "v0.6.42": "首次引入 LLVM 子系统：探针 clang/lld/mlir，交叉编译矩阵初始 8 目标；后续按时间序列逐步扩充"
+    },
+    {
+      "v0.6.86": "安全新闻对账（docs/52）：LLVM 23.1.4 于 2026-10-20 发布；CVE-2026-27144（memmove 指针解包致运行期内存损坏，CVSS 7.1，2026-04-08 公布，有修复）；CVE-2026-13573/13574 影响 llvm-project <=22.1.6（项目方口径「超出文档化安全范围」，与第三方评估分歧，needs_verify）；GAS/binutils 侧 CVE-2026-91781 /90803/90829/18220 修于 binutils 2.48（本机 2.42 不在受影响面）；comp 概念系统 bringup 域增 toolchain-security-response（编译型补丁须重编译部署才生效）"
+    },
+    {
+      "v0.6.87": "声学与音律子系统（acoustics）四轴知识库落地（docs/53 待补）：声学基础（IEC 61672-1 A/C/Z 计权标称值表 + c=f·λ 换算）、中国音律（三分损益十二律，管长/频率比/音分偏差机算表）、无线电磁（ITU RR 5.138/5.150/5.280 ISM 频段 12 条+ 工信部 2019 年第 52 号公告微功率口径）、音频硬件（IEC 60268 / EN 50332-1/-2 限值结构化字段）；补丁四件套实测收官（Python 3.11.17 / Node 22.23.4 / Deno 2.9.8 / Go 1.27.3 七平台重编），CI go-version 1.21→1.27 随工具链同步"
+    }
+  ],
+  "compliance": "本子系统只读探测：绝不编译、绝不下载 sysroot、绝不改写工具链配置"
+}

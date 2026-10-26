@@ -1,0 +1,176 @@
+{
+  "pkg": {
+    "name": "pkg（FreeBSD 软件包管理器：SQLite 本地库 + 远端仓库）",
+    "org": "FreeBSD",
+    "url": "https://docs.freebsd.org/en/books/handbook/pkg/",
+    "protocols": [
+      "本地元数据：/var/db/pkg/local.sqlite（已装包、文件清单、依赖边）",
+      "远端仓库：pkg+https（ABI 限定，如 FreeBSD:14:amd64），增量式文件清单 + 签名校验",
+      "依赖解析：有向图，autoremove 删除「无反向依赖」的叶子节点",
+      "安全：pkg audit 比对本机已装版本与 VulnXML 漏洞库"
+    ],
+    "interfaces": [
+      "pkg info（列已装包，只读）",
+      "pkg version -v（比对本机与仓库版本，只读）",
+      "pkg audit（安全审计，只读）",
+      "pkg clean（-a 清缓存，写） / pkg autoremove -y（删孤包，写）"
+    ],
+    "docs": [
+      "FreeBSD Handbook: pkg",
+      "pkg(8) / pkg.conf(5) man"
+    ],
+    "summary": "FreeBSD 的 pkg 用本地 SQLite 存已装包与依赖图，远端仓库按 ABI 拉取。清理空间用 pkg clean（删下载缓存，不影响已装）；pkg autoremove 删无人依赖的叶子包。安全核对用 pkg audit（只读）。OpenBSD 用 pkg_add/pkg_delete、NetBSD 用 pkgin，命令不同但理念一致。",
+    "advice": "只读核对用 pkg info / pkg version -v / pkg audit（安全审计不修改）。清理用 pkg clean -a（仅删缓存）；删孤包用 pkg autoremove -y（先 -n 预演）。切勿 pkg delete -a（删全部已装）或在未确认依赖时盲删。本工具探测只读，清理走各 BSD 包管理的原生命令。"
+  },
+  "rc_conf": {
+    "name": "rc.conf（FreeBSD 服务配置：rc(8) 变量体系）",
+    "org": "FreeBSD",
+    "url": "https://docs.freebsd.org/en/books/handbook/config/",
+    "protocols": [
+      "rc.conf 变量：<service>_enable=\"YES|NO\" 控制是否开机启动；<service>_flags 传参",
+      "rcorder 依赖图：按 /etc/rc.d、/usr/local/etc/rc.d 脚本头的 PROVIDE/REQUIRE/KEYWORD 排序",
+      "层叠：/etc/defaults/rc.conf（默认）→ /etc/rc.conf（覆盖）→ /etc/rc.conf.local"
+    ],
+    "interfaces": [
+      "service -e（列已启用服务，只读）",
+      "service <name> start|stop|status（启停/查状态）",
+      "rcorder /etc/rc.d/*（看启动顺序，只读）",
+      "在 rc.conf 设 xxx_enable=\"NO\"（禁用，写）"
+    ],
+    "docs": [
+      "FreeBSD Handbook: 配置与调优",
+      "rc(8) / rc.conf(5) / service(8) man"
+    ],
+    "summary": "FreeBSD 服务由 rc.conf 的 xxx_enable 变量与 /etc/rc.d 脚本驱动，启动顺序由 rcorder 依 PROVIDE/REQUIRE 解析。审查开机项即看 service -e 与 rc.conf；禁用某服务改 rc.conf 设其 _enable=\"NO\" 并 service stop。OpenBSD 用 rcctl、NetBSD 用 /etc/rc.conf 的 *_=YES。",
+    "advice": "只读审查用 service -e（FreeBSD）/ rcctl ls started（OpenBSD）。禁用服务在 rc.conf 设 xxx_enable=\"NO\" 后 service <name> stop（FreeBSD）；OpenBSD 用 rcctl disable <name>。不要停用 network/ssh/ntpd 等底层服务，可能丢远程访问。本工具探测只读。"
+  },
+  "sysctl": {
+    "name": "sysctl（BSD 内核运行时参数：kern./vm./net./hw.）",
+    "org": "FreeBSD / OpenBSD / NetBSD / DragonFly",
+    "url": "https://www.freebsd.org/cgi/man.cgi?sysctl(8)",
+    "protocols": [
+      "sysctl MIB：分层命名，kern./vm./hw./net./machdep. 等",
+      "sysctlbyname 系统调用读内核变量；写用 sysctl -w，持久化写 /etc/sysctl.conf",
+      "各 BSD 参数差异大：FreeBSD 有 vm.swappiness（近年）、net.inet.tcp；OpenBSD/NetBSD 部分无对应键"
+    ],
+    "interfaces": [
+      "sysctl -a（dump 全部，只读）",
+      "sysctl <name>（读单项，只读）",
+      "sysctl -w <name>=<value>（写，root）"
+    ],
+    "docs": [
+      "sysctl(8) / sysctl(3) man（各 BSD）",
+      "各发行版内核文档"
+    ],
+    "summary": "BSD 把内核运行时状态暴露在 sysctl 命名空间，读用 sysctl -a，写用 sysctl -w（root，持久化放 /etc/sysctl.conf）。与 macOS(XNU) 同源思路但参数名不同。硬件信息优先 sysctlbyname 比解析文件更权威。",
+    "advice": "只读核对用 sysctl -a / 单项 sysctl <name>；调优写用 sysctl -w（root）并写入 /etc/sysctl.conf 持久化。注意 FreeBSD 才有 vm.swappiness，OpenBSD/NetBSD 无此键会自动跳过。本工具探测只读，不写 sysctl。"
+  },
+  "pf": {
+    "name": "pf（OpenBSD 包过滤：pf.conf 规则集 / 锚点 / 表）",
+    "org": "OpenBSD",
+    "url": "https://www.openbsd.org/faq/pf/",
+    "protocols": [
+      "pf.conf 规则集：宏/表(table)/锚点(anchor)/块(block)/放行(pass)/NAT/重定向(rdr)",
+      "有状态过滤：状态表(state table) 跟踪连接；scrub 做分片重组",
+      "运行时控制：pfctl 加载/检查/统计；规则集可热重载而不断连"
+    ],
+    "interfaces": [
+      "pfctl -s rules（看当前规则，只读）",
+      "pfctl -s info（看状态/计数器，只读）",
+      "pfctl -s state（看活动状态，只读）",
+      "pfctl -e / -d / -f <conf>（启用/禁用/加载规则，写）"
+    ],
+    "docs": [
+      "OpenBSD FAQ: Packet Filter",
+      "pf.conf(5) / pfctl(8) man"
+    ],
+    "summary": "pf 是 OpenBSD 发起的包过滤器，规则在 pf.conf。只读核对用 pfctl -s rules/info/state 看当前规则与状态表；改动/重载规则用 pfctl -f。FreeBSD 也集成 pf（逻辑相近）。审查防火墙即用 pfctl 只读命令。",
+    "advice": "只读核对用 pfctl -s rules / -s info / -s state（看规则与状态，不改动）。改规则先 pfctl -nf <conf> 语法校验，再 pfctl -f 加载。切勿 pfctl -F all 盲目清空状态表或 -d 误关防火墙导致断网。本工具探测只读。"
+  },
+  "zfs": {
+    "name": "OpenZFS（FreeBSD 默认存储栈：zpool / dataset）",
+    "org": "OpenZFS",
+    "url": "https://openzfs.github.io/openzfs-docs/",
+    "protocols": [
+      "存储池 zpool + 数据集 dataset/zvol，写时复制(COW) + 端到端校验和",
+      "快照(snapshot)与克隆(clone)基于 COW，只读快照写时复制",
+      "scrub 后台校验并修复副本；trim 对 SSD 后备盘回收空闲块；autotrim 自动"
+    ],
+    "interfaces": [
+      "zpool list / zpool status（看池健康/容量，只读）",
+      "zfs list（看数据集用量，只读）",
+      "zpool scrub <pool>（校验，重 IO） / zpool trim <pool>（回收，重 IO）",
+      "zfs destroy <pool>/<ds>@<snap>（删快照，写）"
+    ],
+    "docs": [
+      "OpenZFS 文档（openzfs.github.io）",
+      "zpool(8) / zfs(8) man"
+    ],
+    "summary": "FreeBSD 默认用 OpenZFS 管理磁盘，pool 聚合成卷、dataset 灵活配额。空间杀手是累积快照与未释放旧 dataset；SSD 后备池应定期 zpool trim 回收空闲块。只读核对用 zpool list/status、zfs list。scrub/trim 为重 IO 但只读数据面。",
+    "advice": "只读核对用 zpool list / zpool status / zfs list（看健康与容量）。回收空间：删旧快照 zfs destroy <pool>/<ds>@<snap>，SSD 池 zpool trim <pool>（或 autotrim=on）。scrub 校验完整性（可修副本）。低峰执行 scrub/trim，避免 IO 冲撞。本工具探测只读。"
+  },
+  "periodic": {
+    "name": "periodic（FreeBSD 周期脚本：daily/weekly/monthly/security）",
+    "org": "FreeBSD",
+    "url": "https://docs.freebsd.org/en/books/handbook/config/#periodic",
+    "protocols": [
+      "/etc/periodic/{daily,weekly,monthly,security} 下的编号脚本（100.* 等）",
+      "periodic.conf 覆盖各项开关（如 daily_clean_hostname_enable、security_status_*）",
+      "输出按类别（/var/log 或由 mail 发给 root），security 类做合规/异常报告"
+    ],
+    "interfaces": [
+      "periodic daily / weekly / security（运行对应目录脚本）",
+      "periodic -a security（仅跑 security 类）",
+      "cat /etc/periodic.conf / /etc/defaults/periodic.conf（看配置，只读）"
+    ],
+    "docs": [
+      "FreeBSD Handbook: 周期性任务配置",
+      "periodic(8) / periodic.conf(5) man"
+    ],
+    "summary": "FreeBSD 用 periodic 框架跑 daily/weekly/monthly/security 脚本，输出常发邮件给 root 或由日志收集。security 类脚本产出合规/异常报告（如 setuid 变化、空口令）。优化时常清理 periodic 输出目录或调整 periodic.conf 频率。只读核对看配置与脚本目录。",
+    "advice": "只读核对用 cat /etc/periodic.conf / /etc/defaults/periodic.conf 与 ls /etc/periodic/* 看启用了哪些任务。运行 periodic daily 即生成报告（不改系统，但会产生输出/邮件）。调整频率改 periodic.conf（写）。本工具探测只读。"
+  },
+  "bsdconfig": {
+    "name": "bsdconfig（FreeBSD 控制台配置向导：dialog 前端）",
+    "org": "FreeBSD",
+    "url": "https://docs.freebsd.org/en/books/handbook/bsdinstall-post/",
+    "protocols": [
+      "基于 dialog(3) 的 TUI 配置前端，封装底层子命令（network/ timezone/ services/ security）",
+      "模块式：bsdconfig networking / timezone / security / services，逐项改 rc.conf 或对应文件",
+      "交互式只读预览：不写文件时仅展示当前配置"
+    ],
+    "interfaces": [
+      "bsdconfig（启动 TUI 向导）",
+      "bsdconfig networking / timezone / services / security（进入对应模块）",
+      "bsdconfig -e（编辑模式，写）"
+    ],
+    "docs": [
+      "FreeBSD Handbook: 安装后配置",
+      "bsdconfig(8) man"
+    ],
+    "summary": "bsdconfig 是 FreeBSD 的文本配置向导，封装网络/时区/服务/安全等设置，底层改 rc.conf 等。只读核对用 bsdconfig（不保存即仅展示）/ 直接读底层文件。优化时多在 bsdconfig 里查看而非改动。",
+    "advice": "只读核对用 bsdconfig 进入模块查看当前配置（不保存不写文件）。真正改设置走 bsdconfig -e 或直接编辑 rc.conf（写）。本工具仅探测 bsdconfig 是否可用（which），不改系统。"
+  },
+  "ports": {
+    "name": "Ports Collection（FreeBSD 源码构建框架：Makefile/distinfo）",
+    "org": "FreeBSD",
+    "url": "https://docs.freebsd.org/en/books/handbook/ports/",
+    "protocols": [
+      "ports 树：/usr/ports/<cat>/<port> 下 Makefile + distinfo + pkg-plist + files/",
+      "make 目标：fetch/build/install/clean；distfiles 为下载的源码 tarball 缓存",
+      "更新：portsnap fetch/extract（增量）或 git 拉取 ports 树；构建可经 poudriere"
+    ],
+    "interfaces": [
+      "portsnap fetch / extract（拉取/解压 ports 树，只读下载）",
+      "make -C /usr/ports/... search（搜 port，只读）",
+      "make -C /usr/ports/... distclean（清 distfiles，写）",
+      "du -sh /usr/ports/distfiles（清点缓存，只读）"
+    ],
+    "docs": [
+      "FreeBSD Handbook: Ports Collection",
+      "ports(7) / portsnap(8) man"
+    ],
+    "summary": "FreeBSD Ports 是从源码构建软件的框架，已下载的源码 tarball 缓存在 /usr/ports/distfiles。清理空间即清旧 distfiles（重新编译会再下载）。只读核对用 du -sh distfiles 清点。更新 ports 树用 portsnap（读取远程）。",
+    "advice": "只读清点用 du -sh /usr/ports/distfiles 与 find -atime 列旧缓存。清理用 make distclean（在 port 目录）或删 distfiles 下旧文件（重新编译需再下载）。更新树用 portsnap fetch/extract（读取远端，写本地树）。本工具探测只读。"
+  }
+}

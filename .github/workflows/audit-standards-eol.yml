@@ -1,0 +1,42 @@
+name: Audit Standards EOL
+
+# 标准知识库版本/新鲜度只读巡检（D11 借鉴 docker-easyconnect 版本巡检 CI）。
+# 只读、不写：用系统自带 python3 跑 windows-internals-toolkit/scripts/audit_standards_eol.py，
+# 校验 data/*.json 结构 + 提示可能陈旧的标准库；绝不联网改写、绝不自动改库。
+# 默认非阻塞（仅报告）；--strict 时陈旧超阈值才 exit 1，作为卡点提示。
+on:
+  push:
+    branches: [main]
+    paths:
+      - "windows-internals-toolkit/system-optimizer/src/python/sysweeper/data/**"
+      - "windows-internals-toolkit/scripts/audit_standards_eol.py"
+  pull_request:
+    paths:
+      - "windows-internals-toolkit/system-optimizer/src/python/sysweeper/data/**"
+      - "windows-internals-toolkit/scripts/audit_standards_eol.py"
+  schedule:
+    - cron: "17 3 * * 1"   # 每周一 03:17 UTC 巡检（避开整点高峰）
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true   # 同一 ref 上被顶掉的旧跑立即取消，省 Actions 分钟（私有仓库额度有限）
+
+jobs:
+  audit:
+    name: 标准知识库新鲜度巡检（只读）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # 需要 git 历史取最近提交时间
+      - name: 系统自带 Python
+        run: python3 -VV
+      - name: 运行标准库版本/新鲜度巡检（非阻塞）
+        run: python3 windows-internals-toolkit/scripts/audit_standards_eol.py --stale-days 180
+      - name: 严格模式说明
+        if: always()
+        run: echo "如需把陈旧项设为卡点，加 --strict 运行（仍不自动改库，仅提示人工复核 EOL）。"

@@ -1,0 +1,3 @@
+# 编译产物（由 make 重建）
+quantum-core/quantum-core
+quantum-core/test_parse

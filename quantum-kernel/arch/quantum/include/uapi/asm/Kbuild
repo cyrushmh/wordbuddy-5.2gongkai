@@ -1,0 +1,4 @@
+# SPDX-License-Identifier: GPL-2.0
+# Quantum architecture UAPI headers: three mandatory headers are bespoke
+# (byteorder/ptrace/sigcontext have no asm-generic fallback); the rest of
+# the mandatory set falls back to include/uapi/asm-generic automatically.

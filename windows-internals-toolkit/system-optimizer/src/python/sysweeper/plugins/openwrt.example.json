@@ -1,0 +1,24 @@
+{
+  "id": "openwrt-example",
+  "name": "OpenWrt 只读探针（用户插件示例）",
+  "platform": "openwrt",
+  "version": "1.0",
+  "license": "GPL-2.0（OpenWrt 自身；本工具仅只读引用）",
+  "description": "示例：把 OpenWrt 只读探针作为一枚「用户插件」登记（与内置 openwrt 插件同构）。放置到 $SYSWEEPER_PLUGINS_DIR 或仓库 plugins/ 目录即可被自动发现。native 入口必须在只读白名单内，否则拒绝注册。",
+  "docs": ["https://openwrt.org/docs/guide-user/", "https://openwrt.org/docs/techref/"],
+  "capabilities": [
+    { "id": "firmware", "name": "固件与板型识别", "interfaces": ["/etc/openwrt_release", "/etc/os-release", "/tmp/sysinfo/*"] },
+    { "id": "uci", "name": "UCI 统一配置（只读审计）", "interfaces": ["/etc/config/*", "uci show"] },
+    { "id": "pkgs", "name": "包管理盘点（opkg/apk）", "interfaces": ["opkg list-installed", "apk info"] },
+    { "id": "network", "name": "网络接口（netifd/ubus）", "interfaces": ["/etc/config/network", "ubus call network.interface dump"] }
+  ],
+  "native": [
+    "openwrt.openwrt_report",
+    "openwrt.openwrt_detect_report",
+    "openwrt.openwrt_uci_report",
+    "openwrt.openwrt_pkgs_report",
+    "openwrt.openwrt_network_report",
+    "openwrt.openwrt_build_report"
+  ],
+  "task_ids": ["openwrt_detect", "openwrt_uci_audit", "openwrt_pkgs", "openwrt_network", "openwrt_build"]
+}

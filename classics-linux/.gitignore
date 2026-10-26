@@ -1,0 +1,11 @@
+# 构建产物（dpkg-buildpackage 生成，勿入仓）
+/classics
+# 分包后每个二进制包各有一棵暂存树：debian/classics/（主包）与
+# debian/classics-data/（数据子包），一并忽略
+/debian/classics/
+/debian/classics-data/
+/debian/.debhelper/
+/debian/files
+/debian/*.substvars
+/debian/*.debhelper.log
+/debian/debhelper-build-stamp

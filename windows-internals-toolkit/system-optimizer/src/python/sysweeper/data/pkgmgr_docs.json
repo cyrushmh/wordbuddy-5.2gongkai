@@ -1,0 +1,227 @@
+{
+  "apt_dpkg": {
+    "name": "dpkg / APT 包管理（Debian / Ubuntu / 衍生发行版）",
+    "org": "Debian Project",
+    "url": "https://www.debian.org/doc/debian-policy/",
+    "protocols": [
+      "deb 二进制包格式（ar 归档：debian-binary / control.tar / data.tar）",
+      "Debian Policy Manual 第 5 章控制字段（Package / Version / Depends / Architecture）",
+      "仓库索引 Packages / Sources（RFC822 段落式）+ InRelease（OpenPGP 分离签名）"
+    ],
+    "interfaces": [
+      "dpkg(1) / dpkg-query(1)（本地包数据库 /var/lib/dpkg/status）",
+      "apt-get(8)（clean / autoclean / autoremove —— 官方清理接口）",
+      "apt-cache(8) / apt-mark(8)（依赖查询与 auto/manual 标记）",
+      "/var/cache/apt/archives（已下载 .deb 缓存）"
+    ],
+    "docs": [
+      "Debian Policy Manual 第 5 章（控制字段与包关系）",
+      "dpkg(1)（本地包数据库操作）",
+      "apt-get(8)（clean / autoclean / autoremove 语义）",
+      "apt-mark(8)（自动安装标记：autoremove 的判定依据）",
+      "sources.list(5)（仓库声明与签名校验）"
+    ],
+    "summary": "Debian 系以 dpkg 维护本地包数据库 /var/lib/dpkg/status（RFC822 段落式），APT 负责仓库索引解析与依赖求解；已下载的 .deb 存于 /var/cache/apt/archives，可安全回收。",
+    "advice": "清理一律走官方接口：`apt-get clean`（清空 .deb 缓存）+ `apt-get autoremove`（移除自动安装且不再被依赖的包）。可直接删 /var/cache/apt/archives/*.deb，但绝不可改 /var/lib/dpkg/status（那是包数据库，损坏则 apt/dpkg 全废）。"
+  },
+  "rpm_dnf": {
+    "name": "RPM / DNF（RHEL / Fedora / CentOS Stream / openSUSE）",
+    "org": "rpm.org · RPM Software Management",
+    "url": "https://rpm.org/documentation.html",
+    "protocols": [
+      "RPM 包格式（lead + signature header + header，标签化二进制结构）",
+      "rpmdb 包数据库（/usr/lib/sysimage/rpm，SQLite / ndb 后端）",
+      "仓库元数据 repomd.xml + primary.xml / filelists.xml（YUM/DNF XML 元数据规范）"
+    ],
+    "interfaces": [
+      "rpm(8) / rpmdb(8)（包数据库查询与校验）",
+      "dnf(8)（clean all / repoquery / mark / history —— 官方维护接口）",
+      "yum(8)（旧版接口，CentOS 7 及更早）",
+      "zypper(8)（openSUSE，基于 libzypp 的同层接口）",
+      "/var/cache/dnf、/var/cache/yum（仓库元数据与 rpm 缓存）"
+    ],
+    "docs": [
+      "rpm(8)（查询 / 校验 / 安装）",
+      "rpmdb(8) 与 rpm 数据库后端说明",
+      "dnf(8) / dnf.conf(5)（含 clean、keepcache 配置）",
+      "DNF Command Reference（clean / repoquery / history）",
+      "zypper(8)（openSUSE 的同层维护接口）"
+    ],
+    "summary": "RPM 系以标签化二进制头存储包元数据，rpmdb 为本地数据库；DNF/YUM 负责仓库元数据（repomd.xml）解析与依赖求解，缓存与下载的 rpm 存放于 /var/cache/dnf。",
+    "advice": "清理用 `dnf clean all`（或 `yum clean all`）走官方接口；想彻底不缓存可在 dnf.conf 设 `keepcache=False`。查孤儿包用 `dnf repoquery --unneeded` / `package-cleanup --orphans`，删包务必先确认不被依赖，勿直接删 /var/lib/rpm 下的数据库文件。"
+  },
+  "apk": {
+    "name": "apk-tools（Alpine Linux / 极简容器镜像）",
+    "org": "Alpine Linux · apk-tools",
+    "url": "https://docs.alpinelinux.org/",
+    "protocols": [
+      "APKINDEX.tar.gz 仓库索引（含 OpenPGP 分离签名 APKINDEX.tar.gz.SIGN.*）",
+      ".apk 包格式（gzip 流：签名段 + 控制段 .PKGINFO + 数据段）",
+      "已安装包数据库 /lib/apk/db/installed（纯文本段落式）"
+    ],
+    "interfaces": [
+      "apk(8)（add / del / fix / info / cache clean —— 官方接口）",
+      "/etc/apk/repositories（仓库声明）",
+      "/etc/apk/cache 或 /var/cache/apk（本地包缓存，取决于配置）",
+      "/etc/apk/protected_paths.d（受保护路径，不会被覆盖）"
+    ],
+    "docs": [
+      "apk(8)（apk-tools 命令全集，含 cache / info / fix）",
+      "apk-repositories(5)（仓库声明格式）",
+      "Alpine Linux 官方文档：包管理与索引签名",
+      "Alpine 镜像瘦身实践（--no-cache / 合并层）"
+    ],
+    "summary": "Alpine 用 apk-tools 管理包：索引为签名的 APKINDEX.tar.gz，包本身是 gzip 分段的 .apk，已安装包记录在 /lib/apk/db/installed，全部可纯文本核对。",
+    "advice": "清缓存用官方 `apk cache clean`（不要手删缓存目录以免破坏索引一致性）；构建镜像时用 `apk add --no-cache` 避免缓存落盘。核对已装包用 `apk info`，校验完整性用 `apk fix`（只读模式可用 `apk fix --dry-run`）。"
+  },
+  "pacman": {
+    "name": "pacman（Arch Linux / Manjaro / 衍生）",
+    "org": "Arch Linux",
+    "url": "https://wiki.archlinux.org/title/Pacman",
+    "protocols": [
+      "包格式 .pkg.tar.zst（tar + zstd，含 .PKGINFO / .BUILDINFO / .MTREE）",
+      "仓库数据库 *.db（tar 归档，每包一个 desc / files 目录条目）",
+      "PGP 信任链（pacman-key(8) 与包 .sig 分离签名）"
+    ],
+    "interfaces": [
+      "pacman(8)（-Q / -Sc / -Scc / -Qdt / -Rs —— 查询与清理接口）",
+      "paccache(8)（pacman-contrib：按保留版本数清理缓存，比 -Scc 精细）",
+      "/var/cache/pacman/pkg（包缓存）",
+      "/var/lib/pacman/local（已安装包数据库）"
+    ],
+    "docs": [
+      "pacman(8)（查询 / 同步 / 清理全部开关）",
+      "pacman.conf(5)（含 CleanMethod 等缓存策略）",
+      "paccache(8)（保留最近 N 个版本的缓存清理）",
+      "pacman-key(8)（签名信任链维护）",
+      "Arch Wiki：Pacman / Cleaning the package cache"
+    ],
+    "summary": "pacman 的包是 zstd 压缩的 tar（内带 .PKGINFO 元数据），仓库以 *.db 归档分发，已安装包数据库在 /var/lib/pacman/local；缓存包长期留在 /var/cache/pacman/pkg，是 Arch 上最典型的磁盘占用源。",
+    "advice": "优先 `paccache -rk2`（保留最近 2 个版本，仍可降级），而不是 `pacman -Scc`（清空全部缓存后无法离线降级）。查孤儿包用 `pacman -Qdt`，删除用 `pacman -Rs`（连同不再需要的依赖）——勿手工删 /var/lib/pacman/local 下目录。"
+  },
+  "brew": {
+    "name": "Homebrew（macOS / Linux 上的 Formula 与 Cask）",
+    "org": "Homebrew",
+    "url": "https://docs.brew.sh/",
+    "protocols": [
+      "Formula DSL（Ruby 类定义：url / sha256 / depends_on / bottle 块）",
+      "Cask DSL（macOS 应用分发：artifact stanza 声明 App / pkg / zap）",
+      "bottle 预编译包（.tar.gz + JSON bottle 清单，按 OS 版本与架构匹配）"
+    ],
+    "interfaces": [
+      "brew(1)（cleanup / doctor / outdated / list / autoremove —— 官方接口）",
+      "`brew --cache`（缓存根目录，默认 ~/Library/Caches/Homebrew 或 /root/.cache/Homebrew）",
+      "tap 机制（Homebrew/homebrew-core 等 Git 仓库）"
+    ],
+    "docs": [
+      "brew(1) Manpage（cleanup / prune / dry-run 语义）",
+      "Formula Cookbook（Ruby DSL 全部字段）",
+      "Cask Cookbook（artifact / uninstall / zap）",
+      "brew cleanup 文档（缓存保留策略）",
+      "`brew doctor`（环境自检，只读诊断）"
+    ],
+    "summary": "Homebrew 用 Ruby DSL 声明 Formula（源码构建）与 Cask（macOS 应用），预编译产物为 bottle；下载缓存集中在一个目录，`brew cleanup` 按保留策略回收过期版本。",
+    "advice": "清理用官方 `brew cleanup`（默认只删已安装 formula 的旧版本下载，安全）；`--prune=<days>` 会连未安装/旧版本一并清，先用 `brew cleanup -n`（干跑）看清会删什么。环境异常用 `brew doctor` 只读诊断。"
+  },
+  "winget": {
+    "name": "Windows Package Manager（winget，Windows 10/11）",
+    "org": "Microsoft",
+    "url": "https://learn.microsoft.com/windows/package-manager/",
+    "protocols": [
+      "WinGet 清单模式（YAML：version / installer / locale / defaultLocale，schema v1.x）",
+      "源 REST 接口（information / manifestSearch / manifest 端点，JSON 契约）",
+      "InstallerType 声明（MSIX / EXE / INNO / MSI / NULLSOFT 等）与 Scope（user/machine）"
+    ],
+    "interfaces": [
+      "winget(1)（list / upgrade / uninstall / show / --info）",
+      "winget-pkgs 社区仓库（GitHub 上的清单源）",
+      "下载缓存 %LOCALAPPDATA%\\Temp\\WinGet",
+      "包安装目录 %LOCALAPPDATA%\\Microsoft\\WinGet\\Packages"
+    ],
+    "docs": [
+      "Windows Package Manager 官方文档（winget 概览）",
+      "winget 命令参考（list / upgrade / uninstall）",
+      "Manifest 规范（winget-pkgs/doc/manifest：YAML 模式与 schema）",
+      "创建包清单（作者向：installer / locale 字段）",
+      "源 REST 接口契约（information / manifestSearch）"
+    ],
+    "summary": "winget 以 YAML 清单描述包（installer/locale 分离），通过 REST 源检索；安装走各自 InstallerType 的静默参数，下载缓存落在 %LOCALAPPDATA%\\Temp\\WinGet。",
+    "advice": "清下载缓存可删 %LOCALAPPDATA%\\Temp\\WinGet（临时目录，删了会重新下载）；升级一律 `winget upgrade --all`（不要手动去 Programs 目录覆盖）。卸载用 `winget uninstall`，避免残留注册表中的 UninstallString 不一致。"
+  },
+  "pip": {
+    "name": "pip（Python 包管理，跨操作系统）",
+    "org": "PyPA（Python Packaging Authority）",
+    "url": "https://pip.pypa.io/en/stable/cli/pip_cache/",
+    "protocols": [
+      "PEP 503 简单仓库 API（/simple/<name>/ HTML 索引与规范化名）",
+      "wheel 格式（PEP 427：ZIP + .dist-info/METADATA/RECORD）",
+      "PEP 517 / 518 构建接口（pyproject.toml [build-system]）"
+    ],
+    "interfaces": [
+      "pip cache(1)（dir / purge / remove / list —— 官方缓存接口）",
+      "pip(1)（install --no-cache-dir / download / check）",
+      "`pip cache dir`（缓存根目录，Linux ~/.cache/pip，macOS ~/Library/Caches/pip，Windows %LOCALAPPDATA%\\pip\\cache）",
+      "HTTPCache（wheel 与 HTTP 响应分层缓存）"
+    ],
+    "docs": [
+      "pip cache 文档（purge / remove / dir 语义）",
+      "PEP 503（Simple Repository API）",
+      "PEP 427（Wheel 二进制包格式）",
+      "PEP 517 / 518（构建后端与 pyproject.toml）",
+      "pip install 参考（--no-cache-dir 等开关）"
+    ],
+    "summary": "pip 按 PEP 503 从简单索引发现包、按 PEP 427 安装 wheel；下载与 HTTP 响应缓存集中在一个根目录，可用官方 pip cache 子命令整体回收（不影响已安装的包）。",
+    "advice": "回收缓存用官方 `pip cache purge`（只清下载缓存，已装包不受影响）；只想看占用用 `pip cache dir` 再统计。勿手删 ~/.cache/pip 的子目录（http-v2 / wheels 分层的索引可能残留不一致），长期方案是安装时加 `--no-cache-dir`。"
+  },
+  "npm": {
+    "name": "npm（Node.js 包管理，跨操作系统）",
+    "org": "npm, Inc. / OpenJS Foundation",
+    "url": "https://docs.npmjs.com/cli/",
+    "protocols": [
+      "npm Registry HTTP API（JSON packument 与 tarball 分发）",
+      "完整性与 SRI 哈希（dist.integrity，sha512 base64）",
+      "package-lock.json lockfileVersion 语义（v1 / v2 / v3）"
+    ],
+    "interfaces": [
+      "npm-cache(1)（verify / clean / ls —— 官方缓存接口）",
+      "npm(1)（ci / prune / outdated / doctor / ls）",
+      "`npm config get cache`（默认 ~/.npm/_cacache）",
+      "_cacache 内容寻址缓存（index-v5 索引 + content-v2 内容，SRI 寻址）"
+    ],
+    "docs": [
+      "npm-cache 文档（verify：校验并回收损坏/过期条目）",
+      "npm Registry API（packument / tarball 契约）",
+      "npm-ci（按 lockfile 精确安装，CI 推荐）",
+      "package-lock.json 与 lockfileVersion 说明",
+      "npm prune（移除未在 package.json 声明的包）"
+    ],
+    "summary": "npm 的缓存是内容寻址的（index-v5 索引 + content-v2 内容，按 sha512 完整性哈希寻址），注册表以 JSON packument 提供元数据；正因内容寻址，官方推荐用 verify 而非粗暴全清。",
+    "advice": "缓存维护用官方 `npm cache verify`（校验并清理损坏与过期条目，保留有效内容），慎用 `npm cache clean --force`（全清后所有安装都要重新下载，且官方明确标注为「destructive」）。生产依赖建议 `npm ci`，多余包用 `npm prune`。"
+  },
+  "universal": {
+    "name": "通用打包（Snap / Flatpak，跨发行版分发）",
+    "org": "Canonical snapd · Flatpak（freedesktop）",
+    "url": "https://docs.flatpak.org/en/latest/",
+    "protocols": [
+      "Snap：snapd REST API（unix socket /run/snapd.socket，/v2/snaps 与 snap 声明）",
+      "Flatpak：OSTree 仓库（refs + commit objects，/var/lib/flatpak/repo）",
+      "Flatpak ref 命名（<app>/<arch>/<branch>）与 runtime 共享（org.freedesktop.Platform）"
+    ],
+    "interfaces": [
+      "snap(8)（list / remove --revision / set system refresh.retain）",
+      "snapd REST（curl --unix-socket /run/snapd.socket http://localhost/v2/snaps）",
+      "flatpak(1)（list / uninstall --unused / --delete-data / repair）",
+      "/var/lib/snapd/snaps（旧版本 snaps）与 /var/lib/flatpak（OSTree 仓库）",
+      "AppImage（自包含可执行镜像，无系统级数据库）"
+    ],
+    "docs": [
+      "snapcraft.io 文档（snapd REST API 与 snap 生命周期）",
+      "snap(8)（含 remove --revision 与 refresh.retain 设置）",
+      "Flatpak 文档（仓库、ref、runtime 与命令参考）",
+      "flatpak(1) / flatpak-uninstall(1)（--unused 清理无用 runtime）",
+      "Flatpak Command Reference"
+    ],
+    "summary": "Snap 以 snapd 守护进程 + REST API 管理 squashfs 只读镜像（默认保留多个历史版本），Flatpak 以 OSTree 仓库存 ref/commit 并共享 runtime；两者都是跨发行版分发，清理接口各不相同。",
+    "advice": "Snap 用 `snap set system refresh.retain=2` 减少保留版本，或用 `snap remove --revision=<n>` 精确删旧版；Flatpak 用 `flatpak uninstall --unused` 清不再被引用的 runtime/extension。两者都不要手删 /var/lib/snapd、/var/lib/flatpak 内部对象（OSTree 与 snapd 记账会错乱）。"
+  }
+}

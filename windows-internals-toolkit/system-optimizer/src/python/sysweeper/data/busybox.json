@@ -1,0 +1,135 @@
+{
+  "_note": "busybox 知识库（v0.6.74 填充，原 v0.6.36 gen-stub 空壳）。版本线为 busybox.net 官方口径（2026-10 检索）。本工具只读引用，不执行 busybox。",
+  "_position": "只读诊断：不执行 busybox、不读/写其 applet、不连校外网做写。",
+  "key": "busybox",
+  "label": "busybox 嵌入式用户态",
+  "domain": "兼容",
+  "references": [
+    {
+      "name": "BusyBox 官网",
+      "org": "BusyBox 项目",
+      "url": "https://busybox.net/"
+    },
+    {
+      "name": "BusyBox 下载与源码",
+      "org": "BusyBox 项目",
+      "url": "https://busybox.net/downloads/"
+    },
+    {
+      "name": "BusyBox 源码仓库",
+      "org": "BusyBox 项目",
+      "url": "https://git.busybox.net/busybox/"
+    },
+    {
+      "name": "BusyBox FAQ",
+      "org": "BusyBox 项目",
+      "url": "https://busybox.net/FAQ.html"
+    }
+  ],
+  "items": [
+    {
+      "key": "busybox-overview",
+      "name": "单二进制多调用（multi-call binary）",
+      "org": "BusyBox 项目（GPL-2.0）",
+      "url": "https://busybox.net/",
+      "protocols": [
+        "POSIX 用户态子集",
+        "argv[0] 分发（符号链接即命令名）"
+      ],
+      "interfaces": [
+        "busybox <命令> 直接调用",
+        "符号链接形式（/bin/ls → busybox）",
+        "busybox --list 看编译进去了哪些命令",
+        "busybox --help"
+      ],
+      "docs": [
+        {
+          "title": "BusyBox 下载与文档",
+          "url": "https://busybox.net/downloads/BusyBox.html"
+        },
+        {
+          "title": "BusyBox FAQ",
+          "url": "https://busybox.net/FAQ.html"
+        }
+      ],
+      "summary": "把数十个 Unix 命令浓缩进一个可执行：靠 argv[0]/符号链接分发到具体 applet。是嵌入式系统、OpenWrt 路由器、initramfs/initrd 与救援环境的根用户态；Docker 极简镜像也常以它为基础。",
+      "advice": "极简环境先 busybox --list 确认哪些命令被编进了这个二进制（不是全量）；缺命令要么重新按配置编译，要么换完整发行版。Software Freedom Conservancy 是 BusyBox 版权的 GPL 执行代理。",
+      "evidence_status": "official_verified"
+    },
+    {
+      "key": "busybox-version-line",
+      "name": "版本线（1.37.0 / 1.38.0）",
+      "org": "BusyBox 项目",
+      "url": "https://busybox.net/",
+      "protocols": [
+        "tarball 源码发布",
+        "git 滚动开发"
+      ],
+      "interfaces": [
+        "busybox-1.37.0.tar.bz2（2024-09-27）",
+        "busybox 1.38.0（unstable，2026-05-13）",
+        "daily snapshot（busybox-YYYYMMDD.tar.bz2）"
+      ],
+      "docs": [
+        {
+          "title": "BusyBox 下载页（版本线）",
+          "url": "https://busybox.net/downloads/"
+        }
+      ],
+      "summary": "官方口径（2026-10 检索）：1.37.0 为 2024-09-27 稳定线；1.38.0 标记 unstable（2026-05-13，含 yescrypt/sha384sum/vmstat 等新 applet）；发行版打包常滞后于上游快照。",
+      "advice": "看版本先分清线：unstable 的 1.38.0 不是「新稳定版」；发行版里的 busybox 版本与上游 tarball 未必对齐，以本机 busybox --help 首行为准（本工具只读首行）。",
+      "evidence_status": "official_verified",
+      "needs_verify": "发行版打包版本各不同，未逐发行版核对"
+    },
+    {
+      "key": "busybox-applets",
+      "name": "applet 集合与上下文判定",
+      "org": "BusyBox 项目",
+      "url": "https://busybox.net/",
+      "protocols": [
+        "编译期裁剪（menuconfig）",
+        "applet = 一个内置命令"
+      ],
+      "interfaces": [
+        "busybox --list（已编入的 applet 名清单）",
+        "busybox --list-full（带路径）"
+      ],
+      "docs": [
+        {
+          "title": "BusyBox FAQ（编译配置与 applet 裁剪）",
+          "url": "https://busybox.net/FAQ.html"
+        }
+      ],
+      "summary": "一个 busybox 二进制里编进了多少 applet 完全由编译配置决定：路由器固件可能 300+，救援盘按需裁剪。applet 数与用途共同决定这个二进制是「完整系统」还是「早期启动壳」。",
+      "advice": "判定嵌入式上下文三看：OpenWrt 标记（/etc/openwrt_release）、容器标记（/.dockerenv）、/bin 与 /sbin 是否软链到 busybox。三条都不中就只是装了 busybox，别过度解读。",
+      "evidence_status": "official_verified",
+      "needs_verify": "各发行版编入的 applet 清单不同，未逐发行版核对"
+    },
+    {
+      "key": "busybox-embed-contexts",
+      "name": "嵌入式上下文（路由器/initramfs/容器）",
+      "org": "本仓库关联登记",
+      "url": "https://busybox.net/",
+      "protocols": [
+        "init/启动脚本",
+        "mdev/udev 轻量替代",
+        "udhcpc（DHCP 客户端）"
+      ],
+      "interfaces": [
+        "/etc/openwrt_release（OpenWrt 标记）",
+        "/.dockerenv（容器标记）",
+        "/bin/sh → busybox ash"
+      ],
+      "docs": [
+        {
+          "title": "BusyBox FAQ（嵌入式使用场景）",
+          "url": "https://busybox.net/FAQ.html"
+        }
+      ],
+      "summary": "busybox 出现的三种语境对应三种系统形态：OpenWrt 根用户态（整台路由器）、initramfs（安装器的早期用户态，真根挂载前干活）、容器极简基础镜像（镜像层小到几百 KB）。",
+      "advice": "与 OpenWrt 模块共生：探测到路由器系统时其根用户态即 busybox；与 livemedia 共生：live ISO 的 initramfs 早期用户态常是 busybox——同一件工具在三个子系统里分别露面，这就是「你中有我」。",
+      "evidence_status": "official_verified",
+      "needs_verify": "OpenWrt/initramfs/容器三种语境的默认配置细节随发行版版本变化"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-2.0
+#
+# 量子架构 XFCE 会话包装：尽力设置量子主题/壁纸，再启动 XFCE。
+# 由 /usr/share/xsessions/quantum.desktop 的 Exec 调用。
+set -e
+
+# 尽力让 GTK 应用采用量子主题（无该主题时回退默认，不影响启动）。
+export GTK_THEME="${GTK_THEME:-Quantum}"
+
+# 在 XFCE 运行时（有 xfconf）设置主题名、图标与壁纸；失败则静默跳过。
+if command -v xfconf-query >/dev/null 2>&1; then
+	xfconf-query -c xsettings -p /Net/ThemeName     -s Quantum 2>/dev/null || true
+	xfconf-query -c xsettings -p /Net/IconThemeName -s Quantum 2>/dev/null || true
+	xfconf-query -c xfce4-desktop \
+		-p /backdrop/screen0/monitor0/workspace0/last-image \
+		-s /usr/share/backgrounds/quantum/quantum-wallpaper.svg 2>/dev/null || true
+fi
+
+# 启动 XFCE（autostart 桌面文件会负责拉起 quantum-core 守护进程）。
+exec startxfce4 "$@"

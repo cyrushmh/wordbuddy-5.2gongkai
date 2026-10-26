@@ -1,0 +1,143 @@
+{
+  "scheduler": {
+    "name": "CFS 完全公平调度器",
+    "path": "Documentation/scheduler/sched-design-CFS.rst",
+    "group": "software",
+    "subsystem": "scheduler / CFS",
+    "interfaces": [
+      "/proc/sys/kernel/sched_latency_ns",
+      "/proc/sys/kernel/sched_min_granularity_ns",
+      "/proc/sys/kernel/sched_migration_cost_ns",
+      "/proc/sys/kernel/sched_wakeup_granularity_ns"
+    ],
+    "summary": "CFS 以虚拟运行时间(vruntime)公平分配 CPU；sched_*_ns 系列 sysctl 控制调度周期、最小粒度与迁移成本。",
+    "advice": "桌面交互可略降 sched_latency_ns 提升响应；大负载服务器保持默认。改 sysctl 影响全局调度公平性与延迟。"
+  },
+  "sched_features": {
+    "name": "调度特性开关（sched features）",
+    "path": "Documentation/scheduler/sched-features.rst",
+    "group": "software",
+    "subsystem": "scheduler / features",
+    "interfaces": ["/sys/kernel/debug/sched/features"],
+    "summary": "内核以可调试特性位暴露调度器各行为开关（如 GENTLE_FAIR_SLEEPERS、NUMA），可在 debugfs 下查看与切换。",
+    "advice": "仅调试/调优场景改动；普通用户无需触碰，错误关闭特性位可能显著影响交互。"
+  },
+  "cgroup_v2": {
+    "name": "cgroups v2 统一层级",
+    "path": "Documentation/admin-guide/cgroup-v2.rst",
+    "group": "software",
+    "subsystem": "cgroup / v2",
+    "interfaces": [
+      "/sys/fs/cgroup/cgroup.controllers",
+      "/sys/fs/cgroup/cgroup.subtree_control",
+      "/sys/fs/cgroup/<grp>/cpu.max",
+      "/sys/fs/cgroup/<grp>/memory.max"
+    ],
+    "summary": "cgroups v2 用单一统一层级管理 CPU/内存/IO 等资源；控制器需在 subtree_control 中显式委托。",
+    "advice": "桌面发行版用 systemd 默认挂载 v2；为关键服务设 cpu.weight/memory.max 可防单进程拖垮整机。"
+  },
+  "oom": {
+    "name": "OOM 终止与内存压力防护",
+    "path": "Documentation/mm/oom_kill.rst",
+    "group": "software",
+    "subsystem": "memory management / OOM",
+    "interfaces": [
+      "/proc/sys/vm/panic_on_oom",
+      "/proc/sys/vm/oom_kill_allocating_task",
+      "/proc/<pid>/oom_score_adj"
+    ],
+    "summary": "内存耗尽时内核 OOM killer 按 oom_score 选择牺牲进程；oom_score_adj(-1000~1000)可保护或优先回收某进程。",
+    "advice": "用 oom_score_adj 保护关键守护进程（如设为 -500）；误设 -1000 会使该进程永不成为 OOM 牺牲品，可能拖垮系统。"
+  },
+  "psi": {
+    "name": "资源压力失忆（PSI）",
+    "path": "Documentation/accounting/psi.rst",
+    "group": "software",
+    "subsystem": "scheduler / pressure",
+    "interfaces": ["/proc/pressure/cpu", "/proc/pressure/memory", "/proc/pressure/io"],
+    "summary": "PSI 实时统计 CPU/内存/IO 的阻塞(压力)占比，区分 some 与 full 失忆，用于资源争用预警。",
+    "advice": "监控 memory/io 的 full 占比可提前发现瓶颈；容器编排与桌面守护进程常用 PSI 做自适应限流。"
+  },
+  "thp_compaction": {
+    "name": "透明大页规整（compaction）",
+    "path": "Documentation/admin-guide/mm/transhuge.rst",
+    "group": "software",
+    "subsystem": "memory management / THP compaction",
+    "interfaces": [
+      "/sys/kernel/mm/transparent_hugepage/defrag",
+      "/proc/sys/vm/compact_memory",
+      "/proc/sys/vm/compact_unevictable_allowed"
+    ],
+    "summary": "THP 需要连续大页，内核会做内存规整(compaction)以凑出 2M/1G 大页；defrag 策略决定何时同步规整。",
+    "advice": "延迟敏感负载用 defrag=madvise 避免分配时同步规整抖动；compact_memory 可手动触发一次全系统规整。"
+  },
+  "vm_dirty": {
+    "name": "脏页回写与缓存回收（vm sysctl）",
+    "path": "Documentation/admin-guide/sysctl/vm.rst",
+    "group": "software",
+    "subsystem": "memory management / sysctl",
+    "interfaces": [
+      "/proc/sys/vm/dirty_ratio",
+      "/proc/sys/vm/dirty_background_ratio",
+      "/proc/sys/vm/dirty_expire_centisecs",
+      "/proc/sys/vm/vfs_cache_pressure"
+    ],
+    "summary": "vm.* 控制脏页占内存比例(到期回写)与 inode/dentry 缓存回收倾向；dirty_* 影响写缓冲，vfs_cache_pressure 影响目录缓存保留。",
+    "advice": "大内存/数据库可调高 dirty_* 平滑写峰；频繁列目录的负载可降 vfs_cache_pressure 保目录缓存。"
+  },
+  "tcp": {
+    "name": "TCP 协议栈参数（ip-sysctl）",
+    "path": "Documentation/networking/ip-sysctl.rst",
+    "group": "network",
+    "subsystem": "networking / TCP",
+    "interfaces": [
+      "/proc/sys/net/ipv4/tcp_rmem",
+      "/proc/sys/net/ipv4/tcp_wmem",
+      "/proc/sys/net/ipv4/tcp_sack",
+      "/proc/sys/net/ipv4/tcp_timestamps",
+      "/proc/sys/net/ipv4/tcp_window_scaling"
+    ],
+    "summary": "TCP 自动调优的读写缓冲(tcp_rmem/wmem，min default max)与特性开关(SACK/时间戳/窗口缩放)在内核文档中系统说明。",
+    "advice": "长肥管道(高延迟大带宽)可调高 tcp_rmem 上限提升吞吐；时间戳/SACK 一般保持开启，仅老旧链路异常才关。"
+  },
+  "tcp_congestion": {
+    "name": "TCP 拥塞控制（含 BBR）",
+    "path": "Documentation/networking/ip-sysctl.rst",
+    "group": "network",
+    "subsystem": "networking / congestion control",
+    "interfaces": [
+      "/proc/sys/net/ipv4/tcp_congestion_control",
+      "/proc/sys/net/ipv4/tcp_available_congestion_control",
+      "/proc/sys/net/ipv4/tcp_allowed_congestion_control"
+    ],
+    "summary": "tcp_congestion_control 选定当前拥塞算法(Cubic/BBR/Reno…)；available/allowed 列出内核已编译的算法。BBR 基于带宽-延迟乘积。",
+    "advice": "长肥管道与跨境链路用 BBR 更稳定高效(需内核编译 tcp_bbr)；普通内网 Cubic 足够，误换成未编译算法会回退。"
+  },
+  "net_core": {
+    "name": "网络核心参数（net.core）",
+    "path": "Documentation/networking/ip-sysctl.rst",
+    "group": "network",
+    "subsystem": "networking / core",
+    "interfaces": [
+      "/proc/sys/net/core/netdev_max_backlog",
+      "/proc/sys/net/core/netdev_budget",
+      "/proc/sys/net/core/rmem_max",
+      "/proc/sys/net/core/wmem_max",
+      "/proc/sys/net/core/somaxconn"
+    ],
+    "summary": "net.core 控制收包软中断积压、每 NAPI 轮询预算、套接字收发缓冲上限与监听队列长度。",
+    "advice": "高 PPS 服务器可调高 netdev_max_backlog/netdev_budget 与 rmem_max/wmem_max；somaxconn 影响高并发accept 队列。"
+  },
+  "rps": {
+    "name": "接收侧缩放（RPS / RFS）",
+    "path": "Documentation/networking/scaling.rst",
+    "group": "network",
+    "subsystem": "networking / RPS-RFS",
+    "interfaces": [
+      "/sys/class/net/<if>/queues/rx-<N>/rps_cpus",
+      "/sys/class/net/<if>/queues/rx-<N>/rps_flow_cnt"
+    ],
+    "summary": "RPS 用软件把收包散列到多个 CPU 的软中断，RFS 进一步按流把包送到处理该流的应用所在 CPU，弥补单队列网卡。",
+    "advice": "单队列或多队列不足的网卡用 RPS/RFS 提升多核利用率；多队列智能网卡(如 NVMe/高端 NIC)通常无需开启。"
+  }
+}

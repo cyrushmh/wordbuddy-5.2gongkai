@@ -1,0 +1,47 @@
+name: Lint Shell
+
+# lint-gate 落地一环（#652）：把 shellcheck 白名单门禁接入 CI。
+# 此前 lint 三件套（shellcheck/hadolint/actionlint）只在宿主可用、
+# CI 之外（docs/57 §2.13 旧口径）——本 workflow 是 shellcheck 一环的
+# 真实 counterpart；hadolint/actionlint 两环宿主缺席，如实挂
+# needs_action，不伪造接入。
+#
+# 触发面：本仓 .sh 变动 / 门禁脚本自身变动 / 本 workflow 变动。
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**/*.sh"
+      - "scripts/check_shell_lint.sh"
+      - ".github/workflows/lint-shell.yml"
+  pull_request:
+    paths:
+      - "**/*.sh"
+      - "scripts/check_shell_lint.sh"
+      - ".github/workflows/lint-shell.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true   # 同一 ref 上被顶掉的旧跑立即取消，省 Actions 分钟（私有仓库额度有限）
+
+jobs:
+  shellcheck:
+    name: shellcheck 白名单门禁（本仓自有 .sh）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 先装后跑：保证 CI 侧不存在「shellcheck 缺席即放行」
+      # （本地门禁脚本对缺席是 SKIP，CI 由本步兜底）
+      - name: 安装 shellcheck（apt，零第三方 action 依赖）
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+          shellcheck --version
+
+      - name: 白名单门禁（含防漏网扫描）
+        run: bash scripts/check_shell_lint.sh

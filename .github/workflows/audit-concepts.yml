@@ -1,0 +1,44 @@
+name: Audit Concept Mesh
+
+# 概念系统（九系统组网）一致性护栏：
+# 每次推到 main / 开 PR 触动 system-optimizer 时，校验
+#   1) 全量体检零不一致（文件/字段/命名/只读层 API 同构）
+#   2) 桥接无悬空、九系统连通为单一整体、无孤岛系统
+# 两条任一非零即失败，防止「概念整体组网」被改漂移、出现断网或悬空桥。
+on:
+  push:
+    branches: [main]
+    paths:
+      - "windows-internals-toolkit/system-optimizer/**"
+      - ".github/workflows/audit-concepts.yml"
+  pull_request:
+    paths:
+      - "windows-internals-toolkit/system-optimizer/**"
+      - ".github/workflows/audit-concepts.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true   # 同一 ref 上被顶掉的旧跑立即取消，省 Actions 分钟（私有仓库额度有限）
+
+jobs:
+  audit:
+    name: 概念系统全量体检 + 组网连通性体检
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: windows-internals-toolkit/system-optimizer
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 系统自带 Python（不装任何第三方包）
+        run: python3 -VV
+
+      - name: 既有全量体检（--strict）
+        run: python3 tools/audit_concepts.py --strict
+
+      - name: 组网连通性体检（--strict）
+        run: python3 tools/check_concept_mesh.py --strict

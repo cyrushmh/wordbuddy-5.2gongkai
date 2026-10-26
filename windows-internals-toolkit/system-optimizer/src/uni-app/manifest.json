@@ -1,0 +1,40 @@
+{
+  "name": "sysweeper",
+  "appid": "",
+  "description": "sysweeper 只读诊断报告查看器 / 本机控制台移动端（uni-app）",
+  "versionName": "0.6.27",
+  "versionCode": "627",
+  "transformPx": false,
+  "vueVersion": "3",
+  "app-plus": {
+    "usingComponents": true,
+    "nvueStyleCompiler": "uni-app",
+    "compilerVersion": 3,
+    "modules": {},
+    "distribute": {
+      "android": {
+        "permissions": [
+          "<uses-permission android:name=\"android.permission.INTERNET\"/>"
+        ]
+      },
+      "ios": {}
+    }
+  },
+  "h5": {
+    "router": { "base": "./" },
+    "devServer": { "port": 5173 }
+  },
+  "mp-weixin": {
+    "appid": "",
+    "setting": {
+      "urlCheck": false,
+      "es6": true
+    },
+    "permission": {
+      "scope.userLocation": {
+        "desc": "仅用于本地诊断，不涉及定位"
+      }
+    }
+  },
+  "quickapp": {}
+}

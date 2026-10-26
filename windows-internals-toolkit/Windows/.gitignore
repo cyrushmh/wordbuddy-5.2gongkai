@@ -1,0 +1,30 @@
+# 编译中间产物
+*.o
+*.obj
+*.exe~
+*.bak
+
+# 编辑器/OS 文件
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# 本地临时
+/tmp/
+*.log
+
+# 跨语言一致性测试的临时构建目录
+tests/.build/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Rust 构建产物（保留 Cargo.lock 以保证应用可复现）
+**/target/
+# .NET 构建中间产物（obj/bin 不入库，仅保留 .csproj 锁定版本）
+**/obj/
+**/bin/
+# 注意：tools/*.exe 是交叉编译的预编译产物，需要纳入版本库，不要忽略

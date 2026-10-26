@@ -1,0 +1,68 @@
+# Maintainer: windows-internals-toolkit <noreply@example.com>
+#
+# 分包（split package）结构，范本取自 man-pages-zh_cn 包内的 .PKGINFO：
+#     pkgbase = man-pages-zh              →  pkgbase = classics
+#     pkgname = man-pages-zh_cn           →  pkgname = ('classics' 'classics-data')
+#     xdata = pkgtype=split               →  同一份源码产出多个包
+#     arch = any                          →  纯文档/数据包不随架构重复打包
+#
+# 与 Debian 侧 debian/control 的对照（同一份 C 源码，两套元数据）：
+#   Arch                               Debian
+#   ---------------------------------  --------------------------------
+#   pkgver/pkgrel                      changelog 的版本+发行号
+#   arch=(...) / 子包覆盖 arch=('any')  Architecture: any / all
+#   depends=()                         Depends:
+#   build()                            override_dh_auto_build
+#   package_<name>() + $pkgdir         override_dh_auto_install + $DESTDIR
+#   /usr/share/licenses/<pkg>/         debian/copyright（DEP-5）
+#   .PKGINFO                           control（包内元数据）
+#   makepkg -s                         dpkg-buildpackage -us -uc -b
+#   .pkg.tar.zst                       .deb
+
+pkgbase=classics
+pkgname=('classics' 'classics-data')
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="经典典籍阅读与编码安全解码命令行工具（严格 UTF-8 优先，GB18030 回退，绝不假装解码成功）"
+# 主包含编译产物，按架构分发；classics-data 子包在下方覆盖为 any。
+arch=('x86_64' 'aarch64' 'riscv64')
+url="https://github.com/cyrushmh/wordbuddy-github"
+license=('MIT')
+makedepends=('gcc' 'make')
+# 本地源码打包（见 build-arch.sh：先归档为 $pkgbase-$pkgver.tar.gz 再走标准流程）
+source=("$pkgbase-$pkgver.tar.gz")
+# 由 build-arch.sh 生成归档后回填；提交 AUR 时应写入真实摘要
+sha256sums=('9f84e00668ee79d115f24f03b98bb1868faf4d4f96862e163ed66d053f7579bf')
+
+build() {
+  cd "$pkgbase-$pkgver"
+  # Makefile 会自动探测：无 /usr/share/dpkg/*.mk 时走非 Debian 的安全默认 flags
+  make
+}
+
+# ── 主包：架构相关（二进制 + man） ──────────────────────────────────────
+package_classics() {
+  pkgdesc="经典典籍阅读与编码安全解码命令行工具（严格 UTF-8 优先，GB18030 回退）"
+  depends=('glibc' "classics-data=$pkgver-$pkgrel")
+  cd "$pkgbase-$pkgver"
+  make DESTDIR="$pkgdir" install-bin
+
+  # Man page：英文入口装 man1。中文翻译（classics.zh_CN.1）按 man-pages-zh_cn
+  # 的范式另装 /usr/share/man/zh_CN/man1/，由 build-arch.sh 处理——
+  # LANG=zh_CN 时 man 优先取 zh_CN 目录下的同名页。
+  install -Dm644 classics.1 "$pkgdir/usr/share/man/man1/classics.1"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/classics/LICENSE"
+}
+
+# ── 数据子包：架构无关（纯文本，arch=('any')） ──────────────────────────
+# 与 man-pages-zh_cn 同构：内容不随 CPU 变化，故只打一份包，
+# 避免在 x86_64 / aarch64 / riscv64 上重复打包同一批文本。
+package_classics-data() {
+  pkgdesc="classics 的典籍文本数据（架构无关，安装到 /usr/share/classics/）"
+  arch=('any')
+  cd "$pkgbase-$pkgver"
+  make DESTDIR="$pkgdir" install-data
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/classics-data/LICENSE"
+}
+
+# 可复现构建：makepkg 会导出 SOURCE_DATE_EPOCH，本包无时间戳敏感产物，天然可复现。

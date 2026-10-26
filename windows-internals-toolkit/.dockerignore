@@ -1,0 +1,25 @@
+# 仓库根构建上下文排除（Dockerfile 位于 system-optimizer/，构建上下文 = 仓库根）：
+# 镜像只需 system-optimizer/{pyproject.toml,README.md,MANIFEST.in,src} 与 tools/，
+# 其余（文档、研究材料、Android、Windows、前端、版本库、CI、dist、缓存）一概不进上下文，
+# 缩小上下文 = 构建更快、传输更少、源码树不外泄进镜像层。
+.git/
+**/__pycache__/
+**/*.py[cod]
+**/*.egg-info/
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+build/
+**/build/
+android/
+Windows/
+research/
+docs/
+tests/
+.github/
+.hugo_build.lock
+AGENTS.md
+*.md
+!system-optimizer/README.md
+!tools/**

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <!-- 纯控制台版：不依赖 WinForms，可在 Linux/macOS/Windows 任意平台编译运行，
+         用于与 C/Rust/Python 做跨语言一致性验证。GUI 路线见同目录的 ../PeView。 -->
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <AssemblyName>PeInfo</AssemblyName>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <RootNamespace>PeInfo</RootNamespace>
+  </PropertyGroup>
+</Project>

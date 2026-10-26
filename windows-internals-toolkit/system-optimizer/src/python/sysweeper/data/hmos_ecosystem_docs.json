@@ -1,0 +1,179 @@
+{
+ "_note": "HarmonyOS / OpenHarmony 生态工程知识库（hmos_ecosystem）：只读引用，回答『鸿蒙侧该看什么、以什么为准』。来源分两类并逐条标注：①社区源（Zitann/HarmonyOS-Haps 的 add-hap Skill 与 apps.yaml 数据结构、fenwii/OpenHarmony 资料索引，2025-2026，needs_verify）；本仓库零网络、不访问任何鸿蒙服务，仅沉淀公开文档与生态事实。",
+ "hap_packaging": {
+  "name": "HAP 工程结构与 module.json5 设备类型声明",
+  "org": "HarmonyOS 应用工程规范 + 社区收录实践 Zitann/HarmonyOS-Haps add-hap Skill（2026-10，needs_verify）",
+  "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/module-config5",
+  "protocols": [
+   "工程骨架：AppScope/app.json5（应用级声明）+ entry/src/main/module.json5（模块级：abilities、requestPermissions、deviceTypes）",
+   "deviceTypes 三分类机械判定：phone+tablet+2in1 同含→一次开发多端部署；含 phone+tablet 无 2in1→手机平板；仅 2in1→电脑",
+   "应用中文名官方出处：AppScope/resources/base/element/string.json；Flutter 跨端项目的鸿蒙代码在 ohos/ 子目录",
+   "HAP 是 HarmonyOS 应用分发包格式（类似 APK），需签名（调试签名/发布签名）后方可安装"
+  ],
+  "interfaces": [
+   "本工具定位：只读知识库，不含 hdc/sdk 类工具链，不解析本地 HAP",
+   "生态侧参考：apps.yaml 收录 110 款第三方应用的分类即按 module.json5 deviceTypes 判定"
+  ],
+  "docs": [
+   "module.json5 配置文档（developer.huawei.com/consumer/cn/doc/harmonyos-guides）",
+   "Zitann/HarmonyOS-Haps .agents/skills/add-hap/SKILL.md（分类判定步骤）"
+  ],
+  "summary": "HAP 工程的设备形态由 module.json5 的 deviceTypes 声明决定；分类与命名优先读工程配置文件而非人工声明。",
+  "advice": "做鸿蒙侧工具/文档时按 deviceTypes 组合机械判定覆盖范围，抓不到配置再退回启发式并在产物上标注来源。"
+ },
+ "sideload_toolchain": {
+  "name": "鸿蒙 NEXT 侧载与调试工具链（PC 助手 ↔ 端侧安装）",
+  "org": "社区生态整理 Zitann/HarmonyOS-Haps README 安装工具章节（2026-10，needs_verify）",
+  "url": "https://github.com/Zitann/HarmonyOS-Haps",
+  "protocols": [
+   "小白调试助手（Auto-Installer，likuai2010/auto-installer）：跨平台 PC 端 HAP 安装/重签名工具，合集仓库官方推荐入口",
+   "HoKit（yabi-zzh/HoKit）：一站式开发辅助——低延迟投屏、实时性能监控、应用解析、一键重签名、文件管理，支持 Win/macOS/Linux",
+   "端侧免 PC 路线：HapInstaller（LMV475/hap-installer）端侧签名安装；HapStore（zhailinlang/hapstore）未上架 HAP 聚合目录",
+   "共性模式：PC 助手与端侧工具互补——PC 侧批量调试，端侧自服务分发"
+  ],
+  "interfaces": [
+   "与本工具的关系：仅知识登记，sysweeper 不集成任何鸿蒙工具链、不执行安装/签名",
+   "opt-in 纪律对照：重签名/安装类操作涉及密钥与设备状态，一律留给用户显式执行"
+  ],
+  "docs": [
+   "Zitann/HarmonyOS-Haps README 安装工具章节",
+   "likuai2010/auto-installer、yabi-zzh/HoKit 仓库"
+  ],
+  "summary": "鸿蒙 NEXT 侧载生态=PC 调试助手（装/签名/投屏）+端侧安装器+目录应用三层；工具本身均为第三方开源。",
+  "advice": "只在用户明确要求时提供侧载路径指引；涉及签名密钥的操作提示其自担保管责任，工具不代执行。"
+ },
+ "next_ecosystem_landscape": {
+  "name": "HarmonyOS NEXT 第三方生态版图（110 款实测收录画像）",
+  "org": "Zitann/HarmonyOS-Haps apps.yaml 实测统计（2026-10 快照，needs_verify，每日自动更新）",
+  "url": "https://github.com/Zitann/HarmonyOS-Haps",
+  "protocols": [
+   "收录规模与分类：一次开发多端部署 60 款 + 手机/平板 42 款 + 电脑 8 款（共 110，2026-10 快照）",
+   "实现路线：ArkTS/ArkUI 原生为主；Flutter 跨端 7 款（B站/漫画/LLM 客户端等）；兼容层 3 类——WineHua（Windows 程序兼容）、Harmonix/HiSH（Linux Shell/终端）",
+   "品类集中区：第三方✈客户端 5+ 款、代理/VPN 8+ 款、漫画/阅读 10+ 款、NAS/媒体服务器客户端 6+ 款",
+   "电脑端以开源移植为主：VLC(qt6)、qBittorrent、aria2、Servo(Rust 内核)、OpenTTD",
+   "工程事实：生态高度依赖 GitHub/Gitee Releases 分发，source 型仓库+release 资产是主流分发模式"
+  ],
+  "interfaces": [
+   "数据源结构：categories → [{name,url,link,desc,time}]，README 表格由生成器按 time 倒序产出",
+   "时间双格式：当年发布 MM-DD、跨年 YYYY-MM-DD——紧凑格式承载新鲜度信息"
+  ],
+  "docs": [
+   "Zitann/HarmonyOS-Haps apps.yaml（数据源）",
+   "Zitann/HarmonyOS-Haps README.md（三张分类表）"
+  ],
+  "summary": "NEXT 生态在 2026 年中已过临界点：110 款活跃第三方应用覆盖主流品类，原生+Flutter+兼容层三条路线并存。",
+  "advice": "评估鸿蒙迁移成本时按此画像对照自有 App 品类是否已有生态位；引用数据时注明快照日期，不当作实时统计。"
+ },
+ "harmony_vs_openharmony": {
+  "name": "HarmonyOS 与 OpenHarmony 关系及版本线",
+  "org": "社区资料索引 fenwii/OpenHarmony README（2025-04，needs_verify）+ 华为官方公开信息",
+  "url": "https://fenwii.github.io/OpenHarmony/",
+  "protocols": [
+   "定位分层：OpenHarmony 是开源基座（华为捐献、开放原子开源基金会托管）；HarmonyOS 是华为商业发行版，在 OpenHarmony 之上叠加 HMS 与华为专属能力",
+   "三层架构（HDC.2019 发布口径）：内核层 → 基础服务层 → 程序框架层；微内核 + 分布式软总线为核心卖点",
+   "版本线：OpenHarmony 1.1.0 LTS → … → 5.0.1 Release；HarmonyOS 4.x 仍含 AOSP 兼容层（可装 GMS），NEXT（5.x）为纯血鸿蒙（不再兼容 AOSP）",
+   "关键事实：2019 发布 → 用户破亿 → 装机 3 亿台 → NEXT 发布 → 仓颉编程语言开源 → 鸿蒙电脑（MateBook Pro/Fold）",
+   "源码获取：华为云 repo 提供各版本 tar.gz；Gitee 官方镜像仓库",
+   "里程碑（fenwii/OpenHarmony 大事记，2025-04 整理）：2019-08 HDC.2019 发布 → 2020-12 HarmonyOS 2.0 手机 Beta → 2021-09 升级用户破亿（全球最快）→ 2021-10 Oniro OS（Eclipse 基金会基于 OpenHarmony）→ 2022-05 王成录离职加盟深开鸿 → 2022-09 装机量超 3 亿台（工信部口径）→ 2023-01 设备用户 5.7 亿、全球第三大移动 OS → 2023-08 生态 7 亿设备/220 万开发者 → HarmonyOS 3.1 ArkTS API 超 1 万 → NEXT/仓颉/鸿蒙 PC"
+  ],
+  "interfaces": [
+   "与 GMS 的关系：HarmonyOS 4.x（AOSP 兼容层）才存在 GMS 部署问题——参见 gmsstd 的 harmonyos_gms_deploy 条目",
+   "NEXT 之后第三方应用均为 HAP/ArkTS 原生，不再有 APK 兼容问题"
+  ],
+  "docs": [
+   "fenwii/OpenHarmony（资源导览与版本文档归档）",
+   "OpenHarmony 官方仓库 gitee.com/openharmony"
+  ],
+  "summary": "OpenHarmony=开源基座，HarmonyOS=商业发行；分水岭是 NEXT——之前有 AOSP 兼容层，之后纯 ArkTS/HAP。",
+  "advice": "讨论『鸿蒙兼容性』先确认版本线（4.x 兼容层还是 NEXT）；工具适配与生态判断都以此为前置条件。"
+ },
+ "dev_toolchain": {
+  "name": "鸿蒙开发工具链与语言（Deveco Studio / 方舟 / 仓颉）",
+  "org": "社区资料索引 fenwii/OpenHarmony + 华为公开工具文档（needs_verify）",
+  "url": "https://developer.huawei.com/consumer/cn/deveco-studio/",
+  "protocols": [
+   "IDE：Deveco Studio（基于 IntelliJ 的鸿蒙全栈 IDE，含模拟器/真机调试/性能剖析）",
+   "编译器/运行时：方舟编译器（ArkCompiler）——TS/ArkTS 到方舟字节码的 AOT 编译路线；运行时含并发与内存管理增强",
+   "语言双轨：ArkTS（TypeScript 超集，声明式 UI 为主力）；仓颉（Cangjie，2025 年开源的通用编程语言，LTS 2025-07）",
+   "UI 框架：ArkUI 声明式（组件/状态管理/一次开发多端部署）",
+   "生态配套：DevEco Service、HMS Core 账号/推送/支付/定位等 kit；CangjieMagic（仓颉 LLM Agent 开发框架）"
+  ],
+  "interfaces": [
+   "与 classics-harmony-app 的关系：本仓库道家/典籍鸿蒙 App 即用 ArkTS+ArkUI 技术栈构建",
+   "判定纪律：API 版本差异（如 @ohos → @kit 迁移）需按目标设备系统版本核对"
+  ],
+  "docs": [
+   "Deveco Studio 下载与文档（developer.huawei.com）",
+   "仓颉语言官方文档（cangjie-lang.cn）",
+   "fenwii/OpenHarmony 工具汇总章节"
+  ],
+  "summary": "鸿蒙工具链=Deveco Studio + 方舟编译器 + ArkTS/仓颉双语言 + ArkUI 框架；HMS Core 提供账号推送支付等 kit。",
+  "advice": "做鸿蒙侧知识整理时优先引用官方文档映射 kit 名与 API 版本；社区迁移笔记（@ohos→@kit 类）标注需按实机核验。"
+ },
+ "devboards_and_iothru": {
+  "name": "OpenHarmony 开发板与 IoT 设备开发生态",
+  "org": "社区资料索引 fenwii/OpenHarmony 硬件章节（2025-04，needs_verify）",
+  "url": "https://fenwii.github.io/OpenHarmony/",
+  "protocols": [
+   "官方/常见开发板：HiSpark AI Camera（海思 AI 摄像头）、IPC DIY 摄像头、Wi-Fi IoT 套件——面向轻量/带屏/摄像头三类形态",
+   "驱动开发：HDF（Hardware Driver Foundation）驱动框架，社区常按开发板适配案例整理驱动笔记",
+   "设备开发文档线：guide/（设备开发）、driver/（驱动）、kernel/（内核）、subsystems/（子系统）——OpenHarmony 文档仓库的标准结构",
+   "生态伙伴：深开鸿（深开鸿 KaihongOS 行业发行版）等"
+  ],
+  "interfaces": [
+   "与 sysweeper 的关系：本工具纯软件只读，不接开发板；此条目只回答『鸿蒙IoT从哪看起』",
+   "排障参考：轻量系统烧录/调试问题按 设备形态→开发板文档→驱动框架 顺序查"
+  ],
+  "docs": [
+   "OpenHarmony 设备开发文档（gitee.com/openharmony/docs）",
+   "HiSpark 系列开发板资料"
+  ],
+  "summary": "OpenHarmony IoT 侧以海思 HiSpark 系列开发板+ HDF 驱动框架为主干；文档仓库按子系统/驱动/内核分层归档。",
+  "advice": "接入具体开发板前先核对所基于的 OpenHarmony 版本与其 SDK 适配分支，避免按过期教程配置环境。"
+ },
+ "codelabs_building_blocks": {
+  "name": "HarmonyOS 官方 Codelabs 构建块图谱（53 个教学 demo）",
+  "org": "huaweicodelabs/harmonyos-codelabs 文件树实测（2022-01 最后提交，最后推送 2022-03；needs_verify：FA 时代教学样仓，API 4-6 口径）",
+  "url": "https://github.com/huaweicodelabs/harmonyos-codelabs",
+  "protocols": [
+   "仓库构成：53 个独立教学工程 + LICENSE/README；每个 demo 均为标准工程骨架（build.gradle + settings.gradle + entry/{src/main,src/ohosTest}）",
+   "主题分布（文件树实测）：分布式专题 10+ 个（DistributeDatabaseDraw/DistributeNewsETS·JS/DistributedDataDemo/DistributedHealthDemo+Phone+Watch 三件套/DistributedMail/DistributedMapDemo/DistributedVideoCodelab/DistributionGamePad/HwShare_OneHop/ParallelHorizon）——分布式能力是官方教学的第一主题",
+   "技术栈画像：JS FA 系 49 个（.js + .hml + .css）、ETS 系 7 个（DistributeNewsETS/ShoppingEts/SimpleGalleryETS/SimpleVideoETS/TransitionAnimtaionETS/FlowLayoutETS/SliderEts）——JS/ETS 平行实现是 API 5-6 过渡期的典型样态",
+   "JS↔ETS 对照样对：ShoppingJs↔ShoppingEts、SliderApplication↔SliderEts、JSVideoPlayer↔SimpleVideoETS、DistributeNewsJS↔DistributeNewsETS、MovieCardDemo↔JSMovieCard",
+   "FA 工程实证（DistributeNewsETS/entry/src/main/config.json）：module.deviceType=[phone,tablet,car]、mainAbility、js[].mode={syntax:'ets',type:'pageAbility'}+pages 列表、reqPermissions 含 ohos.permission.DISTRIBUTED_DATASYNC（分布式数据同步）",
+   "其他主题：UI 组件（AnimationDemo/DialogDemo/FlowLayoutETS/ToolbarApplication/StepsCard/MovieCardDemo/ClockFACardDemo 服务卡片）、媒体（AudioDemo/CodecDemo/VideoApplication/VoiceCamera/ImageEditorTemplate/SearchImageByKeywords）、系统能力（BiometricAuthentication 生物识别/GameAuth/RemoteInputDemo 远程输入/InputApplication 输入法）、游戏与应用样件（ComposeLargeWatermelon/EducationSystem/HarmonyOSNewsClient/ShoppingEts 13 页大演练）"
+  ],
+  "interfaces": [
+   "与 classics-harmony-app 的关系：本仓库道家典籍 App 的构建块档案（Batch1-39）记录了 Stage 模型 @ohos→@kit 口径；codelabs 是 FA 时代官方样仓，两者构成完整的 API 演进对照系",
+   "构建块图谱用法：找某能力官方最小样件（分布式/生物识别/远程输入）时按本条目主题索引定位到对应 demo 目录"
+  ],
+  "docs": [
+   "huaweicodelabs/harmonyos-codelabs 仓库（git tree 实测）",
+   "DistributeNewsETS/entry/src/main/config.json（FA 工程配置实证）"
+  ],
+  "summary": "官方 53 个 Codelab = FA 时代（API 4-6）的鸿蒙能力全集样件：分布式专题居首，JS/ETS 双轨平行实现，config.json+pageAbility 为工程范式。",
+  "advice": "学官方最小实现按本图谱目录定位；但注意其为 2022 年 FA 口径——新工程用 Stage 模型 module.json5，迁移时以华为官方 API 版本对照表为准。"
+ },
+ "fa_stage_evolution": {
+  "name": "FA（Ability）→ Stage 模型：鸿蒙应用范式演进对照",
+  "org": "综合 huaweicodelabs/harmonyos-codelabs（FA 实证）+ Zitann/HarmonyOS-Haps 生态（Stage 实证）+ 华为官方迁移文档（needs_verify）",
+  "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ability-development-overview",
+  "protocols": [
+   "FA 范式（API 4-6）：config.json 声明 module.mainAbility + js[].pages；页面级 Ability（pageAbility）+ 服务级 Ability（serviceAbility）；布局 .hml + 样式 .css + 逻辑 .js",
+   "Stage 范式（API 7+，NEXT 主流）：module.json5 声明 abilities/requestPermissions/deviceTypes；UIAbility 为应用组件；UI 声明式 ArkUI（.ets），包内布局不再用 hml/css",
+   "分水岭标志：@ohos → @kit 导入迁移（API 9-10 起逐步推进）；FA 应用在 NEXT 不再支持新建",
+   "生态实证：2026 年 NEXT 第三方应用 110 款全部为 Stage/HAP 原生；官方教学样仓停留在 2022 FA 口径——学习范式与工程现状存在代差",
+   "分布式能力在两代都存在但入口不同：FA 时代 DISTRIBUTED_DATASYNC 权限 + 分布式数据库；Stage 时代演进为分布式数据管理/跨设备调用新接口"
+  ],
+  "interfaces": [
+   "判定纪律：读任何鸿蒙教程先看 API 版本口径（config.json+pageAbility=FA；module.json5+UIAbility=Stage），避免新旧范式混用",
+   "本仓库 classics-harmony-app 为 Stage 口径（ArkTS+ArkUI），构建块档案已按 API 12→16 演进标注"
+  ],
+  "docs": [
+   "huaweicodelabs/harmonyos-codelabs（FA 时代样仓）",
+   "华为官方 FA→Stage 迁移指南（developer.huawei.com）"
+  ],
+  "summary": "FA（config.json+pageAbility+hml/css）与 Stage（module.json5+UIAbility+ArkUI ets）是两代工程范式；2026 生态全在 Stage，官方教学仓仍停在 FA——教程带年份看。",
+  "advice": "接手鸿蒙代码先认范式：FA 老仓维护优先，新功能一律 Stage；迁移评估按华为官方对照表逐 API 核对，不迷信社区速成笔记。"
+ }
+}

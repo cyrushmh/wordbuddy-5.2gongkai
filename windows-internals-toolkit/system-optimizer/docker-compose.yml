@@ -1,0 +1,43 @@
+# sysweeper 容器化运行（compose）。
+#
+# 定位与 docker run 等价，但把最小权限红线固化为声明式配置：
+#   - read_only 只读根文件系统；唯一可写处是 /home/sysweeper（镜像内非 root 家目录）
+#     与 ./reports 输出卷；
+#   - cap_drop: ALL 丢弃全部 Linux capabilities（只读诊断不需要任何特权能力）；
+#   - no-new-privileges 阻断 setuid 提权路径；
+#   - 不对外暴露端口（sysweeper CLI 是本地只读工具，webapi/Deno 控制台另见
+#     src/deno 与 tools/smoke_web_jdk.py，不走本 compose）。
+#
+# 用法：
+#   docker compose up --build          # 构建并跑默认 detect，退出即止
+#   docker compose run --rm sysweeper sysmap          # 覆盖默认子命令
+#   docker compose run --rm sysweeper quantum bell    # 量子虚拟机演示
+#   docker compose run --rm sysweeper info            # 容器自身系统信息
+#
+# 版本号与 pyproject.toml / src/python/sysweeper/__init__.py 保持一致（三处同步纪律）。
+
+services:
+  sysweeper:
+    build:
+      context: ..
+      dockerfile: system-optimizer/Dockerfile
+    image: sysweeper:0.6.70
+    container_name: sysweeper
+    # 默认只读诊断子命令；docker compose run --rm sysweeper <子命令> 可覆盖
+    command: ["detect"]
+    init: true
+    environment:
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+    # 报告/导出输出目录：宿主 ./reports ↔ 容器 /reports
+    volumes:
+      - ./reports:/reports
+    # 最小权限：只读根 + 全能力丢弃 + 阻断提权；/tmp 用 tmpfs 兜底
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp:mode=1777,size=16m
+    restart: "no"

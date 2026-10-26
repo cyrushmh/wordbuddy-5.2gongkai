@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: GPL-2.0
+#
+# Quantum processing unit subsystem (drivers/quantum).
+# 注意：QUANTUM_QPU 三态开关定义在 arch/quantum/Kconfig（架构配置域），
+# 本文件只登记具体设备实现，避免重复定义。
+
+config QUANTUM_QPU_DEV
+	tristate "Emulated QPU device /dev/qpuN"
+	default y
+	depends on QUANTUM_QPU
+	help
+	  One misc device per emulated QPU (count from CONFIG_QUANTUM_QPU_NR):
+	  /dev/qpu0 exposes QPU_ENC / QPU_DEC / QPU_LINK_STATS / QPU_RESET.
+
+config QUANTUM_NET_DEV
+	tristate "Quantum networking device /dev/qnet0"
+	default y
+	depends on QUANTUM_NET
+	help
+	  One misc device per emulated quantum-network endpoint:
+	  /dev/qnet0 exposes QNET_LINK_ADD / QNET_LINK_DEL / QNET_LINK_STATS /
+	  QNET_ENTANGLE_SWAP / QNET_TELEPORT / QNET_RESET.  Feeds the Bell-pair
+	  routing table maintained by arch/quantum/kernel/quantum-net.c.

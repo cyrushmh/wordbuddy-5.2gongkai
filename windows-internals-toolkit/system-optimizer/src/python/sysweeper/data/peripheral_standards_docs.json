@@ -1,0 +1,189 @@
+{
+  "nearlink_standard": {
+    "name": "星闪（SparkLink / NearLink）短距无线通信标准（整体引入）",
+    "org": "星闪联盟（SparkLink Alliance，2020 由工信部牵头成立）/ 团体标准 T/SL 系列（通信/接入/基础/测试）；对标 Bluetooth SIG、Wi-Fi Alliance",
+    "url": "https://www.sparklink.org.cn（星闪联盟）/ 全国标准信息公共服务平台 std.samr.gov.cn（行业标准立项检索）",
+    "protocols": [
+      "两种空口：SLB（SparkLink Basic，基础模式——高速率、高精定位、低时延，对标 Wi-Fi/5G 短距）与 SLE（SparkLink Low Energy，低功耗模式——对标蓝牙 BLE）",
+      "低时延：空口时延低至微秒级（20μs 量级），远低于经典蓝牙的毫秒级，外设跟手无感",
+      "高并发：SLE 支持一拖数百至上千设备、SLB 一对多并发，远超蓝牙一拖七的点对点上限",
+      "高可靠：物理层采用源自 5G 的 Polar 码，抗干扰与远距覆盖优于传统短距方案，复杂电磁环境不掉线",
+      "精同步：μs 级多设备时间同步，支持音频/触控/传感的多端协同（如手写笔+键盘+耳机同时接入）",
+      "安全性：内置轻量加密与设备身份机制，接入需配对；与系统信任根（TPM/Keystore）可联动做设备准入"
+    ],
+    "interfaces": [
+      "当前多数设备经星闪芯片/模组或 USB/蓝牙复合 dongle 接入，尚无统一内核协议栈；本工具只做「标准引入与能力说明」，不探测未公开的私有固件",
+      "软件侧识别：设备管理器/系统信息里出现「SparkLink/NearLink」或厂商星闪标识即视为已支持；本工具只读能力面，不读私有寄存器",
+      "本工具定位：把星闪作为外部设备连接与兼容的**推荐国产短距标准**整体引入——无线外设（鼠标/键盘/手写笔/耳机/车载/工业传感）优先按星闪选型，并标注其与 BLE/Wi-Fi 的共存关系"
+    ],
+    "docs": [
+      "星闪联盟《星闪通信技术标准》系列（T/SL 团体标准：基础/接入/通信/测试）",
+      "工信部行业标准立项（星闪进入行业标准制定的路径，std.samr.gov.cn 检索）",
+      "蓝牙 SIG（Bluetooth Core Spec，BLE）/ Wi-Fi Alliance（IEEE 802.11）为对标参考"
+    ],
+    "summary": "星闪是面向短距通信的国产新一代标准，用一套架构同时覆盖「低功耗外设（SLE，对标蓝牙）」与「高速率高精（SLB，对标 Wi-Fi）」：微秒级时延、一拖上千并发、Polar 码抗干扰、μs 级同步。它把过去蓝牙（低功耗但慢、一拖七）与 Wi-Fi（快但耗电）各管一段的短距场景统一了，特别适合无线外设与多设备协同。",
+    "advice": "本工具据此把星闪作为外部设备连接与兼容的**整体推荐标准**引入：用户在选无线鼠标/键盘/手写笔/耳机时优先按星闪选型；指出它与 BLE/Wi-Fi 的频谱共存（2.4G 共存需调度），并要求接入设备做配对与身份校验。绝不替用户刷写任何星闪固件。"
+  },
+  "touch_tech": {
+    "name": "触控技术（多点触控 / 精确触控板 / 手写笔）",
+    "org": "Linux 内核 input 子系统（multi-touch protocol，内核文档 Documentation/input/multi-touch-protocol.rst）/ USB-IF（HID Device Class）/ 微软 Precision Touchpad 规范",
+    "url": "https://www.kernel.org/doc/html/latest/input/multi-touch-protocol.html / USB-IF HID 规范（usb.org）/ Microsoft Precision Touchpad 规范（Windows 硬件规范）",
+    "protocols": [
+      "多点触控协议（MT）：内核 input 子系统定义 Type A（无状态、每次上报全部触点）与 Type B（按 ABS_MT_SLOT 槽位上报，带跟踪 ID，主流方案）；ABS_MT_POSITION_X/Y/TOUCH_MAJOR/TRACKING_ID 等轴描述触点",
+      "十点触控：单屏同时识别 ≥10 个独立触点（ABS_MT_TRACKING_ID 数量上限），是主流触控屏/触控板的基准能力",
+      "精确触控板（Precision Touchpad）：微软规范，走 HID over I2C，把手势（双指滚/三指切换/四指调度）交给系统而非固件，驱动统一为 hid-multitouch",
+      "手写笔（主动笔/被动笔）：压感+倾斜经 HID/专有协议上报；星闪 SLE 可作低时延手写笔无线通道",
+      "触控屏与触控板在 Linux 经 hid-multitouch 驱动，设备出现在 /proc/bus/input/devices 与 /sys/class/input/input*/"
+    ],
+    "interfaces": [
+      "软件只读识别：解析 /proc/bus/input/devices 的 Handlers（event*/mouse*）与名称含「Touch/ELAN/Synaptics/FTSC」者判断是否触控设备，并据 ABS 位判 MT 协议类型",
+      "驱动兼容：缺 hid-multitouch 或 I2C-HID 时触控失效；本工具只报「驱动缺位」并给官方指引，不替用户装内核模块",
+      "本工具定位：只读识别触控设备与协议类型（MT-A/MT-B、是否精确触控板），出兼容与驱动指引，绝不挂钩输入流（契合键盘/输入内容刻意不采集的红线）"
+    ],
+    "docs": [
+      "Linux kernel Documentation/input/multi-touch-protocol.rst（MT-A / MT-B）",
+      "USB-IF Device Class Definition for HID（Human Interface Device）",
+      "Microsoft Precision Touchpad 规范（Windows Hardware Compatibility）",
+      "I2C-HID（HID over I2C，触控板/屏常见传输）"
+    ],
+    "summary": "触控是外部输入设备里交互最直接的一类：多点触控靠内核 MT 协议（Type B 槽位跟踪主流）描述每个触点，精确触控板把手势交给系统统一处理，手写笔叠加压感倾斜。识别与驱动兼容（hid-multitouch / I2C-HID）是「触控能不能用、跟不跟手」的关键。",
+    "advice": "本工具把触控技术作为外部设备支持与兼容的核心能力之一：只读识别触控/精确触控板与 MT 协议类型，缺驱动即给官方安装指引（如启用 hid-multitouch/I2C-HID），并提示手写笔优先按低时延通道（星闪 SLE）选型。绝不采集任何按键或触控内容。"
+  },
+  "usb_c_pd": {
+    "name": "USB-C / USB4 与 USB Power Delivery 供电兼容",
+    "org": "USB-IF（USB Implementers Forum，usb.org：USB4/USB 3.2/Type-C/USB PD）/ IEC 62680（欧洲 USB 标准，等同 USB-IF）/ USB BC 1.2（电池充电）",
+    "url": "https://www.usb.org（USB-IF 规范与认证）/ IEC 62680（欧盟 USB-C 强制充电接口标准）",
+    "protocols": [
+      "USB4：基于 Thunderbolt 3 协议，最高 40Gbps，经 USB Type-C 连接器，向下兼容 USB 3.2/2.0",
+      "USB Type-C：可逆连接器，支持 Alternate Mode（DP 视频/Thunderbolt/星闪等承载），是统一接口方向",
+      "USB Power Delivery（PD 3.1）：经 CC 线协商，标准 100W（20V/5A），EPR 扩展至 240W（28V/36V/48V），支持双向充放电角色切换",
+      "USB BC 1.2（Battery Charging）：传统端口充电规范（DCP/CDP/SDP），与 PD 协商速率差距大，老旧端口只给 0.5–1.5A",
+      "兼容性陷阱：USB-C 仅形状相同不代表能力相同——仅充电线（无 e-Marker）不支持 100W/视频；PD 角色不匹配导致「连上不充电/降速」"
+    ],
+    "interfaces": [
+      "软件只读识别：/sys/bus/usb/devices 下 uevent 的 idVendor/idProduct/bcdDevice/电源能力，与 Type-C 端口属性（kernel typec 类），据此判 USB 版本与 PD 能力",
+      "功率协商：PD 由端口与设备经 CC 线私有协商，软件只能读到「已协商结果」，不能改写功率档——本工具只读不协商",
+      "本工具定位：只读识别 USB 版本（2.0/3.2/4）与 PD 能力（是否 EPR/是否双向），出兼容与选型指引，绝不改 CC 协商或刷固件"
+    ],
+    "docs": [
+      "USB-IF USB4 规范（基于 Thunderbolt 3，40Gbps）",
+      "USB PD 3.1 规范（100W 标准 / 240W EPR）",
+      "IEC 62680-1/-2（USB 欧洲标准，欧盟强制 USB-C 充电接口）",
+      "USB BC 1.2（Battery Charging，传统充电端口）"
+    ],
+    "summary": "USB-C 是接口形状的统一，但能力由内部规范决定：USB4 40Gbps、PD 3.1 最高 240W、BC 1.2 只给小电流。同形状线缆可能只是「能插」，不支持视频或高功率。识别版本与 PD 能力、避开「形状相同能力不同」的坑，是外设供电兼容的关键。",
+    "advice": "本工具把 USB-C/USB4 与 PD 作为外部设备供电兼容维度：只读识别 USB 版本与 PD 能力（是否 EPR、是否双向），提示线缆须带 e-Marker 才支持 100W/视频，并标注欧盟 IEC 62680 强制 USB-C 接口。绝不改写 PD 协商或刷写接口固件。"
+  },
+  "hid_compat": {
+    "name": "HID 与通用外设兼容（即插即用 / 驱动兼容）",
+    "org": "USB-IF HID（Human Interface Device Class）/ 微软 HID 类驱动 / Linux hid 子系统（hid-generic/hid-multitouch）/ 即插即用（PnP）",
+    "url": "https://www.usb.org（HID Device Class Definition）/ Linux kernel Documentation/hid/",
+    "protocols": [
+      "HID 类：键鼠/触控/游戏杆等低速人机输入统一走 HID 描述符（Report Descriptor），系统按描述符自动加载通用驱动（hid-generic），无需逐设备驱动",
+      "即插即用（PnP）：设备插入经枚举→加载匹配驱动→就绪；缺描述符或驱动即「未知设备/感叹号」",
+      "兼容层：外设经 HID/USB 被系统识别后，应用层再经各自 API（如游戏手柄经 XInput/DInput、触屏经 MT 协议）消费——识别与消费分两层",
+      " legacy 兼容：USB 向下兼容 USB 2.0/1.1；老旧 PS/2/串口外设需转接，转接器本身可能不被 HID 自动识别",
+      "星闪外设：无线外设经星闪接入后，仍须向上暴露标准 HID/音频接口，系统才能即插即用——星闪是传输层，HID 是能力层"
+    ],
+    "interfaces": [
+      "软件只读识别：/sys/bus/usb/devices 的 bInterfaceClass=03（HID）与 /proc/bus/input/devices 的 Handlers，判外设类别与是否已被 HID 驱动接管",
+      "驱动缺位：出现「未知设备」即驱动/描述符问题；本工具只报缺位并给官方指引，不替用户装私有驱动",
+      "本工具定位：只读盘点 HID/USB 外设的即插即用与驱动兼容状态，出兼容指引；绝不在兼容层注入任意代码（契合插件白名单红线）"
+    ],
+    "docs": [
+      "USB-IF Device Class Definition for HID（Report Descriptor 规范）",
+      "Linux kernel Documentation/hid/（hid-generic / hid-multitouch）",
+      "微软 HID 类驱动（Windows 即插即用外设基础）"
+    ],
+    "summary": "绝大多数键鼠/触控/手柄走 HID 类，系统按描述符自动加载通用驱动即插即用。识别与消费分两层：先被 HID/USB 识别，再被应用 API 消费。星闪等无线传输层只解决「怎么连上」，最终仍须暴露标准 HID 接口才能即插即用。",
+    "advice": "本工具把 HID/通用外设兼容作为外部设备支持与兼容的兜底维度：只读盘点外设的即插即用与驱动状态，缺驱动即给官方指引；指出星闪外设须暴露标准 HID 接口方能即插即用。绝不注入任意驱动代码。"
+  },
+  "cabling_copper": {
+    "name": "铜缆结构化布线（双绞线信道等级）",
+    "org": "ISO/IEC JTC 1/SC 25（ISO/IEC 11801）/ TIA（ANSI/TIA-568）",
+    "url": "https://www.iso.org/standard/71070.html / https://www.tiaonline.org/",
+    "protocols": [
+      "ISO/IEC 11801:2017（第三版，分 6 部分：通用/办公/工业/住宅/数据中心/分布式楼宇服务），将办公水平布线下限从 Class D（Cat5e）提到 Class E（Cat6），并推荐 Class EA（Cat6A）支撑 >1 Gbit/s",
+      "ANSI/TIA-568-D（商业建筑电信布线），平衡双绞线部分 TIA-568.2-D；定义 Cat5e/6/6A/8 与信道/永久链路模型",
+      "信道等级决定可跑速率：Cat5e→1G，Cat6→1G/2.5G，Cat6A→10G，Cat8→25/40G（短距）",
+      "2.5GBASE-T / 5GBASE-T / 10GBASE-T 依赖 Cat6/6A 与 PoE 散热预算"
+    ],
+    "interfaces": [
+      "ethtool <if>（读协商速率/双工，仅反映了链路能力，只读）",
+      "ethtool --cable-test <if>（读内置 PHY 线缆诊断，只读，需驱动支持）",
+      "ip -s link（读接口错误/丢包计数，只读）"
+    ],
+    "docs": [
+      "ISO/IEC 11801:2017 系列 / ANSI/TIA-568-D",
+      "IEEE 802.3 802.3bz（2.5/5GBASE-T）/ 802.3an（10GBASE-T）"
+    ],
+    "summary": "铜缆布线标准是网络物理层可达速率的上限来源：ISO/IEC 11801:2017（第三版）与 ANSI/TIA-568-D 规定双绞线信道等级。链路实际能跑多快由布线等级（Cat5e/6/6A/8）而非网卡决定；PoE 高功率还受线缆散热约束。",
+    "advice": "只读诊断用 ethtool <if>（看协商速率）与 ip -s link（看错误计数，不改系统）。链路跑不到预期速率时先确认布线等级（Cat6A 才稳 10G），不要盲目换网卡。PoE 高功率（>30W）需 Cat6/6A 与低阻抗跳线，劣质 Cat5e 会过热降额。本工具只读评估，绝不改动布线或端口协商。"
+  },
+  "fiber_cable": {
+    "name": "光纤线缆与单模光纤标准",
+    "org": "ITU-T（G.65x 系列）/ IEC（IEC 60793 光纤规范、IEC 61753 器件可靠性）",
+    "url": "https://www.itu.int/rec/T-REC-G.652/en / https://www.iec.ch/",
+    "protocols": [
+      "ITU-T G.652（单模光纤与光缆特性，现行 G.652.D：低水峰、全波段可用）",
+      "G.651（多模）/ G.655（非零色散位移）/ G.657（弯曲不敏感，用于室内/FTTH）互为补充",
+      "IEC 60793 系列：光纤详细规范（几何/光学/机械/环境参数）",
+      "链路经 SFP/SFP+/QSFP 光模块（DOM），速率由模块（1/10/25/100/400G）与光纤类型共同决定"
+    ],
+    "interfaces": [
+      "ethtool -m <if>（读光模块 DOM：Tx/Rx 光功率、温度、电压，只读）",
+      "ip -s link（读收发光与错误计数，只读）",
+      "ethtool <if>（读链路速率/光口类型，只读）"
+    ],
+    "docs": [
+      "ITU-T G.652 / G.657 建议书",
+      "IEC 60793 / IEC 61753 规范"
+    ],
+    "summary": "光纤链路的可达速率与距离由光纤类型（单模 G.652/弯曲不敏感 G.657）与光模块（SFP/QSFP 及 DOM）共同决定。单模 G.652.D 全波段、低损耗，是长途与数据中心主干主流；G.657 耐弯，用于室内尾纤。诊断以 ethtool -m 读光功率最关键。",
+    "advice": "只读诊断用 ethtool -m <if>（看 Rx 光功率是否低于接收灵敏度阈值）与 ip -s link（改系统）。光功率不足/误码升高先查清洁度与弯曲半径（G.657 可耐弯，G.652 不行），再查模块与链路预算。绝不对着光纤看光源或用劣质跳线；本工具只读评估光模块与链路，绝不插拔光模块或改端口。"
+  },
+  "video_conn": {
+    "name": "视频与高速接口 HDMI / DisplayPort / Thunderbolt",
+    "org": "HDMI Forum（HDMI）/ VESA（DisplayPort）/ Intel（Thunderbolt）",
+    "url": "https://www.hdmi.org/ / https://www.vesa.org/ / https://www.thunderbolttechnology.net/",
+    "protocols": [
+      "HDMI 2.1（HDMI Forum，2017）：48G 线支持 4K@120/8K@60，含 DSC 压缩、VRR、eARC；HDMI 2.0 为 18G",
+      "DisplayPort 2.1（VESA，2022）：UHBR（10/13.5/20 Gbps/lane），经 USB-C Alt Mode 承载；DP 2.0/2.1 与 USB4 共用物理层",
+      "Thunderbolt 4（Intel，2020，40G）与 Thunderbolt 5（2023，80G/120G，双向/非对称）均基于 USB4/PCIe+DP 隧道",
+      "DP Alt Mode over USB-C：同一 USB-C 口可切换为 DP 视频；线缆须支持对应速率（认证标识）"
+    ],
+    "interfaces": [
+      "xrandr（读显示器与可用模式/刷新率，只读）",
+      "xrandr --verbose / edid 解析（读 EDID 能力与声道，只读）",
+      "modetest / drm_info（读 DRM/KMS 显示能力，只读）"
+    ],
+    "docs": [
+      "HDMI 2.1 规范 / VESA DisplayPort 2.1 / Intel Thunderbolt 4/5",
+      "xrandr(1)、drm_info 文档"
+    ],
+    "summary": "视频与高速接口标准是外设显示能力上限：HDMI 2.1 走 48G 面向电视/8K，DisplayPort 2.1 走 UHBR 面向高刷显示器并借 USB-C Alt Mode 复用，Thunderbolt 4/5 则把 DP 隧道与 PCIe 合一。能力由源、线缆认证、 sink 三者共同限制。",
+    "advice": "只读诊断用 xrandr / drm_info（看显示器模式与能力，不改系统）。高刷新/高分辨率跑不出时先确认线缆认证（HDMI 48G、DP 认证线、USB4 线）而非显卡——劣质线会降速或掉链。USB-C 的 DP Alt Mode 由固件自动协商，不要强行施加非显示器支持的时序。本工具只读评估显示能力，绝不改显示配置或刷固件。"
+  },
+  "power_conn": {
+    "name": "电源连接器与器具耦合器（交流电源接口）",
+    "org": "IEC（IEC 60320 系列）/ 各国插座标准（如 GB 1002、NEMA、Schuko）",
+    "url": "https://webstore.iec.ch/publication/60904（IEC 60320-1）",
+    "protocols": [
+      "IEC 60320-1（器具耦合器通用要求，第 4 版 2021）：定义连接器（插头侧，C1-C26）与器具入口（C13/C14、C15/C16、C19/C20 等）",
+      "常见：C13/C14（10A，IT 设备常规）、C15/C16（15A，高温如电水壶/PDU 高载）、C19/C20（16A，服务器/PDU 高功率）",
+      "电压/电流额定与温度等级绑定（如 C15 耐 120°C），错配会导致过热",
+      "地区插座形态各异（国标 GB 1002、美标 NEMA、欧标 Schuko），但设备端器具耦合器多遵循 IEC 60320"
+    ],
+    "interfaces": [
+      "只读识别：/sys 与 hwdb 仅能给型号，电源连接器靠物理标识与铭牌额定判定（无 CLI 探测）",
+      "系统用电读：upower / acpi（读电池与适配器状态，只读）",
+      "PD 功率读：USB Type-C 经 typec 类（kernel）读 PD 能力（见 usb_c_pd 条目）"
+    ],
+    "docs": [
+      "IEC 60320-1 器具耦合器标准",
+      "upower(1)、acpi(1) 文档"
+    ],
+    "summary": "电源连接器标准（IEC 60320）决定设备与交流电源的物理接口与额定：C13/C14 常规 IT、C15/C16 高温高载、C19/C20 服务器高功率。额定电流与温度等级绑定，错配会过热。地区插座形态（国标/美标/欧标）不同，但设备端器具耦合器多遵循 IEC 60320，与外设的 USB-C PD 供电互补。",
+    "advice": "只读识别用 upower/acpi（看适配器与电量，不改系统）；电源连接器额定靠铭牌与物理标识判定，本工具不探测。选型/更换电源线时匹配额定（C13 与 C15 外观相似，但 C15 耐温更高，不能相互降额替代）；高功率服务器用 C19/C20 而非 C13。绝不触碰带电端子或用非认证线；本工具只读评估，绝不改动供电。"
+  }
+}

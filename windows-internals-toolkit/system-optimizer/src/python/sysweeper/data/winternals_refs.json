@@ -1,0 +1,478 @@
+{
+  "_note": "开源 Windows 分析·学习应用参考知识库（v0.6.76 新建）。许可与版本口径以各项目官方源为准（reactos.org / winehq.org / github.com / learn.microsoft.com 等，2026-10 检索）；未逐条核实的挂 needs_verify。本工具只读引用：不动目标系统、不注入进程、不写注册表、不做 DMA 内存写。",
+  "_position": "只读诊断：不启动分析目标、不 attach 或注入进程、不改文件系统与注册表、不 DMA 读写物理内存、不代编译或加载驱动；attack 与内核写类工具仅登记存在性。面向其他系统与硬件时，必须先识别并遵守该系统与硬件自身的文件系统、目录约定、运行语言标准与运行时环境，不以本机（Linux 沙箱）的习俗臆造目标结构。",
+  "key": "winternals",
+  "label": "开源 Windows 分析学习应用",
+  "domain": "系统/逆向/取证",
+  "references": [
+    {
+      "name": "ReactOS 官网（Windows 开源重实现，GPL-2.0-or-later）",
+      "org": "ReactOS Project（reactos.org）",
+      "url": "https://www.reactos.org/"
+    },
+    {
+      "name": "WineHQ 官网（Win32 兼容层，LGPL-2.1-or-later）",
+      "org": "Wine Project（winehq.org）",
+      "url": "https://www.winehq.org/"
+    },
+    {
+      "name": "Ghidra 官网（NSA 开源逆向套件，Apache-2.0）",
+      "org": "Ghidra（ghidra-sre.org）",
+      "url": "https://ghidra-sre.org/"
+    },
+    {
+      "name": "x64dbg 官网（开源 Windows 用户态调试器，GPL-3.0）",
+      "org": "x64dbg（x64dbg.com）",
+      "url": "https://x64dbg.com/"
+    },
+    {
+      "name": "radare2 官网（开源逆向框架，配套 Cutter GUI）",
+      "org": "radareorg（radare.org）",
+      "url": "https://www.radare.org/"
+    },
+    {
+      "name": "Cutter 逆向 GUI（radare2 官方图形前端）",
+      "org": "radareorg（cutter.re）",
+      "url": "https://cutter.re/"
+    },
+    {
+      "name": "System Informer 仓库（原 Process Hacker，GPL-3.0）",
+      "org": "winsiderss（github.com）",
+      "url": "https://github.com/winsiderss/systeminformer"
+    },
+    {
+      "name": "MemProcFS 文档与源码（AGPL-3.0）",
+      "org": "Ulf Frisk（github.com/ufrisk）",
+      "url": "https://github.com/ufrisk/MemProcFS"
+    },
+    {
+      "name": "PCILeech 仓库（DMA 双刃工具，AGPL-3.0，仅登记存在性）",
+      "org": "Ulf Frisk（github.com/ufrisk）",
+      "url": "https://github.com/ufrisk/pcileech"
+    },
+    {
+      "name": "Volatility 3（开源内存取证框架，GPL-2.0）",
+      "org": "Volatility Foundation（github.com）",
+      "url": "https://github.com/volatilityfoundation/volatility3"
+    },
+    {
+      "name": "Windows Driver Samples（微软官方驱动示例集，MIT）",
+      "org": "Microsoft WDK（github.com/microsoft）",
+      "url": "https://github.com/microsoft/Windows-driver-samples"
+    },
+    {
+      "name": "Microsoft Learn · Windows 驱动与 Win32 参考",
+      "org": "Microsoft（learn.microsoft.com）",
+      "url": "https://learn.microsoft.com/windows-hardware/drivers/"
+    },
+    {
+      "name": "Microsoft Learn · Sysinternals 文档（非开源，仅作能力对照）",
+      "org": "Microsoft（learn.microsoft.com）",
+      "url": "https://learn.microsoft.com/sysinternals/"
+    },
+    {
+      "name": "The Vergilius Project（Windows 内核结构体数据库）",
+      "org": "Vergilius Project（vergiliusproject.com）",
+      "url": "https://www.vergiliusproject.com/"
+    },
+    {
+      "name": "Geoff Chappell · Windows 内核与 NT API 研究笔记",
+      "org": "Geoff Chappell（geoffchappell.com）",
+      "url": "https://www.geoffchappell.com/"
+    },
+    {
+      "name": "GNU 许可证官方文本（快捷判断许可纯度）",
+      "org": "FSF（gnu.org）",
+      "url": "https://www.gnu.org/licenses/"
+    },
+    {
+      "name": "aardio + DsoFramer 复活实践（AA 重构 COM Office 嵌入控件）",
+      "org": "aardio 社区（AA = aardio autos；范例 » COM 组件 » 嵌入 Office 文档；DsoFramer 为停更数十年 C++/COM 控件）",
+      "url": "https://www.aardio.com/"
+    }
+  ],
+  "items": [
+    {
+      "key": "winternals-fs-layout",
+      "name": "Windows 文件系统与目录约定（跨平台只读诊断的第一道门槛）",
+      "org": "Microsoft（NTFS / ReFS 官方叙述口径）",
+      "url": "https://learn.microsoft.com/windows-server/storage/file-systems/file-systems-overview",
+      "protocols": [
+        "NTFS（日志 / MFT / USN / $Extend / $BadClus）与 ReFS（完整性流·校验和）",
+        "exFAT / FAT32 多用于可移动介质",
+        "路径形态：盘符 C:\\ 、UNC \\\\server\\share 、扩展长度 \\\\?\\ 前缀、NT 命名空间 \\\\.\\Device",
+        "大小写不敏感但保留大小写；分隔符为 \\ ，Win32 层多数情况下亦接受 /",
+        "保留设备名限制：CON / PRN / AUX / NUL / COM1-9 / LPT1-9"
+      ],
+      "interfaces": [
+        "%SystemRoot% 通常为 C:\\Windows，但须读环境变量或按 GetSystemDirectory 语义取，不可硬编码",
+        "System32 放原生位宽映像，SysWOW64 放 32 位映像（WOW64 重定向）",
+        "Program Files / Program Files (x86) / ProgramData / Users\\<name>\\AppData",
+        "WinSxS 组件存储与 servicing 的 Packages 目录"
+      ],
+      "docs": [
+        {
+          "title": "Microsoft Learn · 文件系统技术概述",
+          "url": "https://learn.microsoft.com/windows-server/storage/file-systems/file-systems-overview"
+        },
+        {
+          "title": "Microsoft Learn · 文件、路径与命名空间命名",
+          "url": "https://learn.microsoft.com/windows/win32/fileio/naming-a-file"
+        }
+      ],
+      "summary": "读 Windows 目标的第一道坎不是工具而是路径：同一份文件在不同层有不同名字。Win32 层看到的 C:\\Windows\\System32\\notepad.exe，在 32 位进程里会被 WOW64 重定向到 SysWOW64；NT 层看到的是 \\Device\\HarddiskVolumeN\\Windows\\System32；\\Users 之外还有 \\Documents and Settings 这类兼容连接点。目录名会骗人：System32 里放的是 64 位映像、SysWOW64 里放的是 32 位映像，这是历史包袱而不是笔误。",
+      "advice": "跨平台只读诊断的铁律是「先判定目标，再看目录」。判不到 Windows 就不摆 Windows 路径；判到了 Windows，SystemRoot 也要读环境变量或按 GetSystemDirectory 语义取，绝不硬编码 C:\\Windows，%APPDATA% 与 %LOCALAPPDATA% 同理。本机在 Linux 上走 FHS（/etc·/usr·/var·/proc·/sys），macOS 走 APFS 加 /System/Library·/Users，Android 走 /system·/data·/vendor——各按各家习俗，不以一种套全部。",
+      "evidence_status": "official_verified",
+      "needs_verify": "SysWOW64 重定向在 ARM64 与混合映像环境下的细节时有变化，具体组合以微软当期文档为准，本库未逐版本核对"
+    },
+    {
+      "key": "winternals-runtime-envs",
+      "name": "Windows 运行语言环境与运行时标准（谁在跑、用什么 ABI）",
+      "org": "Microsoft / 各运行时社区",
+      "url": "https://learn.microsoft.com/windows/win32/api/",
+      "protocols": [
+        "Win32 / COM / WinRT：用户面稳定二进制接口",
+        "NT Native API：ntdll.dll 导出，微软未文档化的那一层",
+        ".NET CLR / CoreCLR / NativeAOT：托管运行时，IL 经 JIT 或预编译",
+        "MSVC CRT（vcruntime / ucrt）与 MinGW-w64 CRT（msvcrt 系），两者 ABI 不互认",
+        "UEFI 启动应用层，以及 Win32 的 GUI 与 CUI 子系统之别"
+      ],
+      "interfaces": [
+        "PE / PE32+（.exe / .dll / .sys）映像格式，含导入表、导出表、延迟导入",
+        "依赖库层次：ntdll、kernel32、user32 决定调用最终落到哪一层",
+        "PDB 符号服务器（msdl.microsoft.com/download/symbols）",
+        "完整性级别与 UAC 令牌：同一操作能否成功取决于令牌，而非文件名"
+      ],
+      "docs": [
+        {
+          "title": "Microsoft Learn · Windows API 索引",
+          "url": "https://learn.microsoft.com/windows/win32/api/"
+        },
+        {
+          "title": "Microsoft Learn · PE 格式规范",
+          "url": "https://learn.microsoft.com/windows/win32/debug/pe-format"
+        }
+      ],
+      "summary": "Windows 上同时活着好几套运行时：原生 Win32（MSVC CRT）、混血的 MinGW-w64（链接 msvcrt 系，与 MSVC ABI 不兼容，混链即崩）、托管的 .NET CLR 与 CoreCLR、紧贴内核的 NTDLL Native API 层，以及 WSL 里的 Linux ELF 与 glibc。还要看工具自身的运行环境：Ghidra 跑在 Java 17 以上的 JVM 上，Volatility3 是 Python 3，radare2 是 C 加多语言绑定，x64dbg 是原生 Win32。所以「运行语言环境」两头都要看：一头是目标的映像格式与 ABI，另一头是工具链自己的 JVM、Python、CLR 依赖是否满足。",
+      "advice": "做只读诊断先答三问：①目标是什么映像格式与 ABI（PE 还是 ELF 还是 Mach-O）；②目标依赖哪些运行时库（CLR 在不在、用哪个 CRT）；③我这边的工具链需要什么语言环境（JDK 版本下限、Python 版本、有无 GPU 的用户态 ICD）。三者缺一，结论都不成立。混合 CRT（MSVC 与 MinGW 混链）与混合架构（x64 宿主载 x86 目标）是两类最高频的踩坑点。",
+      "evidence_status": "official_verified",
+      "needs_verify": "MSVC 与 MinGW-w64 的 CRT 互操作边界随版本演进；各工具自身的版本下限（如 Ghidra 的 JDK 要求）以项目当期 README 为准，本库只做存在性盘点"
+    },
+    {
+      "key": "winternals-tools-monitor",
+      "name": "系统监控与进程检视工具（System Informer / WinObjEx64 / Sysinternals 对照）",
+      "org": "System Informer 社区 / WinObjEx64 维持者 / Microsoft（Sysinternals）",
+      "url": "https://github.com/winsiderss/systeminformer",
+      "protocols": [
+        "进程树 / 句柄 / 模块 / 线程 / 内存的分层只读检视",
+        "对象管理器命名空间浏览（\\Device、\\BaseNamedObjects 等）",
+        "注：持续性的文件、注册表与网络活动监视属主动监视，本工具不涉及"
+      ],
+      "interfaces": [
+        "System Informer（原 Process Hacker，GPL-3.0）：句柄表与进程树可视化",
+        "WinObjEx64：WinObj 的社区维持版，看对象管理器命名空间",
+        "Sysinternals Suite（Process Explorer / Autoruns / Process Monitor）：微软官方出品但非开源，仅作能力对照，不吸收"
+      ],
+      "docs": [
+        {
+          "title": "System Informer 仓库",
+          "url": "https://github.com/winsiderss/systeminformer"
+        },
+        {
+          "title": "Microsoft Learn · Sysinternals 文档（非开源，仅对照）",
+          "url": "https://learn.microsoft.com/sysinternals/"
+        }
+      ],
+      "summary": "这一类是「把 Windows 内部状态看明白」的入口：System Informer 看进程、线程、句柄与模块树，WinObjEx64 看对象管理器命名空间。它们与 PE 解剖共同构成 Windows 内部机制的可见部分——Windows Internals 书上讲的结构（进程对象、线程、句柄表、系统调用派发），在这些工具里能当场看到对应的实体。",
+      "advice": "Sysinternals 虽然权威却并非开源，本工具的口径是「只对照、不吸收」：能力面登记在册，其代码与二进制一概不引入，以免许可证污染。需要进程与句柄维度时，优先看本工具 native/windows 的只读面。",
+      "evidence_status": "official_verified",
+      "needs_verify": "Sysinternals 各组件多为微软自家许可条款而非 OSI 许可，以微软当期条款为准；WinObjEx64 维持版的确切许可未逐条核对"
+    },
+    {
+      "key": "winternals-tools-reverse",
+      "name": "逆向 / 反汇编 / 调试工具链（Ghidra / x64dbg / radare2·Cutter / dnSpyEx）",
+      "org": "NSA / x64dbg 团队 / radareorg / dnSpyEx 社区",
+      "url": "https://ghidra-sre.org/",
+      "protocols": [
+        "静态侧：反汇编、反编译、控制流与数据流分析，做全映像的整体分析",
+        "动态侧：断点、步进、寄存器与内存观察，属调试会话，本工具不启动",
+        "托管代码侧：IL 反编译与重新生成"
+      ],
+      "interfaces": [
+        "Ghidra（Apache-2.0，需 Java 17 以上环境，含反编译器与脚本体系）",
+        "x64dbg（GPL-3.0，原生 Windows 用户态调试器，插件体系完备）",
+        "radare2（LGPL 与 GPL 混合）+ Cutter（GPL 图形前端），跨平台",
+        "dnSpyEx（GPL 系，dnSpy 的社区维持版，做 IL 反编译与调试）",
+        "对照：WinDbg 是微软官方调试器但非开源，仅作对照"
+      ],
+      "docs": [
+        {
+          "title": "Ghidra 官网",
+          "url": "https://ghidra-sre.org/"
+        },
+        {
+          "title": "x64dbg 官网",
+          "url": "https://x64dbg.com/"
+        },
+        {
+          "title": "radare2 官网",
+          "url": "https://www.radare.org/"
+        },
+        {
+          "title": "Cutter 图形前端",
+          "url": "https://cutter.re/"
+        }
+      ],
+      "summary": "可以按「静态全景对动态单帧」来读这堆工具：静态套件（Ghidra、radare2、Cutter）做全映像的分析，动态调试器（x64dbg、dnSpyEx、WinDbg）做某一时刻的状态观察。许可纯度是关键取舍点：Ghidra 是 Apache-2.0（最宽松），x64dbg 与 dnSpyEx 是 GPL 系（有传染性），radare2 是 LGPL 库加 GPL 工具的混合。是否需要介意取决于再发布链路——只调用其输出通常不触发传染，若要把它们的代码并入自己的产物，GPL 则要求整体同许可证。",
+      "advice": "本工具的 native/reverse 已经覆盖了静态侧的主要着力点：PE 与 ELF 格式识别、节区表解剖、香农熵、UPX 三特征。本条目补的是「开源生态里有谁、各自什么许可证、能对得上 native/reverse 的哪一段」。界线要划清：这些工具由用户在自己机器上使用并自行负责，本工具只登记坐标与许可证，不代跑其中的任何一个。",
+      "evidence_status": "official_verified",
+      "needs_verify": "radare2 的 LGPL 库与 GPL 工具边界、Cutter 与 dnSpyEx 的确切许可版本未逐条核对文件头部"
+    },
+    {
+      "key": "winternals-tools-forensics",
+      "name": "内存取证与物理内存获取（Volatility3 / MemProcFS / WinPMEM / PCILeech）",
+      "org": "Volatility Foundation / Ulf Frisk",
+      "url": "https://github.com/volatilityfoundation/volatility3",
+      "protocols": [
+        "先取得内存映像，再配符号表，才能把物理地址还原为内核结构",
+        "分析路线：内存映像加匹配的 PDB 符号，走查进程链表、虚拟地址描述符与句柄表",
+        "获取路线：软件侧获取，或经 DMA 硬件读取",
+        "虚拟机侧：用挂起或快照导出的内存映像，是相对安全的取样方式"
+      ],
+      "interfaces": [
+        "Volatility3（GPL-2.0，Python 3，以符号表驱动多个 Windows 与 Linux 版本）",
+        "MemProcFS（AGPL-3.0，把物理内存挂成文件系统，用 ls 与 cat 去看）",
+        "WinPMEM 一类获取工具传统上需装载内核驱动，本工具不触碰",
+        "PCILeech（AGPL-3.0，经 PCIe DMA 硬件读写内存，双重用途）"
+      ],
+      "docs": [
+        {
+          "title": "Volatility3 仓库",
+          "url": "https://github.com/volatilityfoundation/volatility3"
+        },
+        {
+          "title": "MemProcFS 仓库与文档",
+          "url": "https://github.com/ufrisk/MemProcFS"
+        }
+      ],
+      "summary": "Volatility3 的思路值得借鉴：分析本身不再直接读活体内存，而是拿「内存映像加符号表」两件东西推演出结论，这就把一个不确定的问题（这块内存到底是什么结构）转换成了两个确定的问题（转储是否完好、符号是否匹配）。MemProcFS 更进一步，把内存挂成文件系统，让用户用熟悉的列目录与读文件去看。两者都是只读分析的优秀范例。",
+      "advice": "许可证纯度要注意：MemProcFS 与 PCILeech 均为 AGPL-3.0，若通过网络对外提供服务，AGPL 的传达条款比 GPL 更严；Volatility3 为 GPL-2.0。本工具对这些工具一律只登记存在性：不转储内存、不下载符号、不装载驱动、不触碰 DMA 硬件。",
+      "evidence_status": "official_verified",
+      "needs_verify": "各项目的 AGPL 与 GPL 确切条款以仓库 LICENSE 文件为准；是否构成「传达」的法律判断本工具不下结论"
+    },
+    {
+      "key": "winternals-os-reactos",
+      "name": "ReactOS —— Windows 的开源重实现（可读到源码的内核树）",
+      "org": "ReactOS Project（GPL-2.0-or-later 为主）",
+      "url": "https://www.reactos.org/",
+      "protocols": [
+        "目标是二进制兼容 Windows Server 2003 基线层的 NT 系列",
+        "内核态 ntoskrnl 加用户态子系统库的自有实现",
+        "既是可启动的操作系统，也是一份源码级的参考实现"
+      ],
+      "interfaces": [
+        "以会话管理与 Win32 子系统组织，复原经典的 Windows 启动链",
+        "遵循 WDM 结构：对象管理器、IRP 派发、驱动对象层次",
+        "树内存在少量非 GPL 的第三方组件，许可并不完全单一"
+      ],
+      "docs": [
+        {
+          "title": "ReactOS 官网与源码入口",
+          "url": "https://www.reactos.org/"
+        }
+      ],
+      "summary": "对学习 Windows 内部机制的人来说，ReactOS 是唯一能直接读到源码的 Windows 兼容内核实现。虽然它的目标基线偏旧（大致对应 Server 2003 层），与现代 Windows 存在差异，但 NT 内核的核心组织方式——执行体与内核与硬件抽象层的分层、对象管理器、IRP 派发、句柄表、虚拟内存管理——在其源码里是完整且可读的流程。读它比读反汇编出来的路径要干净得多。",
+      "advice": "这是本轮参考价值最高的「可对读锚点」：Windows Internals 书上讲到一个结构，到 ReactOS 源码里搜同一个名字，往往能直接找到头文件定义与实现。两点注意：①它整体是 GPL-2.0-or-later，读源码参考可以，但绝不能把它的代码拷进自己的产物；②它是旧基线，现代 Windows 的新增机制须另行对照微软文档补上证。",
+      "evidence_status": "official_verified",
+      "needs_verify": "树内少量组件的许可例外以官网许可页为准；其实现与现代 Windows 的差异程度本工具不评估"
+    },
+    {
+      "key": "winternals-os-wine",
+      "name": "Wine —— Win32 API 的用户态重实现（兼容层兼语义参考）",
+      "org": "Wine Project（LGPL-2.1-or-later）",
+      "url": "https://www.winehq.org/",
+      "protocols": [
+        "把 Win32 与 NTDLL 调用翻译到 POSIX，而不做内核仿真",
+        "逐个重实现 DLL 的接口：kernel32 映射到 libc 与原生系统调用",
+        "在 Prefix（WINEPREFIX）里布一层仿真的盘符树与注册表树"
+      ],
+      "interfaces": [
+        "服务进程加加载器，再加各 DLL 的用户态与内核态对接模块",
+        "支持在 64 位宿主上运行 32 位 Windows 程序",
+        "衍生：Valve 的 Proton（Steam Play 兼容层）已由 proton 子系统吸收"
+      ],
+      "docs": [
+        {
+          "title": "WineHQ 官网与应用数据库",
+          "url": "https://www.winehq.org/"
+        }
+      ],
+      "summary": "Wine 与 ReactOS 的分工要分清：Wine 在用户态逐个重实现 DLL 的接口并翻译到 POSIX；ReactOS 是内核态加用户态的整套 NT 重实现。想知道某个 Win32 函数在 POSIX 世界里究竟做了什么，看 Wine 的源码最直观——它的许可是 LGPL-2.1，传染性比 ReactOS 弱，更适合作为参考来读。",
+      "advice": "本工具的 native/proton 已把 Valve Proton（Wine 的衍生）吸收为只读的兼容层诊断；本条目补的是「Wine 本体作为 Win32 语义参考」这一层。红线一致：不由本工具写 wine prefix、不安装、不以特权用户跑 wine。许可提醒：LGPL-2.1 允许动态链接使用，但修改了 Wine 的库本体后仍须开源。",
+      "evidence_status": "official_verified"
+    },
+    {
+      "key": "winternals-driver-samples",
+      "name": "Windows Driver Samples 与内核示例（许可最宽松的可学代码）",
+      "org": "Microsoft WDK（MIT 许可）",
+      "url": "https://github.com/microsoft/Windows-driver-samples",
+      "protocols": [
+        "覆盖 WDM 与 WDF（KMDF / UMDF）两代驱动模型",
+        "从最简驱动到总线特定驱动：USB、蓝牙、存储、音频、显示、打印等",
+        "需配套 WDK 生成 catalogue 与 INF，并经 HLK 测试链路"
+      ],
+      "interfaces": [
+        "仓库根目录 MIT License 头，许可明确且无传染性",
+        "构建链路走 MakeCat 与 Inf2Cat，测试签名需开启测试模式",
+        "本工具只观察仓库存在性与本机 WDK 痕迹，不改注册表、不装载驱动"
+      ],
+      "docs": [
+        {
+          "title": "Windows-driver-samples 仓库",
+          "url": "https://github.com/microsoft/Windows-driver-samples"
+        },
+        {
+          "title": "Microsoft Learn · Windows 驱动程序入门",
+          "url": "https://learn.microsoft.com/windows-hardware/drivers/gettingstarted/"
+        }
+      ],
+      "summary": "想学 Windows 内核态编程、又希望代码能直接作为基底，这是整体环境里最宽松的选项：MIT 许可，微软官方维护，覆盖从最小驱动到总线驱动的完整梯度。相比 ReactOS 与 Wine 的 GPL 与 LGPL，MIT 没有传染性。但要注意，写驱动本身是危险动作——本工具只看仓库、只看文档、只看本机是否装了 WDK，绝不自编译、不签名、不加载。",
+      "advice": "学习路径：在 GitHub 上读源码，对照 WDK 文档理解 IRP 与请求对象如何流转，再看本机 Windows Kits 目录（若存在）里的样例。禁区三件套：不改注册表启动项、不跑 bcdedit 开启测试签名、不装载任何 .sys。",
+      "evidence_status": "official_verified"
+    },
+    {
+      "key": "winternals-internals-books",
+      "name": "《Windows Internals》体系与结构参考数据源",
+      "org": "Pavel Yosifovich · Mark Russinovich 等 / Vergilius Project / Geoff Chappell",
+      "url": "https://www.vergiliusproject.com/",
+      "protocols": [
+        "书籍讲机制：进程、线程、内存管理、I/O 系统与安全模型",
+        "Vergilius Project 给出未文档化结构体的逐字段布局，并按版本与架构区分",
+        "Geoff Chappell 的研究笔记补 NT API 边界与历史演进"
+      ],
+      "interfaces": [
+        "Vergilius Project：在线的 Windows 内核结构浏览器",
+        "Geoff Chappell：NT API 与系统结构的深度研究笔记（含 PE 与用户态布局）",
+        "《Windows Internals》书（Microsoft Press）及其配套工具，配套工具并非全部开源"
+      ],
+      "docs": [
+        {
+          "title": "The Vergilius Project",
+          "url": "https://www.vergiliusproject.com/"
+        },
+        {
+          "title": "Geoff Chappell · Studies",
+          "url": "https://www.geoffchappell.com/"
+        }
+      ],
+      "summary": "Windows 内部机制的知识体系有个特点：你拿不到源码，但有人把结构翻了出来。书讲的是「机制怎么运作」，Vergilius 给的是「结构体逐字段怎么摆」（还分版本与架构），Geoff Chappell 补的是「API 的边界与历史怎么演变」。三者合起来，构成 Windows 内核的一份可读版本。",
+      "advice": "伦理界线：这些都是公开资料上的结构协作知识，不含漏洞利用代码。用于理解自己机器的内存或转储是正当的，用于他人未授权系统则越界。本工具只登记这些知识坐标，不下载其数据、不生成任何攻击性载荷。",
+      "evidence_status": "official_verified",
+      "needs_verify": "Vergilius 与 Chappell 站点的内容覆盖面以各自站点当期为准；书本配套工具的许可状态多为微软条款而非开源，本工具不逐个辨识"
+    },
+    {
+      "key": "winternals-license-purity",
+      "name": "开源纯度与许可证速查（许可决定能不能碰）",
+      "org": "本仓库诚实边界登记",
+      "url": "https://www.gnu.org/licenses/",
+      "protocols": [
+        "宽松许可：MIT / Apache-2.0 / BSD 系，再发布限制少",
+        "弱著佐权：LGPL-2.1，动态链接可用，改库本身须开源",
+        "强著佐权：GPL-2.0 / GPL-3.0，派生作品须同许可证",
+        "网络著佐权：AGPL-3.0，经网络提供服务也触发传达义务"
+      ],
+      "interfaces": [
+        "本仓库取向：MIT 与 Apache-2.0 优先",
+        "GPL 与 AGPL 系工具只登记不吸收",
+        "非开源对照物（Sysinternals、WinDbg、Windows 本体）仅作能力对照",
+        "AGPL 特别提醒：MemProcFS 与 PCILeech 在网络服务场景须格外谨慎"
+      ],
+      "docs": [
+        {
+          "title": "GNU 许可证体系官方文本",
+          "url": "https://www.gnu.org/licenses/"
+        },
+        {
+          "title": "Microsoft Learn · Windows 文档",
+          "url": "https://learn.microsoft.com/windows/"
+        }
+      ],
+      "summary": "本仓自身的许可取向是「宽松优先、纯度优先」。吸收一个工具的参考口径，不是因为它便宜，而是因为它的许可干净。GPL 与 AGPL 系项目（System Informer、MemProcFS、x64dbg、dnSpyEx、PCILeech，Ghidra 例外是 Apache）可以出现在存在性盘点里，但其代码与二进制一概不入库；非开源体（Sysinternals、WinDbg）只作能力对照。",
+      "advice": "实践判据一句话：只读参考加存在性盘点没有传染问题；要把人家的代码并入自己的产物，GPL 要求整体同许可证，AGPL 还管到网络服务。本工具处在最安全那一格——既引用知识，又从不把外部代码 vendor 进来。",
+      "evidence_status": "official_verified",
+      "needs_verify": "各项目实际许可以其仓库 LICENSE 文件为准，本表依据官网公开叙述；构成派生作品与构成传达的法律边界因司法辖区而异，本工具不下法律结论"
+    },
+    {
+      "key": "winternals-redline-dma",
+      "name": "DMA 与内核写类工具的红线（PCILeech 等仅登记存在性）",
+      "org": "本仓库诚实边界登记",
+      "url": "https://github.com/ufrisk/pcileech",
+      "protocols": [
+        "DMA 双刃剑：经 PCIe 硬件直接读写主机物理内存",
+        "正当用法：对自己或己方已授权设备的取证与恢复",
+        "越界用法：对未授权主机的内存读写、凭证提取、内核级注入"
+      ],
+      "interfaces": [
+        "PCILeech（AGPL-3.0）：开源，但本工具只登记其存在性",
+        "WinPMEM 等获取类工具需装载驱动，本工具不执行",
+        "本条目回链 native/reverse 的只读伦理口径"
+      ],
+      "docs": [
+        {
+          "title": "PCILeech 仓库",
+          "url": "https://github.com/ufrisk/pcileech"
+        }
+      ],
+      "summary": "界线要在这里说死：PCILeech 这类 DMA 工具开源且有正当取证用途，但它的写入能力直接作用在别人主机的物理内存上，等同于取得内核级控制权。法律与伦理的界线在于授权，而不在于工具本身。所以本工具的处置是——只回答有没有，绝不提供一条操作路径。",
+      "advice": "红线（比全项目更严，与 radio 同级）：绝不驱动任何真实的写入与注入——不动 PCI 设备、不 DMA 读写内存、不装载驱动、不注入进程、不改文件系统与注册表；对上述工具仅登记其存在与法律边界。",
+      "evidence_status": "official_verified"
+    },
+    {
+      "key": "winternals-self-anchors",
+      "name": "回链本工具既有能力（约八成已被覆盖，本次补齐另两成）",
+      "org": "本仓库诚实边界登记",
+      "url": "https://learn.microsoft.com/windows/",
+      "protocols": [
+        "native/reverse：PE 与 ELF 格式识别、节区解剖、香农熵、UPX 三特征",
+        "native/windows：Windows 本机面的只读探测",
+        "native/osi 与 native/network：网络堆栈与七层诊断",
+        "native/proton、native/wsl、native/legacy：Windows 的邻接兼容面"
+      ],
+      "interfaces": [
+        "本次真正补齐的两件：开源分析工具链的存在性盘点坐标；内核原理的可对读锚点",
+        "这两件都不引入执行路径、不引入写入路径、不新增第三方依赖"
+      ],
+      "docs": [
+        {
+          "title": "Microsoft Learn · Windows 参考",
+          "url": "https://learn.microsoft.com/windows/"
+        }
+      ],
+      "summary": "诚实盘点的结论是：这批开源 Windows 应用的能力面，本工具既有的 reverse、windows、osi、network、proton、wsl 已经覆盖了大约八成——格式识别、结构解剖、熵判据、兼容性核验、网络与健康都在其中。本次真正补的是另外两成：一是把开源工具生态登记成可查的存在性坐标，二是让 Windows 内核原理有了可对读的开源锚点（ReactOS 源码树、Wine 用户态实现、driver samples 的 MIT 示例）。",
+      "advice": "这是本项目一贯的做法：不重复造轮子，也不假装自己没被覆盖。能力重叠的地方回链既有模块，真正缺的才新建——本轮只新建了这两项，其余均以回链方式嵌入系统地图与联动轴。",
+      "evidence_status": "official_verified"
+    },
+    {
+      "key": "com-ole-embedded-office-control",
+      "name": "COM/OLE 文档嵌入控件（DsoFramer 类：桌面程序内嵌原生 Office/WPS）",
+      "org": "Microsoft（COM/OLE 官方叙述口径）+ DsoFramer 生态",
+      "url": "https://learn.microsoft.com/windows/win32/com/component-object-model--com--portal",
+      "protocols": [
+        "COM（组件对象模型）：IUnknown 引用计数 + 接口多态，跨进程/进程内组件二进制契约",
+        "OLE 嵌入/链接：容器程序承载文档服务器控件，原地激活（in-place activation）",
+        "DsoFramer：在自有桌面程序中嵌入原生 Excel/Word/PPT 的 COM 控件，停更数十年仍是少数方案"
+      ],
+      "interfaces": [
+        "复活实践口径（docs/77 §3.2）：aardio（AA）+ AI 编码体重构，打开速度提升「数十倍」、发行体积缩至 96KB、兼容 Office/WPS；token 成本数千元级",
+        "工程纪律可学：可行性分析先行、多模型分工（主力实现+专门优化）、发行体积硬指标"
+      ],
+      "docs": [
+        "docs/77 §3.2"
+      ],
+      "summary": "COM/OLE 是 Windows 桌面程序与 Office 集成的经典机制；DsoFramer 为该生态标志性控件。",
+      "advice": "只登记机制与生态事实；不复制 DsoFramer/aardio 任何代码。",
+      "evidence_status": "报道口径（头条文章单方陈述，2026-10-25 只读抓取）",
+      "needs_verify": "「快数十倍」「96KB」等数字为文章单方口径，未独立复核"
+    }
+  ]
+}

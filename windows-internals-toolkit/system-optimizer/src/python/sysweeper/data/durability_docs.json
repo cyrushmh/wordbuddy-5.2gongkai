@@ -1,0 +1,215 @@
+{
+  "battery_lithium": {
+    "name": "锂电池化学与寿命（充放电循环 / 温度窗口 / 存放电量）",
+    "org": "Apple / Google Android / 电池厂商公开指南（IEEE 1725/1625、IEC 61960）",
+    "url": "https://www.apple.com/batteries/maximizing-performance/ ; https://support.google.com/android/answer/7018472",
+    "protocols": [
+      "循环计数：一次「完整循环」＝累计放掉 100% 容量（可跨多次浅充浅放），多数锂离子设计寿命 500–1000 完整循环后容量降至约 80%",
+      "温度窗口：理想工作 0–35°C；长期高于 35°C 加速正极/电解液衰减，低于 0°C 充电易析锂（镀锂不可逆）",
+      "存放电量：长期存放建议 50% 左右，满电或空电长期存放都加速衰减；每 6 个月补电一次",
+      "化学体系：消费电子主流为 Li-ion/Li-Po；电压平台约 3.0–4.2V/芯，过充过放由保护板（BMS/PMIC）截断"
+    ],
+    "interfaces": [
+      "Android：BatteryManager / ACTION_BATTERY_CHANGED（level、temperature、health、chargeCounter、cycleCount 部分厂商暴露）",
+      "iOS：UIDevice.batteryLevel / IORegistry 取电池温与循环（需私有接口，仅诊断用）",
+      "Windows：Windows.Devices.Power.Battery（从设计满电到当前、充放电率，只读）",
+      "Linux：UPower / sysfs（/sys/class/power_supply/BAT*/cycle_count、temp、charge_full）",
+      "macOS：IOKit IOPSPowerSource 取 cycle_count、temperature、design_capacity"
+    ],
+    "docs": [
+      "Apple《最大化电池性能》公开指南",
+      "Google Android《电池保养》支持页",
+      "IEEE 1725（手机电池）/ IEEE 1625（笔电电池）标准",
+      "IEC 61960（二次锂电芯性能与寿命）"
+    ],
+    "summary": "锂离子靠「化学可逆插层」储能，寿命由循环次数、温度、荷电状态（SoC）共同决定。高温是头号杀手——长期 >35°C 明显加速衰减；低温充电会析锂。平台都暴露只读接口拿电量、温度、健康度、循环数，但循环数/设计容量是否可拿因厂商而异。",
+    "advice": "保养三件事：①避免长期满电/空电，日常保持 20%–80% 最省寿；②避开高温环境（车内、暴晒、长期高负载封口散热）；③长期不用留 50% 电每季补电。本工具仅读 BatteryManager/UPower/IOKit 等只读接口取温与循环，不写任何电池寄存器、不越权调用私有写接口。"
+  },
+  "ip_rating": {
+    "name": "IEC 60529 防水防尘等级（IPxx 编码）",
+    "org": "IEC（国际电工委员会）",
+    "url": "https://www.iec.ch/standards/iec-60529-ed-2-1",
+    "protocols": [
+      "第一位（固体）：1–6 级，6=X 完全防尘；常见手机 IP68（6 防尘）",
+      "第二位（液体）：1–9，8=持续浸没（厂商标定深度/时长）、9K=高压高温喷射；IP67=1 米 30 分、IP68 按厂商标定更深",
+      "X 占位：IPX4=只测了防水没测防尘；评级是「实验室新机」静态测试结果，随老化密封下降",
+      "液体类型限定：IP 等级针对清水，不覆盖海水/汗液/饮料/油污——这些有腐蚀性或导电性"
+    ],
+    "interfaces": [
+      "设备规格页标注（厂商官方 IPxx，唯一权威来源）",
+      "软件侧无标准 API 读「当前密封状态」，需靠传感器旁证（湿度/气压骤变、受潮标志位）间接推断",
+      "部分 Android 暴露「受潮/进水标志位」（如三星 moisture detector 阻止充电）"
+    ],
+    "docs": [
+      "IEC 60529:2013 固体异物/液体侵入防护分级",
+      "各厂商防水白皮书（Apple/三星/Sony 对 IP68 的标定说明）"
+    ],
+    "summary": "IP 等级是出厂新机在受控实验室对清水做的静态防护标定，分防尘（第一位）与防水（第二位）。它不保证 lifelong——橡胶圈/胶会随温度循环、弯折、磕碰老化而失效；也不覆盖非清水（海水含盐腐蚀、饮料含糖黏连、汗液导电）。",
+    "advice": "不要把 IP68 当潜水证：它是「意外泼溅/短时浸没」保险，不是长期水下使用许可。海水/泳池后立即用清水冲净、晾干通风再充电；充电口有潮气时多数手机拒绝快充甚至禁充——这是保护，不要硬捅。本工具根据设备规格标注静态 IP 等级提示，不宣称实时密封监测。"
+  },
+  "ashrae_thermal": {
+    "name": "ASHRAE 温湿度推荐（设备运行与存放环境）",
+    "org": "ASHRAE（美国采暖制冷空调工程师学会）",
+    "url": "https://www.ashrae.org/technical-resources/bookstore/thermal-guidelines-for-data-processing-environments",
+    "protocols": [
+      "推荐运行温区（A1 类设备）：18–27°C；允许上限依类别可到 32–35°C（IT 设备）",
+      "运行相对湿度：推荐 40%–60%，允许下限 20% 上限 80%（避免静电累积与凝露）",
+      "露点：建议 5.5–15°C 露点，防结露；露点 >15°C 高湿风险，<5.5°C 静电风险",
+      "非运行存放：温度可更宽（-40–60°C 依介质），但温变率需受控防凝露"
+    ],
+    "interfaces": [
+      "环境传感器：温湿度计、露点计算（Td = f(T,RH)）、气压计",
+      "平台环境 API：Android 无直接湿度 API（靠外部传感器）；iOS CoreMotion/Environment 部分设备有环境光与气压；Windows 传感器 API 含环境光/湿度若硬件支持",
+      "本机代理：可由外部蓝牙温湿度计数据经本工具比对建议"
+    ],
+    "docs": [
+      "ASHRAE Thermal Guidelines for Data Processing Environments（温湿度/露点建议）",
+      "设备厂商「运行环境」规格（苹果/联想/戴尔的温度湿度上限）"
+    ],
+    "summary": "ASHRAE 给的是长期可靠运行的温湿度包络：太热加速化学与材料老化、太冷凝露与水汽凝结、太干静电击穿敏感件、太湿短路与霉变。消费设备没有机房那么严，但 18–27°C / 40–60%RH 仍是延寿甜区。",
+    "advice": "把常用设备放在通风、避晒、远离窗边/暖气/卫生间的位置；高湿环境配防潮箱或干燥剂；露点高于 15°C 或温度骤降时先关机静置等回温再通电防凝露。本工具只读环境传感器/外部数据后比对 ASHRAE 包络给提示，不控制任何空调或加湿器。"
+  },
+  "storage_smart": {
+    "name": "存储健康 SMART / 磨损指示（SSD/HDD/闪存）",
+    "org": "T13（ACS）/ T10（SCSI）/ NVMe 规范 / 各闪存厂",
+    "url": "https://nvmeexpress.org/ / https://www.t13.org/",
+    "protocols": [
+      "SSD 关键属性：Percentage Used（已用寿命%）、Available Spare（备用块余量）、Media Errors、Power-On Hours、Host Writes（写入总量）",
+      "HDD 关键属性：Reallocated Sector Count、Current Pending Sectors、UDMA CRC Error、Load/Unload Cycle",
+      "NVMe 经 SMART/Health Info log（可读 nvme smart-log）；SATA 经 smartmontools（-A 只读）",
+      "闪存写放大：随机小写放大写入；TRIM/DISCARD 让 controller 回收，长期不用满盘利于磨损均衡"
+    ],
+    "interfaces": [
+      "smartctl -A / -x（只读，需 disk 读权限，不写）",
+      "Windows：PowerShell Get-PhysicalDisk | Get-StorageReliabilityCounter（只读）",
+      "Linux：/sys/block/*/device/*、ioctl；macOS：diskutil info、SMART（仅部分接口）",
+      "Android：多数无用户可访问 SMART，靠可用空间与文件错误间接评估"
+    ],
+    "docs": [
+      "NVMe Base Specification：SMART/Health Information log",
+      "ATA/ACS 规范：SMART 属性定义",
+      "smartmontools 文档（属性语义对照）"
+    ],
+    "summary": "SSD 寿命由写入总量与磨损均衡决定，SMART 的 Percentage Used 直接给剩余寿命比例；HDD 看重映射扇区与待映射扇区是否增长。TRIM 让 SSD 回收无效块、缓冲突发写入。满盘（<10% 余量）会恶化写放大与磨损均衡。",
+    "advice": "保留 ≥10%–15% 空闲空间；启用 TRIM（定期 fstrim / Windows 默认开启）；重要数据多重备份而非依赖 SMART。读 SMART 用 smartctl -A / PowerShell 只读计数器，不写盘、不做任何「修复」写操作（固件级坏块处理风险高）。本工具只读 SMART/健康计数器并提示阈值，不发起任何写盘修复。"
+  },
+  "sensor_apis": {
+    "name": "设备传感器接口与 API（温度/湿度/气压/光/加速度等）",
+    "org": "各平台官方 SDK（Android / iOS / Windows / macOS / Linux）",
+    "url": "https://developer.android.com/reference/android/hardware/SensorManager ; https://developer.apple.com/documentation/coremotion",
+    "protocols": [
+      "Android：SensorManager 列出 TYPE_AMBIENT_TEMPERATURE / TYPE_RELATIVE_HUMIDITY / TYPE_PRESSURE / TYPE_LIGHT / TYPE_PROXIMITY / TYPE_ACCELEROMETER，registerListener 读数（需硬件支持）",
+      "iOS：CoreMotion（加速度/陀螺/气压 CMAltitude）、环境由专用传感器；环境温湿度多数 iOS 设备不向 App 开放",
+      "Windows：Windows.Devices.Sensors（AmbientLightSensor、Barometer、Accelerometer、若硬件有湿度则 HumiditySensor），统一异步 API 只读",
+      "macOS：IOKit 取电池/温度；环境传感器多经内核扩展或 sysctl；第三方多走 USB/蓝牙外部传感器",
+      "Linux：hwmon（/sys/class/hwmon）暴露温度/风扇/电压；电池走 power_supply；外部传感器多走 IIO 或 libsensors"
+    ],
+    "interfaces": [
+      "Android SensorManager.getDefaultSensor(TYPE_*) + registerListener（只读，运行时权限）",
+      "Windows.Devices.Sensors.*（GetDefault() 若返回 null 即硬件不支持，优雅降级）",
+      "Linux hwmon / sensors 命令 / libsensors（只读 sysfs）",
+      "外部蓝牙/USB 温湿度计（经本工具适配层读，不写设备）"
+    ],
+    "docs": [
+      "Android SensorManager / Sensor 参考",
+      "Apple CoreMotion 框架文档",
+      "Windows.Devices.Sensors 命名空间文档",
+      "Linux hwmon / libsensors / IIO 文档"
+    ],
+    "summary": "各平台都提供传感器只读 API，但「可用哪些」取决于硬件：手机常见温/湿/压/光/加速度；笔电/桌面多只有电池温与 CPU 温（hwmon），环境湿度的内置传感器很少。没有就用外部蓝牙传感器补足。统一原则是 GetDefault()/list 返回空即优雅降级，不假设存在。",
+    "advice": "采集时先 list 可用传感器，缺失项标记为「本机未提供」而非报错；只读取数，不写任何传感器寄存器或校准参数。本工具采集层对所有平台采用「能读就读、不能读就跳过」的降级策略，绝不为凑数据伪造读数。"
+  },
+  "humidity_ingress": {
+    "name": "水汽与异物对设备的影响（短路/腐蚀/霉变/卡扣）",
+    "org": "厂商维护指南 / IPC（电子装配与腐蚀防护）常识",
+    "url": "https://www.ipc.org/ / 各厂商「清洁与维护」支持页",
+    "protocols": [
+      "短路：液体导电，进入端口/缝隙在通电时拉低绝缘，触发保护或烧件；充电口潮湿触发 PMIC 拒充",
+      "腐蚀：海水/汗液含氯、饮料含糖/酸，残留后缓慢腐蚀焊点与触点，数日–数周后才显现故障",
+      "霉变：长期 >70%RH 不通风，屏幕夹层/扬声器网/按键缝长霉，不可逆且难清理",
+      "异物卡扣：灰尘/砂砾进风扇与接口，风扇异响、Type-C 接触不良、散热风道堵塞升温",
+      "温度循环：冷热交替致内部结露（冷凝水），比直接泼水更隐蔽、更伤内部"
+    ],
+    "interfaces": [
+      "受潮标志位（部分 Android：充电口潮湿检测、进水指示贴变色，只读）",
+      "湿度传感器旁证（RH 持续 >80% 预警）",
+      "物理检查：接口目视、风扇噪音、屏幕夹层雾气（人工）"
+    ],
+    "docs": [
+      "IPC-A-610 电子装配可接受性（腐蚀/污染相关）",
+      "各厂商「进水/受潮后处理」支持文档"
+    ],
+    "summary": "水汽与异物的破坏分两类：即时（通电短路、保护拒充）与迟发（氯/酸腐蚀焊点、长期高湿霉变、灰尘堵风道升温）。最隐蔽的是温度循环冷凝——内部结露发生在密闭腔内，表面看不出。",
+    "advice": "落水/泼液：立即断电、擦干外表、接口朝下晾通风处 ≥24–48h 再充电（勿用热风猛吹，高温伤屏与电池）；海水/饮料后清水冲净残留再晾；长期高湿环境定期开机通风除湿、配防潮箱。本工具只据湿度读数与规格给预警，不替你做拆机清理或烘干。"
+  },
+  "thermal_throttle": {
+    "name": "散热与热节流（长期老化关联）",
+    "org": "各平台电源/热管理框架（Linux thermal / Windows DPTF / macOS SMC / Android 热守护）",
+    "url": "https://www.kernel.org/doc/html/latest/driver-api/thermal/",
+    "protocols": [
+      "热区（thermal zone）：CPU/GPU/电池/表面各有一组温度节点，越限逐级降频（throttle）护硬件",
+      "Linux thermal sysfs：/sys/class/thermal/thermal_zone*/temp + trip_point（只读，热策略由内核管）",
+      "Windows DPTF（动态平台热框架）：被动/主动冷却策略，降频与风扇联动",
+      "长期高温：每次逼近上限都在加速材料与焊点疲劳，封口散热（被褥/包内）最伤"
+    ],
+    "interfaces": [
+      "Linux：cat /sys/class/thermal/thermal_zone*/temp（只读）",
+      "Android：PowerManager 热状态回调 / SurfaceFlinger 无关；多数只读 thermal HAL",
+      "macOS：功率/温度经 IOKit SMC 键（需私有，诊断用）",
+      "Windows：WMI MSAcpi_ThermalZoneTemperature（只读）"
+    ],
+    "docs": [
+      "Linux thermal subsystem 文档",
+      "Intel DPTF 概览",
+      "各厂「不要在柔软表面使用笔记本」散热警告"
+    ],
+    "summary": "热管理是保护机制：温度越高降频越狠，用起来越卡，但硬件在保命。长期贴着上限跑，焊点疲劳与化学衰减累积，整机寿命缩短。风道堵（灰尘/布艺覆盖）会让正常负载也触顶。",
+    "advice": "使用时放在硬面、留散热缝；定期清风扇灰（外部软刷/气吹，不拆机）；长期高负载任务分段做、中途歇散热。读 thermal zone 只读温度比对阈值给预警，不写任何热策略、不强制解锁降频（越频伤硬件）。"
+  },
+  "charge_strategy": {
+    "name": "充电策略（优化充电 / 自适应充电 / 浅充浅放）",
+    "org": "Apple（优化电池充电）/ Google（自适应充电）/ Windows（智能充电）",
+    "url": "https://support.apple.com/zh-cn/HT210896 ; https://support.google.com/android/answer/12016350",
+    "protocols": [
+      "学习作息：系统学你常用时段，临用前才冲到 100%，平时停在 80% 减缓满电应力",
+      "智能充电（Windows 部分机型）：可设充电上限（如 80%）长期插电更省寿",
+      "浅充浅放：日常 20%–80% 比 0%–100% 循环寿命显著更长（减少深放与满电停留）",
+      "边充边玩：发热叠加充电热，温度双高最伤电池，应避免高负载时快充"
+    ],
+    "interfaces": [
+      "Android：BatteryManager 暴露充电状态/插头类型；厂商 Settings 开「自适应充电」",
+      "iOS：设置→电池→电池健康 开「优化电池充电」",
+      "Windows：OEM 控制中心（联想 Vantage/戴尔 Power Manager）设充电阈值",
+      "本工具：只读当前电量/温度/充电态，提示是否处于「满电长期插电」高风险"
+    ],
+    "docs": [
+      "Apple 优化电池充电说明",
+      "Google 自适应充电说明",
+      "各 OEM 充电阈值/养护模式文档"
+    ],
+    "summary": "优化充电的本质是「别让电池长期满电呆着」——满电应力是化学衰减主因之一。各厂用学习作息把满电推到临用前；手动设 80% 上限对长期插电的笔电尤其有效。浅充浅放延长循环寿命。",
+    "advice": "长期插电的笔电在 OEM 控制中心设 80% 充电上限；手机开厂商「优化/自适应」充电；避免边快充边高负载游戏。本工具只读电量与温度判断「满电长期插电」风险并提示，不写任何充电阈值寄存器（那是 OEM 固件/驱动职责，越权写有风险）。"
+  },
+  "maintenance_schedule": {
+    "name": "维护与保养周期（软件与硬件综合）",
+    "org": "各厂商维护建议 + 通用 IT 维护实践",
+    "url": "https://support.apple.com/maintenance ; 各厂「保养」支持页",
+    "protocols": [
+      "软件侧：定期清理缓存/日志（可逆）、更新系统补丁（安全）、检查磁盘剩余（≥10–15%）、核对备份完整性",
+      "硬件侧：物理清灰（风扇/接口，外部软刷）、检查电池健康（循环数/最大容量）、检查端口松动与腐蚀",
+      "环境侧：高湿季节加强通风除湿、温度骤变后静置防凝露、避免阳光直射与封闭散热",
+      "频率：清灰 6–12 月（依环境灰尘）、备份核对季度、电池健康半年评估、系统补丁月度或随发布"
+    ],
+    "interfaces": [
+      "本工具：聚合各 native 只读探针（电池/温度/SMART/湿度/风扇）输出一份「保养待办清单」",
+      "用户动作：清灰/通风/备份为人工或 OEM 工具，本工具只列建议不代执行写操作",
+      "系统更新：各平台官方更新通道（只读检测可用更新，不自动安装）"
+    ],
+    "docs": [
+      "各厂商设备保养支持文档",
+      "通用 IT 资产维护周期实践"
+    ],
+    "summary": "保养是「软件清理 + 硬件清灰 + 环境控温湿 + 定期备份」的常态化组合。没有银弹，靠周期执行把突发故障变成可预期的小维护。本工具能把分散的只读探针汇成一张清单，让用户一次看清该做什么。",
+    "advice": "把保养当日历事项：月度看系统更新、季度核备份、半年查电池与清灰、年度深度清灰。本工具输出的保养清单均为建议项，高风险写操作（改充电阈值、拆机清洁、系统写修复）只给指引、不代执行，由用户在 GUI 里自主选择是否按其官方工具操作。"
+  }
+}

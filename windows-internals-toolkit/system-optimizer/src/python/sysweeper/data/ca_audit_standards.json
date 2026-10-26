@@ -1,0 +1,779 @@
+{
+ "meta": {
+  "name": "WebTrust for CAs 审计图谱（GoDaddy/Starfield 2026）",
+  "version": "1.0",
+  "built_utc": "2026-10-17T15:00:00Z",
+  "discipline": "每条 CA/事项/地点带 source 页码；无出处不录入；拼写如实保留原文",
+  "sources": [
+   "research/caaudit/GoDaddy - 2026 WebTrust for CAs - Report.pdf",
+   "research/caaudit/webtrust_report_facts.json"
+  ],
+  "source_kind": "third-party-audit-report",
+  "report": {
+   "subject": "Starfield Technologies, LLC（GoDaddy, Inc. 子公司）的 Starfield 与 GoDaddy Certification Authority (CA) 运营",
+   "auditor": "Schellman & Company, LLC",
+   "auditor_location": "Tampa, Florida, United States of America",
+   "report_date": "2026-07-27",
+   "period": {
+    "start": "2025-07-01",
+    "end": "2026-06-30"
+   },
+   "criteria": "WebTrust Principles and Criteria for Certification Authorities v2.2.2",
+   "standards_applied": [
+    "AICPA 鉴证准则（Attestation Standards, AICPA）",
+    "ISAE 3000（IAASB，历史财务信息审计或审阅以外的其他鉴证业务）",
+    "SQMS（AICPA 质量管理准则声明）与 ISQM 1（IAASB）"
+   ],
+   "opinion": "无保留意见：管理层的断言在所有重大方面公允陈述（fairly stated, in all material respects）",
+   "seal_note": "WebTrust 徽章仅为本报告内容的象征性体现，不更新报告亦不提供额外保证",
+   "source_pages": "1-6"
+  },
+  "counts": {
+   "root_cas": 12,
+   "cross_signed_cas": 8,
+   "issuing_cas": 15,
+   "total_cas": 35,
+   "locations": 12,
+   "matters": 4,
+   "cpcps_documents": 6,
+   "control_domain_groups": 7
+  }
+ },
+ "cas": [
+  {
+   "id": "root:go-daddy-class-2-certification-authority",
+   "kind": "root",
+   "name": "Go Daddy Class 2 Certification Authority",
+   "subject_cn": "Not applicable.",
+   "fingerprint": "C3846BF24B9E93CA64274C0EC67C1ECC5E024FFCACD2D74019350E81FE546AE4",
+   "root_id": null,
+   "source_page": 12
+  },
+  {
+   "id": "root:go-daddy-root-certificate-authority-g2",
+   "kind": "root",
+   "name": "Go Daddy Root Certificate Authority - G2",
+   "subject_cn": "Go Daddy Root Certificate Authority - G2",
+   "fingerprint": "45140B3247EB9CC8C5B4F0D7B53091F73292089E6E5A63E2749DD3ACA9198EDA",
+   "root_id": null,
+   "source_page": 12
+  },
+  {
+   "id": "root:starfield-class-2-certification-authorit",
+   "kind": "root",
+   "name": "Starfield Class 2 Certification Authority",
+   "subject_cn": "Not applicable.",
+   "fingerprint": "1465FA205397B876FAA6F0A9958E5590E40FCC7FAA4FB7C2C8677521FB5FB658",
+   "root_id": null,
+   "source_page": 12
+  },
+  {
+   "id": "root:starfield-root-certificate-authority-g2",
+   "kind": "root",
+   "name": "Starfield Root Certificate Authority - G2",
+   "subject_cn": "Starfield Root Certificate Authority - G2",
+   "fingerprint": "2CE1CB0BF9D2F9E102993FBE215152C3B2DD0CABDE1C68E5319B839154DBB7F5",
+   "root_id": null,
+   "source_page": 12
+  },
+  {
+   "id": "root:starfield-services-root-certificate-auth",
+   "kind": "root",
+   "name": "Starfield Services Root Certificate Authority",
+   "subject_cn": "Starfield Services Root Certificate Authority",
+   "fingerprint": "B5BD2CB79CBD1907298D6BDF4842E516D8C78FA6FC96D25F71AF814E16CC245E",
+   "root_id": null,
+   "source_page": 12
+  },
+  {
+   "id": "root:starfield-root-certificate-authority-g5",
+   "kind": "root",
+   "name": "Starfield Root Certificate Authority - G5",
+   "subject_cn": "Starfield Root Certificate Authority - G5",
+   "fingerprint": "414F6C10FA816561832751BDB241ED8AE2BB0E2EBE651DE48E317ABB774E38F0",
+   "root_id": null,
+   "source_page": 12
+  },
+  {
+   "id": "root:starfield-root-certificate-authority-g6",
+   "kind": "root",
+   "name": "Starfield Root Certificate Authority - G6",
+   "subject_cn": "Starfield Root Certificate Authority - G6",
+   "fingerprint": "FDB2C428AC393FD61B386497E0CC6652D71F35F6683C8E0AD0E754CF8F133D2A",
+   "root_id": null,
+   "source_page": 12
+  },
+  {
+   "id": "root:godaddy-root-certificate-authority-g5",
+   "kind": "root",
+   "name": "GoDaddy Root Certificate Authority - G5",
+   "subject_cn": "GoDaddy Root Certificate Authority - G5",
+   "fingerprint": "E0562C0CD4CD5959DB2AB9D8E7426B248FD75534F5D50CFAF8CB312239F93086",
+   "root_id": null,
+   "source_page": 12
+  },
+  {
+   "id": "root:godaddy-root-certificate-authority-g6",
+   "kind": "root",
+   "name": "GoDaddy Root Certificate Authority - G6",
+   "subject_cn": "GoDaddy Root Certificate Authority - G6",
+   "fingerprint": "DB3C05E9C55D5259B057474D7F7F3E54A2A51AFAA71EC5C41D8C3CBE68108799",
+   "root_id": null,
+   "source_page": 12
+  },
+  {
+   "id": "root:godaddy-tls-root-ca-r1",
+   "kind": "root",
+   "name": "GoDaddy TLS Root CA – R1",
+   "subject_cn": "GoDaddy TLS Root CA – R1",
+   "fingerprint": "25CF3DA8E9B97ADDBF92543C2B82527C8A4E2CFF2062A6483040D4B64ACE719F",
+   "root_id": null,
+   "source_page": 12
+  },
+  {
+   "id": "root:starfield-tls-root-ca-r1",
+   "kind": "root",
+   "name": "Starfield TLS Root CA – R1",
+   "subject_cn": "Starfield TLS Root CA – R1",
+   "fingerprint": "97366DA00BAF6730A84D1A8CBA5BAD7961C46BCE707E09241CC9C4C7E3C64F10",
+   "root_id": null,
+   "source_page": 12
+  },
+  {
+   "id": "root:godaddy-verified-mark-root-ca-vmcr1",
+   "kind": "root",
+   "name": "GoDaddy Verified Mark Root CA - VMCR1",
+   "subject_cn": "GoDaddy Verified Mark Root CA - VMCR1",
+   "fingerprint": "6AE4F0B06B187A7FC2B5815D252B637629734AE64A409CCBB53B14A352563D61",
+   "root_id": null,
+   "source_page": 12
+  },
+  {
+   "id": "cross:go-daddy-root-certificate-authority-g2-3a2f",
+   "kind": "cross",
+   "name": "Go Daddy Root Certificate Authority - G2",
+   "subject_cn": "Go Daddy Root Certificate Authority - G2",
+   "fingerprint": "3A2FBE92891E57FE05D57087F48E730F17E5A5F53EF403D618E5B74D7A7E6ECB",
+   "root_name": "Go Daddy Class 2 Certification Authority",
+   "root_id": "root:go-daddy-class-2-certification-authority",
+   "source_page": 13
+  },
+  {
+   "id": "cross:go-daddy-root-certificate-authority-g2-9bf5",
+   "kind": "cross",
+   "name": "Go Daddy Root Certificate Authority - G2",
+   "subject_cn": "Go Daddy Root Certificate Authority - G2",
+   "fingerprint": "9BF58967545996194512DB6177151AFE99706AEA3DA36FEEE7AD9F8B3C0507CB",
+   "root_name": "Go Daddy Class 2 Certification Authority",
+   "root_id": "root:go-daddy-class-2-certification-authority",
+   "source_page": 13
+  },
+  {
+   "id": "cross:starfield-root-certificate-authority-g2-9f43",
+   "kind": "cross",
+   "name": "Starfield Root Certificate Authority - G2",
+   "subject_cn": "Starfield Root Certificate Authority - G2",
+   "fingerprint": "9F43D52E808C20AFF69E02FAAC205AAC684E6975213D6620FAC64BDE5FCAB4BC",
+   "root_name": "Starfield Class 2 Certification Authority",
+   "root_id": "root:starfield-class-2-certification-authorit",
+   "source_page": 13
+  },
+  {
+   "id": "cross:starfield-root-certificate-authority-g2-4540",
+   "kind": "cross",
+   "name": "Starfield Root Certificate Authority - G2",
+   "subject_cn": "Starfield Root Certificate Authority - G2",
+   "fingerprint": "454040E4969070401CC35BDF7F2A4EBCE5797BB7694AE731D93A8115FD59929C",
+   "root_name": "Starfield Class 2 Certification Authority",
+   "root_id": "root:starfield-class-2-certification-authorit",
+   "source_page": 13
+  },
+  {
+   "id": "cross:starfield-services-root-certificate-auth-2d12",
+   "kind": "cross",
+   "name": "Starfield Services Root Certificate Authority - G2",
+   "subject_cn": "Starfield Services Root Certificate Authority - G2",
+   "fingerprint": "2D12B619A660CEFB013271831D891213FC434E982A21568256CF4E2E86324BEA",
+   "root_name": "Starfield Class 2 Certification Authority",
+   "root_id": "root:starfield-class-2-certification-authorit",
+   "source_page": 13
+  },
+  {
+   "id": "cross:starfield-services-root-certificate-auth-2868",
+   "kind": "cross",
+   "name": "Starfield Services Root Certificate Authority - G2",
+   "subject_cn": "Starfield Services Root Certificate Authority - G2",
+   "fingerprint": "28689B30E4C306AAB53B027B29E36AD6DD1DCF4B953994482CA84BDC1ECAC996",
+   "root_name": "Starfield Class 2 Certification Authority",
+   "root_id": "root:starfield-class-2-certification-authorit",
+   "source_page": 13
+  },
+  {
+   "id": "cross:godaddy-tls-root-ca-r1-7bcb",
+   "kind": "cross",
+   "name": "GoDaddy TLS Root CA – R1",
+   "subject_cn": "GoDaddy TLS Root CA – R1",
+   "fingerprint": "7BCB0F2F2D1031A6AF8D61BAA835D2835A3B8BCC26D94A3B048B1655FB81298C",
+   "root_name": "GoDaddy Root Certification Authority – G2",
+   "root_id": "root:go-daddy-root-certificate-authority-g2",
+   "source_page": 13,
+   "root_alias": "Go Daddy Root Certificate Authority - G2",
+   "alias_note": "cross 表根列行文与 root 表差一词（Certification vs Certificate）；别名指向 root_cas 正式名，构建期解析"
+  },
+  {
+   "id": "cross:starfield-tls-root-ca-r1-26a9",
+   "kind": "cross",
+   "name": "Starfield TLS Root CA – R1",
+   "subject_cn": "Starfield TLS Root CA – R1",
+   "fingerprint": "26A93D60039077654C0DDA1FB634AF5FF5C114C7AC1FD0449B1C9D2178B028FF",
+   "root_name": "Starfield Root Certification Authority – G2",
+   "root_id": "root:starfield-root-certificate-authority-g2",
+   "source_page": 13,
+   "root_alias": "Starfield Root Certificate Authority - G2",
+   "alias_note": "同上，Certification vs Certificate 一行文差异"
+  },
+  {
+   "id": "issuing:go-daddy-secure-certificate-authority-g2-973a",
+   "kind": "issuing",
+   "name": "Go Daddy Secure Certificate Authority - G2",
+   "subject_cn": "Go Daddy Secure Certificate Authority - G2",
+   "fingerprint": "973A41276FFD01E027A2AAD49E34C37846D3E976FF6A620B6712E33832041AA6",
+   "root_name": "Go Daddy Root Certificate Authority - G2",
+   "root_id": "root:go-daddy-root-certificate-authority-g2",
+   "source_page": 13
+  },
+  {
+   "id": "issuing:go-daddy-secure-certification-authority-09ed",
+   "kind": "issuing",
+   "name": "Go Daddy Secure Certification Authority",
+   "subject_cn": "Go Daddy Secure Certification Authority",
+   "fingerprint": "09ED6E991FC3273D8FEA317D339C02041861973549CFA6E1558F411F11211AA3",
+   "root_name": "Go Daddy Class 2 Certification Authority",
+   "root_id": "root:go-daddy-class-2-certification-authority",
+   "source_page": 13
+  },
+  {
+   "id": "issuing:starfield-secure-certificate-authority-g-93a0",
+   "kind": "issuing",
+   "name": "Starfield Secure Certificate Authority - G2",
+   "subject_cn": "Starfield Secure Certificate Authority - G2",
+   "fingerprint": "93A07898D89B2CCA166BA6F1F8A14138CE43828E491B831926BC8247D391CC72",
+   "root_name": "Starfield Root Certificate Authority - G2",
+   "root_id": "root:starfield-root-certificate-authority-g2",
+   "source_page": 13
+  },
+  {
+   "id": "issuing:starfield-secure-certification-authority-05a6",
+   "kind": "issuing",
+   "name": "Starfield Secure Certification Authority",
+   "subject_cn": "Starfield Secure Certification Authority",
+   "fingerprint": "05A6DB389391DF92E0BE93FDFA4DB1E3CF53903918B8D9D85A9C396CB55DF030",
+   "root_name": "Starfield Class 2 Certification Authority",
+   "root_id": "root:starfield-class-2-certification-authorit",
+   "source_page": 13
+  },
+  {
+   "id": "issuing:go-daddy-secure-code-signing-certificate-ef35",
+   "kind": "issuing",
+   "name": "Go Daddy Secure Code Signing Certificate Authority - G2",
+   "subject_cn": "Go Daddy Secure Code Signing Certificate Authority - G2",
+   "fingerprint": "EF356CC299AA637916C81A48891B5BA2F333A2064D93A89BA14F63A14AA6B251",
+   "root_name": "Go Daddy Root Certificate Authority - G2",
+   "root_id": "root:go-daddy-root-certificate-authority-g2",
+   "source_page": 14
+  },
+  {
+   "id": "issuing:go-daddy-secure-extended-validation-code-9efc",
+   "kind": "issuing",
+   "name": "Go Daddy Secure Extended Validation Code Signing CA - G2",
+   "subject_cn": "Go Daddy Secure Extended Validation Code Signing CA - G2",
+   "fingerprint": "9EFC910271094B886BD9A8FC9E394DBF2AE514778CB373544085AF815CABFE2D",
+   "root_name": "Go Daddy Root Certificate Authority - G2",
+   "root_id": "root:go-daddy-root-certificate-authority-g2",
+   "source_page": 14
+  },
+  {
+   "id": "issuing:starfield-secure-code-signing-certificat-26cf",
+   "kind": "issuing",
+   "name": "Starfield Secure Code Signing Certificate Authority - G2",
+   "subject_cn": "Starfield Secure Code Signing Certificate Authority - G2",
+   "fingerprint": "26CFA206753E96AED7C30F5674E7C6F5A0CB2F93837AF6A1596C2F799C725385",
+   "root_name": "Starfield Root Certificate Authority - G2",
+   "root_id": "root:starfield-root-certificate-authority-g2",
+   "source_page": 14
+  },
+  {
+   "id": "issuing:starfield-secure-extended-validation-cod-f41a",
+   "kind": "issuing",
+   "name": "Starfield Secure Extended Validation Code Signing CA - G2",
+   "subject_cn": "Starfield Secure Extended Validation Code Signing CA - G2",
+   "fingerprint": "F41A694B3825942DB89523E9775F997DB9FA2998398DC39A74B72670DACFD468",
+   "root_name": "Starfield Root Certificate Authority - G2",
+   "root_id": "root:starfield-root-certificate-authority-g2",
+   "source_page": 14
+  },
+  {
+   "id": "issuing:godaddy-tls-intermediate-ca-dv-r1v1-7a43",
+   "kind": "issuing",
+   "name": "GoDaddy TLS Intermediate CA DV – R1v1",
+   "subject_cn": "GoDaddy TLS Intermediate CA DV – R1v1",
+   "fingerprint": "7A43BC7747D0633FBD90FF900C9242417C027DBDCA05AF72DA9A70E3518DBE2E",
+   "root_name": "GoDaddy TLS Root CA – R1",
+   "root_id": "root:godaddy-tls-root-ca-r1",
+   "source_page": 14
+  },
+  {
+   "id": "issuing:godaddy-tls-intermediate-ca-ev-r1v1-9b06",
+   "kind": "issuing",
+   "name": "GoDaddy TLS Intermediate CA EV – R1v1",
+   "subject_cn": "GoDaddy TLS Intermediate CA EV – R1v1",
+   "fingerprint": "9B0654F08DF9026CBB43A2C58BFF690D0DF4FAAA2B98A3E5F27416686FEFE365",
+   "root_name": "GoDaddy TLS Root CA – R1",
+   "root_id": "root:godaddy-tls-root-ca-r1",
+   "source_page": 14
+  },
+  {
+   "id": "issuing:godaddy-tls-intermediate-ca-ov-r1v1-1655",
+   "kind": "issuing",
+   "name": "GoDaddy TLS Intermediate CA OV – R1v1",
+   "subject_cn": "GoDaddy TLS Intermediate CA OV – R1v1",
+   "fingerprint": "1655A304F080E05A1CB9B29E91F9A9D1922E271A8645EB7270F463BC3B332063",
+   "root_name": "GoDaddy TLS Root CA – R1",
+   "root_id": "root:godaddy-tls-root-ca-r1",
+   "source_page": 14
+  },
+  {
+   "id": "issuing:starfield-tls-intermediate-ca-dv-r1v1-0689",
+   "kind": "issuing",
+   "name": "Starfield TLS Intermediate CA DV – R1v1",
+   "subject_cn": "Starfield TLS Intermediate CA DV – R1v1",
+   "fingerprint": "06891C34A2E4687C630B29850CC9F6D45DED39491CF877C7246B6EC633587A2C",
+   "root_name": "Starfield TLS Root CA – R1",
+   "root_id": "root:starfield-tls-root-ca-r1",
+   "source_page": 14
+  },
+  {
+   "id": "issuing:starfield-tls-intermediate-ca-ev-r1v1-cb5a",
+   "kind": "issuing",
+   "name": "Starfield TLS Intermediate CA EV – R1v1",
+   "subject_cn": "Starfield TLS Intermediate CA EV – R1v1",
+   "fingerprint": "CB5A1827D55838C04F9E8C8C152CA8711B026745A3255412A30173DCAB2A661A",
+   "root_name": "Starfield TLS Root CA – R1",
+   "root_id": "root:starfield-tls-root-ca-r1",
+   "source_page": 14
+  },
+  {
+   "id": "issuing:starfield-tls-intermediate-ca-ov-r1v1-d25c",
+   "kind": "issuing",
+   "name": "Starfield TLS Intermediate CA OV – R1v1",
+   "subject_cn": "Starfield TLS Intermediate CA OV – R1v1",
+   "fingerprint": "D25CE348C06DFD65D8D751BB94FAF7113820FD535FE1471A282EC738F3FC3CBF",
+   "root_name": "Starfield TLS Root CA – R1",
+   "root_id": "root:starfield-tls-root-ca-r1",
+   "source_page": 14
+  },
+  {
+   "id": "issuing:godaddy-verified-mark-intermediate-ca-vm-6873",
+   "kind": "issuing",
+   "name": "GoDaddy Verified Mark Intermediate CA - VMCR1V1",
+   "subject_cn": "GoDaddy Verified Mark Intermediate CA - VMCR1V1",
+   "fingerprint": "6873CE90B61C675DC974454DF6A71476073E4EC211A68483DFBF16994B44022D",
+   "root_name": "GoDaddy Verified Mark Root CA - VMCR1",
+   "root_id": "root:godaddy-verified-mark-root-ca-vmcr1",
+   "source_page": 14
+  }
+ ],
+ "cpcps_documents": [
+  {
+   "doc": "Starfield CA Certificate Policy (CP) and Certification Practice Statement (CPS)",
+   "version": "v5.02",
+   "dated": "2025-02-28",
+   "scope": "CA 运营基线",
+   "source_page": 2
+  },
+  {
+   "doc": "Starfield CA Certificate Policy (CP) and Certification Practice Statement (CPS)",
+   "version": "v5.03",
+   "dated": "2025-08-28",
+   "scope": "CA 运营基线",
+   "source_page": 2
+  },
+  {
+   "doc": "Starfield CA Certificate Policy (CP) and Certification Practice Statement (CPS)",
+   "version": "v5.04",
+   "dated": "2025-09-26",
+   "scope": "CA 运营基线",
+   "source_page": 2
+  },
+  {
+   "doc": "Starfield CA Certificate Policy (CP) and Certification Practice Statement (CPS)",
+   "version": "v5.05",
+   "dated": "2025-11-28",
+   "scope": "CA 运营基线",
+   "source_page": 2
+  },
+  {
+   "doc": "Starfield CA Public TLS Certificate Policy (CP) and Certification Practice Statement (CPS)",
+   "version": "v5.06",
+   "dated": "2026-04-15",
+   "scope": "公共 TLS",
+   "source_page": 2
+  },
+  {
+   "doc": "Starfield Mark CA Certificate Policy (CP) and Certification Practice Statement (CPS)",
+   "version": "v1.0",
+   "dated": "2026-04-28",
+   "scope": "VMC 标识证书",
+   "source_page": 2
+  }
+ ],
+ "services": [
+  "Subscriber registration（订阅者注册）",
+  "Certificate renewal（证书更新）",
+  "Certificate rekey（证书密钥重签）",
+  "Certificate issuance（证书签发）",
+  "Certificate distribution（证书分发）",
+  "Certificate revocation（证书吊销）",
+  "Certificate validation（证书验证）",
+  "Subordinate CA and cross-certification（从属 CA 与交叉认证）"
+ ],
+ "control_domains": [
+  {
+   "domain": "CA Business Practices Disclosure（CA 业务实践披露）",
+   "criteria": [
+    "Certificate Policy (CP) and Certificate Practice Statement (CPS)"
+   ]
+  },
+  {
+   "domain": "CA Business Practices Management（CA 业务实践管理）",
+   "criteria": [
+    "Certificate Policy and Certification Practice Statement Management"
+   ]
+  },
+  {
+   "domain": "CA Environmental Controls（CA 环境控制）",
+   "criteria": [
+    "Security Management",
+    "Asset Classification and Management",
+    "Personnel Security",
+    "Physical and Environmental Security",
+    "Operations Management",
+    "System Access Management",
+    "Systems Development, Maintenance, and Change Management",
+    "Disaster Recovery, Backups, and Business Continuity Management",
+    "Monitoring and Compliance",
+    "Audit Logging"
+   ]
+  },
+  {
+   "domain": "CA Key Lifecycle Management Controls（CA 密钥生命周期控制）",
+   "criteria": [
+    "CA Key Generation",
+    "CA Key Storage, Backup, and Recovery",
+    "CA Public Key Distribution",
+    "CA Key Usage",
+    "CA Key Archival",
+    "CA Key Destruction",
+    "CA Key Compromise",
+    "CA Cryptographic Hardware Lifecycle Management",
+    "CA Key Transportation",
+    "CA Key Migration"
+   ]
+  },
+  {
+   "domain": "Subscriber Key Lifecycle Management Controls（订阅者密钥生命周期控制）",
+   "criteria": [
+    "Requirements for Subscriber Key Management"
+   ]
+  },
+  {
+   "domain": "Certificate Lifecycle Management Controls（证书生命周期控制）",
+   "criteria": [
+    "Subscriber Registration",
+    "Certificate Renewal",
+    "Certificate Rekey",
+    "Certificate Issuance",
+    "Certificate Distribution",
+    "Certificate Revocation",
+    "Certificate Validation"
+   ]
+  },
+  {
+   "domain": "Subordinate CA and Cross Certificate Lifecycle Management Controls（从属 CA 与交叉证书生命周期控制）",
+   "criteria": [
+    "Subordinate CA Certificate and Cross Certificate Lifecycle Management"
+   ]
+  }
+ ],
+ "exclusions": [
+  "CA 密钥托管（不 escrow CA keys）",
+  "订阅者密钥生成服务（不提供）",
+  "订阅者密钥存储与恢复服务（不提供）",
+  "集成电路卡（IC 卡）生命周期管理（不提供）",
+  "证书暂停服务（不提供）"
+ ],
+ "matters": [
+  {
+   "no": 1,
+   "bug_id": "2004845",
+   "topic": "CA Certificates Published in PEM format",
+   "summary_cn": "Starfield TLS Root CA – R1 的 AIA CA Issuer URI 以不符合规范的文件格式（PEM）提供签发者证书，而规范要求 DER 编码，违反 RFC 5280 §4.2.2.1 与 CA/Browser Forum Baseline Requirements §7.1.2.10.3。证书仍然有效且功能正常，问题仅限于文件格式合规性。",
+   "refs": [
+    {
+     "std": "RFC 5280",
+     "clause": "§4.2.2.1",
+     "topic": "Authority Information Access（AIA）扩展 - CA 证书格式"
+    },
+    {
+     "std": "CA/Browser Forum Baseline Requirements",
+     "clause": "§7.1.2.10.3",
+     "topic": "AIA 内容合规"
+    }
+   ],
+   "opened": "2025-12-08",
+   "closed": "2026-02-11",
+   "status": "Closed",
+   "remediation": [
+    "更新 CA 证书生成流程与评审 playbook，要求显式校验所有 AIA issuer URL 解析为正确 DER 编码的 CA 证书文件",
+    "在托管的 CA 证书仓库全量配置监控控制，持续验证 URL 提供预期证书（含 DER 编码检查与 SHA-256 指纹校验）"
+   ],
+   "schellman_procedure": "2026-01-29 至 2026-06-30 测试更新后的生成流程、评审 playbook 与监控控制，认为已充分解决根因",
+   "schellman_verdict": "controls_sufficiently_addressed",
+   "source_pages": [
+    4,
+    10
+   ]
+  },
+  {
+   "no": 2,
+   "bug_id": "2002402",
+   "topic": "Missing R1 Intermediate Full CRL URLs in CCADB",
+   "summary_cn": "GoDaddy 与 Starfield 的 R1 中间件证书的 CRL URL 未在 CCADB 披露，违反 CCADB policy §6.2。证书有效性、吊销功能与最终用户信任均正常（完整 CRL 已正确生成），问题仅限于 CCADB 内的 CRL URL 披露。",
+   "refs": [
+    {
+     "std": "CCADB Policy",
+     "clause": "§6.2",
+     "topic": "CCADB 字段披露义务"
+    }
+   ],
+   "opened": "2025-11-25",
+   "closed": "2026-01-13",
+   "status": "Closed",
+   "remediation": [
+    "GoDaddy 在 CCADB 中更新 R1 中间件证书条目，填入完整 CRL 分发 URL",
+    "更新内部 playbook，要求新 CA 证书必须在 CCADB 录入完整 CRL 分发点",
+    "R1 中间件证书生成后未再生成新的 TLS CA 证书"
+   ],
+   "schellman_procedure": "2025-12-09 至 2026-06-30 复核 CCADB 数据库并测试更新后的内部 playbook，认为已充分解决根因",
+   "schellman_verdict": "controls_sufficiently_addressed",
+   "source_pages": [
+    4,
+    10
+   ]
+  },
+  {
+   "no": 3,
+   "bug_id": "2007216",
+   "topic": "CRL Disclosure in CCADB Mismatch with Issued Certificates",
+   "summary_cn": "CCADB（Full CRL 列表）中的 CRL 披露与叶证书所列（Partitioned CRL 列表）不一致，违反 CCADB policy version 2.0。证书有效性、吊销功能与最终用户信任均正常，问题仅限于 CCADB 披露不一致。",
+   "refs": [
+    {
+     "std": "CCADB Policy",
+     "clause": "version 2.0",
+     "topic": "Full CRL 与 Partitioned CRL 披露一致性"
+    }
+   ],
+   "opened": "2025-12-19",
+   "closed": null,
+   "status": "Open",
+   "remediation": [
+    "GoDaddy 更新 CCADB 以包含分区 CRL 文件的完整 JSON 数组",
+    "在 CCADB 限制无法完整发布分区 CRL JSON 数组之处，GoDaddy 在其公开 GitHub 仓库发布权威 CRL URL 数据集",
+    "实施完整的 CCADB 政策复核、披露准确性月度验证、根与中间件证书数据增强监控以主动发现不一致",
+    "正将签发从无法完整发布分区 CRL JSON 数组的中间件 CA 迁移至允许完整发布的根层级"
+   ],
+   "schellman_procedure": "截至 2026-06-30 复核 CCADB 数据库、GoDaddy 公开 GitHub 仓库、更新后的监控与复核控制及签发迁移计划；认为若正确实施并有效运行，控制可解决根因",
+   "schellman_verdict": "pending_implementation",
+   "source_pages": [
+    5,
+    10
+   ]
+  },
+  {
+   "no": 4,
+   "bug_id": "2007217",
+   "topic": "GoDaddy: Partitioned CRL files missing Issuing Distribution Point",
+   "summary_cn": "一项配置变更导致分区 CRL 文件生成时缺少必需的 Issuing Distribution Point 扩展，违反 CA/Browser Forum Baseline Requirements §7.2.2.1。证书有效性、吊销功能与最终用户信任均正常，问题仅限于 CRL 结构的合规偏差。",
+   "refs": [
+    {
+     "std": "CA/Browser Forum Baseline Requirements",
+     "clause": "§7.2.2.1",
+     "topic": "CRL 扩展 - Issuing Distribution Point"
+    }
+   ],
+   "opened": "2025-12-19",
+   "closed": "2026-04-17",
+   "status": "Closed",
+   "remediation": [
+    "重新启用负责包含 IDP 扩展的配置并重新生成受影响的 CRL",
+    "将 IDP 扩展包含逻辑硬编码进 CRL 生成逻辑，评审有合规影响的功能以消除对可配置属性的依赖",
+    "将自动化 linting 集成进 CRL 生成流程，在发布前验证 CRL 结构"
+   ],
+   "schellman_procedure": "2026-04-01 至 2026-06-30 测试更新后的 CRL 生成逻辑配置与自动化 linting 控制，认为已充分解决根因",
+   "schellman_verdict": "controls_sufficiently_addressed",
+   "source_pages": [
+    5,
+    10
+   ]
+  }
+ ],
+ "additional_matters": [
+  {
+   "topic": "CP/CPS 披露的 CA 未全部进入公开仓库",
+   "refs": [
+    {
+     "std": "WebTrust Principles and Criteria for Certification Authorities",
+     "clause": "Control 6.5 (v2.2.2)",
+     "topic": "公开可用仓库披露"
+    }
+   ],
+   "description": "Starfield CP/CPS 披露的某些 CA 未按 WebTrust v2.2.2 Control 6.5 要求纳入公开可用仓库；Starfield 已于 2025 年 8 月补入。经确认这些根证书受约束（constrained），从未投入运营、未签发证书、对依赖方与订阅者无影响。Schellman 抽样测试证书签发，未发现缺陷。意见未因此修改。",
+   "opinion_modified": false,
+   "source_pages": [
+    5,
+    10
+   ]
+  }
+ ],
+ "standards_refs": [
+  {
+   "id": "webtrust:v2.2.2",
+   "title": "WebTrust Principles and Criteria for Certification Authorities",
+   "version": "v2.2.2",
+   "kind": "audit-criteria",
+   "rfc_number": null,
+   "referenced_by_matters": [
+    "additional-1"
+   ]
+  },
+  {
+   "id": "rfc:5280",
+   "title": "Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile",
+   "title_source": "data/rfc_standards.json rfc05280（RFC 全量目录 join）",
+   "kind": "ietf-rfc",
+   "rfc_number": 5280,
+   "referenced_by_matters": [
+    "2004845"
+   ]
+  },
+  {
+   "id": "br:baseline-requirements",
+   "title": "CA/Browser Forum Baseline Requirements for the Issuance and Management of Publicly-Trusted Certificates",
+   "version": "随事项报告期版本",
+   "kind": "industry-baseline",
+   "rfc_number": null,
+   "referenced_by_matters": [
+    "2004845",
+    "2007217"
+   ]
+  },
+  {
+   "id": "ccadb:policy",
+   "title": "CCADB Policy（Common CA Database 政策）",
+   "version": "§6.2 / version 2.0（按事项原文）",
+   "kind": "root-program-policy",
+   "rfc_number": null,
+   "referenced_by_matters": [
+    "2002402",
+    "2007216"
+   ]
+  }
+ ],
+ "locations": [
+  {
+   "name": "GoDaddy Corporate Headquarters",
+   "type": "Main Office",
+   "place": "Tempe, Arizona, USA",
+   "physical_testing": false,
+   "source_page": 15
+  },
+  {
+   "name": "Online CA Hosting 1",
+   "type": "Data-Center 1",
+   "place": "Phoenix, Arizona, USA",
+   "physical_testing": true,
+   "source_page": 15
+  },
+  {
+   "name": "Online CA Hosting 2",
+   "type": "Data-Center 2",
+   "place": "Ashburn, Virginia, USA",
+   "physical_testing": true,
+   "source_page": 15
+  },
+  {
+   "name": "Offline Key Storage 1",
+   "type": "Backup/DR/Activation Materials",
+   "place": "Scottsdale, Arizona, USA",
+   "physical_testing": true,
+   "source_page": 15
+  },
+  {
+   "name": "Offline Key Storage 2",
+   "type": "Backup/DR/Activation Materials",
+   "place": "Phoenix, Arizona, USA",
+   "physical_testing": true,
+   "source_page": 15
+  },
+  {
+   "name": "Offline Key Storage 3",
+   "type": "Backup/DR/Activation Materials",
+   "place": "Tempe, Arizona, USA",
+   "physical_testing": true,
+   "source_page": 15
+  },
+  {
+   "name": "MPIC Servers",
+   "type": "Cloud Provider",
+   "place": "Asia Pacific Southeast (Singapore)",
+   "physical_testing": false,
+   "source_page": 15
+  },
+  {
+   "name": "MPIC Servers",
+   "type": "Cloud Provider",
+   "place": "Asia Pacific Sount (Mumbai)",
+   "physical_testing": false,
+   "source_page": 15,
+   "note": "原文拼写 Sount（应为 South），如实保留"
+  },
+  {
+   "name": "MPIC Servers",
+   "type": "Cloud Provider",
+   "place": "Europe West (Ireland)",
+   "physical_testing": false,
+   "source_page": 15
+  },
+  {
+   "name": "MPIC Servers",
+   "type": "Cloud Provider",
+   "place": "Europe West (Paris)",
+   "physical_testing": false,
+   "source_page": 15
+  },
+  {
+   "name": "MPIC Servers",
+   "type": "Cloud Provider",
+   "place": "US West (Oregon)",
+   "physical_testing": false,
+   "source_page": 15
+  },
+  {
+   "name": "MPIC Servers",
+   "type": "Cloud Provider",
+   "place": "US East (N. Virginia)",
+   "physical_testing": false,
+   "source_page": 15
+  }
+ ]
+}

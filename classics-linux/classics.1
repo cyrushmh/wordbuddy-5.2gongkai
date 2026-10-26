@@ -1,0 +1,54 @@
+.TH CLASSICS 1 "2026-10-17" "classics 1.0.0" "User Commands"
+.SH NAME
+classics \- 典籍阅读与乱码安全解码命令行工具
+.SH SYNOPSIS
+.B classics
+.I COMMAND
+.RI [ ARGS ]
+.SH DESCRIPTION
+.B classics
+读取
+.I /usr/share/classics
+下的典籍，并对任意文本做"乱码安全解码"：先严格校验 UTF\-8，
+失败再回退严格 GB18030，仍失败则明确标注而非假装成功。对应
+iOS/macOS 的 TextEncoding.decodeSafe 与 HarmonyOS 的 decodeTextSafe。
+.SH COMMANDS
+.TP
+.B list
+列出已安装的典籍（扫描数据目录下的 *.txt）。
+.TP
+.B show " book"
+输出整本典籍；
+.I book
+可为文件名或省略
+.I .txt
+的书名。
+.TP
+.B decode " file"
+读取字节，判定编码并安全解码输出：UTF\-8 直接透传，
+否则尝试 GB18030，并报告是否命中乱码指纹。
+.TP
+.B lint " file"
+扫描乱码指纹（锟斤拷 / 烫烫烫 / 屯屯屯 / 裸 U+FFFD）与非法 UTF\-8 字节区段。
+.SH EXIT STATUS
+.TP
+0
+成功（lint 无异常）。
+.TP
+1
+用法错误或文件无法读取。
+.TP
+2
+解码失败，或 lint 发现可疑内容。
+.SH EXAMPLES
+.TP
+classics list
+.TP
+classics decode suspect.txt
+.TP
+classics lint suspect.txt
+.SH SEE ALSO
+.BR iconv (1),
+.BR UTF\-8 (7)
+.SH AUTHOR
+WordBuddy Authors.

@@ -1,0 +1,111 @@
+{
+  "_note": "dosbox DOS 模拟兼容层知识库（v0.6.74 填充，原 v0.6.36 gen-stub 空壳）。官方源实检项注明；衍生生态与边界标 needs_verify。本工具只读引用，不启动 dosbox。",
+  "_position": "只读诊断：绝不启动 dosbox、不挂任何目录、不跑任何 DOS 程序。",
+  "key": "dosbox",
+  "label": "dosbox DOS 模拟兼容层",
+  "domain": "兼容",
+  "references": [
+    {
+      "name": "DOSBox 官网",
+      "org": "DOSBox Team",
+      "url": "https://www.dosbox.com/"
+    },
+    {
+      "name": "DOSBox Wiki",
+      "org": "DOSBox Team",
+      "url": "https://www.dosbox.com/wiki/"
+    },
+    {
+      "name": "DOSBox Staging（现代分支）",
+      "org": "dosbox-staging 社区",
+      "url": "https://www.dosbox.com/wiki/DOSBox_and_DOSBox_Staging"
+    },
+    {
+      "name": "DOSBox-X（兼容面扩展）",
+      "org": "DOSBox-X 项目",
+      "url": "https://dosbox-x.com/"
+    }
+  ],
+  "items": [
+    {
+      "key": "dosbox-core",
+      "name": "SDL x86 实模式模拟器",
+      "org": "DOSBox Team（GPL-2.0）",
+      "url": "https://www.dosbox.com/",
+      "protocols": [
+        "x86 实模式/保护模式 CPU 模拟",
+        "DOS INT 21h 等中断",
+        "VGA/SVGA 显示模拟",
+        "SoundBlaster/Adlib 音频模拟"
+      ],
+      "interfaces": [
+        "dosbox 命令行（dosbox <程序.exe>）",
+        "dosbox.conf 配置（cycles/内存/挂载点）",
+        "MOUNT 命令把宿主目录挂成 DOS 盘符",
+        "Z: 盘内建命令"
+      ],
+      "docs": [
+        {
+          "title": "DOSBox Wiki（配置与使用）",
+          "url": "https://www.dosbox.com/wiki/"
+        },
+        {
+          "title": "DOSBox Wiki · dosbox.conf 配置项",
+          "url": "https://www.dosbox.com/wiki/DOSBoxConf"
+        }
+      ],
+      "summary": "连 CPU 都完整模拟的 DOS 兼容层：把 8086/286/386 动态重编译到现 OS 上跑老 DOS 游戏与程序。兼容性极高但性能受 cycles 限制——这是它与「翻译调用」型兼容层（Wine）的根本区别。",
+      "advice": "老 DOS 游戏用 dosbox：先 MOUNT 挂宿主目录再运行；cycles 按程序年代调（太老的程序 cycles 太高反而跑飞——它们按当时真实速度写的）。",
+      "evidence_status": "official_verified"
+    },
+    {
+      "key": "dosbox-derived",
+      "name": "衍生生态（Staging / X / Em-DOSBox / 前端）",
+      "org": "社区衍生",
+      "url": "https://dosbox-x.com/",
+      "protocols": [
+        "上游 SVN/git 代码线"
+      ],
+      "interfaces": [
+        "DOSBox Staging（现代分支，画质/音频/精度更好）",
+        "DOSBox-X（Win3.x/Win9x 方向）",
+        "Em-DOSBox（Emscripten→浏览器）",
+        "DBGL 图形前端"
+      ],
+      "docs": [
+        {
+          "title": "DOSBox-X 官网（兼容面扩展线）",
+          "url": "https://dosbox-x.com/"
+        }
+      ],
+      "summary": "1990 年代末起家的项目分裂出多条线：Staging 重精度与现代特性、DOSBox-X 向 Windows 9x/3.x 扩展、Em-DOSBox 把 dosbox 编译进浏览器、DBGL 等做图形前端。选哪条取决于要跑的程序年代。",
+      "advice": "要 Windows 3.1/9x 程序看 DOSBox-X（仍不完整，属 needs_verify 面）；要现代便利用发行版打包的 Staging。官方 wiki 有 Staging 对照页。",
+      "needs_verify": "各衍生线对 Win9x 的兼容程度未逐项实测；版本发布节奏以各自仓库为准",
+      "evidence_status": "needs_verify"
+    },
+    {
+      "key": "dosbox-limits",
+      "name": "能力边界（模拟什么/不模拟什么）",
+      "org": "本仓库诚实边界登记",
+      "url": "https://www.dosbox.com/wiki/",
+      "protocols": [
+        "实模式为主",
+        "cycles 定时而非真实 CPU 周期"
+      ],
+      "interfaces": [
+        "core 选项（simple/normal/dynamic/auto）",
+        "cycles（fixed/max/auto/百分比）"
+      ],
+      "docs": [
+        {
+          "title": "DOSBox Wiki（Dosbox 不做什么）",
+          "url": "https://www.dosbox.com/wiki/"
+        }
+      ],
+      "summary": "dosbox 模拟的是「一台可跑 DOS 的 PC」，不是任意 x86 硬件：需要真实硬件直访（非标显存布局、特种硬件狗）的程序可能跑不了；cycles 是节流比例不是精确时钟；Win9x 往上是 DOSBox-X 的试探方向而非承诺。",
+      "advice": "「能启动」不等于「能正确运行」：先确认程序属 DOS 实模式 + 标准 VGA/SB 面，再谈兼容。这也是位宽能力矩阵里把 16 位标为「模拟层覆盖」而非「原生」的原因。",
+      "evidence_status": "needs_verify",
+      "needs_verify": "边界描述为 Wiki 口径整理，未对特定硬件依赖程序逐项实测"
+    }
+  ]
+}

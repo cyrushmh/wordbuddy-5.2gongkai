@@ -1,0 +1,56 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "道家经典文库应用入口模块"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "道家经典文库主页能力"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "道家经典"
+    },
+    {
+      "name": "widget_title",
+      "value": "今日经典"
+    },
+    {
+      "name": "EntryFormAbility_label",
+      "value": "今日经典卡片"
+    },
+    {
+      "name": "EntryFormAbility_desc",
+      "value": "每日推送一句道家经典"
+    },
+    {
+      "name": "perm_distributed_reason",
+      "value": "用于多设备协同同步阅读进度与书签（组网无障碍）"
+    },
+    {
+      "name": "perm_internet_reason",
+      "value": "用于应用内加载道藏在线原文（道藏查看器）"
+    },
+    {
+      "name": "perm_microphone_reason",
+      "value": "用于语音检索与口述批注/读书笔记（录音），服务视障与长辈无障碍"
+    },
+    {
+      "name": "perm_bluetooth_reason",
+      "value": "用于蓝牙设备扫描与邻近设备发现（蓝牙对弈/外设协同）"
+    },
+    {
+      "name": "perm_nfc_reason",
+      "value": "用于 NFC 近场读卡与经典章目分享"
+    },
+    {
+      "name": "perm_location_reason",
+      "value": "用于定位与逆地理编码（道场地名标注、位置书签）"
+    },
+    {
+      "name": "perm_camera_reason",
+      "value": "用于拍照与经文 OCR 录入、扫码分享"
+    }
+  ]
+}

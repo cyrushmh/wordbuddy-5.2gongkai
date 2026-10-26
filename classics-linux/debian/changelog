@@ -1,0 +1,15 @@
+classics (0001.0000.0000.0000.20261024) trixie; urgency=medium
+
+  * 版本号体系迁移：semver 1.0.0 → 去中心化 odometer 格式
+    （NNNN.NNNN.NNNN.NNNN.YYYYMMDD，见 system-optimizer version.py）；
+    迁移首版 A 段置 1，保证 dpkg 版本序不降级，此后纯 odometer 递增。
+
+ -- WordBuddy Authors <noreply@example.com>  Sat, 24 Oct 2026 03:10:00 +0800
+
+classics (1.0.0) trixie; urgency=medium
+
+  * 初始发布：classics CLI（典籍阅读 + 乱码安全解码）。
+  * 复用项目 TextEncoding 哲学，严格 UTF-8 → GB18030 → 标注。
+  * debhelper 标准流程，含 hardening 与交叉编译支持。
+
+ -- WordBuddy Authors <noreply@example.com>  Sat, 24 Oct 2026 02:14:38 +0800

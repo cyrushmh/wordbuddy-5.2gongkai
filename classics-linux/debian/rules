@@ -1,0 +1,53 @@
+#!/usr/bin/make -f
+# 标准 debhelper 序列；交叉编译与 hardening 由上游 Makefile 自行处理
+# （include /usr/share/dpkg/{architecture,buildflags}.mk）。
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+%:
+	dh $@
+
+# dh_auto_build 调用 make，上游 Makefile 据此选定 host 前缀编译器。
+#
+# 分包安装：二进制与 man 进 classics（架构相关），典籍数据进 classics-data（all）。
+# 两者用独立的 DESTDIR 分别安装，避免「先全装再挪」的临时态，dh 的后续步骤
+# （shlibdeps 等）也各自只看到自己该看的文件。
+override_dh_auto_install:
+	$(MAKE) install-bin DESTDIR=$(CURDIR)/debian/classics
+	$(MAKE) install-data DESTDIR=$(CURDIR)/debian/classics-data
+
+# 交叉构建时，dpkg-shlibdeps 默认找不到 host 架构的 libc；把交叉 sysroot 的
+# lib 目录加入搜索路径。
+# 两个坑（2026-10 全架构构建实测）：
+#   1) 必须用 DEB_HOST_GNU_TYPE 而非 DEB_HOST_MULTIARCH——i386 的 multiarch
+#      三元组是 i386-linux-gnu，但 Ubuntu 交叉工具链装在 /usr/i686-linux-gnu/；
+#   2) mips64/mips64el 的动态链接器 ld.so.1 在 lib64/ 而非 lib/。
+# 故按存在性动态添加 lib 与 lib64（原生 amd64 时均为本机默认路径，无副作用）。
+override_dh_shlibdeps:
+	dirs=""; \
+	for d in /usr/$(DEB_HOST_GNU_TYPE)/lib /usr/$(DEB_HOST_GNU_TYPE)/lib64; do \
+		[ -d "$$d" ] && dirs="$$dirs -l$$d"; \
+	done; \
+	dh_shlibdeps -- $$dirs
+
+# dh_gencontrol 前，按二进制实测符号版本改写 shlibs:Depends 中 libc6 的下限。
+#
+# 背景（2026-10 实测）：交叉工具链的 libc6-arm64-cross 只带 .shlibs、不带
+# .symbols，dpkg-shlibdeps 无法从符号表推导真实版本，只能把依赖钉在工具链
+# libc 的版本号（本机工具链为 2.39）；而同一份源码交叉产物的 objdump -T
+# 实测最高符号版本仅 GLIBC_2.34。后果：arm64 包 Depends: libc6:arm64 (>= 2.39)，
+# 会把 libc 2.36 的 Debian bookworm 用户误挡在门外（实测 2.34 即可运行）。
+#
+# 对策：dh_gencontrol 读取 substvars 之前，对已装进 debian/classics 的二进制
+# 做 objdump -T 实测，改写 shlibs:Depends 中 libc6 的版本下限。objdump 反映
+# 二进制真实需求（ground truth）；原生 amd64 构建时本机 libc6-dev 带 .symbols，
+# shlibdeps 本就精确，替换前后一致，无副作用。实测失败（MAXVER 为空）则保持
+# 原值，绝不制造坏依赖。
+override_dh_gencontrol:
+	MAXVER=$$(objdump -T debian/classics/usr/bin/classics 2>/dev/null \
+		| grep -oE 'GLIBC_[0-9.]+' | sort -uV | tail -1 | sed 's/^GLIBC_//'); \
+	if [ -n "$$MAXVER" ]; then \
+		sed -i -E "s|(shlibs:Depends=.*libc6:$(DEB_HOST_ARCH) \(>= )[0-9.]+|\1$$MAXVER|" \
+			debian/classics.substvars; \
+		echo "classics: libc6 依赖下限按 objdump 实测改写为 $$MAXVER"; \
+	fi
+	dh_gencontrol

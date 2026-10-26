@@ -1,0 +1,169 @@
+{
+  "weixin": {
+    "name": "微信小程序（wx.* API 与双线程架构）",
+    "org": "腾讯微信开放平台",
+    "url": "https://developers.weixin.qq.com/miniprogram/dev/framework/",
+    "protocols": [
+      "小程序双线程架构（逻辑层 AppService + 视图层 WebView，经 Native 中转通信）",
+      "wx.* API 规范（网络 / 存储 / 登录 / 路由 / 设备能力）",
+      "WXML / WXSS 与组件规范（数据绑定、rpx 适配单位）"
+    ],
+    "interfaces": [
+      "wx.request（网络） / wx.getStorage / wx.setStorage（本地缓存）",
+      "wx.login / wx.getUserProfile（登录与用户信息）",
+      "wx.navigateTo / wx.redirectTo / wx.switchTab（页面路由与栈管理）",
+      "app.json / page.json（全局与页面配置）"
+    ],
+    "docs": [
+      "小程序框架（逻辑层 App Service / 视图层 View）",
+      "wx.* API 参考（网络 / 数据缓存 / 路由 / 开放接口）",
+      "WXML 语法与 WXSS 样式（rpx 适配）",
+      "小程序配置 app.json / page.json"
+    ],
+    "summary": "微信小程序以双线程模型运行：逻辑层跑 JS、视图层渲染 WXML，两者经 Native 层通信；能力经 wx.* API 暴露，本地缓存与登录流程均有严格规范与配额。",
+    "advice": "缓存用 wx.getStorage/setStorage（单 key 上限与总配额见官方文档，超限会写入失败）；登录以 wx.login 换 code 交服务端，勿在前端保存敏感凭据。"
+  },
+  "alipay": {
+    "name": "支付宝小程序（my.* API）",
+    "org": "蚂蚁集团开放平台",
+    "url": "https://opendocs.alipay.com/mini/developer",
+    "protocols": [
+      "my.* API 规范（网络 / 存储 / 支付 / 会员能力）",
+      "AXML / ACSS 视图层规范",
+      "小程序容器与页面栈管理"
+    ],
+    "interfaces": [
+      "my.request（网络，需配置域名白名单）",
+      "my.getStorage / my.setStorage / my.removeStorage（本地缓存）",
+      "my.getAuthCode（授权登录，换取 user_id）",
+      "app.json（全局配置与页面注册）"
+    ],
+    "docs": [
+      "小程序框架（页面结构与生命周期）",
+      "my.* API 参考（网络 / 缓存 / 授权 / 支付）",
+      "AXML / ACSS 视图层说明",
+      "小程序发布与域名白名单配置"
+    ],
+    "summary": "支付宝小程序以 my.* 命名空间暴露能力，强调开放能力（支付、会员、信用）与域名白名单管控；缓存与授权接口自成体系。",
+    "advice": "网络请求域名必须加入白名单，否则真机必失败；授权用 my.getAuthCode 而非自行实现登录态，缓存读写注意异步 API 的 success/fail 回调。"
+  },
+  "baidu": {
+    "name": "百度智能小程序（swan.* API）",
+    "org": "百度智能小程序开放平台",
+    "url": "https://smartprogram.baidu.com/docs/",
+    "protocols": [
+      "swan.* API 规范（网络 / 存储 / 登录 / AI 能力）",
+      "视图层与组件规范（类 Web 的 CSS 子集）",
+      "小程序框架与页面栈"
+    ],
+    "interfaces": [
+      "swan.request（网络） / swan.getStorage / swan.setStorage（缓存）",
+      "swan.login（登录凭证）",
+      "swan.navigateTo / swan.redirectTo（路由）",
+      "app.json / project.config.json"
+    ],
+    "docs": [
+      "智能小程序框架（逻辑层与视图层）",
+      "swan.* API 参考（网络 / 数据缓存 / 登录）",
+      "组件与 CSS 规范",
+      "小程序配置与发布"
+    ],
+    "advice": "百度端偏重搜索与 AI 能力接入；缓存接口与微信同名不同前缀（swan.*），条件编译隔离差异，勿直接沿用 wx.* 写法。"
+  },
+  "douyin": {
+    "name": "抖音小程序（tt.* API）",
+    "org": "字节跳动开放平台",
+    "url": "https://developer.open-douyin.com/docs/",
+    "protocols": [
+      "tt.* API 规范（网络 / 存储 / 登录 / 内容与流量能力）",
+      "小程序框架（逻辑层 + 视图层）",
+      "内容生态相关开放能力协议"
+    ],
+    "interfaces": [
+      "tt.request（网络） / tt.getStorage / tt.setStorage（缓存）",
+      "tt.login（登录凭证）",
+      "tt.navigateTo / tt.redirectTo（路由）",
+      "app.json（配置与页面注册）"
+    ],
+    "docs": [
+      "小程序框架（目录结构与生命周期）",
+      "tt.* API 参考（网络 / 缓存 / 登录 / 开放接口）",
+      "组件与样式规范",
+      "小程序审核与发布规范"
+    ],
+    "summary": "抖音小程序以 tt.* 命名空间暴露能力，除通用网络/存储/登录外，还强调内容生态与流量相关的开放能力。",
+    "advice": "各端 API 前缀不同（tt.*），用条件编译隔离；涉及内容发布的接口审核较严，按官方审核规范准备资质。"
+  },
+  "qq": {
+    "name": "QQ 小程序（qq.* API）",
+    "org": "腾讯 QQ 开放平台",
+    "url": "https://q.qq.com/wiki/",
+    "protocols": [
+      "qq.* API 规范（与微信小程序高度同源）",
+      "小程序框架（逻辑层 + 视图层）",
+      "QQ 社交关系与开放能力"
+    ],
+    "interfaces": [
+      "qq.request（网络） / qq.getStorage / qq.setStorage（缓存）",
+      "qq.login（登录凭证）",
+      "qq.navigateTo（路由）",
+      "app.json（配置）"
+    ],
+    "docs": [
+      "QQ 小程序框架与开发指南",
+      "qq.* API 参考（网络 / 缓存 / 登录）",
+      "与微信小程序的差异说明",
+      "小程序配置与发布"
+    ],
+    "summary": "QQ 小程序与微信小程序架构高度同源（API 前缀为 qq.*），差异主要在社交关系链与部分开放能力上。",
+    "advice": "与微信端同源度高，但仍需条件编译处理差异；涉及社交关系链的接口需按 QQ 开放平台规范申请权限。"
+  },
+  "kuaishou": {
+    "name": "快手小程序（ks.* API）",
+    "org": "快手开放平台",
+    "url": "https://mp.kuaishou.com/docs",
+    "protocols": [
+      "ks.* API 规范（网络 / 存储 / 登录 / 内容能力）",
+      "小程序框架（逻辑层 + 视图层）",
+      "快手内容生态开放能力"
+    ],
+    "interfaces": [
+      "ks.request（网络） / ks.getStorage / ks.setStorage（缓存）",
+      "ks.login（登录凭证）",
+      "ks.navigateTo（路由）",
+      "app.json（配置）"
+    ],
+    "docs": [
+      "快手小程序开发指南",
+      "ks.* API 参考（网络 / 缓存 / 登录）",
+      "组件与样式规范",
+      "小程序发布与审核规范"
+    ],
+    "summary": "快手小程序以 ks.* 命名空间暴露能力，形态与字节/微信系相近，但自有内容生态与审核规范。",
+    "advice": "前缀为 ks.*，条件编译隔离；内容类接口按快手审核规范准备，勿复用其他端的权限判断逻辑。"
+  },
+  "uniapp_mapping": {
+    "name": "uni-app 跨端映射与条件编译（uni.* → 各端原生 API）",
+    "org": "DCloud uni-app",
+    "url": "https://uniapp.dcloud.net.cn/tutorial/platform.html",
+    "protocols": [
+      "uni.* 统一 API → 各端原生 API 映射（uni.request → wx/my/swan/tt/qq/ks.request）",
+      "条件编译（#ifdef MP-WEIXIN / MP-ALIPAY … #endif）隔离平台差异",
+      "各端 manifest.json 平台节点配置（mp-weixin / mp-alipay / mp-baidu …）"
+    ],
+    "interfaces": [
+      "manifest.json 的 mp-* 平台配置节点",
+      "uni.request / uni.setStorage / uni.login（跨端统一 API）",
+      "条件编译宏：MP-WEIXIN / MP-ALIPAY / MP-BAIDU / MP-TOUTIAO / MP-QQ / MP-KUAISHOU",
+      "dist/build/mp-* 各端构建产物目录"
+    ],
+    "docs": [
+      "跨平台开发注意（各端差异与条件编译）",
+      "manifest.json 配置（mp-weixin / mp-alipay 等平台节点）",
+      "uni.* API 与各端原生 API 映射说明",
+      "发行到各小程序端的构建与产物说明"
+    ],
+    "summary": "uni-app 用 uni.* 统一 API 抹平各端差异，底层映射到 wx/my/swan/tt/qq/ks.*，无法抹平的差异用条件编译隔离，各端配置集中在 manifest.json 的 mp-* 节点。",
+    "advice": "差异一律用条件编译（#ifdef MP-WEIXIN）隔离，不要运行时猜平台；各端 appid/白名单配置在 manifest.json 对应 mp-* 节点，发行前逐端核对。"
+  }
+}

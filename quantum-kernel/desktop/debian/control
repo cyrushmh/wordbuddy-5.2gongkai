@@ -1,0 +1,30 @@
+Source: xfce4-quantum
+Section: x11
+Priority: optional
+Maintainer: Quantum Packaging <packaging@quantum-arch.local>
+Build-Depends: debhelper (>= 13), pkg-config, libdbus-1-dev
+Standards-Version: 4.6.2
+Rules-Requires-Root: no
+
+Package: quantum-core
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, dbus
+Description: 量子架构用户态守护进程
+ 量子架构(ARCH=quantum)内核暴露的诚实接口（/proc/quantum-energy、
+ /proc/quantum-net、/dev/qpu0）的用户态监控守护进程：周期性读取能级/相干/纠缠/
+ Bell 事件、量子组网(QNIC 链路/对等/纠缠交换/盖亚层)与 QPU 链路统计，
+ 经 DBus(session bus)暴露 org.quantum.Core 并写入 /run/quantum-core/state.json。
+ .
+ 这是「模拟/记账模型」，不是真实量子硬件；在普通宿主机器上接口缺失时
+ 守护进程照常运行并把接口标记为不可用，不崩溃、不伪造数据。
+
+Package: xfce4-quantum
+Architecture: all
+Depends: ${misc:Depends}, xfce4, xfce4-goodies, quantum-core, dbus
+Provides: quantum-desktop-base
+Description: 面向量子架构的 XFCE 桌面基座
+ XFCE 会话变体(quantum.desktop)、量子色系 GTK 主题与壁纸、Genmon 面板小程序
+ （能级 / QPU 链路 / 量子组网）与桌面设置入口，接线量子架构内核的诚实接口。
+ .
+ 本包可作为 quantum-desktop-base 的提供方；源包可在任意拥有 gcc 与 XFCE 的
+ 目标架构(含 ARCH=quantum)上本地/交叉构建，证明「桌面系统基座可为目标架构构建」。

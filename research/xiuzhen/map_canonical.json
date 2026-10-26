@@ -1,0 +1,1366 @@
+{
+ "meta": {
+  "name": "修真图谱",
+  "version": "1.0",
+  "built_utc": "2026-10-17T14:16:20Z",
+  "discipline": "节点/边一律带 source；无出处不建节点、不连边（宁缺毋滥）",
+  "sources": [
+   "classics-harmony-app/entry/src/main/ets/model/ClassicsData.ts",
+   "research/harvest/analysis.json",
+   "research/suwen_81_index.json"
+  ],
+  "node_count": 67,
+  "edge_count": 66
+ },
+ "layers": [
+  {
+   "id": "daozang",
+   "name": "道藏部类层",
+   "desc": "三洞四辅十二类的部类归属（DAOZANG_CATALOG）"
+  },
+  {
+   "id": "classics",
+   "name": "典籍层",
+   "desc": "已结构化收录的 12 部道家经典"
+  },
+  {
+   "id": "topics",
+   "name": "研修主题层",
+   "desc": "语料话题聚合（穴位经络/脏腑辨证/方药食疗等）"
+  },
+  {
+   "id": "external",
+   "name": "旁参典籍层",
+   "desc": "语料中命中、尚未全文结构化收录的经典"
+  },
+  {
+   "id": "corpus",
+   "name": "采集层",
+   "desc": "已收录的语料文章（公众号 × 14 篇）与《素问》语料"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "book:daodejing",
+   "title": "道德经（老子）",
+   "author": "春秋·老子（李耳）",
+   "chapters": 81,
+   "daozang": {
+    "nid": 15,
+    "id": 649
+   },
+   "onlineUrl": "https://a.daorenjia.com/daozang15-649",
+   "intro": "又称《老子》，道家学派奠基之作，传世约五千言，分《道经》（一至三十七）与《德经》（三十八至八十一）。其精华在朴素辩证法与「无为而治」，对中国哲学影响深远。本应用原文与译文取自 daodejing.org 分章页。",
+   "source": "classics-harmony-app CLASSICS",
+   "type": "book",
+   "layer": "classics"
+  },
+  {
+   "id": "book:cantongqi",
+   "title": "周易参同契",
+   "author": "东汉·魏伯阳",
+   "chapters": 92,
+   "daozang": {
+    "nid": 18,
+    "id": 761
+   },
+   "onlineUrl": "https://a.daorenjia.com/daozang18-761",
+   "intro": "简称《参同契》，道家炼养经典，被奉为「丹经之祖」。全书以乾坤为鼎器、阴阳为堤防、水火为化机、五行为辅助，阐明炼丹原理与方法。书名之义：参，杂也；同，通也；契，合也——与《周易》理论契合，融汇周易、黄老、丹火三家之理，亦为中国古代化学、药物学、天文历法之发轫。本应用内嵌全本九十章及《鼎器歌》《赞序》（据新浪博客白话解读本结构化整理），道藏编号为道教易学部「周易参同契(阴真人)」(nid=18, id=761)。",
+   "source": "classics-harmony-app CLASSICS",
+   "type": "book",
+   "layer": "classics"
+  },
+  {
+   "id": "book:qingjing",
+   "title": "太上老君说常清静经",
+   "author": "佚名（托太上老君）/ 葛玄等传录",
+   "chapters": 6,
+   "daozang": null,
+   "onlineUrl": "https://a.daorenjia.com/daozang12",
+   "intro": "简称《清静经》，道教重要经典，约四百字，为内丹与清静修行之纲领。全经以「清静」为体，以「遣欲澄心」为用，层层破相至「观空亦空」，为修道者日诵之本。道藏通例归于太平部（本站位置待核），附道藏在线阅读入口。",
+   "source": "classics-harmony-app CLASSICS",
+   "type": "book",
+   "layer": "classics"
+  },
+  {
+   "id": "book:nanhuajing",
+   "title": "南华真经（庄子）",
+   "author": "战国·庄周",
+   "chapters": 1,
+   "daozang": {
+    "nid": 16,
+    "id": 712
+   },
+   "onlineUrl": "https://a.daorenjia.com/daozang16-712",
+   "intro": "道教尊为《南华真经》，庄子（庄周）代表作，与《老子》《文子》《列子》并称「四子真经」。其文汪洋恣肆，以寓言阐发齐物、逍遥、养生之旨，为道家南宗与玄宗之重要思想渊源。道藏编号：四子真经部(nid=16, id=712)。",
+   "source": "classics-harmony-app CLASSICS",
+   "type": "book",
+   "layer": "classics"
+  },
+  {
+   "id": "book:chongxu",
+   "title": "冲虚至德真经（列子）",
+   "author": "战国·列御寇",
+   "chapters": 1,
+   "daozang": {
+    "nid": 16,
+    "id": 726
+   },
+   "onlineUrl": "https://a.daorenjia.com/daozang16-726",
+   "intro": "道教尊为《冲虚至德真经》，列子（列御寇）学派之作，属「四子真经」。多载寓言与神话（如愚公移山、夸父逐日、黄帝梦游华胥），主清虚无为、贵虚顺化之旨。道藏编号：四子真经部(nid=16, id=726)。",
+   "source": "classics-harmony-app CLASSICS",
+   "type": "book",
+   "layer": "classics"
+  },
+  {
+   "id": "book:tongxuan",
+   "title": "通玄真经（文子）",
+   "author": "春秋·文子（辛钘）",
+   "chapters": 1,
+   "daozang": {
+    "nid": 16,
+    "id": 732
+   },
+   "onlineUrl": "https://a.daorenjia.com/daozang16-732",
+   "intro": "道教尊为《通玄真经》，文子（传为老子弟子）述老子之学，属「四子真经」。其书以「道」为体、以「德」为用，体系近于《老子》而更详于治国修身。道藏编号：四子真经部(nid=16, id=732)。",
+   "source": "classics-harmony-app CLASSICS",
+   "type": "book",
+   "layer": "classics"
+  },
+  {
+   "id": "book:dongling",
+   "title": "洞灵真经（庚桑子）",
+   "author": "战国·庚桑楚",
+   "chapters": 1,
+   "daozang": {
+    "nid": 16,
+    "id": 736
+   },
+   "onlineUrl": "https://a.daorenjia.com/daozang16-736",
+   "intro": "道教尊为《洞灵真经》，亦称《亢仓子》，托庚桑楚（老子弟子）之述，属「四子真经」。主全道合德、政教自然之论。道藏编号：四子真经部(nid=16, id=736)。",
+   "source": "classics-harmony-app CLASSICS",
+   "type": "book",
+   "layer": "classics"
+  },
+  {
+   "id": "book:yinfu",
+   "title": "黄帝阴符经",
+   "author": "托黄帝 / 伊尹等注",
+   "chapters": 1,
+   "daozang": {
+    "nid": 17,
+    "id": 738
+   },
+   "onlineUrl": "https://a.daorenjia.com/daozang17-738",
+   "intro": "道教重要经典，仅四百余字，以「观天之道，执天之行」为纲，融天文、兵略、丹道于一炉，言天人相盗、阴阳制化之机。历来注家蜂起（李筌、张果、朱熹等）。道藏编号：黄帝阴符经部(nid=17, id=738)。",
+   "source": "classics-harmony-app CLASSICS",
+   "type": "book",
+   "layer": "classics"
+  },
+  {
+   "id": "book:daodejing-daozang",
+   "title": "道德经（道藏无注本）",
+   "author": "春秋·老子（李耳）",
+   "chapters": 81,
+   "daozang": {
+    "nid": 15,
+    "id": 649
+   },
+   "onlineUrl": "https://a.daorenjia.com/daozang15-649",
+   "intro": "又称《道德真经》。此本经文及分章与《河上公章句》本相同，约出于宋代，底本为《正统道藏》洞神部本文类，参校《老子道德经河上公章句》。全书八十一章，卷上《道经》三十七章、卷下《德经》四十四章，章题自「体道章」至「显质章」，为传世注疏（河上公、唐玄宗御注、宋徽宗御解等经世解读）所共用的分章系统。本应用原文取自道藏在线阅读站（a.daorenjia.com）对应条目；中国哲学书电子化计划（ctext.org）所收《道德经》注本可作为异文参校。",
+   "source": "classics-harmony-app CLASSICS",
+   "type": "book",
+   "layer": "classics"
+  },
+  {
+   "id": "book:huangting-neijing",
+   "title": "黄庭内景经（太上黄庭内景玉经）",
+   "author": "晋·魏华存",
+   "chapters": 36,
+   "daozang": {
+    "nid": 20,
+    "id": 992
+   },
+   "onlineUrl": "https://a.daorenjia.com/daozang20-992",
+   "intro": "道教上清派核心经典，全称《太上黄庭内景玉经》，传为晋代女仙魏华存所传。七言韵文，凡三十六章，自「上清章第一」至「沐浴章第三十六」，以存思内视、漱咽咽液为要，令身神安宁而百病不侵。底本《正统道藏》洞玄部本文类，参校《道藏辑要》本与清·董德宁《太上一黄庭经发微》本。",
+   "source": "classics-harmony-app CLASSICS",
+   "type": "book",
+   "layer": "classics"
+  },
+  {
+   "id": "book:huangting-waijing",
+   "title": "黄庭外景经（太上黄庭外景玉经）",
+   "author": "不著撰人",
+   "chapters": 3,
+   "daozang": {
+    "nid": 20,
+    "id": 993
+   },
+   "onlineUrl": "https://a.daorenjia.com/daozang20-993",
+   "intro": "道教上清派经典，全称《太上黄庭外景玉经》，成书于晋，不著撰人。七言歌诀，分上、中、下三部，内容与《内景经》相仿而文字更简，以存思身神、守固精气为核心，提三丹田之说，主「扶养性命守虚无，恬淡无为何思虑」。底本《正统道藏》洞玄部本文类，参校《云笈七签》所收务成子注本与《道藏辑要》蒋国祚注本。",
+   "source": "classics-harmony-app CLASSICS",
+   "type": "book",
+   "layer": "classics"
+  },
+  {
+   "id": "book:huangting-shuangjing",
+   "title": "黄庭经（内外双景合参·蒋慎修经解）",
+   "author": "宋·蒋慎修 注",
+   "chapters": 18,
+   "daozang": {
+    "nid": 20,
+    "id": 997
+   },
+   "onlineUrl": "https://a.daorenjia.com/daozang20-997",
+   "intro": "全称《黄庭内外玉景经解》，宋·蒋慎修注，残卷。融汇《黄庭内景经》《黄庭外景经》经文逐句作解，是现存最早的「内外双景合参」注本。底本《正统道藏》洞玄部玉诀类。本应用按「经文 + 蒋慎修注」逐则呈现（commentary 字段）。",
+   "source": "classics-harmony-app CLASSICS",
+   "type": "book",
+   "layer": "classics"
+  },
+  {
+   "id": "dzcat:8",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 8,
+   "name": "洞真上清经",
+   "tier": "洞真部",
+   "desc": "上清派经典，存思服气、修真登仙之要。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:9",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 9,
+   "name": "洞玄灵宝经",
+   "tier": "洞玄部",
+   "desc": "灵宝派经典，斋醮科教、普度济世之宗。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:10",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 10,
+   "name": "洞神三皇经",
+   "tier": "洞神部",
+   "desc": "三皇经系，符图召神、劾鬼治病之术。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:11",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 11,
+   "name": "三洞经教",
+   "tier": "三洞",
+   "desc": "三洞经教统论与科格。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:12",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 12,
+   "name": "太平部诸经",
+   "tier": "四辅·太平部",
+   "desc": "太平道系经典（含《太平经》系统等）。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:13",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 13,
+   "name": "太玄部经诀",
+   "tier": "四辅·太玄部",
+   "desc": "老庄玄学注疏与经诀。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:14",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 14,
+   "name": "正一部经籙",
+   "tier": "四辅·正一部",
+   "desc": "正一盟威、法箓科仪。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:15",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 15,
+   "name": "道德真经",
+   "tier": "四辅·太玄部(老子)",
+   "desc": "《老子道德经》及历代注疏（河上公、王弼、成玄英等）。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:16",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 16,
+   "name": "四子真经",
+   "tier": "四子",
+   "desc": "《南华真经》(庄)、《冲虚至德真经》(列)、《通玄真经》(文)、《洞灵真经》(庚桑) 及注疏。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:17",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 17,
+   "name": "黄帝阴符经",
+   "tier": "诸经",
+   "desc": "《阴符经》及历代集注（李筌、张果、朱熹等）。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:18",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 18,
+   "name": "道教易学",
+   "tier": "易学·丹经",
+   "desc": "《周易参同契》及注疏，并《易》图、易数诸书。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:19",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 19,
+   "name": "太清金丹经",
+   "tier": "太清部",
+   "desc": "金丹服食、炼化黄白之经。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:20",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 20,
+   "name": "太清摄养经",
+   "tier": "太清部",
+   "desc": "导引摄生、服气治病之方。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:21",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 21,
+   "name": "诸子文集",
+   "tier": "诸子",
+   "desc": "道家诸子与文人别集。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:22",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 22,
+   "name": "道学论著",
+   "tier": "论著",
+   "desc": "道教学理、义蕴论著。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:23",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 23,
+   "name": "全真文集",
+   "tier": "全真",
+   "desc": "全真道祖师的语录、文集。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:24",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 24,
+   "name": "道教类书",
+   "tier": "类书",
+   "desc": "道教百科式类纂（如《云笈七签》）。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:25",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 25,
+   "name": "道法诸经",
+   "tier": "道法",
+   "desc": "神霄、清微等雷法诸经。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:26",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 26,
+   "name": "道法总集",
+   "tier": "道法",
+   "desc": "道法科仪的总集汇编。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:27",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 27,
+   "name": "科戒威仪",
+   "tier": "威仪",
+   "desc": "戒律、威仪、宫观规制。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:28",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 28,
+   "name": "灵宝诸斋仪",
+   "tier": "斋醮",
+   "desc": "灵宝斋法仪轨。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:29",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 29,
+   "name": "灯仪法忏章表",
+   "tier": "斋醮",
+   "desc": "燃灯、忏悔、章表之仪。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "dzcat:30",
+   "type": "daozang_category",
+   "layer": "daozang",
+   "nid": 30,
+   "name": "神仙高道传",
+   "tier": "传记",
+   "desc": "神仙、高道传记与谱系。",
+   "source": "classics-harmony-app DAOZANG_CATALOG"
+  },
+  {
+   "id": "topic:脏腑辨证",
+   "type": "topic",
+   "layer": "topics",
+   "name": "脏腑辨证",
+   "total_hits": 480,
+   "articles": 12,
+   "source": "research/harvest/analysis.json topic_hits"
+  },
+  {
+   "id": "topic:穴位经络",
+   "type": "topic",
+   "layer": "topics",
+   "name": "穴位经络",
+   "total_hits": 139,
+   "articles": 6,
+   "source": "research/harvest/analysis.json topic_hits"
+  },
+  {
+   "id": "topic:方药食疗",
+   "type": "topic",
+   "layer": "topics",
+   "name": "方药食疗",
+   "total_hits": 114,
+   "articles": 5,
+   "source": "research/harvest/analysis.json topic_hits"
+  },
+  {
+   "id": "topic:情志疗愈",
+   "type": "topic",
+   "layer": "topics",
+   "name": "情志疗愈",
+   "total_hits": 62,
+   "articles": 3,
+   "source": "research/harvest/analysis.json topic_hits"
+  },
+  {
+   "id": "topic:国学修身",
+   "type": "topic",
+   "layer": "topics",
+   "name": "国学修身",
+   "total_hits": 24,
+   "articles": 1,
+   "source": "research/harvest/analysis.json topic_hits"
+  },
+  {
+   "id": "topic:民俗命理",
+   "type": "topic",
+   "layer": "topics",
+   "name": "民俗命理",
+   "total_hits": 20,
+   "articles": 1,
+   "source": "research/harvest/analysis.json topic_hits"
+  },
+  {
+   "id": "topic:功法导引",
+   "type": "topic",
+   "layer": "topics",
+   "name": "功法导引",
+   "total_hits": 11,
+   "articles": 0,
+   "source": "research/harvest/analysis.json topic_hits"
+  },
+  {
+   "id": "ext:难经",
+   "type": "classic_mention",
+   "layer": "external",
+   "name": "难经",
+   "hits": 7,
+   "source": "research/harvest/analysis.json classic_hits"
+  },
+  {
+   "id": "ext:素问",
+   "type": "classic_mention",
+   "layer": "external",
+   "name": "素问",
+   "hits": 5,
+   "source": "research/harvest/analysis.json classic_hits"
+  },
+  {
+   "id": "ext:黄帝内经",
+   "type": "classic_mention",
+   "layer": "external",
+   "name": "黄帝内经",
+   "hits": 4,
+   "source": "research/harvest/analysis.json classic_hits"
+  },
+  {
+   "id": "ext:老子",
+   "type": "classic_mention",
+   "layer": "external",
+   "name": "老子",
+   "hits": 3,
+   "source": "research/harvest/analysis.json classic_hits"
+  },
+  {
+   "id": "ext:灵枢",
+   "type": "classic_mention",
+   "layer": "external",
+   "name": "灵枢",
+   "hits": 2,
+   "source": "research/harvest/analysis.json classic_hits"
+  },
+  {
+   "id": "ext:周易",
+   "type": "classic_mention",
+   "layer": "external",
+   "name": "周易",
+   "hits": 2,
+   "source": "research/harvest/analysis.json classic_hits"
+  },
+  {
+   "id": "ext:类经",
+   "type": "classic_mention",
+   "layer": "external",
+   "name": "类经",
+   "hits": 1,
+   "source": "research/harvest/analysis.json classic_hits"
+  },
+  {
+   "id": "ext:本草纲目",
+   "type": "classic_mention",
+   "layer": "external",
+   "name": "本草纲目",
+   "hits": 1,
+   "source": "research/harvest/analysis.json classic_hits"
+  },
+  {
+   "id": "ext:道德经",
+   "type": "classic_mention",
+   "layer": "external",
+   "name": "道德经",
+   "hits": 1,
+   "source": "research/harvest/analysis.json classic_hits"
+  },
+  {
+   "id": "ext:庄子",
+   "type": "classic_mention",
+   "layer": "external",
+   "name": "庄子",
+   "hits": 1,
+   "source": "research/harvest/analysis.json classic_hits"
+  },
+  {
+   "id": "art:2022-06-01_这个地方如有不通，你的整个身体，就会紊乱了！.md",
+   "file": "2022-06-01_这个地方如有不通，你的整个身体，就会紊乱了！.md",
+   "account": "道医课堂",
+   "topics": [
+    {
+     "name": "脏腑辨证",
+     "hits": 65
+    },
+    {
+     "name": "穴位经络",
+     "hits": 12
+    }
+   ],
+   "classics": {
+    "黄帝内经": 1,
+    "素问": 5,
+    "灵枢": 2,
+    "类经": 1,
+    "难经": 4
+   },
+   "chars_total": 3791,
+   "source": "research/harvest/analysis.json",
+   "type": "article",
+   "layer": "corpus"
+  },
+  {
+   "id": "art:2022-07-03_伸筋一寸，寿涨十年！每晚花上十分钟，三招通经拔病根",
+   "file": "2022-07-03_伸筋一寸，寿涨十年！每晚花上十分钟，三招通经拔病根！(中医专家示范）.md",
+   "account": "道医课堂",
+   "topics": [
+    {
+     "name": "穴位经络",
+     "hits": 47
+    },
+    {
+     "name": "脏腑辨证",
+     "hits": 38
+    }
+   ],
+   "classics": {},
+   "chars_total": 3780,
+   "source": "research/harvest/analysis.json",
+   "type": "article",
+   "layer": "corpus"
+  },
+  {
+   "id": "art:2024-11-13_肝连阴器，肝伤则性伤？.md",
+   "file": "2024-11-13_肝连阴器，肝伤则性伤？.md",
+   "account": "道医课堂",
+   "topics": [
+    {
+     "name": "脏腑辨证",
+     "hits": 39
+    },
+    {
+     "name": "情志疗愈",
+     "hits": 2
+    }
+   ],
+   "classics": {},
+   "chars_total": 1599,
+   "source": "research/harvest/analysis.json",
+   "type": "article",
+   "layer": "corpus"
+  },
+  {
+   "id": "art:2025-01-22_防治低血压老偏方.md",
+   "file": "2025-01-22_防治低血压老偏方.md",
+   "account": "道医课堂",
+   "topics": [
+    {
+     "name": "脏腑辨证",
+     "hits": 19
+    },
+    {
+     "name": "方药食疗",
+     "hits": 9
+    }
+   ],
+   "classics": {},
+   "chars_total": 2002,
+   "source": "research/harvest/analysis.json",
+   "type": "article",
+   "layer": "corpus"
+  },
+  {
+   "id": "art:2019-04-07_為何不能免費算命？.md",
+   "file": "2019-04-07_為何不能免費算命？.md",
+   "account": "道教医学",
+   "topics": [
+    {
+     "name": "民俗命理",
+     "hits": 20
+    },
+    {
+     "name": "方药食疗",
+     "hits": 3
+    }
+   ],
+   "classics": {},
+   "chars_total": 1970,
+   "source": "research/harvest/analysis.json",
+   "type": "article",
+   "layer": "corpus"
+  },
+  {
+   "id": "art:2021-07-19_每天学一味中药，蛤蚧！.md",
+   "file": "2021-07-19_每天学一味中药，蛤蚧！.md",
+   "account": "道教医学",
+   "topics": [
+    {
+     "name": "脏腑辨证",
+     "hits": 16
+    },
+    {
+     "name": "方药食疗",
+     "hits": 12
+    }
+   ],
+   "classics": {
+    "本草纲目": 1
+   },
+   "chars_total": 2474,
+   "source": "research/harvest/analysis.json",
+   "type": "article",
+   "layer": "corpus"
+  },
+  {
+   "id": "art:2021-11-29_刺激手上两穴，可清心火、缓解焦虑、摆脱心烦！.md",
+   "file": "2021-11-29_刺激手上两穴，可清心火、缓解焦虑、摆脱心烦！.md",
+   "account": "道教医学",
+   "topics": [
+    {
+     "name": "脏腑辨证",
+     "hits": 20
+    },
+    {
+     "name": "情志疗愈",
+     "hits": 14
+    }
+   ],
+   "classics": {},
+   "chars_total": 1295,
+   "source": "research/harvest/analysis.json",
+   "type": "article",
+   "layer": "corpus"
+  },
+  {
+   "id": "art:2022-02-08_孩子感冒发烧只需一个穴位，可惜知道的人太少了！（转",
+   "file": "2022-02-08_孩子感冒发烧只需一个穴位，可惜知道的人太少了！（转给家长）.md",
+   "account": "道教医学",
+   "topics": [
+    {
+     "name": "穴位经络",
+     "hits": 21
+    },
+    {
+     "name": "方药食疗",
+     "hits": 4
+    }
+   ],
+   "classics": {},
+   "chars_total": 1559,
+   "source": "research/harvest/analysis.json",
+   "type": "article",
+   "layer": "corpus"
+  },
+  {
+   "id": "art:2025-05-13_这八个穴位，可调全身！一定要记好！.md",
+   "file": "2025-05-13_这八个穴位，可调全身！一定要记好！.md",
+   "account": "道教医学",
+   "topics": [
+    {
+     "name": "脏腑辨证",
+     "hits": 48
+    },
+    {
+     "name": "穴位经络",
+     "hits": 19
+    }
+   ],
+   "classics": {
+    "难经": 3
+   },
+   "chars_total": 2758,
+   "source": "research/harvest/analysis.json",
+   "type": "article",
+   "layer": "corpus"
+  },
+  {
+   "id": "art:2025-06-09_教你一个神奇的穴位，每天按一按，赶走头痛、失眠、记",
+   "file": "2025-06-09_教你一个神奇的穴位，每天按一按，赶走头痛、失眠、记忆力减退！.md",
+   "account": "道教医学",
+   "topics": [
+    {
+     "name": "脏腑辨证",
+     "hits": 31
+    },
+    {
+     "name": "穴位经络",
+     "hits": 21
+    }
+   ],
+   "classics": {},
+   "chars_total": 2406,
+   "source": "research/harvest/analysis.json",
+   "type": "article",
+   "layer": "corpus"
+  },
+  {
+   "id": "art:2025-07-27_这几式道家睡仙功，每天几分钟养全身气血.md",
+   "file": "2025-07-27_这几式道家睡仙功，每天几分钟养全身气血.md",
+   "account": "道教医学",
+   "topics": [
+    {
+     "name": "脏腑辨证",
+     "hits": 10
+    },
+    {
+     "name": "穴位经络",
+     "hits": 6
+    }
+   ],
+   "classics": {},
+   "chars_total": 2441,
+   "source": "research/harvest/analysis.json",
+   "type": "article",
+   "layer": "corpus"
+  },
+  {
+   "id": "art:2025-08-02_国学经典《古文观止》，教你八种人生智慧.md",
+   "file": "2025-08-02_国学经典《古文观止》，教你八种人生智慧.md",
+   "account": "道教医学",
+   "topics": [
+    {
+     "name": "脏腑辨证",
+     "hits": 22
+    },
+    {
+     "name": "国学修身",
+     "hits": 22
+    }
+   ],
+   "classics": {
+    "周易": 2
+   },
+   "chars_total": 2640,
+   "source": "research/harvest/analysis.json",
+   "type": "article",
+   "layer": "corpus"
+  },
+  {
+   "id": "art:2025-11-02_脾好不好看大便，肾强不强看小便，身体的“诚实报告”",
+   "file": "2025-11-02_脾好不好看大便，肾强不强看小便，身体的“诚实报告”一查便知.md",
+   "account": "道教医学",
+   "topics": [
+    {
+     "name": "脏腑辨证",
+     "hits": 135
+    },
+    {
+     "name": "方药食疗",
+     "hits": 7
+    }
+   ],
+   "classics": {
+    "黄帝内经": 1
+   },
+   "chars_total": 4545,
+   "source": "research/harvest/analysis.json",
+   "type": "article",
+   "layer": "corpus"
+  },
+  {
+   "id": "art:2025-12-21_当“知”的智慧照亮身心的每一个角落，疗愈，便自然而",
+   "file": "2025-12-21_当“知”的智慧照亮身心的每一个角落，疗愈，便自然而然地发生了。.md",
+   "account": "道教医学",
+   "topics": [
+    {
+     "name": "脏腑辨证",
+     "hits": 30
+    },
+    {
+     "name": "情志疗愈",
+     "hits": 28
+    }
+   ],
+   "classics": {
+    "黄帝内经": 2,
+    "道德经": 1,
+    "老子": 3,
+    "庄子": 1
+   },
+   "chars_total": 2449,
+   "source": "research/harvest/analysis.json",
+   "type": "article",
+   "layer": "corpus"
+  },
+  {
+   "id": "corpus:suwen",
+   "type": "corpus",
+   "layer": "corpus",
+   "title": "黃帝內經·素問",
+   "chapters_total": 81,
+   "chapters_ingested": 0,
+   "source": "research/suwen_81_index.json + research/suwen/"
+  }
+ ],
+ "edges": [
+  {
+   "from": "book:daodejing",
+   "to": "dzcat:15",
+   "type": "belongs_to",
+   "weight": 1,
+   "source": "CLASSICS.daozang.nid join DAOZANG_CATALOG"
+  },
+  {
+   "from": "book:cantongqi",
+   "to": "dzcat:18",
+   "type": "belongs_to",
+   "weight": 1,
+   "source": "CLASSICS.daozang.nid join DAOZANG_CATALOG"
+  },
+  {
+   "from": "book:nanhuajing",
+   "to": "dzcat:16",
+   "type": "belongs_to",
+   "weight": 1,
+   "source": "CLASSICS.daozang.nid join DAOZANG_CATALOG"
+  },
+  {
+   "from": "book:chongxu",
+   "to": "dzcat:16",
+   "type": "belongs_to",
+   "weight": 1,
+   "source": "CLASSICS.daozang.nid join DAOZANG_CATALOG"
+  },
+  {
+   "from": "book:tongxuan",
+   "to": "dzcat:16",
+   "type": "belongs_to",
+   "weight": 1,
+   "source": "CLASSICS.daozang.nid join DAOZANG_CATALOG"
+  },
+  {
+   "from": "book:dongling",
+   "to": "dzcat:16",
+   "type": "belongs_to",
+   "weight": 1,
+   "source": "CLASSICS.daozang.nid join DAOZANG_CATALOG"
+  },
+  {
+   "from": "book:yinfu",
+   "to": "dzcat:17",
+   "type": "belongs_to",
+   "weight": 1,
+   "source": "CLASSICS.daozang.nid join DAOZANG_CATALOG"
+  },
+  {
+   "from": "book:daodejing-daozang",
+   "to": "dzcat:15",
+   "type": "belongs_to",
+   "weight": 1,
+   "source": "CLASSICS.daozang.nid join DAOZANG_CATALOG"
+  },
+  {
+   "from": "book:huangting-neijing",
+   "to": "dzcat:20",
+   "type": "belongs_to",
+   "weight": 1,
+   "source": "CLASSICS.daozang.nid join DAOZANG_CATALOG"
+  },
+  {
+   "from": "book:huangting-waijing",
+   "to": "dzcat:20",
+   "type": "belongs_to",
+   "weight": 1,
+   "source": "CLASSICS.daozang.nid join DAOZANG_CATALOG"
+  },
+  {
+   "from": "book:huangting-shuangjing",
+   "to": "dzcat:20",
+   "type": "belongs_to",
+   "weight": 1,
+   "source": "CLASSICS.daozang.nid join DAOZANG_CATALOG"
+  },
+  {
+   "from": "art:2022-06-01_这个地方如有不通，你的整个身体，就会紊乱了！.md",
+   "to": "topic:脏腑辨证",
+   "type": "has_topic",
+   "weight": 65,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2022-06-01_这个地方如有不通，你的整个身体，就会紊乱了！.md",
+   "to": "topic:穴位经络",
+   "type": "has_topic",
+   "weight": 12,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2022-06-01_这个地方如有不通，你的整个身体，就会紊乱了！.md",
+   "to": "ext:黄帝内经",
+   "type": "mentions",
+   "weight": 1,
+   "source": "analysis.json per-file classics"
+  },
+  {
+   "from": "art:2022-06-01_这个地方如有不通，你的整个身体，就会紊乱了！.md",
+   "to": "ext:素问",
+   "type": "mentions",
+   "weight": 5,
+   "source": "analysis.json per-file classics"
+  },
+  {
+   "from": "art:2022-06-01_这个地方如有不通，你的整个身体，就会紊乱了！.md",
+   "to": "ext:灵枢",
+   "type": "mentions",
+   "weight": 2,
+   "source": "analysis.json per-file classics"
+  },
+  {
+   "from": "art:2022-06-01_这个地方如有不通，你的整个身体，就会紊乱了！.md",
+   "to": "ext:类经",
+   "type": "mentions",
+   "weight": 1,
+   "source": "analysis.json per-file classics"
+  },
+  {
+   "from": "art:2022-06-01_这个地方如有不通，你的整个身体，就会紊乱了！.md",
+   "to": "ext:难经",
+   "type": "mentions",
+   "weight": 4,
+   "source": "analysis.json per-file classics"
+  },
+  {
+   "from": "art:2022-07-03_伸筋一寸，寿涨十年！每晚花上十分钟，三招通经拔病根",
+   "to": "topic:穴位经络",
+   "type": "has_topic",
+   "weight": 47,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2022-07-03_伸筋一寸，寿涨十年！每晚花上十分钟，三招通经拔病根",
+   "to": "topic:脏腑辨证",
+   "type": "has_topic",
+   "weight": 38,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2024-11-13_肝连阴器，肝伤则性伤？.md",
+   "to": "topic:脏腑辨证",
+   "type": "has_topic",
+   "weight": 39,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2024-11-13_肝连阴器，肝伤则性伤？.md",
+   "to": "topic:情志疗愈",
+   "type": "has_topic",
+   "weight": 2,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2025-01-22_防治低血压老偏方.md",
+   "to": "topic:脏腑辨证",
+   "type": "has_topic",
+   "weight": 19,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2025-01-22_防治低血压老偏方.md",
+   "to": "topic:方药食疗",
+   "type": "has_topic",
+   "weight": 9,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2019-04-07_為何不能免費算命？.md",
+   "to": "topic:民俗命理",
+   "type": "has_topic",
+   "weight": 20,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2019-04-07_為何不能免費算命？.md",
+   "to": "topic:方药食疗",
+   "type": "has_topic",
+   "weight": 3,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2021-07-19_每天学一味中药，蛤蚧！.md",
+   "to": "topic:脏腑辨证",
+   "type": "has_topic",
+   "weight": 16,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2021-07-19_每天学一味中药，蛤蚧！.md",
+   "to": "topic:方药食疗",
+   "type": "has_topic",
+   "weight": 12,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2021-07-19_每天学一味中药，蛤蚧！.md",
+   "to": "ext:本草纲目",
+   "type": "mentions",
+   "weight": 1,
+   "source": "analysis.json per-file classics"
+  },
+  {
+   "from": "art:2021-11-29_刺激手上两穴，可清心火、缓解焦虑、摆脱心烦！.md",
+   "to": "topic:脏腑辨证",
+   "type": "has_topic",
+   "weight": 20,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2021-11-29_刺激手上两穴，可清心火、缓解焦虑、摆脱心烦！.md",
+   "to": "topic:情志疗愈",
+   "type": "has_topic",
+   "weight": 14,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2022-02-08_孩子感冒发烧只需一个穴位，可惜知道的人太少了！（转",
+   "to": "topic:穴位经络",
+   "type": "has_topic",
+   "weight": 21,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2022-02-08_孩子感冒发烧只需一个穴位，可惜知道的人太少了！（转",
+   "to": "topic:方药食疗",
+   "type": "has_topic",
+   "weight": 4,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2025-05-13_这八个穴位，可调全身！一定要记好！.md",
+   "to": "topic:脏腑辨证",
+   "type": "has_topic",
+   "weight": 48,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2025-05-13_这八个穴位，可调全身！一定要记好！.md",
+   "to": "topic:穴位经络",
+   "type": "has_topic",
+   "weight": 19,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2025-05-13_这八个穴位，可调全身！一定要记好！.md",
+   "to": "ext:难经",
+   "type": "mentions",
+   "weight": 3,
+   "source": "analysis.json per-file classics"
+  },
+  {
+   "from": "art:2025-06-09_教你一个神奇的穴位，每天按一按，赶走头痛、失眠、记",
+   "to": "topic:脏腑辨证",
+   "type": "has_topic",
+   "weight": 31,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2025-06-09_教你一个神奇的穴位，每天按一按，赶走头痛、失眠、记",
+   "to": "topic:穴位经络",
+   "type": "has_topic",
+   "weight": 21,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2025-07-27_这几式道家睡仙功，每天几分钟养全身气血.md",
+   "to": "topic:脏腑辨证",
+   "type": "has_topic",
+   "weight": 10,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2025-07-27_这几式道家睡仙功，每天几分钟养全身气血.md",
+   "to": "topic:穴位经络",
+   "type": "has_topic",
+   "weight": 6,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2025-08-02_国学经典《古文观止》，教你八种人生智慧.md",
+   "to": "topic:脏腑辨证",
+   "type": "has_topic",
+   "weight": 22,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2025-08-02_国学经典《古文观止》，教你八种人生智慧.md",
+   "to": "topic:国学修身",
+   "type": "has_topic",
+   "weight": 22,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2025-08-02_国学经典《古文观止》，教你八种人生智慧.md",
+   "to": "ext:周易",
+   "type": "mentions",
+   "weight": 2,
+   "source": "analysis.json per-file classics"
+  },
+  {
+   "from": "art:2025-11-02_脾好不好看大便，肾强不强看小便，身体的“诚实报告”",
+   "to": "topic:脏腑辨证",
+   "type": "has_topic",
+   "weight": 135,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2025-11-02_脾好不好看大便，肾强不强看小便，身体的“诚实报告”",
+   "to": "topic:方药食疗",
+   "type": "has_topic",
+   "weight": 7,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2025-11-02_脾好不好看大便，肾强不强看小便，身体的“诚实报告”",
+   "to": "ext:黄帝内经",
+   "type": "mentions",
+   "weight": 1,
+   "source": "analysis.json per-file classics"
+  },
+  {
+   "from": "art:2025-12-21_当“知”的智慧照亮身心的每一个角落，疗愈，便自然而",
+   "to": "topic:脏腑辨证",
+   "type": "has_topic",
+   "weight": 30,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2025-12-21_当“知”的智慧照亮身心的每一个角落，疗愈，便自然而",
+   "to": "topic:情志疗愈",
+   "type": "has_topic",
+   "weight": 28,
+   "source": "analysis.json per-file topics"
+  },
+  {
+   "from": "art:2025-12-21_当“知”的智慧照亮身心的每一个角落，疗愈，便自然而",
+   "to": "ext:黄帝内经",
+   "type": "mentions",
+   "weight": 2,
+   "source": "analysis.json per-file classics"
+  },
+  {
+   "from": "art:2025-12-21_当“知”的智慧照亮身心的每一个角落，疗愈，便自然而",
+   "to": "ext:道德经",
+   "type": "mentions",
+   "weight": 1,
+   "source": "analysis.json per-file classics"
+  },
+  {
+   "from": "art:2025-12-21_当“知”的智慧照亮身心的每一个角落，疗愈，便自然而",
+   "to": "ext:老子",
+   "type": "mentions",
+   "weight": 3,
+   "source": "analysis.json per-file classics"
+  },
+  {
+   "from": "art:2025-12-21_当“知”的智慧照亮身心的每一个角落，疗愈，便自然而",
+   "to": "ext:庄子",
+   "type": "mentions",
+   "weight": 1,
+   "source": "analysis.json per-file classics"
+  },
+  {
+   "from": "ext:道德经",
+   "to": "book:daodejing",
+   "type": "same_tradition",
+   "weight": 1,
+   "source": "篇名同一性映射（道德经/老子→daodejing；庄子→南华真经；周易→参同契立论根基）"
+  },
+  {
+   "from": "ext:老子",
+   "to": "book:daodejing",
+   "type": "same_tradition",
+   "weight": 1,
+   "source": "篇名同一性映射（道德经/老子→daodejing；庄子→南华真经；周易→参同契立论根基）"
+  },
+  {
+   "from": "ext:庄子",
+   "to": "book:nanhuajing",
+   "type": "same_tradition",
+   "weight": 1,
+   "source": "篇名同一性映射（道德经/老子→daodejing；庄子→南华真经；周易→参同契立论根基）"
+  },
+  {
+   "from": "ext:周易",
+   "to": "book:cantongqi",
+   "type": "same_tradition",
+   "weight": 1,
+   "source": "篇名同一性映射（道德经/老子→daodejing；庄子→南华真经；周易→参同契立论根基）"
+  },
+  {
+   "from": "ext:素问",
+   "to": "corpus:suwen",
+   "type": "corpus_covered_by",
+   "weight": 5,
+   "source": "research/suwen/ 79 篇正文收录"
+  },
+  {
+   "from": "ext:黄帝内经",
+   "to": "corpus:suwen",
+   "type": "corpus_covered_by",
+   "weight": 4,
+   "source": "research/suwen/ 79 篇正文收录"
+  },
+  {
+   "from": "book:daodejing",
+   "to": "ext:老子",
+   "type": "intro_mentions",
+   "weight": 1,
+   "source": "CLASSICS intro 关键词命中：老子"
+  },
+  {
+   "from": "book:cantongqi",
+   "to": "ext:周易",
+   "type": "intro_mentions",
+   "weight": 1,
+   "source": "CLASSICS intro 关键词命中：周易"
+  },
+  {
+   "from": "book:nanhuajing",
+   "to": "ext:老子",
+   "type": "intro_mentions",
+   "weight": 1,
+   "source": "CLASSICS intro 关键词命中：老子"
+  },
+  {
+   "from": "book:nanhuajing",
+   "to": "ext:庄子",
+   "type": "intro_mentions",
+   "weight": 1,
+   "source": "CLASSICS intro 关键词命中：庄子"
+  },
+  {
+   "from": "book:tongxuan",
+   "to": "ext:老子",
+   "type": "intro_mentions",
+   "weight": 1,
+   "source": "CLASSICS intro 关键词命中：老子"
+  },
+  {
+   "from": "book:dongling",
+   "to": "ext:老子",
+   "type": "intro_mentions",
+   "weight": 1,
+   "source": "CLASSICS intro 关键词命中：老子"
+  },
+  {
+   "from": "book:daodejing-daozang",
+   "to": "ext:道德经",
+   "type": "intro_mentions",
+   "weight": 1,
+   "source": "CLASSICS intro 关键词命中：道德经"
+  },
+  {
+   "from": "book:daodejing-daozang",
+   "to": "ext:老子",
+   "type": "intro_mentions",
+   "weight": 1,
+   "source": "CLASSICS intro 关键词命中：老子"
+  }
+ ]
+}

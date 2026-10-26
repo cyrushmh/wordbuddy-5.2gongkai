@@ -1,0 +1,4032 @@
+{
+  "_meta": {
+    "title": "编程语言概念系统（分层分类）",
+    "system_root": "wordbuddy-github",
+    "system_note": "以仓库 wordbuddy-github 为主目录的概念系统；语言知识来自 data/langs_docs.json",
+    "version": "0000.0000.0000.0061.20261023",
+    "lang_total": 161,
+    "axes": [
+      "execution_model",
+      "target_arch",
+      "domain",
+      "standard_basis"
+    ],
+    "arch_note": "「有条件的以硬件架构为子分类」：能明确目标架构的语言按 arch 归类；解释/JIT 归 host（取决于宿主进程）；配置/查询/标记等非执行类归 n-a。",
+    "mapping_note": "mapping_source=explicit 为人工判定；=inferred 为按 category 推断（默认口径，可逐条细化）",
+    "enrich_note": "v0.6.61 字段补全：每条语言增加 paradigm/typing/memory/first_appeared/gist/engineering 六字段（数据见 research/plang/lang_enrich.py，first_appeared 取自 data/langs_docs.json 的 first_year）；engineering 遵守诚实口径——仅 probe 实测通过的 15 种语言宣称可编译运行，其余只登记工具链名称不宣称结果，非执行类与 esolang 如实标注",
+    "rfc_note": "能力域的底层标准依据含 RFC 编号，构建时经本仓库 rfc_catalog 交叉验证存在性",
+    "bridge_count": 1,
+    "guidance": {
+      "root": "daoxue:guidance:zhengti_zhida",
+      "framing": "因果记录·全息·感应",
+      "native": "道法自然：按真实执行模型/目标架构归类，不顺印象"
+    }
+  },
+  "execution_models": [
+    {
+      "model": "native",
+      "label": "编译到原生机器码",
+      "note": "经 LLVM/GCC 等后端产出特定 ISA 的可执行文件"
+    },
+    {
+      "model": "bytecode-vm",
+      "label": "编译到虚拟机字节码",
+      "note": "产出 JVM/CLR/BEAM/EVM 等字节码"
+    },
+    {
+      "model": "interpreted",
+      "label": "解释执行",
+      "note": "由解释器/宿主进程直接求值，无独立目标架构"
+    },
+    {
+      "model": "jit",
+      "label": "即时编译(JIT)",
+      "note": "运行时编译到宿主机器码"
+    },
+    {
+      "model": "transpiled",
+      "label": "转译到另一语言",
+      "note": "源码→另一高级语言（如 TS→JS）"
+    },
+    {
+      "model": "ir",
+      "label": "中间表示/字节码规范",
+      "note": "如 WebAssembly，作为多语言编译目标"
+    },
+    {
+      "model": "hdl",
+      "label": "硬件描述(综合到电路)",
+      "note": "经综合/实现工具映射到 FPGA/ASIC"
+    },
+    {
+      "model": "non-exec",
+      "label": "非执行型（声明/描述）",
+      "note": "配置、查询、标记、数据、排版、记号等，由宿主工具解释"
+    }
+  ],
+  "target_archs": [
+    {
+      "arch": "x86-64",
+      "label": "x86-64 (AMD64)",
+      "kind": "isa",
+      "note": "主流桌面/服务器指令集；LLVM·GCC 一等公民"
+    },
+    {
+      "arch": "arm64",
+      "label": "ARM64 (AArch64)",
+      "kind": "isa",
+      "note": "移动/云原生/Apple Silicon 主流指令集"
+    },
+    {
+      "arch": "riscv",
+      "label": "RISC-V",
+      "kind": "isa",
+      "note": "开放指令集，LLVM/GCC 已支持"
+    },
+    {
+      "arch": "wasm",
+      "label": "WebAssembly",
+      "kind": "virtual-isa",
+      "note": "可移植虚拟指令集（W3C 标准），浏览器与边缘运行时"
+    },
+    {
+      "arch": "jvm",
+      "label": "JVM 字节码",
+      "kind": "vm",
+      "note": "Java 虚拟机"
+    },
+    {
+      "arch": "clr",
+      "label": "CLR / .NET IL",
+      "kind": "vm",
+      "note": "公共语言运行时"
+    },
+    {
+      "arch": "beam",
+      "label": "BEAM (Erlang VM)",
+      "kind": "vm",
+      "note": "面向并发与容错的虚拟机"
+    },
+    {
+      "arch": "evm",
+      "label": "EVM 及同类链上 VM",
+      "kind": "vm",
+      "note": "智能合约执行环境"
+    },
+    {
+      "arch": "js",
+      "label": "JS 引擎 (V8/JSC/SM)",
+      "kind": "vm",
+      "note": "浏览器与 Node/Deno 的 JS 执行引擎"
+    },
+    {
+      "arch": "gpu-simt",
+      "label": "GPU (SIMT 加速器)",
+      "kind": "accelerator",
+      "note": "数据并行加速，CUDA/OpenCL/ROCm 类"
+    },
+    {
+      "arch": "fpga",
+      "label": "FPGA / ASIC",
+      "kind": "reconfigurable",
+      "note": "可重构硬件，由 HDL 综合实现"
+    },
+    {
+      "arch": "host",
+      "label": "宿主进程（架构无关）",
+      "kind": "host",
+      "note": "解释/JIT 语言，目标架构取决于宿主进程，不单独绑定 ISA"
+    },
+    {
+      "arch": "n-a",
+      "label": "非执行（无目标架构）",
+      "kind": "non-exec",
+      "note": "配置/查询/标记/数据/排版/记号类，谈「目标架构」无意义"
+    }
+  ],
+  "domains": [
+    {
+      "domain": "systems",
+      "label": "系统编程",
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 9293,
+          "why": "TCP 等系统网络栈的基础规范（底层协议依据）",
+          "rfc_title": "Transmission Control Protocol (TCP)"
+        }
+      ]
+    },
+    {
+      "domain": "network",
+      "label": "网络与分布式",
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 9110,
+          "why": "HTTP 语义",
+          "rfc_title": "HTTP Semantics"
+        },
+        {
+          "kind": "RFC",
+          "num": 9112,
+          "why": "HTTP/1.1 报文语法",
+          "rfc_title": "HTTP/1.1"
+        },
+        {
+          "kind": "RFC",
+          "num": 8446,
+          "why": "TLS 1.3",
+          "rfc_title": "The Transport Layer Security (TLS) Protocol Version 1.3"
+        },
+        {
+          "kind": "RFC",
+          "num": 1035,
+          "why": "DNS 实现与规范",
+          "rfc_title": "Domain names - implementation and specification"
+        }
+      ]
+    },
+    {
+      "domain": "data",
+      "label": "数据序列化与交换",
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 8259,
+          "why": "JSON 文本格式",
+          "rfc_title": "The JavaScript Object Notation (JSON) Data Interchange Format"
+        },
+        {
+          "kind": "RFC",
+          "num": 3629,
+          "why": "UTF-8 字符编码（文本互操作底座）",
+          "rfc_title": "UTF-8, a transformation format of ISO 10646"
+        }
+      ]
+    },
+    {
+      "domain": "query",
+      "label": "查询与知识图谱",
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 3629,
+          "why": "UTF-8（查询文本与标识符编码）",
+          "rfc_title": "UTF-8, a transformation format of ISO 10646"
+        }
+      ]
+    },
+    {
+      "domain": "identity",
+      "label": "标识、时间与文本",
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 3986,
+          "why": "URI 通用语法",
+          "rfc_title": "Uniform Resource Identifier (URI): Generic Syntax"
+        },
+        {
+          "kind": "RFC",
+          "num": 3339,
+          "why": "日期时间表示",
+          "rfc_title": "Date and Time on the Internet: Timestamps"
+        },
+        {
+          "kind": "RFC",
+          "num": 5322,
+          "why": "互联网消息格式",
+          "rfc_title": "Internet Message Format"
+        }
+      ]
+    },
+    {
+      "domain": "web",
+      "label": "Web 与浏览器",
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 9110,
+          "why": "HTTP 语义",
+          "rfc_title": "HTTP Semantics"
+        },
+        {
+          "kind": "RFC",
+          "num": 8446,
+          "why": "TLS 1.3",
+          "rfc_title": "The Transport Layer Security (TLS) Protocol Version 1.3"
+        }
+      ]
+    },
+    {
+      "domain": "security-crypto",
+      "label": "安全与密码学",
+      "standards": [
+        {
+          "kind": "RFC",
+          "num": 8446,
+          "why": "TLS 1.3",
+          "rfc_title": "The Transport Layer Security (TLS) Protocol Version 1.3"
+        },
+        {
+          "kind": "RFC",
+          "num": 5280,
+          "why": "X.509 证书（可经本仓库 rfc_catalog 反查）",
+          "rfc_title": "Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile"
+        }
+      ]
+    },
+    {
+      "domain": "esolang",
+      "label": "深奥/实验语言（esolang）",
+      "standards": [],
+      "note": "刻意反工程实践的玩具/实验语言；诚实标注——无任何工程标准依据可补，故不继承 RFC"
+    },
+    {
+      "domain": "education",
+      "label": "教育与图形化",
+      "standards": [],
+      "note": "面向教学/青少年的语言与图形化环境，无强制工程标准依据"
+    }
+  ],
+  "model_langs": {
+    "native": [
+      "ada",
+      "agda",
+      "algol",
+      "assembly",
+      "bcpl",
+      "bend",
+      "blang",
+      "bosque",
+      "c",
+      "cangjie",
+      "carbon",
+      "chapel",
+      "cobol",
+      "commonlisp",
+      "cplusplus",
+      "crystal",
+      "dafny",
+      "delphi",
+      "easylanguage",
+      "eiffel",
+      "factor",
+      "fortran",
+      "fstar",
+      "futhark",
+      "go",
+      "grain",
+      "hanyu",
+      "hare",
+      "haskell",
+      "idris",
+      "koka",
+      "lean",
+      "lobster",
+      "mercury",
+      "ml",
+      "modula2",
+      "mojo",
+      "nim",
+      "oberon",
+      "objectivec",
+      "ocaml",
+      "odin",
+      "pascal",
+      "pony",
+      "red",
+      "roc",
+      "rust",
+      "simula",
+      "sml",
+      "swift",
+      "terra",
+      "unison",
+      "v",
+      "verse",
+      "wa",
+      "xlang",
+      "zig"
+    ],
+    "bytecode-vm": [
+      "ballerina",
+      "cairo",
+      "clojure",
+      "csharp",
+      "elixir",
+      "erlang",
+      "fsharp",
+      "gleam",
+      "java",
+      "kotlin",
+      "move",
+      "noir",
+      "scala",
+      "smalltalk",
+      "solidity",
+      "visualbasic",
+      "whiley"
+    ],
+    "interpreted": [
+      "apl",
+      "awk",
+      "bash",
+      "befunge",
+      "bqn",
+      "brainfuck",
+      "chef",
+      "coq",
+      "curry",
+      "forth",
+      "intercal",
+      "iolang",
+      "isabelle",
+      "javascript",
+      "jlang",
+      "klang",
+      "lisp",
+      "logo",
+      "lolcode",
+      "lua",
+      "malbolge",
+      "matlab",
+      "mulan",
+      "perl",
+      "php",
+      "piet",
+      "prolog",
+      "python",
+      "racket",
+      "raku",
+      "rebol",
+      "rexx",
+      "ring",
+      "ruby",
+      "scheme",
+      "scratch",
+      "shakespeare",
+      "snobol",
+      "tcl",
+      "unlambda",
+      "whitespace",
+      "wolfram"
+    ],
+    "jit": [
+      "dart",
+      "hack",
+      "julia"
+    ],
+    "transpiled": [
+      "arkts",
+      "elm",
+      "goplus",
+      "haxe",
+      "purescript",
+      "reason",
+      "typescript",
+      "wenyan",
+      "zhpy"
+    ],
+    "ir": [
+      "wasm"
+    ],
+    "hdl": [
+      "verilog",
+      "vhdl"
+    ],
+    "non-exec": [
+      "avro",
+      "bnf",
+      "capnproto",
+      "css",
+      "cue",
+      "cypher",
+      "datalog",
+      "dhall",
+      "flatbuffers",
+      "graphql",
+      "hcl",
+      "html",
+      "json",
+      "jsonnet",
+      "latex",
+      "makefile",
+      "markdown",
+      "nix",
+      "openapi",
+      "pkl",
+      "postscript",
+      "protobuf",
+      "regex",
+      "sparql",
+      "sql",
+      "starlark",
+      "toml",
+      "xpath",
+      "xslt",
+      "yaml"
+    ]
+  },
+  "arch_langs": {
+    "x86-64": [
+      "ada",
+      "algol",
+      "assembly",
+      "bcpl",
+      "blang",
+      "bosque",
+      "c",
+      "cangjie",
+      "carbon",
+      "chapel",
+      "cobol",
+      "commonlisp",
+      "cplusplus",
+      "crystal",
+      "dart",
+      "delphi",
+      "easylanguage",
+      "eiffel",
+      "factor",
+      "fortran",
+      "go",
+      "goplus",
+      "hanyu",
+      "hare",
+      "haskell",
+      "haxe",
+      "idris",
+      "koka",
+      "lean",
+      "lobster",
+      "mercury",
+      "ml",
+      "modula2",
+      "mojo",
+      "nim",
+      "oberon",
+      "objectivec",
+      "ocaml",
+      "odin",
+      "pascal",
+      "pony",
+      "red",
+      "roc",
+      "rust",
+      "simula",
+      "sml",
+      "swift",
+      "terra",
+      "unison",
+      "v",
+      "verse",
+      "xlang",
+      "zig"
+    ],
+    "arm64": [
+      "ada",
+      "arkts",
+      "assembly",
+      "bosque",
+      "c",
+      "cangjie",
+      "carbon",
+      "chapel",
+      "commonlisp",
+      "cplusplus",
+      "crystal",
+      "dart",
+      "eiffel",
+      "factor",
+      "fortran",
+      "go",
+      "goplus",
+      "hare",
+      "haskell",
+      "idris",
+      "koka",
+      "lean",
+      "lobster",
+      "mercury",
+      "mojo",
+      "nim",
+      "objectivec",
+      "ocaml",
+      "odin",
+      "pascal",
+      "pony",
+      "red",
+      "roc",
+      "rust",
+      "sml",
+      "swift",
+      "terra",
+      "unison",
+      "v",
+      "verse",
+      "zig"
+    ],
+    "riscv": [
+      "ada",
+      "assembly",
+      "c",
+      "cplusplus",
+      "go",
+      "hare",
+      "nim",
+      "rust",
+      "zig"
+    ],
+    "wasm": [
+      "c",
+      "go",
+      "grain",
+      "roc",
+      "rust",
+      "wa",
+      "wasm",
+      "zig"
+    ],
+    "jvm": [
+      "ballerina",
+      "clojure",
+      "haxe",
+      "java",
+      "kotlin",
+      "scala",
+      "whiley"
+    ],
+    "clr": [
+      "csharp",
+      "fsharp",
+      "haxe",
+      "visualbasic"
+    ],
+    "beam": [
+      "elixir",
+      "erlang",
+      "gleam"
+    ],
+    "evm": [
+      "cairo",
+      "move",
+      "noir",
+      "solidity"
+    ],
+    "js": [
+      "arkts",
+      "dart",
+      "elm",
+      "haxe",
+      "javascript",
+      "purescript",
+      "reason",
+      "typescript",
+      "wenyan"
+    ],
+    "gpu-simt": [
+      "bend",
+      "futhark",
+      "mojo"
+    ],
+    "fpga": [
+      "verilog",
+      "vhdl"
+    ],
+    "host": [
+      "agda",
+      "apl",
+      "awk",
+      "bash",
+      "befunge",
+      "bqn",
+      "brainfuck",
+      "chef",
+      "coq",
+      "curry",
+      "dafny",
+      "forth",
+      "fstar",
+      "hack",
+      "intercal",
+      "iolang",
+      "isabelle",
+      "jlang",
+      "julia",
+      "klang",
+      "lisp",
+      "logo",
+      "lolcode",
+      "lua",
+      "malbolge",
+      "matlab",
+      "mulan",
+      "perl",
+      "php",
+      "piet",
+      "prolog",
+      "python",
+      "racket",
+      "raku",
+      "rebol",
+      "rexx",
+      "ring",
+      "ruby",
+      "scheme",
+      "scratch",
+      "shakespeare",
+      "smalltalk",
+      "snobol",
+      "tcl",
+      "unlambda",
+      "whitespace",
+      "wolfram",
+      "zhpy"
+    ],
+    "n-a": [
+      "avro",
+      "bnf",
+      "capnproto",
+      "css",
+      "cue",
+      "cypher",
+      "datalog",
+      "dhall",
+      "flatbuffers",
+      "graphql",
+      "hcl",
+      "html",
+      "json",
+      "jsonnet",
+      "latex",
+      "makefile",
+      "markdown",
+      "nix",
+      "openapi",
+      "pkl",
+      "postscript",
+      "protobuf",
+      "regex",
+      "sparql",
+      "sql",
+      "starlark",
+      "toml",
+      "xpath",
+      "xslt",
+      "yaml"
+    ]
+  },
+  "lang_index": {
+    "rust": {
+      "name": "Rust",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64",
+        "riscv",
+        "wasm"
+      ],
+      "domains": [
+        "systems",
+        "network"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无正式 ISO 标准；语义随版本演进（RFC 流程治理）",
+      "first_appeared": 2010,
+      "paradigm": "系统编程+函数式（所有权范式）",
+      "typing": "静态强类型（trait+生命周期+零成本泛型）",
+      "memory": "所有权/借用（编译期，无 GC）",
+      "gist": "Rust：编译期保障内存与并发安全的系统语言",
+      "engineering": "probe 实测通过（8 面能力契约）；落法：cargo build/test+clippy；本仓 Rust PE 解析器即例"
+    },
+    "go": {
+      "name": "Go",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64",
+        "riscv",
+        "wasm"
+      ],
+      "domains": [
+        "systems",
+        "network"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无正式 ISO 标准；语义随版本演进",
+      "first_appeared": 2009,
+      "paradigm": "过程式+并发 goroutine（通信顺序进程）",
+      "typing": "静态强类型（结构态隐式接口）",
+      "memory": "GC（并发三色标记）",
+      "gist": "云原生首选语言：编译快、部署简、并发原语轻",
+      "engineering": "probe 实测通过（8 面能力契约）；落法：go build/test，本仓 go 组件即例"
+    },
+    "kotlin": {
+      "name": "Kotlin",
+      "model": "bytecode-vm",
+      "archs": [
+        "jvm"
+      ],
+      "domains": [
+        "systems",
+        "web"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2011,
+      "paradigm": "面向对象+函数式+协程",
+      "typing": "静态强类型（空安全+推断）",
+      "memory": "GC（JVM/原生双模式）",
+      "gist": "Android 官方首选语言：空安全进语言核心",
+      "engineering": "本仓未实测、不宣称可编译；kotlinc/Gradle"
+    },
+    "swift": {
+      "name": "Swift",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems",
+        "web"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2014,
+      "paradigm": "多范式+系统/应用（Apple 生态）",
+      "typing": "静态强类型（全推断+协议导向+actor 隔离）",
+      "memory": "ARC 引用计数",
+      "gist": "Swift：安全快速的现代通用语言（Apple 主推）",
+      "engineering": "本仓未实测、不宣称可编译；swiftc（本仓 Swift 典籍工具可旁证工具链形态）"
+    },
+    "julia": {
+      "name": "Julia",
+      "model": "jit",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "data"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2012,
+      "paradigm": "多分派+数值科学计算",
+      "typing": "动态类型（JIT 特化）",
+      "memory": "GC",
+      "gist": "Julia：动态手感+接近 C 的数值性能",
+      "engineering": "本仓未实测、不宣称可编译；julia 1.x（LLVM JIT，含 Pkg）"
+    },
+    "typescript": {
+      "name": "TypeScript",
+      "model": "transpiled",
+      "archs": [
+        "js"
+      ],
+      "domains": [
+        "web"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "ECMAScript 超集；随 ES 演进",
+      "first_appeared": 2012,
+      "paradigm": "JS 的类型化超集（渐进采用）",
+      "typing": "静态类型（结构态+联合+泛型，编译擦除）",
+      "memory": "GC（JS 宿主）",
+      "gist": "TypeScript：给 JS 装上编译期安全网",
+      "engineering": "probe 实测通过（tsc→node，8 面能力契约）；落法：tsc 编译+vitest/jest"
+    },
+    "elixir": {
+      "name": "Elixir",
+      "model": "bytecode-vm",
+      "archs": [
+        "beam"
+      ],
+      "domains": [
+        "network"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2011,
+      "paradigm": "函数式+并发（BEAM 生态）",
+      "typing": "动态类型（规格 spec/dialyzer 补充）",
+      "memory": "GC（BEAM 进程级）",
+      "gist": "BEAM 上的现代Web语言：宏+OTP 行为模式",
+      "engineering": "本仓未实测、不宣称可编译；工具链 mix（复用 Erlang/OTP）"
+    },
+    "dart": {
+      "name": "Dart",
+      "model": "jit",
+      "archs": [
+        "js",
+        "arm64",
+        "x86-64"
+      ],
+      "domains": [
+        "web"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2011,
+      "paradigm": "面向对象+异步+UI 声明式",
+      "typing": "静态强类型（推断+可空安全）",
+      "memory": "GC（分代）",
+      "gist": "Flutter 的跨端 UI 语言：一份代码多端渲染",
+      "engineering": "本仓未实测、不宣称可编译；工具链 dart/flutter SDK"
+    },
+    "nim": {
+      "name": "Nim",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64",
+        "riscv"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2008,
+      "paradigm": "多范式+静态编译（Python 可读性）",
+      "typing": "静态强类型（全推断+期程宏）",
+      "memory": "GC/手动可选（--gc 可换）",
+      "gist": "Nim：Python 的书写感+ C 的产出物",
+      "engineering": "本仓未实测、不宣称可编译；nim 编译器→C/C++/JS"
+    },
+    "crystal": {
+      "name": "Crystal",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2014,
+      "paradigm": "面向对象+Ruby 语法+编译期泛型",
+      "typing": "静态强类型（全局推断）",
+      "memory": "GC（Boehm）",
+      "gist": "Ruby 手感的编译型语言：语法糖不减性能",
+      "engineering": "本仓未实测、不宣称可编译；工具链 crystal（LLVM 后端）"
+    },
+    "zig": {
+      "name": "Zig",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64",
+        "riscv",
+        "wasm"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2016,
+      "paradigm": "系统编程（显式控制+comptime）",
+      "typing": "静态强类型（comptime 反射）",
+      "memory": "手动（显式分配器）",
+      "gist": "Zig：无隐藏控制流的 C 现代替代",
+      "engineering": "本仓未实测、不宣称可编译；zig 0.x（自带 C 编译器链）"
+    },
+    "v": {
+      "name": "V",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2019,
+      "paradigm": "极简系统编程（编译极快）",
+      "typing": "静态强类型（无异常+少量逃逸口）",
+      "memory": "GC/手动可选（-autofree）",
+      "gist": "V：以编译速度和简洁为卖点的新语言",
+      "engineering": "本仓未实测、不宣称可编译；v 编译器（v0.x 演进快）"
+    },
+    "odin": {
+      "name": "Odin",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2020,
+      "paradigm": "数据导向系统编程（手写控制感）",
+      "typing": "静态强类型（显式 arrays/slices/maps）",
+      "memory": "手动+自定义分配器（soa 布局）",
+      "gist": "Odin：把数据结构布局权交给程序员",
+      "engineering": "本仓未实测、不宣称可编译；odin 编译器（LLVM）"
+    },
+    "gleam": {
+      "name": "Gleam",
+      "model": "bytecode-vm",
+      "archs": [
+        "beam"
+      ],
+      "domains": [
+        "network"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2016,
+      "paradigm": "函数式+静态强类型（BEAM 生态）",
+      "typing": "静态强类型（无动态逃逸口）",
+      "memory": "GC（BEAM 进程级）",
+      "gist": "BEAM 上的类型安全语言：Erlang 的可靠性+HM 类型",
+      "engineering": "本仓未实测、不宣称可编译；工具链 gleam（复用 OTP 生态）"
+    },
+    "roc": {
+      "name": "Roc",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64",
+        "wasm"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2021,
+      "paradigm": "函数式应用平台（类型驱动）",
+      "typing": "静态强类型（行多态+效果平台）",
+      "memory": "引用计数（平台约束）",
+      "gist": "Roc：以效果/平台为核心的应用语言（预发布）",
+      "engineering": "本仓未实测、不宣称可编译；roc 编译器（pre-release 阶段）"
+    },
+    "carbon": {
+      "name": "Carbon",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 2022,
+      "paradigm": "过程式+面向对象（C++ 互操作方向）",
+      "typing": "静态强类型",
+      "memory": "手动/RAII 方向",
+      "gist": "Google 的 C++ 继任者实验：双向互操作为第一约束",
+      "engineering": "本仓未实测、不宣称可编译；实验阶段不宣称稳定工具链"
+    },
+    "mojo": {
+      "name": "Mojo",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64",
+        "gpu-simt"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 2022,
+      "paradigm": "Python 超集+AI 数值+异构计算",
+      "typing": "静态强类型（可选，兼容 Python 动态）",
+      "memory": "手动+AI 加速器内存模型",
+      "gist": "Mojo：把 Python 手感带到 AI 工程性能层",
+      "engineering": "本仓未实测、不宣称可编译；工具链 modular mojo（🔥 硬件）"
+    },
+    "hare": {
+      "name": "Hare",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64",
+        "riscv"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2022,
+      "paradigm": "系统编程（小而稳）",
+      "typing": "静态强类型",
+      "memory": "手动（无 GC 承诺）",
+      "gist": "Hare：小型稳定的 Qbe 目标系统语言",
+      "engineering": "本仓未实测、不宣称可编译；hare+qbe 工具链"
+    },
+    "bend": {
+      "name": "Bend",
+      "model": "native",
+      "archs": [
+        "gpu-simt"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 2023,
+      "paradigm": "函数式+大规模并行（HVM 交互组合）",
+      "typing": "静态强类型",
+      "memory": "GC（HVM 运行时）",
+      "gist": "HigherOrderCO 的并行函数式语言：MAP/REDUCE 全自动",
+      "engineering": "本仓未实测、不宣称可编译；工具链 bend run（HVM）"
+    },
+    "terra": {
+      "name": "Terra",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2013,
+      "paradigm": "底层元编程（Lua 内嵌 LLVM）",
+      "typing": "静态 tier + 动态 Lua 层",
+      "memory": "手动",
+      "gist": "Terra：把编译期元编程与底层代码合为一体的语言",
+      "engineering": "本仓未实测、不宣称可编译；terra（LLVM 内嵌 LuaJIT）"
+    },
+    "red": {
+      "name": "Red",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "data"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2011,
+      "paradigm": "REBOL 后继+全栈（含 Red/System）",
+      "typing": "动态类型+系统层",
+      "memory": "GC（Red 层）+手动（System 层）",
+      "gist": "Red：REBOL 的独立实现（含本地 GUI）",
+      "engineering": "本仓未实测、不宣称可编译；red 编译器"
+    },
+    "lobster": {
+      "name": "Lobster",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2009,
+      "paradigm": "静态类型+编译脚本（游戏向）",
+      "typing": "静态强类型（推断+所有权轻量）",
+      "memory": "GC+显式控制",
+      "gist": "Lobster：为游戏脚本设计的静态编译语言",
+      "engineering": "本仓未实测、不宣称可编译；lobster 编译器"
+    },
+    "haxe": {
+      "name": "Haxe",
+      "model": "transpiled",
+      "archs": [
+        "js",
+        "jvm",
+        "clr",
+        "x86-64"
+      ],
+      "domains": [
+        "web",
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2009,
+      "paradigm": "多范式+一转多目标（转译器）",
+      "typing": "静态强类型（宏+推断）",
+      "memory": "目标端 GC",
+      "gist": "Haxe：一份源码编译到 JS/C#/Python/Lua 等十余目标",
+      "engineering": "本仓未实测、不宣称可编译；haxe 编译器（多目标）"
+    },
+    "reason": {
+      "name": "Reason",
+      "model": "transpiled",
+      "archs": [
+        "js"
+      ],
+      "domains": [
+        "web"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2016,
+      "paradigm": "OCaml 语法的 JS 友好前端",
+      "typing": "静态强类型（推断）",
+      "memory": "GC（JS 宿主）",
+      "gist": "Reason：让 JS 开发者爱上 OCaml 语法糖",
+      "engineering": "本仓未实测、不宣称可编译；rescript 编译器（原 bucklescript→JS）"
+    },
+    "purescript": {
+      "name": "PureScript",
+      "model": "transpiled",
+      "archs": [
+        "js"
+      ],
+      "domains": [
+        "web"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2013,
+      "paradigm": "纯函数式前端（Haskell 风格）",
+      "typing": "静态强类型（行多态+效果）",
+      "memory": "GC（JS 宿主）",
+      "gist": "PureScript：编译到 JS 的纯函数式语言",
+      "engineering": "本仓未实测、不宣称可编译；spago→JS"
+    },
+    "elm": {
+      "name": "Elm",
+      "model": "transpiled",
+      "archs": [
+        "js"
+      ],
+      "domains": [
+        "web"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2012,
+      "paradigm": "纯函数式+声明式 UI",
+      "typing": "静态强类型（无异常，错误即数据）",
+      "memory": "GC（JS 宿主）",
+      "gist": "无运行时异常的前端语言：友好编译器报错典范",
+      "engineering": "本仓未实测、不宣称可编译；elm 编译器→JS"
+    },
+    "fstar": {
+      "name": "F*",
+      "model": "native",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2011,
+      "paradigm": "函数式+效果类型+精化（验证）",
+      "typing": "静态强类型（依值+效果）",
+      "memory": "GC（OCaml 运行时）",
+      "gist": "F*：可提取为 C/OCaml 的验证编程语言",
+      "engineering": "本仓未实测、不宣称可编译；工具链 fstar.exe（SMT/Dijkstra 分离）"
+    },
+    "idris": {
+      "name": "Idris",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2011,
+      "paradigm": "函数式+依值+定量类型",
+      "typing": "静态强类型（线性/定量可选）",
+      "memory": "GC",
+      "gist": "Idris2：通用编程优先的依值类型语言",
+      "engineering": "本仓未实测、不宣称可编译；工具链 idris2（多后端含 Scheme/Node）"
+    },
+    "lean": {
+      "name": "Lean",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2013,
+      "paradigm": "定理证明+数学库化",
+      "typing": "静态强类型（依值+结构）",
+      "memory": "GC",
+      "gist": "Lean 4：含 mathlib 的形式化数学语言",
+      "engineering": "本仓未实测、不宣称可编译；工具链 lean + lake 构建"
+    },
+    "chapel": {
+      "name": "Chapel",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2009,
+      "paradigm": "并行编程（PGAS 域/任务并行）",
+      "typing": "静态强类型",
+      "memory": "手动+分布内存域",
+      "gist": "超算并行编程语言：PGAS 模型一等公民",
+      "engineering": "本仓未实测、不宣称可编译；工具链 chpl 编译器"
+    },
+    "solidity": {
+      "name": "Solidity",
+      "model": "bytecode-vm",
+      "archs": [
+        "evm"
+      ],
+      "domains": [
+        "security-crypto",
+        "network"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准；Ethereum 合约事实标准",
+      "first_appeared": 2014,
+      "paradigm": "智能合约（EVM）",
+      "typing": "静态强类型（地址/映射/ABI）",
+      "memory": "手动（链上存储持久）",
+      "gist": "Solidity：EVM 智能合约主力语言",
+      "engineering": "本仓未实测、不宣称可编译；solc/hardhat/anvil 本地链"
+    },
+    "move": {
+      "name": "Move",
+      "model": "bytecode-vm",
+      "archs": [
+        "evm"
+      ],
+      "domains": [
+        "security-crypto"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2019,
+      "paradigm": "资源导向智能合约（线性类型）",
+      "typing": "静态强类型（资源不可复制/丢弃）",
+      "memory": "手动（链上存储）",
+      "gist": "Move：把资产当一等资源的合约语言",
+      "engineering": "本仓未实测、不宣称可编译；工具链 move（Aptos/Sui 方言）"
+    },
+    "raku": {
+      "name": "Raku",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "identity"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2015,
+      "paradigm": "多范式+渐进类型（Perl 6 更名）",
+      "typing": "渐进类型+dynamic",
+      "memory": "GC",
+      "gist": "Raku：Perl 6 的重设计产物（语法大一统）",
+      "engineering": "本仓未实测、不宣称可编译；rakudo 实现"
+    },
+    "ballerina": {
+      "name": "Ballerina",
+      "model": "bytecode-vm",
+      "archs": [
+        "jvm"
+      ],
+      "domains": [
+        "network"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2017,
+      "paradigm": "云原生集成（服务编排+网络调用一等）",
+      "typing": "静态强类型（含 JSON/XML 一等类型）",
+      "memory": "GC",
+      "gist": "为集成而生的语言：代码即部署拓扑图",
+      "engineering": "本仓未实测、不宣称可编译；工具链 bal 编译器（内置部署图生成）"
+    },
+    "ring": {
+      "name": "Ring",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2016,
+      "paradigm": "实用多范式（Web/游戏/移动）",
+      "typing": "动态类型（可选静态标注）",
+      "memory": "GC",
+      "gist": "Ring：以自然语言友好为目标的新语言",
+      "engineering": "本仓未实测、不宣称可编译；ring 解释器"
+    },
+    "cairo": {
+      "name": "Cairo",
+      "model": "bytecode-vm",
+      "archs": [
+        "evm"
+      ],
+      "domains": [
+        "security-crypto"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2020,
+      "paradigm": "可证明计算（STARK 电路程序）",
+      "typing": "静态强类型（域元素 felt 为重点）",
+      "memory": "手动（felt/内存显式）",
+      "gist": "StarkWare 的可证明编程语言：计算即可验证",
+      "engineering": "本仓未实测、不宣称可编译；工具链 cairo-compile / scarb"
+    },
+    "noir": {
+      "name": "Noir",
+      "model": "bytecode-vm",
+      "archs": [
+        "evm"
+      ],
+      "domains": [
+        "security-crypto"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2021,
+      "paradigm": "零知识电路（Rust 风格合约）",
+      "typing": "静态强类型",
+      "memory": "手动（证明存储）",
+      "gist": "Noir：Aztec 的零知识证明 DSL",
+      "engineering": "本仓未实测、不宣称可编译；nargo 工具链"
+    },
+    "bosque": {
+      "name": "Bosque",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2019,
+      "paradigm": "正则化编程（不可变+去循环+无副作用默认）",
+      "typing": "静态强类型",
+      "memory": "GC",
+      "gist": "微软研究院的规整化编程实验：去掉意外复杂度源",
+      "engineering": "本仓未实测、不宣称可编译；研究性质，工具链不成熟"
+    },
+    "grain": {
+      "name": "Grain",
+      "model": "native",
+      "archs": [
+        "wasm"
+      ],
+      "domains": [
+        "web"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2018,
+      "paradigm": "函数式（WebAssembly 方向）",
+      "typing": "静态强类型（HM 推断+模块系统）",
+      "memory": "GC",
+      "gist": "Grain：直接编译到 WASM 的年轻函数式语言",
+      "engineering": "本仓未实测、不宣称可编译；grain 编译器→WASM"
+    },
+    "wasm": {
+      "name": "WebAssembly",
+      "model": "ir",
+      "archs": [
+        "wasm"
+      ],
+      "domains": [
+        "web",
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "W3C Recommendation",
+      "first_appeared": 2017,
+      "paradigm": "中间表示（多语言编译目标）",
+      "typing": "强类型栈机（验证过的字节码）",
+      "memory": "线性内存（显式加载/存储）",
+      "gist": "WebAssembly：跨语言的可移植执行标准",
+      "engineering": "非执行 IR（宿主运行时解释）；W3C 标准（wasmtime/wabt 执行）"
+    },
+    "protobuf": {
+      "name": "Protocol Buffers",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "data"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准；事实标准",
+      "first_appeared": 2008,
+      "paradigm": "IDL+序列化（非执行）",
+      "typing": "强类型（proto2/proto3）",
+      "memory": "不适用",
+      "gist": "Protocol Buffers：Google 的跨语言序列化标准",
+      "engineering": "宿主工具解释（无独立编译链）；protoc 生成多语言绑定"
+    },
+    "toml": {
+      "name": "TOML",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "data"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准；语义版本化规范",
+      "first_appeared": 2013,
+      "paradigm": "配置格式（非执行）",
+      "typing": "弱结构（表+键值+数组）",
+      "memory": "不适用",
+      "gist": "TOML：面向人类可读性的配置文件标准",
+      "engineering": "宿主工具解释（无独立编译链）；taplo/toml-rs 解析"
+    },
+    "graphql": {
+      "name": "GraphQL",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "query",
+        "network"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准；规格由基金会维护",
+      "first_appeared": 2015,
+      "paradigm": "API 查询（声明式，非执行）",
+      "typing": "强类型 SDL（Schema 定义语言）",
+      "memory": "不适用",
+      "gist": "GraphQL：客户端自选字段的 API 查询语言",
+      "engineering": "宿主工具解释（无独立编译链）；服务端解析+SDL 工具链"
+    },
+    "wenyan": {
+      "name": "文言文编程语言 (Wenyan)",
+      "model": "transpiled",
+      "archs": [
+        "js"
+      ],
+      "domains": [
+        "esolang"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 2019,
+      "paradigm": "文言文 esolang（古汉语编程）",
+      "typing": "类自然语言（无传统类型）",
+      "memory": "不适用",
+      "gist": "文言：用先秦两汉风格写程序的 esolang",
+      "engineering": "esolang 玩具/实验；无生产工程落法"
+    },
+    "cangjie": {
+      "name": "仓颉 (Cangjie)",
+      "model": "native",
+      "archs": [
+        "arm64",
+        "x86-64"
+      ],
+      "domains": [
+        "systems",
+        "web"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2024,
+      "paradigm": "多范式+面向应用（鸿蒙原生）",
+      "typing": "静态强类型（泛型/可空/模式匹配）",
+      "memory": "GC",
+      "gist": "华为仓颉：鸿蒙生态全场景应用语言",
+      "engineering": "本仓未实测、不宣称可编译；工具链仓颉编译器（HarmonyOS SDK）"
+    },
+    "wa": {
+      "name": "凹语言 (Wa)",
+      "model": "native",
+      "archs": [
+        "wasm"
+      ],
+      "domains": [
+        "systems",
+        "web"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 2022,
+      "paradigm": "中文系统编程（WASM 目标）",
+      "typing": "静态强类型",
+      "memory": "手动（WASM 线性内存）",
+      "gist": "凹语言：汉语关键字的 WASM 系统语言",
+      "engineering": "本仓未实测、不宣称可编译；wa 编译器（WASM/LLVM 后端）"
+    },
+    "goplus": {
+      "name": "Go+",
+      "model": "transpiled",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 2021,
+      "paradigm": "多范式+教学+数据科学（中文关键字兼容 Go）",
+      "typing": "静态强类型（Go 兼容）",
+      "memory": "GC",
+      "gist": "Go+：以中文降低 Go 的入门门槛",
+      "engineering": "本仓未实测、不宣称可编译；gop 编译器（转 Go 构建）"
+    },
+    "mulan": {
+      "name": "木兰 (Mulan)",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 2020,
+      "paradigm": "中文编程+教育（Python 变体）",
+      "typing": "动态类型",
+      "memory": "GC",
+      "gist": "木兰：中科院的 Python 中文化教育语言",
+      "engineering": "本仓未实测、不宣称可编译；已停更且卷入复用争议，不建议引入"
+    },
+    "xlang": {
+      "name": "习语言 (X Language)",
+      "model": "native",
+      "archs": [
+        "x86-64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 2011,
+      "paradigm": "中文编程+系统编程（类 C 词法）",
+      "typing": "静态强类型",
+      "memory": "手动",
+      "gist": "习语言：类 C 的中文关键字编译实验",
+      "engineering": "本仓未实测、不宣称可编译；XL 编译器（生成 C/汇编）"
+    },
+    "zhpy": {
+      "name": "周蟒 (Zhpy)",
+      "model": "transpiled",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 2007,
+      "paradigm": "中文 Python 转译层",
+      "typing": "动态类型",
+      "memory": "GC（宿主 Python）",
+      "gist": "周蟒：用中文关键字写 Python 的转译层",
+      "engineering": "本仓未实测、不宣称可转译；zhpy（→Python；已停更）"
+    },
+    "easylanguage": {
+      "name": "易语言 (Easy Language)",
+      "model": "native",
+      "archs": [
+        "x86-64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 2004,
+      "paradigm": "中文编程+可视化（汉语关键字）",
+      "typing": "静态类型（中文词法）",
+      "memory": "手动",
+      "gist": "易语言：汉语关键字的 Windows 原生开发环境",
+      "engineering": "本仓未实测、不宣称可编译；专有编译器（中文源码，小众生态）"
+    },
+    "fortran": {
+      "name": "Fortran",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "ISO/IEC 1539",
+      "first_appeared": 1957,
+      "paradigm": "数组/科学计算（过程式+数组语义）",
+      "typing": "静态强类型（数组内建）",
+      "memory": "手动",
+      "gist": "第一个高级语言：HPC 与数值库的活化石",
+      "engineering": "本仓未实测、不宣称可编译；工具链 gfortran/LLVM flang"
+    },
+    "lisp": {
+      "name": "Lisp",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无单一 ISO（Common Lisp ANSI X3.226）",
+      "first_appeared": 1958,
+      "paradigm": "符号计算+宏（列表即代码）",
+      "typing": "动态类型",
+      "memory": "GC",
+      "gist": "McCarthy 1958：第二个高级语言，一切皆 S 表达式",
+      "engineering": "历史语言；谱系研究， Schem/Clojure 皆其后裔"
+    },
+    "algol": {
+      "name": "ALGOL",
+      "model": "native",
+      "archs": [
+        "x86-64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO（历史报告）",
+      "first_appeared": 1958,
+      "paradigm": "命令式+结构化（块/词法作用域首创）",
+      "typing": "静态强类型",
+      "memory": "栈帧（历史实现，无 GC 概念）",
+      "gist": "20 世纪语言范式之源：BNF 与块结构影响整条语言谱系",
+      "engineering": "历史语言；无生产落法，仅语言谱系与编译教学研究"
+    },
+    "cobol": {
+      "name": "COBOL",
+      "model": "native",
+      "archs": [
+        "x86-64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "ISO/IEC 1989",
+      "first_appeared": 1959,
+      "paradigm": "面向记录的业务处理（十进制定点）",
+      "typing": "静态强类型（PICTURE 子句定点数）",
+      "memory": "记录/文件级管理",
+      "gist": "金融与政府核心账目语言：精确十进制运算老兵",
+      "engineering": "本仓未实测、不宣称可编译；工具链 GnuCOBOL（转 C 构建）"
+    },
+    "c": {
+      "name": "C",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64",
+        "riscv",
+        "wasm"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "ISO/IEC 9899",
+      "first_appeared": 1972,
+      "paradigm": "过程式系统编程（贴近硬件）",
+      "typing": "静态弱类型（指针自由运算）",
+      "memory": "手动（malloc/free）",
+      "gist": "系统编程通用语：Unix 内核与全部语言运行时的底座",
+      "engineering": "probe 实测通过（8 面能力契约）；落法：gcc/clang 编译，ASan/UBSan 体检"
+    },
+    "pascal": {
+      "name": "Pascal",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "ISO/IEC 7185",
+      "first_appeared": 1970,
+      "paradigm": "结构化过程式教学语言",
+      "typing": "静态强类型",
+      "memory": "手动",
+      "gist": "Pascal：结构化编程的教学典范",
+      "engineering": "本仓未实测、不宣称可编译；fpc/gpc"
+    },
+    "smalltalk": {
+      "name": "Smalltalk",
+      "model": "bytecode-vm",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO（ANSI 草案）",
+      "first_appeared": 1972,
+      "paradigm": "纯面向对象+镜像环境",
+      "typing": "动态类型（一切皆对象）",
+      "memory": "GC",
+      "gist": "Smalltalk：一切皆对象的纯 OO 原型",
+      "engineering": "本仓未实测、不宣称可编译；Pharo/Squeak 镜像"
+    },
+    "prolog": {
+      "name": "Prolog",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "query"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "ISO/IEC 13211",
+      "first_appeared": 1972,
+      "paradigm": "逻辑编程（合一+回溯）",
+      "typing": "逻辑表达式（论域约束）",
+      "memory": "回溯栈+GC",
+      "gist": "Prolog：用规则描述问题让机器求解",
+      "engineering": "本仓未实测、不宣称可编译；SWI-Prolog"
+    },
+    "ml": {
+      "name": "ML",
+      "model": "native",
+      "archs": [
+        "x86-64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO（SML'97 定义）",
+      "first_appeared": 1973,
+      "paradigm": "函数式+HM 类型推断鼻祖",
+      "typing": "静态强类型（推断祖先）",
+      "memory": "GC",
+      "gist": "Edinburgh ML：类型推断思想的源头",
+      "engineering": "历史语言；Standard ML 家族谱系研究"
+    },
+    "cplusplus": {
+      "name": "C++",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64",
+        "riscv"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "ISO/IEC 14882",
+      "first_appeared": 1985,
+      "paradigm": "多范式（过程/OO/泛型/函数式混合）",
+      "typing": "静态强类型（模板+SFINAE/concepts）",
+      "memory": "手动+RAII+智能指针",
+      "gist": "零开销抽象的系统/高性能语言：游戏与基础设施主力",
+      "engineering": "probe 实测通过（探针 id=cpp，8 面能力契约）；落法：g++/clang++ + Sanitizer"
+    },
+    "objectivec": {
+      "name": "Objective-C",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems",
+        "web"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 1984,
+      "paradigm": "面向对象+动态消息（C 超集）",
+      "typing": "静态+动态混合（id+运行时）",
+      "memory": "引用计数（ARC/MRC）",
+      "gist": "Objective-C：Apple 生态三十年的中流砥柱",
+      "engineering": "本仓未实测、不宣称可编译；clang+ARC"
+    },
+    "perl": {
+      "name": "Perl",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "identity"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 1987,
+      "paradigm": "文本处理+脚本（实用主义）",
+      "typing": "动态弱类型（sigil+上下文）",
+      "memory": "引用计数+GC",
+      "gist": "Perl：胶水语言与正则表达式文化的中心",
+      "engineering": "probe 实测通过（8 面能力契约）；落法：perl 脚本+Test::More"
+    },
+    "haskell": {
+      "name": "Haskell",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO（Haskell 2010 报告）",
+      "first_appeared": 1990,
+      "paradigm": "纯函数式+惰性求值+类强类型",
+      "typing": "静态强类型（HM+类型类+GADT）",
+      "memory": "GC",
+      "gist": "Haskell：纯函数式的学术与工业标杆",
+      "engineering": "本仓未实测、不宣称可编译；GHC + cabal/stack"
+    },
+    "python": {
+      "name": "Python",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems",
+        "network",
+        "data"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "PEP 演进（无 ISO）",
+      "first_appeared": 1991,
+      "paradigm": "多范式（过程/OO/函数）+脚本/AI",
+      "typing": "动态类型（渐进类型提示）",
+      "memory": "引用计数+分代 GC",
+      "gist": "Python：AI 与自动化的 lingua franca",
+      "engineering": "probe 实测通过（8 面能力契约）；落法：python3+pytest；本仓 sysweeper 即 Python 全栈"
+    },
+    "lua": {
+      "name": "Lua",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 1993,
+      "paradigm": "脚本+嵌入（轻量可扩展）",
+      "typing": "动态类型（表即万能容器）",
+      "memory": "GC（增量式）",
+      "gist": "Lua：嵌入式脚本之王（游戏/nginx/redis）",
+      "engineering": "本仓未实测、不宣称可编译；lua 5.4 解释器（C API 嵌入宿主）"
+    },
+    "java": {
+      "name": "Java",
+      "model": "bytecode-vm",
+      "archs": [
+        "jvm"
+      ],
+      "domains": [
+        "systems",
+        "network"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "JCP JSR（ISO/IEC 29500 无关）",
+      "first_appeared": 1995,
+      "paradigm": "面向对象+虚拟机+企业生态",
+      "typing": "静态强类型（泛型擦除+可空）",
+      "memory": "GC（分代 JVM）",
+      "gist": "WORTA：一次编写到处运行的企业级语言",
+      "engineering": "probe 实测通过（8 面能力契约）；落法：javac+junit；本仓 JDK 版 PE 查看器即例"
+    },
+    "javascript": {
+      "name": "JavaScript",
+      "model": "interpreted",
+      "archs": [
+        "js"
+      ],
+      "domains": [
+        "web",
+        "network"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "ECMA-262",
+      "first_appeared": 1995,
+      "paradigm": "多范式（事件驱动+原型+函数式）",
+      "typing": "动态类型（渐进 TS 化）",
+      "memory": "GC（引擎托管）",
+      "gist": "Web 的通用脚本语言：浏览器无处不在",
+      "engineering": "probe 实测通过（node，8 面能力契约）；落法：node 脚本+Jest 测试"
+    },
+    "php": {
+      "name": "PHP",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "web"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 1995,
+      "paradigm": "Web 服务端脚本（请求-响应）",
+      "typing": "动态类型（可 JIT）",
+      "memory": "引用计数+循环 GC",
+      "gist": "PHP：Web 部署门槛最低的服务端语言",
+      "engineering": "本仓未实测、不宣称可编译；php-cli（LAMP/LNMP）"
+    },
+    "ruby": {
+      "name": "Ruby",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "web",
+        "network"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 1995,
+      "paradigm": "纯面向对象+块（开发幸福感）",
+      "typing": "动态类型",
+      "memory": "GC（分代）",
+      "gist": "Ruby：以程序员快乐为本的语言（Rails 之基）",
+      "engineering": "probe 实测通过（8 面能力契约）；落法：ruby+RSpec"
+    },
+    "csharp": {
+      "name": "C#",
+      "model": "bytecode-vm",
+      "archs": [
+        "clr"
+      ],
+      "domains": [
+        "systems",
+        "web"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "ECMA-334",
+      "first_appeared": 2000,
+      "paradigm": "多范式（OO+函数式+异步）",
+      "typing": "静态强类型（可空引用/泛型）",
+      "memory": "GC（.NET 运行时）",
+      "gist": ".NET 生态全栈语言：从web到游戏(Unity)到云",
+      "engineering": "本仓未实测、不宣称可编译；工具链 dotnet SDK（本仓 .NET PE 解析器可旁证运行时在）"
+    },
+    "scala": {
+      "name": "Scala",
+      "model": "bytecode-vm",
+      "archs": [
+        "jvm"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2004,
+      "paradigm": "函数式+面向对象融合（JVM）",
+      "typing": "静态强类型（HM+路径依赖+隐式→given）",
+      "memory": "GC（JVM）",
+      "gist": "Scala：JVM 上的函数式企业语言",
+      "engineering": "本仓未实测、不宣称可编译；sbt/mill/coursier"
+    },
+    "clojure": {
+      "name": "Clojure",
+      "model": "bytecode-vm",
+      "archs": [
+        "jvm"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2007,
+      "paradigm": "函数式 Lisp（不可变+并发原语）",
+      "typing": "动态类型",
+      "memory": "GC（JVM）",
+      "gist": "JVM 上的现代表亲式 Lisp：不可变数据+STM/agent",
+      "engineering": "本仓未实测、不宣称可编译；工具链 Clojure CLI/Leiningen"
+    },
+    "racket": {
+      "name": "Racket",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 1995,
+      "paradigm": "语言工程+Lisp 方言（可造语言）",
+      "typing": "动态类型（契约+类型化变体）",
+      "memory": "GC（Chez 后端）",
+      "gist": "Racket：为造语言而生的 Lisp 平台",
+      "engineering": "本仓未实测、不宣称可编译；racket 工具链"
+    },
+    "sql": {
+      "name": "SQL",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "query"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "ISO/IEC 9075",
+      "first_appeared": 1974,
+      "paradigm": "关系数据库声明式查询（非执行）",
+      "typing": "强类型列（表模式约束）",
+      "memory": "不适用（宿主引擎）",
+      "gist": "SQL：关系数据库的标准查询语言（SQL:2023）",
+      "engineering": "宿主引擎解释（无独立编译链）；ISO/IEC 9075，各 RDBMS 方言"
+    },
+    "html": {
+      "name": "HTML",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "web"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "W3C / WHATWG",
+      "first_appeared": 1993,
+      "paradigm": "标记语言（非执行，宿主渲染）",
+      "typing": "不适用",
+      "memory": "不适用",
+      "gist": "Web 的骨架标记语言：语义文档结构",
+      "engineering": "宿主工具解释（无独立编译链）；浏览器/解析器消费"
+    },
+    "css": {
+      "name": "CSS",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "web"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "W3C",
+      "first_appeared": 1996,
+      "paradigm": "声明式样式（非执行）",
+      "typing": "不适用（层叠规则）",
+      "memory": "不适用",
+      "gist": "Web 的表现层语言：选择器+层叠+响应式",
+      "engineering": "宿主工具解释（无独立编译链）；浏览器/PostCSS 消费"
+    },
+    "json": {
+      "name": "JSON",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "data"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "ECMA-404 / IETF RFC 8259",
+      "first_appeared": 2001,
+      "paradigm": "数据交换格式（非执行）",
+      "typing": "弱结构（值+键集合）",
+      "memory": "不适用",
+      "gist": "JSON：可读可写的数据交换标准格式",
+      "engineering": "宿主工具解释（无独立编译链）；RFC 8259/ECMA-404"
+    },
+    "yaml": {
+      "name": "YAML",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "data"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO（规范版本化）",
+      "first_appeared": 2001,
+      "paradigm": "数据序列化格式（非执行）",
+      "typing": "弱结构（映射/序列/锚点）",
+      "memory": "不适用",
+      "gist": "YAML：人类友好的配置数据格式",
+      "engineering": "宿主工具解释（无独立编译链）；YAML 1.2 解析器"
+    },
+    "markdown": {
+      "name": "Markdown",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "identity"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "CommonMark（非 ISO）",
+      "first_appeared": 2004,
+      "paradigm": "轻量排版标记（非执行）",
+      "typing": "不适用",
+      "memory": "不适用",
+      "gist": "Markdown：纯文本轻量排版的通用语",
+      "engineering": "宿主工具解释（无独立编译链）；pandoc/cmark 等渲染"
+    },
+    "latex": {
+      "name": "LaTeX",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "identity"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO（LaTeX2e/LaTeX3）",
+      "first_appeared": 1984,
+      "paradigm": "排版标记（非执行）",
+      "typing": "不适用（宏展开）",
+      "memory": "不适用",
+      "gist": "LaTeX：学术论文排版的宏驱动标准",
+      "engineering": "宿主工具解释（无独立编译链）；texlive 排版引擎"
+    },
+    "bash": {
+      "name": "Bash",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "POSIX.1-2017（部分）",
+      "first_appeared": 1989,
+      "paradigm": "命令式壳层（管道组合外部进程）",
+      "typing": "动态弱类型（一切皆字符串）",
+      "memory": "进程级隔离（外部命令为主）",
+      "gist": "POSIX 壳层脚本事实标准：系统运维黏合层",
+      "engineering": "probe 实测通过（8 面能力契约）；落法：bash 脚本+单测 bats"
+    },
+    "regex": {
+      "name": "Regular Expressions",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "identity"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "POSIX/PCRE（各异）",
+      "first_appeared": 1956,
+      "paradigm": "模式匹配记号（非执行，各引擎解析）",
+      "typing": "不适用（模式语言）",
+      "memory": "不适用",
+      "gist": "正则表达式：Kleene 1956 的理论落地为文本利器",
+      "engineering": "宿主工具解释（无独立编译链）；PCRE/RE2/POSIX 引擎"
+    },
+    "bnf": {
+      "name": "BNF",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "identity"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO（约定）",
+      "first_appeared": 1960,
+      "paradigm": "形式文法记号（非执行）",
+      "typing": "不适用（元语言）",
+      "memory": "不适用",
+      "gist": "Backus 记号：语法规则的工业标准书写法",
+      "engineering": "宿主工具解释（无独立编译链）；yacc/bison/antlr 消费文法"
+    },
+    "brainfuck": {
+      "name": "Brainfuck",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "esolang"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 1993,
+      "paradigm": "极小图灵完备指令集（esolang）",
+      "typing": "无类型（字节单元）",
+      "memory": "不适用",
+      "gist": "八个符号的图灵完备玩具：可计算性边界标本",
+      "engineering": "esolang 玩具/实验；无生产工程落法"
+    },
+    "befunge": {
+      "name": "Befunge",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "esolang"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 1993,
+      "paradigm": "堆栈式二维指令网格（esolang）",
+      "typing": "无类型（栈单元整数）",
+      "memory": "不适用",
+      "gist": "程序写成二维字符画的自修改 esolang",
+      "engineering": "esolang 玩具/实验；无生产工程落法"
+    },
+    "intercal": {
+      "name": "INTERCAL",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "esolang"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 1972,
+      "paradigm": "反 esolang（故意难用）",
+      "typing": "无类型",
+      "memory": "不适用",
+      "gist": "1972 年戏仿语言：把指令变得令人不快",
+      "engineering": "esolang 玩具/实验；无生产工程落法"
+    },
+    "malbolge": {
+      "name": "Malbolge",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "esolang"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 1998,
+      "paradigm": "自修改三进制 esolang",
+      "typing": "无类型",
+      "memory": "不适用",
+      "gist": "Malbolge：被设计成几乎不可编程的语言",
+      "engineering": "esolang 玩具/实验；无生产工程落法"
+    },
+    "piet": {
+      "name": "Piet",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "esolang"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 2001,
+      "paradigm": "图像 esolang（位图即程序）",
+      "typing": "无类型",
+      "memory": "不适用",
+      "gist": "Piet：程序画成抽象画（Mondrian 风格）",
+      "engineering": "esolang 玩具/实验；无生产工程落法"
+    },
+    "whitespace": {
+      "name": "Whitespace",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "esolang"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 2003,
+      "paradigm": "空白字符 esolang",
+      "typing": "无类型（栈机）",
+      "memory": "不适用",
+      "gist": "Whitespace：只用空格/制表/换行写程序",
+      "engineering": "esolang 玩具/实验；无生产工程落法"
+    },
+    "lolcode": {
+      "name": "LOLCODE",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "esolang"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 2007,
+      "paradigm": "讽刺式 esolang（lolcat 口语）",
+      "typing": "无类型",
+      "memory": "不适用",
+      "gist": "LOLCODE：用网络梗语写程序的 esolang",
+      "engineering": "esolang 玩具/实验；无生产工程落法"
+    },
+    "unlambda": {
+      "name": "Unlambda",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "esolang"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 1999,
+      "paradigm": "无变量组合子 esolang",
+      "typing": "无类型（SKI 组合子）",
+      "memory": "不适用",
+      "gist": "Unlambda：没有变量只有组合子的函数式极限",
+      "engineering": "esolang 玩具/实验；无生产工程落法"
+    },
+    "shakespeare": {
+      "name": "Shakespeare",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "esolang"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 2001,
+      "paradigm": "戏剧对白 esolang（角色即变量）",
+      "typing": "无类型",
+      "memory": "不适用",
+      "gist": "莎士比亚编程语言：把代码写成舞台剧",
+      "engineering": "esolang 玩具/实验；无生产工程落法"
+    },
+    "chef": {
+      "name": "Chef",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "esolang"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 2002,
+      "paradigm": "堆栈式烹饪隐喻（esolang）",
+      "typing": "无类型（厨具=栈）",
+      "memory": "不适用",
+      "gist": "程序写成菜谱的 esolang：变量是食材",
+      "engineering": "esolang 玩具/实验；无生产工程落法"
+    },
+    "hanyu": {
+      "name": "汉语编程",
+      "model": "native",
+      "archs": [
+        "x86-64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 1994,
+      "paradigm": "中文编程（汉语关键字编译器）",
+      "typing": "中文词法关键字（静态类型）",
+      "memory": "手动",
+      "gist": "汉语编程：沈志斌的汉语关键字编译环境",
+      "engineering": "本仓未实测、不宣称可编译；专有编译器（历史/小众）"
+    },
+    "arkts": {
+      "name": "ArkTS",
+      "model": "transpiled",
+      "archs": [
+        "js",
+        "arm64"
+      ],
+      "domains": [
+        "web"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 2021,
+      "paradigm": "多范式+面向对象+声明式 UI",
+      "typing": "静态强类型（TypeScript 超集，收敛动态特性）",
+      "memory": "GC（Ark 引擎运行时）",
+      "gist": "鸿蒙应用主力语言：声明式 UI + 编译期类型收敛",
+      "engineering": "本仓未实测、不宣称可编译；工具链 DevEco Studio（鸿蒙 SDK）"
+    },
+    "erlang": {
+      "name": "Erlang",
+      "model": "bytecode-vm",
+      "archs": [
+        "beam"
+      ],
+      "domains": [
+        "network"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 1986,
+      "paradigm": "函数式+ Actor 并发（容错优先）",
+      "typing": "动态类型（含 Dialyzer 成功类型）",
+      "memory": "GC（进程级隔离）",
+      "gist": "电信级容错语言：Let it crash + 热升级",
+      "engineering": "本仓未实测、不宣称可编译；工具链 Erlang/OTP（rebar3/mix 生态）"
+    },
+    "ocaml": {
+      "name": "OCaml",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO 标准",
+      "first_appeared": 1996,
+      "paradigm": "函数式+命令式+模块（工业派）",
+      "typing": "静态强类型（HM 推断+模块函子）",
+      "memory": "GC（增代分代）",
+      "gist": "OCaml：编译器/形式化工具链的常客",
+      "engineering": "本仓未实测、不宣称可编译；dune+opam"
+    },
+    "scheme": {
+      "name": "Scheme",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "IEEE 1178（1990）",
+      "first_appeared": 1975,
+      "paradigm": "极小 Lisp+尾调用+词法作用域",
+      "typing": "动态类型",
+      "memory": "GC（尾递归栈复用）",
+      "gist": "Scheme：极简主义的 Lisp（SICP 的教学语言）",
+      "engineering": "本仓未实测、不宣称可编译；guile/chez"
+    },
+    "commonlisp": {
+      "name": "Common Lisp",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "ANSI X3.226-1994",
+      "first_appeared": 1984,
+      "paradigm": "多范式 Lisp（过程/函数/OO/宏元编程）",
+      "typing": "动态类型（可选声明优化）",
+      "memory": "GC",
+      "gist": "ANSI 标准化工业 Lisp：条件系统+CLOS+宏",
+      "engineering": "本仓未实测、不宣称可编译；实现 SBCL/CCL"
+    },
+    "forth": {
+      "name": "Forth",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "ANSI X3.215（1994）",
+      "first_appeared": 1970,
+      "paradigm": "串联式堆栈+字典（极致可扩展）",
+      "typing": "无类型（栈单元）",
+      "memory": "手动（堆栈机器）",
+      "gist": "1970 年 Chuck Moore 的堆栈语言：嵌入式与启动常驻",
+      "engineering": "本仓未实测、不宣称可编译；gforth 等开源实现"
+    },
+    "ada": {
+      "name": "Ada",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64",
+        "riscv"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "ISO/IEC 8652（原 MIL-STD-1815）",
+      "first_appeared": 1980,
+      "paradigm": "命令式+并发（任务/保护对象），面向高可靠嵌入式",
+      "typing": "静态强类型，强约束子类型",
+      "memory": "GC 与手动存储池并存",
+      "gist": "高安全认证（航空/轨交/国防）的强类型系统语言",
+      "engineering": "本仓未实测、不宣称可编译；工具链 GNAT Pro/SPARK（Spark 子集做形式验证）"
+    },
+    "simula": {
+      "name": "Simula",
+      "model": "native",
+      "archs": [
+        "x86-64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO（历史标准）",
+      "first_appeared": 1967,
+      "paradigm": "面向对象鼻祖（仿真）",
+      "typing": "静态类型",
+      "memory": "GC（协同例程）",
+      "gist": "Simula 67：类/对象/继承概念的诞生地",
+      "engineering": "历史语言；OO 概念谱系研究"
+    },
+    "eiffel": {
+      "name": "Eiffel",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "ECMA-367 / ISO/IEC 25436",
+      "first_appeared": 1986,
+      "paradigm": "面向对象+契约式设计",
+      "typing": "静态强类型（泛型+契约）",
+      "memory": "GC",
+      "gist": "契约式设计(DbC)发源地：前置/后置/不变量写进语言",
+      "engineering": "本仓未实测、不宣称可编译；工具链 EiffelStudio/Gobo"
+    },
+    "modula2": {
+      "name": "Modula-2",
+      "model": "native",
+      "archs": [
+        "x86-64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "ISO/IEC 10514",
+      "first_appeared": 1978,
+      "paradigm": "模块化系统编程（Wirth）",
+      "typing": "静态强类型",
+      "memory": "手动（无 GC）",
+      "gist": "Modula-2：把模块系统做进语言内核",
+      "engineering": "本仓未实测、不宣称可编译；p1/gm2 实现"
+    },
+    "oberon": {
+      "name": "Oberon",
+      "model": "native",
+      "archs": [
+        "x86-64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO（语言报告）",
+      "first_appeared": 1987,
+      "paradigm": "系统编程+模块化（Wirth 极简）",
+      "typing": "静态强类型",
+      "memory": "手动（无 GC）",
+      "gist": "Oberon：Wirth 的极简系统语言",
+      "engineering": "本仓未实测、不宣称可编译；OBNC/A2 编译器"
+    },
+    "bcpl": {
+      "name": "BCPL",
+      "model": "native",
+      "archs": [
+        "x86-64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 1967,
+      "paradigm": "过程式系统编程（无类型字机器）",
+      "typing": "无类型（字寻址统一处理）",
+      "memory": "手动",
+      "gist": "1967 年 Martin Richards 的系统语言：B 与 C 的共同先祖",
+      "engineering": "历史语言；无可维护工具链，仅谱系研究"
+    },
+    "blang": {
+      "name": "B",
+      "model": "native",
+      "archs": [
+        "x86-64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 1969,
+      "paradigm": "过程式系统编程（无类型）",
+      "typing": "无类型（字寻址）",
+      "memory": "手动",
+      "gist": "Ken Thompson 1969 年的 B 语言：C 的直接前身",
+      "engineering": "历史语言；C 语言谱系研究"
+    },
+    "snobol": {
+      "name": "SNOBOL",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "identity"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 1962,
+      "paradigm": "模式处理（历史）",
+      "typing": "动态类型（模式做一等）",
+      "memory": "GC（字符串环境）",
+      "gist": "SNOBOL4：模式即数据结构的文本处理始祖",
+      "engineering": "历史语言；文本模式匹配谱系研究"
+    },
+    "apl": {
+      "name": "APL",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems",
+        "data"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "ISO/IEC 13751",
+      "first_appeared": 1966,
+      "paradigm": "数组编程+符号式（一等数组）",
+      "typing": "动态类型（数组操作原子化）",
+      "memory": "GC",
+      "gist": "Kenneth Iverson 的数组记号语言：一行式矩阵运算",
+      "engineering": "本仓未实测、不宣称可编译；解释器 Dyalog APL / GNU APL"
+    },
+    "jlang": {
+      "name": "J",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems",
+        "data"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 1990,
+      "paradigm": "数组编程+函数式（APL 后继）",
+      "typing": "动态类型（数组一等）",
+      "memory": "GC",
+      "gist": "J 语言：Iverson 思想的 ASCII 化实现",
+      "engineering": "本仓未实测、不宣称可编译；J 解释器（jconsole）"
+    },
+    "klang": {
+      "name": "K",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "data"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 1993,
+      "paradigm": "数组编程+金融时序",
+      "typing": "动态类型（数组一等）",
+      "memory": "GC",
+      "gist": "K/q：kdb+ 的查询语言，金融时序数据库标配",
+      "engineering": "本仓未实测、不宣称可编译；Kx kdb+（商业产品）"
+    },
+    "bqn": {
+      "name": "BQN",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "data"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 2020,
+      "paradigm": "数组编程+函数式（一等数组）",
+      "typing": "动态类型",
+      "memory": "GC",
+      "gist": "Marshall Lochbaum 的 APL 精神续作：语法一课式设计",
+      "engineering": "本仓未实测、不宣称可编译；解释器/REPL"
+    },
+    "logo": {
+      "name": "Logo",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "education"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 1967,
+      "paradigm": "海龟图形+教育（Lisp 方言）",
+      "typing": "动态类型",
+      "memory": "GC",
+      "gist": "Logo：海龟图编程，建构主义教育的活化石",
+      "engineering": "本仓未实测、不宣称可编译；UCBLogo/FMSLogo"
+    },
+    "scratch": {
+      "name": "Scratch",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "education"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 2007,
+      "paradigm": "图形化积木编程（教育）",
+      "typing": "无类型（积木块组合）",
+      "memory": "GC（宿主环境）",
+      "gist": "Scratch：MIT 的图形化编程启蒙环境",
+      "engineering": "本仓未实测、不宣称可运行；Scratch 编辑器（在线/离线）"
+    },
+    "tcl": {
+      "name": "Tcl",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 1988,
+      "paradigm": "嵌入脚本（一切皆命令，字符串同像）",
+      "typing": "动态类型（一切皆字符串）",
+      "memory": "引用计数",
+      "gist": "Tcl：可嵌入的胶水脚本（EDA 测试常客）",
+      "engineering": "probe 实测通过（8 面能力契约）；落法：tclsh+expect"
+    },
+    "rexx": {
+      "name": "REXX",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "ANSI X3.274",
+      "first_appeared": 1979,
+      "paradigm": "脚本+过程（可读优先）",
+      "typing": "动态类型",
+      "memory": "手动（字符串/数值转换）",
+      "gist": "REXX：IBM  boasting 的友好脚本语言",
+      "engineering": "本仓未实测、不宣称可编译；regina/open object rexx"
+    },
+    "awk": {
+      "name": "AWK",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "identity"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "POSIX",
+      "first_appeared": 1977,
+      "paradigm": "模式驱动（模式-动作对）+文本流",
+      "typing": "动态类型（字符串/数值自动转换）",
+      "memory": "GC（解释器内建）",
+      "gist": "POSIX 标准文本流处理器：一行模式匹配的常青工具",
+      "engineering": "probe 实测通过（8 面能力契约）；落法：POSIX awk/gawk/mawk 管道脚本"
+    },
+    "matlab": {
+      "name": "MATLAB",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "data"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无标准",
+      "first_appeared": 1984,
+      "paradigm": "矩阵数值+交互环境",
+      "typing": "动态类型（矩阵一等）",
+      "memory": "GC",
+      "gist": "MATLAB：工程矩阵运算的交互环境与语言",
+      "engineering": "本仓未实测、不宣称可编译；MATLAB 商业版或 Octave 兼容"
+    },
+    "delphi": {
+      "name": "Delphi / Object Pascal",
+      "model": "native",
+      "archs": [
+        "x86-64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 1995,
+      "paradigm": "面向对象+RAD 可视化",
+      "typing": "静态强类型（Object Pascal）",
+      "memory": "手动+接口引用计数",
+      "gist": "Windows 桌面 RAD 经典：组件拖拽的生产力鼻祖",
+      "engineering": "本仓未实测、不宣称可编译；工具链 Embarcadero RAD Studio"
+    },
+    "visualbasic": {
+      "name": "Visual Basic",
+      "model": "bytecode-vm",
+      "archs": [
+        "clr"
+      ],
+      "domains": [
+        "web"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 1991,
+      "paradigm": "事件驱动 RAD（Windows 桌面）",
+      "typing": "静态类型（Variant 动态可选）",
+      "memory": "COM 引用计数",
+      "gist": "VB：拖拽式 Windows 桌面开发的普及者",
+      "engineering": "本仓未实测、不宣称可编译；VB6 历史 / VB.NET(.NET 运行时)"
+    },
+    "fsharp": {
+      "name": "F#",
+      "model": "bytecode-vm",
+      "archs": [
+        "clr"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2005,
+      "paradigm": "函数式优先（.NET 生态）",
+      "typing": "静态强类型（全推断+计算表达式）",
+      "memory": "GC（.NET 运行时）",
+      "gist": ".NET 上的函数式语言：类型提供程序+异步工作流",
+      "engineering": "probe 实测通过（dotnet fsi，8 面能力契约）；落法：dotnet fsi + F# 脚本"
+    },
+    "sml": {
+      "name": "Standard ML",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "SML'97 定义",
+      "first_appeared": 1990,
+      "paradigm": "标准函数式（模块系统标准）",
+      "typing": "静态强类型（HM+模块函子）",
+      "memory": "GC",
+      "gist": "Standard ML：模块系统设计的教科书",
+      "engineering": "本仓未实测、不宣称可编译；SML/NJ/MLton"
+    },
+    "mercury": {
+      "name": "Mercury",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "query"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 1995,
+      "paradigm": "逻辑函数式（模式推断+确定性声明）",
+      "typing": "静态强类型（模式+确定度）",
+      "memory": "GC+回溯栈",
+      "gist": "Mercury：给 Prolog 加上类型与确定度的工程化",
+      "engineering": "本仓未实测、不宣称可编译；mmc 编译器（多后端）"
+    },
+    "curry": {
+      "name": "Curry",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "query"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 1997,
+      "paradigm": "函数逻辑混合（惰性求值+约束求解）",
+      "typing": "静态类型（模式推断+不确定选择）",
+      "memory": "GC+回溯栈",
+      "gist": "Need 逻辑嵌入函数式：非确定性一等公民",
+      "engineering": "本仓未实测、不宣称可编译；实现 KiCS2/PAKCS（转 Haskell）"
+    },
+    "coq": {
+      "name": "Coq",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 1989,
+      "paradigm": "归纳类型+函数式（证明助手）",
+      "typing": "静态强类型（Curry-Howard：命题即类型）",
+      "memory": "GC（OCaml 运行时）",
+      "gist": "Coq 证明助手：CompCert 等已验证软件之基",
+      "engineering": "本仓未实测、不宣称可编译；工具链 Coq 平台（opam 管理）"
+    },
+    "agda": {
+      "name": "Agda",
+      "model": "native",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2007,
+      "paradigm": "函数式+依值类型",
+      "typing": "静态强类型（依值类型，值参与类型）",
+      "memory": "GC（Haskell 运行时）",
+      "gist": "证明助手兼函数式语言：类型即定理，程序即证明",
+      "engineering": "本仓未实测、不宣称可编译；工具链 Agda 标准库 + Emacs 交互式"
+    },
+    "isabelle": {
+      "name": "Isabelle",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 1986,
+      "paradigm": "定理证明+逻辑基础库",
+      "typing": "静态强类型（Isar 结构化证明）",
+      "memory": "GC（Poly/ML 运行时）",
+      "gist": "Isabelle：大规模形式化（seL4 微内核验证即其成果）",
+      "engineering": "本仓未实测、不宣称可编译；工具链 Isabelle/jEdit"
+    },
+    "datalog": {
+      "name": "Datalog",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "query"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 1977,
+      "paradigm": "逻辑查询（受限 Prolog 子集）",
+      "typing": "逻辑子句（无函数符号，保证终止）",
+      "memory": "引擎托管",
+      "gist": "Datalog：增量递归查询语言（数据依赖分析常客）",
+      "engineering": "宿主引擎解释（无独立编译链）；Soufflé/DDlog 分析引擎"
+    },
+    "verilog": {
+      "name": "Verilog",
+      "model": "hdl",
+      "archs": [
+        "fpga"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "IEEE 1364 / IEEE 1800",
+      "first_appeared": 1984,
+      "paradigm": "硬件描述（RTL 可综合）",
+      "typing": "静态类型（位宽/模块端口）",
+      "memory": "寄存器/线网（电路存储）",
+      "gist": "Verilog：ASIC/FPGA 设计的主力 HDL",
+      "engineering": "本仓未实测、不宣称可综合；工具链 iverilog/verilator（仿真）"
+    },
+    "vhdl": {
+      "name": "VHDL",
+      "model": "hdl",
+      "archs": [
+        "fpga"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "IEEE 1076",
+      "first_appeared": 1987,
+      "paradigm": "硬件描述（强类型 RTL）",
+      "typing": "静态强类型（信号/进程）",
+      "memory": "信号/寄存器（电路存储）",
+      "gist": "VHDL：国防/航天偏好的严格 HDL",
+      "engineering": "本仓未实测、不宣称可综合；GHDL 仿真"
+    },
+    "makefile": {
+      "name": "Makefile",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "POSIX（make 工具）",
+      "first_appeared": 1976,
+      "paradigm": "构建描述（依赖规则，宿主构建工具解释）",
+      "typing": "不适用（规则+配方 shell 文本）",
+      "memory": "不适用",
+      "gist": "make：依赖驱动的构建自动化鼻祖",
+      "engineering": "probe 实测通过（8 面能力契约）；落法：make -n 试跑规则"
+    },
+    "xpath": {
+      "name": "XPath",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "query"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "W3C Recommendation",
+      "first_appeared": 1999,
+      "paradigm": "XML 路径查询（非执行）",
+      "typing": "不适用（节点集合）",
+      "memory": "不适用",
+      "gist": "XPath：XML 文档导航的标准表达式",
+      "engineering": "宿主工具解释（无独立编译链）；libxml2/lxml 消费"
+    },
+    "xslt": {
+      "name": "XSLT",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "identity"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "W3C Recommendation",
+      "first_appeared": 1999,
+      "paradigm": "XML 转换（非执行）",
+      "typing": "不适用（模板重写）",
+      "memory": "不适用",
+      "gist": "XSLT：XML 到 XML/HTML 的声明式转换",
+      "engineering": "宿主工具解释（无独立编译链）；Saxon/Xalan 处理"
+    },
+    "sparql": {
+      "name": "SPARQL",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "query"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "W3C Recommendation",
+      "first_appeared": 2008,
+      "paradigm": "RDF 图查询（非执行）",
+      "typing": "不适用（三元组模式）",
+      "memory": "不适用",
+      "gist": "SPARQL：语义网/知识图谱的标准查询语言",
+      "engineering": "宿主引擎解释（无独立编译链）；SPARQL 1.1 引擎"
+    },
+    "cypher": {
+      "name": "Cypher",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "query"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO（openCypher/GQL 演进）",
+      "first_appeared": 2011,
+      "paradigm": "图查询（声明式，非执行）",
+      "typing": "不适用（图模式）",
+      "memory": "不适用",
+      "gist": "Neo4j 的图查询语言：ASCII 艺术式模式匹配",
+      "engineering": "宿主工具解释（无独立编译链）；图数据库引擎解析执行"
+    },
+    "nix": {
+      "name": "Nix",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2013,
+      "paradigm": "纯函数式包管理语言（非执行）",
+      "typing": "动态类型（惰性求值）",
+      "memory": "不适用",
+      "gist": "Nix：可复现构建与原子化包管理之语言",
+      "engineering": "宿主工具解释（无独立编译链）；nix 求值构建"
+    },
+    "starlark": {
+      "name": "Starlark",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO（规格文档）",
+      "first_appeared": 2018,
+      "paradigm": "受限 Python 方言（构建配置）",
+      "typing": "动态类型（受限子集，确定性执行）",
+      "memory": "GC（宿主）",
+      "gist": "Starlark：Bazel/Buck 的确定性配置语言",
+      "engineering": "宿主工具解释（无独立编译链）；bazel/starlark-rust 嵌入"
+    },
+    "jsonnet": {
+      "name": "Jsonnet",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2014,
+      "paradigm": "配置生成（非执行）",
+      "typing": "动态+部分静态",
+      "memory": "不适用",
+      "gist": "Jsonnet：带函数/继承的 JSON 模板",
+      "engineering": "宿主工具解释（无独立编译链）；jsonnet 编译为 JSON"
+    },
+    "hcl": {
+      "name": "HCL",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2014,
+      "paradigm": "配置语言（非执行）",
+      "typing": "弱类型（表达式求值）",
+      "memory": "不适用",
+      "gist": "HashiCorp 配置语言：Terraform 的描述载体",
+      "engineering": "宿主工具解释（无独立编译链）；terraform/vault 等解析"
+    },
+    "dhall": {
+      "name": "Dhall",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2017,
+      "paradigm": "配置即代码（全静态类型，非执行）",
+      "typing": "强类型（配置的类型系统）",
+      "memory": "不适用",
+      "gist": "Dhall：可缓存可验证的配置语言",
+      "engineering": "宿主工具解释（无独立编译链）；dhall 工具链求值/散列"
+    },
+    "cue": {
+      "name": "CUE",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2018,
+      "paradigm": "配置即代码（类型化约束系统，非执行）",
+      "typing": "强类型（类型与值统一）",
+      "memory": "不适用",
+      "gist": "Google 的配置语言：把约束求解带进配置",
+      "engineering": "宿主工具解释（无独立编译链）；cue 工具链校验/导出"
+    },
+    "pkl": {
+      "name": "Pkl",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2024,
+      "paradigm": "配置即代码（Apple，非执行）",
+      "typing": "静态强类型（配置对象模型）",
+      "memory": "不适用",
+      "gist": "Pkl：Apple 出品的类型化配置语言",
+      "engineering": "宿主工具解释（无独立编译链）；pkl 工具链"
+    },
+    "avro": {
+      "name": "Apache Avro",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "data"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "Apache 规范",
+      "first_appeared": 2009,
+      "paradigm": "数据序列化（Schema 驱动）",
+      "typing": "强类型（Writer/Reader Schema 演进解析）",
+      "memory": "不适用（数据格式）",
+      "gist": "Apache 二进制序列化框架：Schema 演化优先",
+      "engineering": "宿主工具解释（无独立编译链）；IDL 经 avro-tools 生成多语言代码"
+    },
+    "flatbuffers": {
+      "name": "FlatBuffers",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "data"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO（规范文档）",
+      "first_appeared": 2014,
+      "paradigm": "零拷贝序列化（非执行）",
+      "typing": "强类型（Schema）",
+      "memory": "不适用",
+      "gist": "FlatBuffers：游戏引擎广泛采用的零拷贝格式",
+      "engineering": "宿主工具解释（无独立编译链）；flatc 生成多语言绑定"
+    },
+    "capnproto": {
+      "name": "Cap'n Proto",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "data"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2013,
+      "paradigm": "RPC+零拷贝序列化（非执行）",
+      "typing": "强类型（Schema）",
+      "memory": "不适用",
+      "gist": "Cap'n Proto：零拷贝读写的 RPC 序列化框架",
+      "engineering": "宿主工具解释（无独立编译链）；capnp 生成多语言绑定"
+    },
+    "openapi": {
+      "name": "OpenAPI",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "web",
+        "network"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "OpenAPI Specification",
+      "first_appeared": 2015,
+      "paradigm": "接口描述规范（非执行）",
+      "typing": "结构化 Schema（JSON/YAML）",
+      "memory": "不适用",
+      "gist": "OpenAPI：REST 接口的机器可读契约",
+      "engineering": "宿主工具解释（无独立编译链）；swagger-codegen 多语言生成"
+    },
+    "futhark": {
+      "name": "Futhark",
+      "model": "native",
+      "archs": [
+        "gpu-simt"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2014,
+      "paradigm": "函数式数组（GPU 计算）",
+      "typing": "静态强类型",
+      "memory": "手动+GPU 显存模型",
+      "gist": "Futhark：编译到 GPU 的纯函数式数组语言",
+      "engineering": "本仓未实测、不宣称可编译；futhark 编译器→CUDA/OpenCL"
+    },
+    "pony": {
+      "name": "Pony",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems",
+        "network"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2015,
+      "paradigm": "Actor 并发+无 GC 安全",
+      "typing": "静态强类型（引用能力 iso/trn/ref/val）",
+      "memory": "无 GC（引用能力编译期保证零竞态）",
+      "gist": "Pony：不用 GC 也内存安全的 actor 语言",
+      "engineering": "本仓未实测、不宣称可编译；ponyc 编译器"
+    },
+    "hack": {
+      "name": "Hack",
+      "model": "jit",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "web"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2014,
+      "paradigm": "动态为基础+渐进静态类型",
+      "typing": "渐进类型（HHVM 模式检查）",
+      "memory": "GC（HHVM）",
+      "gist": "Facebook 的 PHP 安全演进：类型逐步加固",
+      "engineering": "本仓未实测、不宣称可编译；工具链 hhvm/hh_client"
+    },
+    "koka": {
+      "name": "Koka",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2012,
+      "paradigm": "函数式+代数效果（effect handlers）",
+      "typing": "静态强类型（效果行推断）",
+      "memory": "GC（Perceus 无计数回收）",
+      "gist": "Koka：把副作用赶进效果行的函数式语言",
+      "engineering": "本仓未实测、不宣称可编译；koka 编译器（Perceus 内存管理）"
+    },
+    "dafny": {
+      "name": "Dafny",
+      "model": "native",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2009,
+      "paradigm": "命令式+验证（契约+自动证明）",
+      "typing": "静态强类型（前后条件不变量）",
+      "memory": "GC",
+      "gist": "Dafny：写代码同时写证明，SMT 自动验证",
+      "engineering": "本仓未实测、不宣称可编译；工具链 dafny verify/build"
+    },
+    "whiley": {
+      "name": "Whiley",
+      "model": "bytecode-vm",
+      "archs": [
+        "jvm"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2010,
+      "paradigm": "验证导向命令式",
+      "typing": "静态强类型（契约+循环不变量）",
+      "memory": "GC",
+      "gist": "Whiley：把验证做进编译器的小语言",
+      "engineering": "本仓未实测、不宣称可编译；whiley 编译器（SMT 后端）"
+    },
+    "verse": {
+      "name": "Verse",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2022,
+      "paradigm": "函数式+元宇宙（Epic 平台）",
+      "typing": "静态强类型（失败即值+事务）",
+      "memory": "GC（平台托管）",
+      "gist": "Verse：Epic 为 UEFN 创作者设计的函数式语言",
+      "engineering": "本仓未实测、不宣称可编译；verse 沙盒运行于 UEFN 环境内"
+    },
+    "unison": {
+      "name": "Unison",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "network",
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2019,
+      "paradigm": "内容寻址分布式（代码即散列）",
+      "typing": "静态强类型（能力类型学）",
+      "memory": "GC（内容不可变）",
+      "gist": "Unison：代码按内容寻址、无构建的分布式语言",
+      "engineering": "本仓未实测、不宣称可编译；ucm 工具"
+    },
+    "factor": {
+      "name": "Factor",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2003,
+      "paradigm": "串联式堆栈（concatenative）",
+      "typing": "动态类型（堆栈操作原子化）",
+      "memory": "GC",
+      "gist": "Factor：堆栈语言的高层化现代化尝试",
+      "engineering": "本仓未实测、不宣称可编译；factor 镜像 + 监听 REPL"
+    },
+    "iolang": {
+      "name": "Io",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 2002,
+      "paradigm": "原型式面向对象（一切皆消息）",
+      "typing": "动态类型",
+      "memory": "GC（引用计数+循环收集）",
+      "gist": "Io：极简原型语言，消息传递一族",
+      "engineering": "本仓未实测、不宣称可编译；io 解释器"
+    },
+    "rebol": {
+      "name": "REBOL",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "data"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 1997,
+      "paradigm": "方言化 DSL（一切皆表达式）",
+      "typing": "动态类型（dialect 为核心）",
+      "memory": "引用计数",
+      "gist": "REBOL：Carl Sassenrath 的方言语言实验",
+      "engineering": "本仓未实测、不宣称可编译；ren-c/r3 实现"
+    },
+    "wolfram": {
+      "name": "Wolfram Language",
+      "model": "interpreted",
+      "archs": [
+        "host"
+      ],
+      "domains": [
+        "data"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO",
+      "first_appeared": 1988,
+      "paradigm": "符号规则+模式重写",
+      "typing": "动态符号（规则库驱动）",
+      "memory": "GC",
+      "gist": "Wolfram 语言：符号计算与规则编程之王",
+      "engineering": "本仓未实测、不宣称可编译；Mathematica/Wolfram Engine"
+    },
+    "postscript": {
+      "name": "PostScript",
+      "model": "non-exec",
+      "archs": [
+        "n-a"
+      ],
+      "domains": [
+        "identity"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无 ISO（PLRM 规范）",
+      "first_appeared": 1982,
+      "paradigm": "堆栈式页面描述（图灵完备）",
+      "typing": "动态类型（栈机）",
+      "memory": "堆+保存/恢复",
+      "gist": "PostScript：印刷业的页面描述祖师爷",
+      "engineering": "本仓未实测、不宣称可编译；Ghostscript 解释器"
+    },
+    "assembly": {
+      "name": "汇编语言",
+      "model": "native",
+      "archs": [
+        "x86-64",
+        "arm64",
+        "riscv"
+      ],
+      "domains": [
+        "systems"
+      ],
+      "mapping_source": "explicit",
+      "own_standard": "无统一标准（ISA 相关）",
+      "first_appeared": 1949,
+      "paradigm": "系统编程（与机器码一一映射）",
+      "typing": "无类型（机器相关，字位操作）",
+      "memory": "手动（寄存器/栈显式管理）",
+      "gist": "各 ISA 的符号化机器码：性能与体积的终极控制",
+      "engineering": "本仓未实测逐 ISA；汇编器 as/GAS、nasm、masm；本仓 asm 子系统另立汇编语言面"
+    }
+  },
+  "probe": {
+    "title": "编程语言「整体能力」实测探针",
+    "system": "wordbuddy-github（概念系统主目录）",
+    "contract": [
+      "LANG",
+      "LITERALS",
+      "OPS",
+      "CONTROL",
+      "FUNC",
+      "DATA",
+      "IO",
+      "ERROR",
+      "CONCURRENCY"
+    ],
+    "contract_note": "每种语言跑同一个 8 面能力契约；本机无工具链的一律标「未实测」，不臆造结果",
+    "total": 15,
+    "passed": 15
+  },
+  "probe_results": [
+    {
+      "id": "python",
+      "name": "Python",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "python.py",
+      "output": "LANG=Python\nLITERALS=42,hi,True,None\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=ZeroDivisionError\nCONCURRENCY=[0, 1, 4, 9]",
+      "kv": {
+        "LANG": "Python",
+        "LITERALS": "42,hi,True,None",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "ZeroDivisionError",
+        "CONCURRENCY": "[0, 1, 4, 9]"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "javascript",
+      "name": "JavaScript",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "javascript.js",
+      "output": "LANG=JavaScript\nLITERALS=42,hi,true,null\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=SyntaxError\nCONCURRENCY=[0,1,4,9]",
+      "kv": {
+        "LANG": "JavaScript",
+        "LITERALS": "42,hi,true,null",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "SyntaxError",
+        "CONCURRENCY": "[0,1,4,9]"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "typescript",
+      "name": "TypeScript",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "typescript.ts",
+      "output": "LANG=TypeScript\nLITERALS=42,hi,true,null\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=SyntaxError\nCONCURRENCY=[0,1,4,9]",
+      "kv": {
+        "LANG": "TypeScript",
+        "LITERALS": "42,hi,true,null",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "SyntaxError",
+        "CONCURRENCY": "[0,1,4,9]"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "go",
+      "name": "Go",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "go.go",
+      "output": "LANG=Go\nLITERALS=42,hi,true,<nil>\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=*fs.PathError\nCONCURRENCY=[0 1 4 9]",
+      "kv": {
+        "LANG": "Go",
+        "LITERALS": "42,hi,true,<nil>",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "*fs.PathError",
+        "CONCURRENCY": "[0 1 4 9]"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "rust",
+      "name": "Rust",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "rust.rs",
+      "output": "LANG=Rust\nLITERALS=42,hi,true,None\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=NotFound\nCONCURRENCY=[0, 1, 4, 9]",
+      "kv": {
+        "LANG": "Rust",
+        "LITERALS": "42,hi,true,None",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "NotFound",
+        "CONCURRENCY": "[0, 1, 4, 9]"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "c",
+      "name": "C",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "c.c",
+      "output": "LANG=C\nLITERALS=42,hi,1,(nil)\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=fopen-EACCES\nCONCURRENCY=0,1,4,9",
+      "kv": {
+        "LANG": "C",
+        "LITERALS": "42,hi,1,(nil)",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "fopen-EACCES",
+        "CONCURRENCY": "0,1,4,9"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "cpp",
+      "name": "C++",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "cpp.cpp",
+      "output": "LANG=C++\nLITERALS=42,hi,1,0\nOPS=44\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=std::exception\nCONCURRENCY=0,1,4,9",
+      "kv": {
+        "LANG": "C++",
+        "LITERALS": "42,hi,1,0",
+        "OPS": "44",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "std::exception",
+        "CONCURRENCY": "0,1,4,9"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "java",
+      "name": "Java",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "Main.java",
+      "output": "LANG=Java\nLITERALS=42,hi,true,null\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=NoSuchFileException\nCONCURRENCY=[0, 1, 4, 9]",
+      "kv": {
+        "LANG": "Java",
+        "LITERALS": "42,hi,true,null",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "NoSuchFileException",
+        "CONCURRENCY": "[0, 1, 4, 9]"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "ruby",
+      "name": "Ruby",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "ruby.rb",
+      "output": "LANG=Ruby\nLITERALS=42,hi,true,\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=ArgumentError\nCONCURRENCY=[0, 1, 4, 9]",
+      "kv": {
+        "LANG": "Ruby",
+        "LITERALS": "42,hi,true,",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "ArgumentError",
+        "CONCURRENCY": "[0, 1, 4, 9]"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "perl",
+      "name": "Perl",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "perl.pl",
+      "output": "LANG=Perl\nLITERALS=42,hi,1,\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=die\nCONCURRENCY=n/a(核心无原生线程)",
+      "kv": {
+        "LANG": "Perl",
+        "LITERALS": "42,hi,1,",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "die",
+        "CONCURRENCY": "n/a(核心无原生线程)"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "bash",
+      "name": "Bash",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "bash.sh",
+      "output": "LANG=Bash\nLITERALS=42,hi,true,\nOPS=44\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=exit-status\nCONCURRENCY=0,1,4,9",
+      "kv": {
+        "LANG": "Bash",
+        "LITERALS": "42,hi,true,",
+        "OPS": "44",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "exit-status",
+        "CONCURRENCY": "0,1,4,9"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "awk",
+      "name": "AWK",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "awk.awk",
+      "output": "LANG=AWK\nLITERALS=42,hi,1,\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=getline-status\nCONCURRENCY=n/a(单线程)",
+      "kv": {
+        "LANG": "AWK",
+        "LITERALS": "42,hi,1,",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "getline-status",
+        "CONCURRENCY": "n/a(单线程)"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "tcl",
+      "name": "Tcl",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "tcl.tcl",
+      "output": "LANG=Tcl\nLITERALS=42,hi,1,\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=catch\nCONCURRENCY=n/a(事件循环无原生线程)",
+      "kv": {
+        "LANG": "Tcl",
+        "LITERALS": "42,hi,1,",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "catch",
+        "CONCURRENCY": "n/a(事件循环无原生线程)"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "fsharp",
+      "name": "F#",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "fsharp.fsx",
+      "output": "LANG=F#\nLITERALS=42,hi,true,None\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=3,1\nIO=ok\nERROR=Exception\nCONCURRENCY=[0; 1; 4; 9]",
+      "kv": {
+        "LANG": "F#",
+        "LITERALS": "42,hi,true,None",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "3,1",
+        "IO": "ok",
+        "ERROR": "Exception",
+        "CONCURRENCY": "[0; 1; 4; 9]"
+      },
+      "returncode": 0
+    },
+    {
+      "id": "makefile",
+      "name": "Makefile",
+      "status": "实测通过",
+      "reason": "",
+      "sample": "makefile.mk",
+      "output": "LANG=Makefile\nLITERALS=42,hi,1,\nOPS=45\nCONTROL=15\nFUNC=120\nDATA=5,1\nIO=ok\nERROR=exit-status\nCONCURRENCY=0 1 4 9",
+      "kv": {
+        "LANG": "Makefile",
+        "LITERALS": "42,hi,1,",
+        "OPS": "45",
+        "CONTROL": "15",
+        "FUNC": "120",
+        "DATA": "5,1",
+        "IO": "ok",
+        "ERROR": "exit-status",
+        "CONCURRENCY": "0 1 4 9"
+      },
+      "returncode": 0
+    }
+  ],
+  "bridges": [
+    {
+      "from": "plang:native",
+      "system": "daoxue",
+      "target": "guidance:zhengti_zhida",
+      "relation": "整体指导",
+      "how": "语言到原生码的映射全量记录于 lang_index（阿卡西）；任一语言条目含全系统能力域（全息）；选模型/架构即种因、运行行为即果（三世因果）；类型/内存模型红线独立可验（阴符）；编译错误即如影随形反馈（感应）。"
+    }
+  ]
+}

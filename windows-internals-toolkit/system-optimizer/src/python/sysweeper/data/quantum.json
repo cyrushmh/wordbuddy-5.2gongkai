@@ -1,0 +1,110 @@
+{
+  "_note": "量子程序与虚拟机的标准/方法学参考（只读引用，不自动填充正文）。本仓库为经典系统工程工具箱：不含量子硬件探针、不接入量子设备、不在真实量子硬件上执行量子线路——本表只回答「该看什么、以什么出处为准」。内置程序（bell/ghz/teleport/grover2q/bv2）分别对应 bell1964 / greenberger1989 / teleport1993 / grover1996 / bernstein_vazirani1993 的原始文献；标准侧以 OpenQASM 3 与 QIR 为线路/中间表示基准，ISO/IEC 4879 与 IEEE 7130 为术语基准，ITU-T Y.3800 与 ETSI GS QKD 014 为量子网络/密钥交付基准，NIST FIPS 203/204/205 为后量子迁移基准。",
+  "openqasm3": {
+    "name": "OpenQASM 3",
+    "standard": "OpenQASM 3 Specification",
+    "org": "OpenQASM contributors（IBM/AQT/ETH Zürich 等共同体）",
+    "evidence_status": "community_spec",
+    "summary": "面向量子线路的开放中间表示：声明 qubit/bit、门作用与测量，带经典控制流与物理层标注。本仓库 native/quantum.py 的文本 IR（qubits/gate/measure/if/halt）在语义上向它对齐（门集与测量写法兼容），但刻意保持更小的可读子集，不宣称完整实现 OpenQASM 3。"
+  },
+  "qir": {
+    "name": "QIR（Quantum Intermediate Representation）",
+    "standard": "QIR Specification（LLVM 体系量子中间表示）",
+    "org": "QIR Alliance",
+    "evidence_status": "community_spec",
+    "summary": "基于 LLVM 的量子程序中间表示，使同一量子线路可经统一 IR 接不同编译器与硬件后端。本仓库不产 LLVM bitcode；登记它是为了钉死「虚拟机 IR → 通用中间表示」的演进方向与术语边界。"
+  },
+  "vocab_iso_4879": {
+    "name": "量子技术词汇",
+    "standard": "ISO/IEC 4879:2024",
+    "org": "ISO/IEC JTC 3（信息技术）",
+    "published": "2024-05（Edition 1，14 页）",
+    "evidence_status": "official_verified",
+    "summary": "信息技术——量子计算词汇（Information technology — Quantum computing — Vocabulary）。已正式发布（ISO/IEC JTC 3），定义 qubit / 叠加 / 纠缠 / 测量 / 退相干等术语。本仓库概念系统与 CLI 输出的中文术语以它（正式）与 IEEE P7130（草案）为双语基准，避免自造词。"
+  },
+  "vocab_ieee_7130": {
+    "name": "量子计算术语（草案）",
+    "standard": "IEEE P7130",
+    "org": "IEEE SA（量子技术定义标准项目）",
+    "published": "未发布（PAR 阶段项目，非正式标准号 IEEE 7130）",
+    "evidence_status": "draft_project",
+    "summary": "IEEE P7130「Standard for Quantum Technologies Definitions」——截至核查（2026-10）仍为 IEEE-SA 在研项目（PAR），尚未发布为正式标准 IEEE 7130。其目标与 ISO/IEC 4879:2024 对应（定义 qubit / 门 / 纠缠 / 退相干等术语），故仅作为「草案基准」使用；正式发布前不与 ISO/IEC 4879 等同对待。"
+  },
+  "bell1964": {
+    "name": "贝尔定理",
+    "standard": "On the Einstein-Podolsky-Rosen Paradox",
+    "org": "J. S. Bell（Physics 1:195, 1964）",
+    "summary": "贝尔不等式证明：任何局域隐变量理论都无法复现量子关联。内置程序 bell 的可执行断言正是「计数只落 00/11 两桶且两桶都非零」——经典串联比特做不到这种关联，模拟器把教科书论断变成可跑的自检。"
+  },
+  "greenberger1989": {
+    "name": "GHZ 态与无不等式贝尔论证",
+    "standard": "Going beyond Bell's theorem",
+    "org": "D. M. Greenberger, M. Horne, A. Zeilinger（1989）",
+    "summary": "GHZ 态把贝尔型矛盾从统计不等式推到确定性矛盾。内置程序 ghz（n 比特 GHZ + 全测量）演示|c0…0>+c1…1>的关联结构。"
+  },
+  "teleport1993": {
+    "name": "量子隐形传态",
+    "standard": "Teleporting an unknown quantum state via dual classical and Einstein-Podrosen-Rosen channels",
+    "org": "Bennett, Brassard, Crépeau, Jozsa, Peres, Wootters（PRL 70:1895, 1993）",
+    "summary": "借预先共享的纠缠对与两比特经典信道传输未知量子态。内置程序 teleport 演示：纠缠 + 贝尔测量 + 经典条件门（if/xd/zd）重构目标态。"
+  },
+  "grover1996": {
+    "name": "Grover 搜索算法",
+    "standard": "A fast quantum mechanical algorithm for database search",
+    "org": "L. K. Grover（STOC 1996）",
+    "summary": "无结构搜索的平方加速（N 项 O(√N) 次查询）。内置程序 grover2q 演示：oracle 标记 + 振幅放大（Grover 迭代），正确解概率收敛到 1。"
+  },
+  "bernstein_vazirani1993": {
+    "name": "Bernstein–Vazirani 算法",
+    "standard": "Quantum complexity theory",
+    "org": "E. Bernstein, U. Vazirani（STOC 1993）",
+    "summary": "一次查询确定隐藏比特串（经典确定性算法需 n 次）。内置程序 bv2 演示相位反冲（phase kickback）与并行查询。"
+  },
+  "shor1994": {
+    "name": "Shor 算法",
+    "standard": "Algorithms for quantum computation: discrete logarithms and factoring",
+    "org": "P. W. Shor（FOCS 1994）",
+    "summary": "整数分解与离散对数的指数级加速（RSA 威胁的理论来源）。本仓库不内置（位数与线路规模超出纯 Python 教具边界），登记它只为说明「为何要迁移后量子密码」。"
+  },
+  "itu_y3800": {
+    "name": "量子密钥分发网络功能架构",
+    "standard": "ITU-T Y.3800",
+    "org": "ITU-T",
+    "evidence_status": "official_verified",
+    "summary": "QKD 网络的功能架构建议书（量子层/密钥管理层/经典通信层的分工）。概念系统 network 域参照它登记中继与量子互联网边界。"
+  },
+  "etsi_qkd014": {
+    "name": "QKD 密钥交付 API",
+    "standard": "ETSI GS QKD 014",
+    "org": "ETSI",
+    "evidence_status": "official_verified",
+    "summary": "基于 REST 的密钥交付协议与数据格式。登记它是为了钉死「QKD 网络如何把密钥交给应用」的接口事实，本仓库不接任何真实 QKD 设备。"
+  },
+  "fips203": {
+    "name": "ML-KEM（后量子密钥封装）",
+    "standard": "NIST FIPS 203",
+    "org": "NIST（2024 定稿）",
+    "evidence_status": "official_verified",
+    "summary": "基于模块格的后量子密钥封装机制标准。chrono「未来兼容维」与概念系统 network 域据它登记 PQC 迁移路径。"
+  },
+  "fips204": {
+    "name": "ML-DSA（后量子数字签名）",
+    "standard": "NIST FIPS 204",
+    "org": "NIST（2024 定稿）",
+    "evidence_status": "official_verified",
+    "summary": "基于模块格的后量子数字签名标准。与 FIPS 203/205 共同构成 NIST 首批后量子密码标准集。"
+  },
+  "fips205": {
+    "name": "SLH-DSA（后量子数字签名）",
+    "standard": "NIST FIPS 205",
+    "org": "NIST（2024 定稿）",
+    "evidence_status": "official_verified",
+    "summary": "基于无状态哈希的后量子数字签名标准（保守备份路线）。"
+  },
+  "nielsen_chuang": {
+    "name": "量子计算与量子信息（教材）",
+    "standard": "Quantum Computation and Quantum Information（10th Anniversary Edition）",
+    "org": "M. A. Nielsen & I. L. Chuang（Cambridge University Press, 2010）",
+    "summary": "态矢量/密度矩阵、量子门、量子算法与量子纠错的权威教材。native/quantum.py 的门集、Born 测量与程序教学注释均以它为准。"
+  }
+}

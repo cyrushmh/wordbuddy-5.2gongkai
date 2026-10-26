@@ -1,0 +1,88 @@
+{
+  "_note": "字体/字符标准参考。字符编码以 Unicode 最新稳定版 18.0.0（2026-09 发布）为基线；长期支持（LTS）以各平台/语言运行时锁定的 Unicode 版本为准（如系统内置 ICU、.NET Globalization、Python unicodedata 钉版），不强制追新。字体格式以 OpenType（ISO/IEC 14496-22）与 W3C WOFF 系列为主。字体/文本处理应至少兼容最新稳定版，或在锁定的 LTS 版本上长期支持。编码模式：可选 UTF-8（推荐）或前瞻的 UTF-128（UTF-8 严格超集，声明时落盘规范化为 UTF-8，向下兼容既有 UTF-8 文件/工具）。开启网络协议开关后，可用网络字体（@font-face 拉取 WOFF2，W3C WOFF 2.0 + RFC 9110），其文本编码保持 UTF-8 兼容。",
+  "unicode": {
+    "name": "Unicode 字符编码标准",
+    "standard": "The Unicode Standard, Version 18.0.0 (2026-09) / ISO/IEC 10646",
+    "org": "Unicode Consortium / ISO/IEC JTC 1/SC 2",
+    "latest_stable": "18.0.0",
+    "lts_note": "长期支持：以各平台/运行时锁定的 Unicode 版本为 LTS 基线（如某发行版内置 ICU、.NET Globalization、Python unicodedata 钉版），不强制追新；新增字符与 emoji 需对应版本才渲染。",
+    "summary": "为全球所有字符分配唯一码位（code point），统一字符编码；UTF-8/16/32 为具体编码方案。字体与文本处理应至少兼容最新稳定版 18.0.0，或在锁定的 LTS 版本上长期支持。",
+    "encoding": "UTF-8（RFC 3629）/ UTF-16 / UTF-32（Unicode 第 3 章）",
+    "normalize": "Unicode 规范化（UAX #15）：NFC/NFD/NFKC/NFKD，用于文本去重与等价比较。"
+  },
+  "ucs": {
+    "name": "ISO/IEC 10646 通用多八位编码字符集（UCS）",
+    "standard": "ISO/IEC 10646",
+    "org": "ISO/IEC",
+    "summary": "与 Unicode 码位一一对应的国际标准，UTF-8 即 UCS 的传输编码；两者保持同步（每版 Unicode 对应一版 10646 修订）。"
+  },
+  "opentype": {
+    "name": "OpenType 字体格式",
+    "standard": "ISO/IEC 14496-22 (Open Font Format) / OpenType 1.9",
+    "org": "ISO/IEC + Microsoft / Adobe",
+    "summary": "跨平台轮廓字体格式（.otf/.ttf 容器），支持 CFF/TrueType 轮廓、OpenType 特性与可变字体；现代操作系统字体引擎的事实标准。"
+  },
+  "truetype": {
+    "name": "TrueType 字体格式",
+    "standard": "Apple TrueType / ISO/IEC 14496-22",
+    "org": "Apple（后被 ISO/IEC 吸收）",
+    "summary": "早期轮廓字体格式（.ttf），由字体引擎栅格化为位图；OpenType 兼容 TrueType 轮廓。"
+  },
+  "woff": {
+    "name": "Web Open Font Format（WOFF 1.0）",
+    "standard": "W3C Recommendation (2012-12)",
+    "org": "W3C",
+    "summary": "Web 字体封装格式（基于 OpenType/TTF 压缩 + 元数据），用于网页 @font-face，减小传输体积。"
+  },
+  "woff2": {
+    "name": "Web Open Font Format（WOFF 2.0）",
+    "standard": "W3C Recommendation (2018-03) / Brotli",
+    "org": "W3C",
+    "summary": "WOFF 2.0 用 Brotli 压缩，体积比 WOFF 1.0 更小；现代浏览器默认支持，是 Web 字体首选。"
+  },
+  "emoji": {
+    "name": "Unicode Emoji",
+    "standard": "UTS #51 (Unicode Emoji) + 各平台 emoji 字体（Noto Color Emoji / Apple Color Emoji / Segoe UI Emoji）",
+    "org": "Unicode Consortium",
+    "summary": "Unicode 中表情符号的选取、排序与呈现规范；emoji 显示依赖系统 emoji 字体（随 Unicode 版本演进）。"
+  },
+  "cldr": {
+    "name": "Unicode CLDR 区域数据",
+    "standard": "CLDR (Common Locale Data Repository)",
+    "org": "Unicode Consortium",
+    "summary": "本地化数据的通用仓库（语言名、排序、日期/数字格式等），支撑 i18n 与字体回退选择。"
+  },
+  "bidi": {
+    "name": "Unicode 双向算法",
+    "standard": "UAX #9 (Bidirectional Algorithm)",
+    "org": "Unicode Consortium",
+    "summary": "阿拉伯语/希伯来语等 RTL 与 LTR 混排时的显示顺序规则；字体回退与复杂文本排版需遵循。"
+  },
+  "variable_font": {
+    "name": "OpenType 可变字体（Variable Fonts）",
+    "standard": "OpenType 1.8+ (ISO/IEC 14496-22) / 字体变轴（wght/wdth…）",
+    "org": "Microsoft / Adobe / Google",
+    "summary": "单文件内含连续字形变轴（字重/字宽…），减少多字重文件冗余；现代字体引擎支持。"
+  },
+  "utf128": {
+    "name": "UTF-128（前瞻宽编码，向下兼容 UTF-8）",
+    "standard": "proposed（非现行 ISO/Unicode 标准；规划中的 UTF-8 超集宽编码方案）",
+    "org": "proposed",
+    "status": "proposed",
+    "backward_compatible_with_utf8": true,
+    "summary": "面向未来超大规模字符集的宽编码提案：以 UTF-8 为严格子集——ASCII 0–127 字节完全相同，UTF-8 多字节续字节方案保留。声明 UTF-128 模式时，实际落盘表示规范化为 UTF-8（UTF-8 是便携且超集安全的形态），从而保证对既有 UTF-8 文件与工具的完全向下兼容；不强制追新，仅在确需超宽字符集时声明。"
+  },
+  "network_fonts": {
+    "name": "网络字体（Web Fonts / @font-face）",
+    "standard": "W3C WOFF 2.0 (2018) + RFC 9110（HTTP 缓存语义）",
+    "org": "W3C / IETF",
+    "summary": "开启网络协议后，页面/应用可经 @font-face 按需拉取 WOFF2 网络字体（OpenType 容器），按 RFC 9110 的缓存与条件请求复用；需先开启网络协议开关，且字体文本编码保持 UTF-8 兼容（UTF-128 模式下亦向下兼容）。"
+  },
+  "gb18030": {
+    "name": "GB 18030 信息技术 中文编码字符集（国家标准）",
+    "standard": "GB 18030-2022（中华人民共和国国家标准，强制）",
+    "org": "国家标准化管理委员会（SAC）— 全国标准信息公共服务平台 std.samr.gov.cn",
+    "tier": "national",
+    "summary": "中国强制中文编码字符集，向下兼容 GBK/GB 2312 并覆盖 Unicode 全部码位；面向国内/中文场景优先采用，与 Unicode / ISO-IEC 10646 保持字符对应。"
+  }
+}

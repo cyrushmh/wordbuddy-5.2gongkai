@@ -1,0 +1,65 @@
+{
+  "freedesktop": {
+    "name": "freedesktop.org 基础规范（XDG）",
+    "org": "freedesktop.org",
+    "url": "https://specifications.freedesktop.org/",
+    "docs": [
+      "XDG Base Directory 规范（~/.cache、~/.config、~/.local/share、~/.state）",
+      "图标主题规范（icon-theme-spec，主题/缓存索引）",
+      "桌面项规范（desktop-entry-spec，.desktop 启动项）",
+      "缩略图管理规范（thumbnail-management-spec，~/.cache/thumbnails）",
+      "D-Bus 规范（进程间通信总线）"
+    ],
+    "summary": "XDG 系列规范定义 Linux 桌面各组件共用的目录布局、缓存位置与配置约定；所有主流桌面环境(GNOME/KDE/XFCE)都遵循。",
+    "advice": "清理缓存/配置前先确认遵循 XDG 路径；误删 ~/.config 下整目录会丢失应用设置，建议只清 ~/.cache 与缩略图。"
+  },
+  "gnome": {
+    "name": "GNOME 桌面（dconf / gsettings / HIG）",
+    "org": "GNOME Project",
+    "url": "https://developer.gnome.org/",
+    "docs": [
+      "dconf 文档（键存储后端，dconf(1) / gsettings(1) 接口）",
+      "GSettings 模式文档（org.gnome.* Schema 路径）",
+      "GNOME 人机界面指南（HIG，developer.gnome.org/hig）",
+      "GNOME Shell 扩展与配置（gsettings 路径 org.gnome.shell）"
+    ],
+    "summary": "GNOME 用 dconf 二进制数据库存用户设置，gsettings 是面向 Schema 的安全接口；配置多位于 ~/.config/dconf/user。",
+    "advice": "重置设置用 `dconf reset -f /`（清空用户键回到默认）；清理 GNOME 缓存清 ~/.cache/gnome-software、~/.cache/gdm。误清 dconf 会丢失全部个性化设置。"
+  },
+  "kde": {
+    "name": "KDE Plasma 桌面（KConfig / HIG）",
+    "org": "KDE",
+    "url": "https://develop.kde.org/",
+    "docs": [
+      "KConfig 文档（配置后端，kwriteconfig5(1) / kreadconfig5(1) 接口）",
+      "KDE 人机界面指南（HIG，community.kde.org）",
+      "Plasma 配置与脚本（konsolescript / plasmashell）"
+    ],
+    "summary": "KDE 用 KConfig 读写 ~/.config/*.rc 与各应用 rc 文件；kwriteconfig5 可改键，kbuildsycoca5 重建服务缓存。",
+    "advice": "清理 KDE 缓存清 ~/.cache/ 下 plasmashell/krunner 等；kbuildsycoca5 重建菜单/服务缓存。改 KConfig 前建议先备份对应 .rc。"
+  },
+  "xfce": {
+    "name": "XFCE 桌面（xfconf / xfconf-query）",
+    "org": "XFCE",
+    "url": "https://docs.xfce.org/",
+    "docs": [
+      "xfconf 文档（配置系统，xfconf-query(1) 接口）",
+      "xfce4 会话与面板配置（~/.config/xfce4/）",
+      "Thunar 文件管理器缓存（~/.cache/Thunar/）"
+    ],
+    "summary": "XFCE 用 xfconf 存储设置（通道/属性模型），xfconf-query 可读写；配置与缓存散落 ~/.config/xfce4 与 ~/.cache。",
+    "advice": "清理 XFCE 缓存清 ~/.cache/Thunar、~/.cache/xfce4；用 xfconf-query 读取配置（如 `xfconf-query -c xfwm4 -l`）。轻量桌面，清理缓存收益直接。"
+  },
+  "caches": {
+    "name": "桌面缓存与缩略图（XDG 缓存规范）",
+    "org": "freedesktop.org",
+    "url": "https://specifications.freedesktop.org/thumbnail-management-spec/",
+    "docs": [
+      "缩略图管理规范（~/.cache/thumbnails/large|normal|fail）",
+      "各桌面环境私有缓存（GNOME/KDE/XFCE 各不相同）",
+      "最近文档与活动记录（~/.local/share/recently-used.xbel）"
+    ],
+    "summary": "桌面环境把缩略图、图标、会话与最近文档缓存于 ~/.cache 与 ~/.local/share，体积随使用增长。",
+    "advice": "清 ~/.cache/thumbnails 与桌面私有缓存最安全；~/.local/share/recently-used.xbel 可删（影响隐私）。勿删 ~/.config。"
+  }
+}

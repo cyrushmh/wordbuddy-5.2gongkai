@@ -1,0 +1,24 @@
+{
+  "pages": [
+    {
+      "path": "pages/cockpit/cockpit",
+      "style": { "navigationBarTitleText": "sysweeper 总览" }
+    },
+    {
+      "path": "pages/report/report",
+      "style": { "navigationBarTitleText": "报告查看器" }
+    },
+    {
+      "path": "pages/profiles/profiles",
+      "style": { "navigationBarTitleText": "档位与评分" }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "light",
+    "navigationBarTitleText": "sysweeper",
+    "navigationBarBackgroundColor": "#0f1216",
+    "backgroundColor": "#0f1216",
+    "backgroundColorTop": "#0f1216",
+    "backgroundColorBottom": "#0f1216"
+  }
+}

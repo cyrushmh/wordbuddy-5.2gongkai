@@ -1,0 +1,80 @@
+{
+  "_note": "遗留 DOS 环境知识库（v0.6.74 填充，原 v0.6.36 gen-stub 空壳）。官方源实检项注明来源；社区整理与历史坐标标 needs_verify。本工具只读引用，不运行任何 DOS 程序。",
+  "_position": "只读诊断：不写 DOS 镜像、不 dd、不启动 DOS/DOSEMU/DOSBox、不挂载/解包任何镜像、不装包。",
+  "key": "dos",
+  "label": "遗留 DOS 环境",
+  "domain": "兼容",
+  "references": [
+    {"name": "FreeDOS 官网", "org": "The FreeDOS Project", "url": "https://www.freedos.org/"},
+    {"name": "FreeDOS 1.4 下载页", "org": "The FreeDOS Project", "url": "https://www.freedos.org/download/"},
+    {"name": "FreeDOS 1.4 发布说明", "org": "The FreeDOS Project", "url": "https://www.freedos.org/download/announce.html"},
+    {"name": "DOSEMU2 官网", "org": "DOSEMU2 项目", "url": "https://www.dosemu2.org/"},
+    {"name": "OSDev Wiki（社区整理）", "org": "OSDev 社区", "url": "https://wiki.osdev.org/"}
+  ],
+  "items": [
+    {
+      "key": "msdos-3.1-coordinate",
+      "name": "MS-DOS 3.1 知识坐标",
+      "org": "Microsoft（历史版本）",
+      "url": "https://www.microsoft.com/",
+      "protocols": ["x86 实模式（16 位）", "FAT12 文件系统", "COM/EXE 可执行格式"],
+      "interfaces": ["INT 21h（DOS 系统调用）", "INT 10h（视频）", "INT 13h（磁盘）", "INT 16h（键盘）", "CONFIG.SYS / AUTOEXEC.BAT"],
+      "docs": [{"title": "微软官网（MS-DOS 3.1 发布方；官方页面已随年代下线）", "url": "https://www.microsoft.com/"}],
+      "summary": "1984/85 年的 16 位实模式操作系统：FAT12 软盘 360KB/1.2MB，640KB 常规内存上限，靠 HIMEM.SYS/EMM386.EXE 管理扩展/扩充内存。作为「16 位实模式世代」的知识坐标登记，本机不需要它。",
+      "advice": "当知识坐标看就行：它是 16 位实模式 + FAT12 + 中断驱动 的年代；本机要跑这类程序走 FreeDOS/DOSEMU2/dosbox 而非真装 MS-DOS。",
+      "needs_verify": "MS-DOS 3.1 细节按历史坐标登记，微软官方页面已下线，具体中断面未逐条核对",
+      "evidence_status": "needs_verify"
+    },
+    {
+      "key": "freedos-1.4",
+      "name": "FreeDOS 1.4（开源 MS-DOS 兼容系统）",
+      "org": "The FreeDOS Project",
+      "url": "https://www.freedos.org/download/",
+      "protocols": ["MS-DOS 兼容（INT 21h 等）", "FAT12/16/32", "COM/EXE/MZ 可执行"],
+      "interfaces": ["COMMAND.COM / FreeCOM shell", "LiveCD / LegacyCD / FullUSB / Floppy Edition", "FDI 安装器（GitHub: shidel/FDI）"],
+      "docs": [{"title": "FreeDOS 1.4 发布说明", "url": "https://www.freedos.org/download/announce.html"}, {"title": "FreeDOS 1.4 下载页", "url": "https://www.freedos.org/download/"}],
+      "summary": "1994 年 Jim Hall 发起的开源 MS-DOS 兼容操作系统（GPL，工具含非 GPL 件如 4DOS 改版 MIT）。1.4 版 2025-04-05 发布：LiveCD 301.9 MiB、BASE 65 包（20 MiB 起）、FULL 191 包（275 MiB）；运行下限 Intel CPU + BIOS/UEFI Legacy + 640KB 内存，安装 20MB 硬盘。带 Floppy Edition（720K/1.2M/1.44M，可上原始 IBM PC/XT/AT）。",
+      "advice": "官方源实检（freedos.org/download，2026-10 口径）：要装 FreeDOS 用 LiveCD；真机无光驱用 FullUSB；老到 IBM PC/XT 的机器用 Floppy Edition。测试线 T2610（2026-10）滚动发布，正式版仍 1.4。",
+      "evidence_status": "official_verified"
+    },
+    {
+      "key": "dosemu2",
+      "name": "DOSEMU2（Linux 近原生 DOS 虚拟机）",
+      "org": "DOSEMU2 项目",
+      "url": "https://www.dosemu2.org/",
+      "protocols": ["DPMI（DOS 保护模式接口）", "x86 实模式/保护模式"],
+      "interfaces": ["dosemu 命令（Linux）", "apt/dnf 包 dosemu2"],
+      "docs": [{"title": "DOSEMU2 官网", "url": "https://www.dosemu2.org/"}],
+      "summary": "不逐指令模拟而是近原生虚拟化：在 Linux 上直接跑实模式/保护模式 DOS 与部分 DPMI 程序，性能优于 dosbox，兼容面窄于 dosbox。是「16 位实模式 + 32 位 DPMI」两档能力在 Linux 上的现成路径。",
+      "advice": "Linux 上跑 DOS 程序优先 dosemu2（快），兼容性优先 dosbox（模拟全）。沙箱未实测其实际运行（本工具不启动任何 DOS 程序）。",
+      "needs_verify": "dosemu2 在沙箱内未实测运行；版本与打包各发行版不一",
+      "evidence_status": "needs_verify"
+    },
+    {
+      "key": "dos-boot-media",
+      "name": "DOS 启动盘制作（复用 live 介质工具链）",
+      "org": "本仓库 livemedia 知识域的复用登记",
+      "url": "https://wiki.osdev.org/",
+      "protocols": ["FAT12 软盘镜像", "MBR/引导扇区"],
+      "interfaces": ["mtools（mcopy 写文件进 FAT 镜像）", "syslinux（引导器）", "dd 写物理软盘（本工具不执行）"],
+      "docs": [{"title": "OSDev Wiki（社区整理：启动序列与磁盘布局）", "url": "https://wiki.osdev.org/"}],
+      "summary": "可启动 DOS 软盘 = FreeDOS 内核 + COMMAND.COM + CONFIG.SYS/AUTOEXEC.BAT + 引导器；Linux 侧用 mtools + syslinux 组装，正是 livemedia 已覆盖的 ISO/软盘工具链。",
+      "advice": "「能编译」不等于「装得对」的镜像版：启动盘三件（内核/shell/配置）齐了还要引导器认账。本工具只诊断前提（mtools/syslinux 在不在），不写镜像、不 dd。",
+      "needs_verify": "启动扇区细节随引导器版本变化，未逐版本核对",
+      "evidence_status": "needs_verify"
+    },
+    {
+      "key": "dos-era-apis",
+      "name": "DOS 中断面（16 位实模式编程界面）",
+      "org": "历史坐标（Microsoft MS-DOS / PC DOS 年代）",
+      "url": "https://www.microsoft.com/",
+      "protocols": ["x86 中断向量表（IVT）", "BIOS + DOS 双层中断"],
+      "interfaces": ["INT 13h（磁盘：扇区级读写）", "INT 10h（视频：文本/图形模式）", "INT 21h（DOS 功能调用：文件/进程/内存）", "INT 16h（键盘）"],
+      "docs": [{"title": "MS-DOS 中断面历史资料（微软官网检索；官方页面已随年代下线）", "url": "https://www.microsoft.com/"}],
+      "summary": "16 位实模式年代的操作系统 API 就是中断调用：应用层发 int n，BIOS/DOS 内核接住。这套面是 dosbox/dosemu2 要翻译的对象，也是认识 MZ 可执行、COM 内存模型的钥匙。",
+      "advice": "读老 DOS 程序的黑箱入口：先看它是 COM（全段装载）还是 MZ EXE（带头重定位），再看它钩哪些中断——这与 reverse 子系统的静态解剖同思路。",
+      "needs_verify": "具体中断功能号按历史坐标登记，微软官方页面已下线，未逐条核对",
+      "evidence_status": "needs_verify"
+    }
+  ]
+}

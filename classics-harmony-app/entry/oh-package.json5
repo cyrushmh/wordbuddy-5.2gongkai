@@ -1,0 +1,10 @@
+{
+  "modelVersion": "5.0.0",
+  "name": "entry",
+  "version": "1.0.0",
+  "description": "道家经典文库应用入口模块",
+  "main": "",
+  "author": "",
+  "license": "",
+  "dependencies": {}
+}

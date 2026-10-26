@@ -1,0 +1,218 @@
+{
+  "win32_api": {
+    "name": "Win32 API（Windows 原生系统接口：kernel32 / shell32 / advapi32）",
+    "org": "Microsoft",
+    "url": "https://learn.microsoft.com/windows/win32/api/",
+    "protocols": [
+      "分层导出：kernel32（进程/内存/文件/系统信息）、shell32（Shell 命名空间与回收站）、advapi32（注册表/服务/安全）、user32/gdi32（窗口与绘制）",
+      "调用约定 stdcall；字符串一律 UTF-16 宽字符（W 后缀为宽字符版，A 后缀为 ANSI 版）",
+      "返回值约定：BOOL + GetLastError() 取错误码；HRESULT 用 SUCCEEDED/FAILED 宏判定",
+      "句柄（HANDLE）为内核对象引用，用 CloseHandle 释放；路径最长 260（可用 \\\\?\\ 前缀扩展）"
+    ],
+    "interfaces": [
+      "GetDiskFreeSpaceExW（读磁盘总/可用空间，只读）",
+      "GetTempPathW（解析当前用户临时目录，只读）",
+      "GetSystemMetrics / GetVersionEx（系统信息，只读）",
+      "SHGetKnownFolderPathW（按 KNOWNFOLDERID 解析已知文件夹，只读）",
+      "SHEmptyRecycleBinW（清空回收站，写：SHEB_NOCONFIRMATION|SHEB_NOPROGRESSUI）"
+    ],
+    "docs": [
+      "Windows App Development: Win32 and COM APIs",
+      "GetDiskFreeSpaceExW / GetTempPathW / SHEmptyRecycleBinW 参考页"
+    ],
+    "summary": "Win32 是 Windows 最底层的系统接口，一切上层工具（PowerShell、DISM、powercfg）最终都落到它。本项目用 ctypes 直接调 kernel32.GetDiskFreeSpaceExW 与 shell32.SHEmptyRecycleBinW，不走字符串解析，避免区域化输出导致的误判。",
+    "advice": "只读优先：空间与路径用 GetDiskFreeSpaceExW / GetTempPathW / SHGetKnownFolderPathW。只有清空回收站这类明确意图才调 SHEmptyRecycleBinW（属不可逆写操作，需确认）。非 Windows 环境 ctypes.windll 不存在，一律返回降级说明。"
+  },
+  "registry": {
+    "name": "Windows 注册表（配置数据库：hive / 键 / 值 / 类型）",
+    "org": "Microsoft",
+    "url": "https://learn.microsoft.com/windows/win32/sysinfo/registry",
+    "protocols": [
+      "树形配置数据库，五个预定义根键：HKEY_LOCAL_MACHINE(HKLM)、HKEY_CURRENT_USER(HKCU)、HKEY_CLASSES_ROOT(HKCR)、HKEY_USERS(HKU)、HKEY_CURRENT_CONFIG(HKCC)",
+      "值类型：REG_SZ / REG_EXPAND_SZ / REG_DWORD / REG_QWORD / REG_BINARY / REG_MULTI_SZ",
+      "64 位系统存在 32/64 双视图（Wow6432Node），可用 KEY_WOW64_64KEY / KEY_WOW64_32KEY 显式选视图",
+      "HKLM 写需管理员权限；HKCU 当前用户即可写；组策略/MDM 可覆盖同名策略值"
+    ],
+    "interfaces": [
+      "winreg.OpenKey / QueryValueEx（Python 标准库只读读取）",
+      "reg query <key>（命令行只读查询）",
+      "reg add / reg delete（写，需权限）",
+      "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion（ProductName / DisplayVersion / CurrentBuild / UBR，版本权威来源）",
+      "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced（界面与性能相关策略）"
+    ],
+    "docs": [
+      "Windows Registry 参考（Registry Functions / Registry Value Types）",
+      "Python winreg 模块文档"
+    ],
+    "summary": "注册表是 Windows 的配置中枢：版本、电源、更新、存储策略、界面偏好都落在这里。版本信息以 HKLM\\...\\CurrentVersion 为权威来源（与 WMI Win32_OperatingSystem 一致）。",
+    "advice": "只读核对用 winreg.OpenKey + QueryValueEx（或 reg query）。写注册表要谨慎：系统级键需管理员权限、改错可能影响启动；企业域策略会覆盖本地值。绝不整键删除，只改需要改的单个值。"
+  },
+  "wmi_cim": {
+    "name": "WMI / CIM（Windows 管理规范：Common Information Model）",
+    "org": "Microsoft / DMTF",
+    "url": "https://learn.microsoft.com/windows/win32/wmisdk/wmi-start-page",
+    "protocols": [
+      "CIM（DMTF 通用信息模型）在 Windows 上的实现：类继承体系（CIM_* 基类 → Win32_* 子类）、命名空间 root/cimv2 / root/Microsoft/Windows/Storage",
+      "本地访问走 COM/DCOM，远程走 WS-Man（WinRM，5985/HTTP 与 5986/HTTPS）",
+      "查询语言 WQL（类 SQL 子集，仅支持 SELECT / WHERE / ASSOCIATORS OF）",
+      "现代 PowerShell 用 CIM cmdlet（Get-CimInstance）替代旧 WMI cmdlet；MSFT_* 为新式类（存储、网络）"
+    ],
+    "interfaces": [
+      "Get-CimInstance Win32_OperatingSystem（版本/内存/启动时间，只读）",
+      "Get-CimInstance Win32_LogicalDisk（逻辑盘容量，只读）",
+      "Get-CimInstance MSFT_PhysicalDisk / Get-PhysicalDisk（物理盘健康与介质类型，只读）",
+      "Get-CimInstance Win32_Volume（卷与可用空间，只读）",
+      "Invoke-CimMethod（调用类方法，写）"
+    ],
+    "docs": [
+      "WMI SDK / About WMI",
+      "DMTF CIM Schema；Get-CimInstance 参考"
+    ],
+    "summary": "WMI/CIM 是 Windows 上统一的「管理对象」层，把操作系统、磁盘、网络、服务都抽象成可查询的类。它比解析命令行输出稳定得多，是查询版本与磁盘的推荐只读接口。",
+    "advice": "只读用 Get-CimInstance（Win32_OperatingSystem / Win32_LogicalDisk / Win32_Volume）。写操作（Invoke-CimMethod）只在明确意图下做。切勿禁用 WinRM/WMI 服务——大量管理工具（含 SCCM、监控代理）依赖它。"
+  },
+  "powercfg": {
+    "name": "powercfg（Windows 电源配置：计划 / 子组 / 设置项）",
+    "org": "Microsoft",
+    "url": "https://learn.microsoft.com/windows-hardware/design/device-experiences/powercfg-command-line-options",
+    "protocols": [
+      "电源计划以 GUID 标识：381b4222-f694-41f0-9685-ff5bb260df2e（平衡）、8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c（高性能）、a1841308-3541-4fab-bc81-f71556f20b4a（节能）",
+      "计划内分 subgroup / setting 两级：SUB_VIDEO、SUB_SLEEP、SUB_PROCESSOR、SUB_DISK 等，每个设置项有独立 GUID 且区分 AC（插电）与 DC（电池）两个索引值",
+      "电源策略最终映射到 ACPI 睡眠态（S0 现代待机 / S3 睡眠 / S4 休眠）与固件接口",
+      "休眠文件 hiberfil.sys 支持 full / reduced 两种类型；现代待机（Modern Standby）机器上语义不同"
+    ],
+    "interfaces": [
+      "powercfg /list（列出全部电源计划，只读）",
+      "powercfg /getactivescheme（当前计划，只读）",
+      "powercfg /query（展开子组与设置项，只读）",
+      "powercfg /batteryreport（电池健康报告，只读）",
+      "powercfg /setactive <GUID>（切换计划，写）",
+      "powercfg /change monitor-timeout-ac <分钟>（改超时，写）",
+      "powercfg /h /type reduced|full、/hibernate on|off（休眠文件，写）"
+    ],
+    "docs": [
+      "powercfg command-line options",
+      "电源管理参考 / ACPI Specification（UEFI Forum）"
+    ],
+    "summary": "powercfg 是电源配置的官方命令行：读用 /list /getactivescheme /query，写用 /setactive /change /h。计划的每个设置项都有 GUID 且区分插电与电池两套值，因此「高性能」不是单一开关而是上百个设置项的集合。",
+    "advice": "只读核对用 /list + /getactivescheme + /query。切换计划随时可切回（记住原 GUID）。回收空间优先用 /h /type reduced（休眠文件减半、保留快速启动），比 /hibernate off 温和；彻底关休眠会失去休眠与快速启动。"
+  },
+  "dism": {
+    "name": "DISM / CBS（部署映像服务与管理 + 组件化服务）",
+    "org": "Microsoft",
+    "url": "https://learn.microsoft.com/windows-hardware/manufacture/desktop/dism-image-management-command-line-options",
+    "protocols": [
+      "servicing stack + CBS（Component Based Servicing）：系统组件按「包 / 功能 / 驱动」为单位管理",
+      "WinSxS 组件存储允许同一组件的多个版本并存——新版本取代旧版本，旧版本保留以便卸载更新",
+      "映像可以是联机（/Online）或脱机 WIM/VHD（/Image:<path>）",
+      "包格式：.cab / .msu；功能（Feature）用 /Enable-Feature /Disable-Feature 管理"
+    ],
+    "interfaces": [
+      "DISM /Online /Get-CurrentEdition（当前版本，只读）",
+      "DISM /Online /Cleanup-Image /AnalyzeComponentStore（分析可回收量，只读但耗时）",
+      "DISM /Online /Cleanup-Image /StartComponentCleanup（清理被取代版本，写）",
+      "DISM /Online /Cleanup-Image /RestoreHealth（修复组件存储，写）",
+      "DISM /Online /Cleanup-Image /StartComponentCleanup /ResetBase（清全部被取代版本，写且不可逆）"
+    ],
+    "docs": [
+      "DISM Image Management Command-Line Options",
+      "组件存储（WinSxS）管理文档"
+    ],
+    "summary": "DISM 是 Windows 映像与组件存储（WinSxS）的官方管理工具，也是 SFC 修复失败的兜底（先 RestoreHealth 再 sfc /scannow）。组件存储体积随时间增长，属正常现象。",
+    "advice": "只读核对优先用 /Get-CurrentEdition；要看可回收量用 /AnalyzeComponentStore（只分析不改动，但较慢）。清理用 /StartComponentCleanup（保留卸载能力）；/ResetBase 会移除所有被取代版本、导致已装更新无法卸载，本项目不做。"
+  },
+  "sfc": {
+    "name": "SFC / WRP（系统文件检查器 + Windows 资源保护）",
+    "org": "Microsoft",
+    "url": "https://learn.microsoft.com/windows-server/administration/windows-commands/sfc",
+    "protocols": [
+      "WRP（Windows Resource Protection）保护系统文件、文件夹与注册表键，由 TrustedInstaller 拥有",
+      "完整性校验基于目录签名 / 哈希；损坏的系统文件从组件存储（WinSxS）还原",
+      "SFC 与 DISM 分工：SFC 校验并还原文件，DISM 修复作为还原源的组件存储",
+      "离线修复可用 /OffBootDir + /OffWinDir 指定脱机系统目录"
+    ],
+    "interfaces": [
+      "sfc /verifyonly（只校验不修复，只读语义）",
+      "sfc /scannow（扫描并修复受保护系统文件，写）",
+      "sfc /scanonce、sfc /revert（一次性扫描 / 恢复默认设置）",
+      "CBS.log（%SystemRoot%\\Logs\\CBS\\CBS.log 记录校验与修复明细）"
+    ],
+    "docs": [
+      "sfc 命令参考",
+      "Windows Resource Protection (WRP)"
+    ],
+    "summary": "SFC 是系统文件完整性的官方校验/修复工具，与 ZFS scrub 定位类似：官方遍历校验并在有还原源时自愈，不动用户数据。",
+    "advice": "只核对用 /verifyonly；修复用 /scannow（需管理员权限、耗时长）。若 SFC 报告无法还原，先跑 DISM /Online /Cleanup-Image /RestoreHealth 再重跑 SFC。切勿手工替换受 WRP 保护的系统文件。"
+  },
+  "storage_sense": {
+    "name": "存储感知（Storage Sense：系统自带空间回收策略引擎）",
+    "org": "Microsoft",
+    "url": "https://support.microsoft.com/windows/manage-drive-space-with-storage-sense",
+    "protocols": [
+      "系统内置的空间回收策略引擎，按阈值 / 周期自动触发（低磁盘空间、每日、每周、每月）",
+      "可清理项：Windows 临时文件、回收站超期项、Downloads 超期文件（可选）、未使用的云内容脱水（OneDrive 仅联机）",
+      "策略值存于注册表 HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\StorageSense\\Parameters\\StoragePolicy，各开关为命名 DWORD（01/04/32/2048 等）",
+      "企业环境可由 MDM / 组策略对应策略下发，组策略优先级高于本地用户设置"
+    ],
+    "interfaces": [
+      "读 StoragePolicy 下各 DWORD 值（只读核对当前策略）",
+      "设置 → 系统 → 存储 → 存储感知（图形入口，官方）",
+      "设置 01=1 启用存储感知（写，HKCU 当前用户）",
+      "设置 2048（回收站清理周期）、32（临时文件清理）、04（Downloads 清理）等 DWORD（写）"
+    ],
+    "docs": [
+      "用存储感知管理驱动器空间",
+      "StoragePolicy 注册表值说明 / MDM Storage 策略"
+    ],
+    "summary": "存储感知是 Windows 自带的空间回收机制，用它替代手工删临时文件是最稳的做法：系统按策略周期清理，不误删用户数据。",
+    "advice": "只读核对接注册表 StoragePolicy 的 DWORD（01/04/32/2048 等）。开启只需当前用户权限（HKCU），无需管理员。企业机器上组策略可能覆盖本地值，改完不生效属正常。"
+  },
+  "delivery_optimization": {
+    "name": "传递优化（Delivery Optimization：更新分发的 P2P 缓存层）",
+    "org": "Microsoft",
+    "url": "https://learn.microsoft.com/windows/deployment/do/waas-delivery-optimization",
+    "protocols": [
+      "更新与应用分发的 P2P 缓存：本地缓存 + 局域网对等节点 + Microsoft 云端源三路取块",
+      "缓存上限按磁盘容量百分比自动调整（DOICMaximumCache / DODownloadMode 等策略，可经 MDM/组策略下发）",
+      "下载模式 DODownloadMode：0=关闭、1=仅局域网、2=局域网+Internet（默认受隐私约束）、99=仅 HTTP 直连、100=旁路缓存",
+      "与 Windows Update、Microsoft Store、Intune 共用同一缓存与策略栈"
+    ],
+    "interfaces": [
+      "Get-DeliveryOptimizationStatus（当前下载任务状态，只读）",
+      "Get-DeliveryOptimizationPerfSnap（下载量与对等占比，只读）",
+      "Get-DeliveryOptimizationLog（诊断日志，只读）",
+      "缓存目录：%SystemRoot%\\SoftwareDistribution\\DeliveryOptimization\\Cache（可清，会重新下载）",
+      "下载模式策略：HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\DeliveryOptimization\\Config（写）"
+    ],
+    "docs": [
+      "Delivery Optimization 文档（Windows 部署）",
+      "Delivery Optimization CSP / 组策略参考"
+    ],
+    "summary": "传递优化把 Windows 更新与 Store 的分发做成 P2P 缓存，能显著省外网带宽，代价是本机留一份缓存。缓存可随时清（会重新下载），与「清理」类任务不同——它不影响任何已安装的更新。",
+    "advice": "只读核对用 Get-DeliveryOptimizationStatus / Get-DeliveryOptimizationPerfSnap，或直接统计缓存目录占用。清缓存只删 Cache 目录内容（等价于重新下载），不要动 DeliveryOptimization 的其它文件；改下载模式用官方策略键，不要用第三方工具禁用 DO 服务。"
+  },
+  "windows_update": {
+    "name": "Windows Update（更新编排：UsoSvc + WU 客户端 + WUfB 策略）",
+    "org": "Microsoft",
+    "url": "https://learn.microsoft.com/windows/deployment/update/waas-manage-updates-wufb",
+    "protocols": [
+      "更新编排服务 UsoSvc（Update Session Orchestrator）驱动扫描 / 下载 / 安装三阶段，WU 客户端（wuaueng.dll）执行",
+      "下载与历史存于 %SystemRoot%\\SoftwareDistribution；质量更新为累积式，功能更新带启用包（enablement package）",
+      "策略来源：Windows Update for Business（WUfB）MDM CSP、组策略、本地注册表（HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate）",
+      "结果记录于 HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\WindowsUpdate\\Auto Update\\Results\\{Detect|Download|Install}"
+    ],
+    "interfaces": [
+      "读 Auto Update\\Results\\Detect 的 LastSuccessTime（上次成功检测时间，只读）",
+      "读 HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate（当前策略，只读）",
+      "设置 → Windows 更新 → 检查更新（官方图形入口）",
+      "UsoClient StartScan / StartDownload / StartInstall（命令行触发，交互反馈有限，非公开稳定 API）",
+      "wuauclt（旧客户端开关，已弃用，不推荐）"
+    ],
+    "docs": [
+      "管理 Windows 更新（WUfB）",
+      "Windows Update Agent API / UsoSvc 说明"
+    ],
+    "summary": "Windows Update 的权威状态在注册表 Results 子键与 UsoSvc 里；UsoClient 命令行触发虽存在但交互反馈有限且非公开稳定 API，因此本项目只做只读核对，安装更新一律指向官方图形入口。",
+    "advice": "只读核对用注册表 Results\\Detect 的 LastSuccessTime 与 Policies 下的策略值。不要用已弃用的 wuauclt；需要扫描/安装请用「设置 → Windows 更新」，企业环境交给 WUfB/MDM 策略。"
+  }
+}

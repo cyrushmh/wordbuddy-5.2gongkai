@@ -1,0 +1,10 @@
+{
+  "src": [
+    "pages/Index",
+    "pages/BookDetail",
+    "pages/ChapterDetail",
+    "pages/DaozangViewer",
+    "pages/ImportText",
+    "pages/XiuzhenMap"
+  ]
+}

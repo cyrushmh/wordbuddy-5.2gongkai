@@ -1,0 +1,12 @@
+{
+  "title": "组网优化与设备协同知识库（meshnet）",
+  "sources": [
+    "WireGuard（RFC 牵引的点对点加密隧道，wg show 拓扑、wg set 配置）",
+    "Mullvad Meshnet（学习来源，模型）：WireGuard P2P 网状、设备链接权限（allow traffic/SSH/local network）",
+    "设备能力适配：算力/GPU/可选存储缓存作为可协同资源",
+    "负载均衡与协同共享（与 reshare 同口径：只共享算力/网络，不共享个人数据）"
+  ],
+  "source_gap": "Mullvad 官方页本次抓取失败（网络不可达），本子系统基于已知 Meshnet 模型构建，已显式标注",
+  "capability_dims": ["compute", "gpu", "storage_cache"],
+  "compliance": "本子系统只读观测：绝不新增 peer、绝不改 wg 配置、绝不动设备权限、绝不共享个人数据"
+}

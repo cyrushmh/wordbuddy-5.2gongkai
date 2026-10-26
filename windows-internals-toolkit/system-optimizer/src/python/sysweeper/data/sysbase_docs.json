@@ -1,0 +1,271 @@
+{
+  "system_layout": {    "name": "系统目录结构：FHS 与「什么是系统」的目录视角（LFS 口径）",
+    "org": "FHS 3.0（Filesystem Hierarchy Standard，Linux Foundation）/ LFS（Linux From Scratch） Book / systemd 文件系统布局",
+    "url": "https://refspecs.linuxfoundation.org/FHS_3.0/ / https://www.linuxfromscratch.org/ / https://www.pathname.com/fhs/ / https://www.slackbook.org/",
+    "protocols": [
+      "FHS 定义「什么目录放什么」：/bin 与 /usr/bin 存普通用户命令（现代发行版已合并（usrmerge），/bin → /usr/bin 符号链接）；/sbin 与 /usr/sbin 存系统管理命令；/lib、/usr/lib 存共享库",
+      "/etc 放**本机配置文件**（文本，包升级不覆盖本地修改的语义由包管理器协商）；/var 放可变数据（日志 /var/log、缓存 /var/cache、邮件 /var/mail）；/opt 放**附加应用软件包**（自包含第三方软件，如 /opt/metasploit-framework）",
+      "/usr 是「只读共享数据」层：/usr/bin 命令、/usr/lib 库、/usr/share 架构无关数据（文档、man、locale、keyring）、/usr/include 头文件、/usr/src 源码；/usr/local 是给本机管理员自己编译安装软件的保留子树（/usr/local/bin、/usr/local/lib），不被发行版包管理器管辖",
+      "/boot 放内核与引导加载器（vmlinuz、initramfs、grub）；/ 根层还含 /dev（udev 设备节点）、/proc 与 /sys（内核虚拟文件系统，只读视图）、/run（运行时易失数据，tmpfs）、/tmp（临时文件）、/mnt 与 /media（挂载点）",
+      "LFS（Linux From Scratch）的视角：一个「系统」= 内核 + 基础工具链 + 系统关键组件；目录结构是这三者的**共同契约**——工具链按 FHS 找库（/lib、/usr/lib），组件按 FHS 找配置（/etc）与数据（/var、/usr/share）",
+      "LFS 临时工具链（第 5 章）：binutils（as/ld 等汇编链接器）→ gcc（编译器）→ glibc（C 库）→ linux-api-headers（内核用户态接口头文件）——先在一台「宿主」上交叉编译出属于目标系统的工具，再 chroot 进目标系统自举",
+      "LFS 关键组件（第 6-8 章）：内核（Linux API）+ 系统关键组件（glibc、binutils、gcc 之外的核心工具集）→ 基础工具链完善 → 系统引导（GRUB/fstab）→ 收尾；BLFS（Beyond LFS）在其上叠加图形、网络、桌面等「进阶」层",
+      "发行版「系统构成」的另一种视角：Slackware 的包集 A/AP/D/E/F/K/KDE/L/N/T/TCL/X/XAP/XFCE/Y 本身就是一张分层的「系统构成地图」——A（基础，含 glibc/pkgtools/内核）、L（库）、N（网络）、X/XAP（图形）、K/KDE/XFCE（桌面）等，每个系列即一个职责域；这与 LFS 的「工具链+关键组件+引导」构成论互为表里：二进制发行版用包集切分系统，LFS 用章节切分系统（详见 distro.json 的 Slackware 官方文档 references）",
+      "「什么是系统」的操作性定义（本工具口径）：能自持运行的最小集合 = 引导加载器 + 内核 + init（systemd 等）+ shell + 核心工具集（coreutils/fileutils/textutils）+ C 库；缺任一不可启动或缺基本命令",
+      "「什么是基础工具链」：把源码变成可执行程序的工具集合——汇编器(as)、链接器(ld)、编译器(gcc/clang)、C 库(glibc 提供 libc.so 与头文件)、调试器(gdb)、构建驱动(make/cmake)；语言层还有各语言运行时（Python/Ruby/Go 工具链）",
+      "「什么是系统关键组件」：系统运行不可缺的组件——内核、init/PID 1、设备管理(udev)、日志(journald)、shell、包管理器本体、C 库；与「应用软件」的分界：组件缺失系统不运行，应用缺失只少功能",
+      "目录即契约的实例：msfinstall 把 metasploit-framework 装进 /opt（附加软件包位）、配置登记进 /etc/apt、签名密钥放进 /usr/share/keyrings、可执行经 update-alternatives 进 /usr/bin——四个目录各司其职，一次安装全部走标准位置"
+    ],
+    "interfaces": [
+      "native/sysbase.py 只读探测：本机目录布局事实（FHS 关键目录存在性、usrmerge 状态、/opt 附加软件清点）",
+      "绝不写任何系统目录；不创建/删除/修改文件——只读枚举与存在性检查",
+      "与包管理轴联动：/usr/local 与 /opt 是「发行版包管理器管辖之外」的两个自建软件落点，检测面必须覆盖"
+    ],
+    "docs": [
+      "FHS 3.0（Linux Foundation 文件系统层次标准）",
+      "LFS Book 12.x（Linux From Scratch：从源码构建 Linux 系统）",
+      "BLFS（Beyond Linux From Scratch）",
+      "Slackbook（slackbook.org：Slackware 系统构成与基础管理经典手册）",
+      "systemd.file-hierarchy(7) man page"
+    ],
+    "summary": "系统目录结构（FHS）是「什么放哪里」的全系统契约：/etc 配置、/var 可变数据、/opt 附加软件、/usr 只读共享层、/usr/local 管理员自建地。LFS 视角下一个系统 = 内核 + 基础工具链（binutils/gcc/glibc/linux-api-headers）+ 系统关键组件（init/shell/coreutils/udev），目录结构正是这三者互相找对方的契约。",
+    "advice": "本轴把 FHS/LFS 知识落成只读目录探测（关键目录存在性、usrmerge、/opt 清点），作为包管理与安全检测两个轴的空间底座：不懂目录契约就看不懂包管理器把文件撒向哪里、检测面该查哪里。",
+    "fhs_key_dirs": {
+      "standard": "FHS 3.0 关键目录与本工具探测口径",
+      "/etc": "本机配置文件（文本；包升级时协商本地修改）",
+      "/usr/bin": "普通用户命令（usrmerge 后 /bin 指向此处）",
+      "/usr/sbin": "系统管理命令（usrmerge 后 /sbin 指向此处）",
+      "/usr/lib": "共享库与架构相关数据（usrmerge 后 /lib 指向此处）",
+      "/usr/share": "架构无关数据：文档/man/locale/keyring",
+      "/usr/local": "管理员自编译软件保留子树（发行版包管理器不管）",
+      "/opt": "附加应用软件包（自包含第三方，如 /opt/metasploit-framework）",
+      "/var": "可变数据：log/cache/mail/spool",
+      "/boot": "内核映像与引导加载器",
+      "/proc": "内核与进程虚拟文件系统（只读视图）",
+      "/sys": "内核设备模型虚拟文件系统（只读视图）",
+      "/run": "运行时易失数据（tmpfs）",
+      "/tmp": "临时文件（重启可清空）"
+    },
+    "lfs_layers": {
+      "standard": "LFS/BLFS 分层与本工具「系统定义」口径",
+      "lfs_ch4_host": "宿主准备：构建 LFS 所需的工具与分区",
+      "lfs_ch5_temp_toolchain": "临时工具链：binutils → gcc → glibc → linux-api-headers（交叉编译出自持工具）",
+      "lfs_ch6_chroot": "chroot 进目标系统：构建属于目标系统的临时工具",
+      "lfs_ch7_system": "系统关键组件完善：glibc/binutils/gcc 重编 + 核心工具集",
+      "lfs_ch8_boot": "内核、系统关键组件收尾、引导（GRUB/fstab）",
+      "blfs": "BLFS：在 LFS 之上叠加图形/网络/桌面/服务器等进阶层",
+      "sl_note": "SL 发行版（SoftLayer/Scientific Linux 一类的二进制发行版）与 LFS 互补：LFS 教「系统怎么来的」，二进制发行版给「拿来即用」；needs_verify：用户所指 SL 具体含义"
+    }
+  },
+  "package_formats": {
+    "name": "软件包格式与本地包管理器：deb / rpm 及同类",
+    "org": "Debian Policy Manual（deb 格式）/ RPM Package Manager（rpm.org）/ pacman/apk 官方文档",
+    "url": "https://www.debian.org/doc/debian-policy/ / https://rpm.org/ / https://man.archlinux.org/man/pacman.8 / https://wiki.alpinelinux.org/",
+    "protocols": [
+      "deb（Debian 系）：二进制包 = ar 归档，内含 debian-binary（格式版本）、control.tar.{gz,xz}（控制信息与维护脚本）、data.tar.{xz,zst}（实际文件树）；高层工具 dpkg 负责装/卸/查询，apt 负责依赖解析与仓库获取",
+      "rpm（Red Hat 系）：单一 .rpm 文件 = lead + 签名段 + header + payload（cpio 归档）；高层工具 yum/dnf（及历史上的 up2date）负责依赖解析；rpm 本身管数据库 /var/lib/rpm",
+      "包元数据（两种格式共有）：名称、版本、修订（deb 的 Debian revision / rpm 的 release）、架构（amd64/arm64/all/noarch）、依赖（Depends/Requires）、冲突/提供（Conflicts/Provides）、维护脚本（deb 的 pre/postinst、prerm/postrm；rpm 的 %pre/%post  scriptlet）、校验和与签名",
+      "版本串比较：deb 与 rpm 都有严格的版本比较算法（dpkg --compare-versions；rpm 有 rpmvercmp），不是字典序——「1.10 > 1.9」必须按数值段比较；msf 的 nightly 版本串 6.5.3~20260818061200~1rapid7-1 中 ~ 表示「低于空」（6.5.3~x < 6.5.3），是 deb 版本序的标准惯法",
+      "本地包管理器职责边界：dpkg/rpm = 「装这一个包、跑它的维护脚本、记数据库」；apt/yum/dnf = 「找仓库、解依赖、决定装哪几个版本、调用底层工具」；pacman（Arch）/ apk（Alpine）把两层合成一个工具",
+      "包数据库即事实源：dpkg -l / rpm -qa 列出已安装包；dpkg -L <pkg> / rpm -ql <pkg> 列出包装了哪些文件——**检测脚本应查数据库而不是只查文件**（git 安装的软件在数据库里没有记录）",
+      "维护脚本的双刃剑：安装/卸载时自动执行的 shell 脚本是包管理器的力量也是攻击面（供应链）；签名（deb 的 InRelease/Release.gpg、rpm 的 --checksig）验证的是「包出自登记的公钥持有者」，不验证包内容无害",
+      "update-alternatives（Debian 系）：同一功能多个提供者的管理机制（如 msfconsole/msfd/msfvenom 等 12 个命令经 /etc/alternatives 符号链接进 /usr/bin），是「/opt 自包含软件接入系统 PATH」的标准姿势",
+      "与 git 源码安装的对照：源码安装（克隆 + make/install 或 bundler）没有包数据库记录、没有依赖声明、没有卸载机制——文件撒向 /usr/local 或自选目录；优点是最新、可裁剪，代价是自维护"
+    ],
+    "interfaces": [
+      "native/sysbase.py 只读调用：dpkg -l / rpm -qa / 命令存在性（which msfconsole）——只查询不安装不卸载",
+      "版本串解析：支持 deb 式版本（含 ~ 与 1rapid7-1 修订）的拆分展示",
+      "绝不调用 apt-get install/remove、dpkg -i/-r、rpm -i/-e 等写路径"
+    ],
+    "docs": [
+      "Debian Policy Manual 第 5 章（Control files 与 binary package 结构）",
+      "RPM Guide（rpm.org 官方）",
+      "dpkg(1) / apt(8) / rpm(8) / dnf(8) man pages",
+      "update-alternatives(8) man page"
+    ],
+    "summary": "deb 与 rpm 是两大二进制软件包格式：deb 是 ar 归档（control + data 两段），rpm 是带头签名的 cpio payload；底层工具（dpkg/rpm）管「装这一个包并记账」，高层工具（apt/yum/dnf）管「解依赖、选版本、找仓库」。包数据库是清点的事实源；update-alternatives 让 /opt 自包含软件的标准命令进入系统 PATH。",
+    "advice": "本轴支撑两个下游用途：① 检测面必须同时查包数据库与文件系统（覆盖 deb 安装与 git 安装两种路径）；② 版本串解析（含 ~ 与修订号）是 EOL/新鲜度巡检的基础。",
+    "deb_vs_rpm": {
+      "standard": "两大格式对照（本工具只读探测口径）",
+      "deb_format": "ar 归档：debian-binary + control.tar.gz + data.tar.xz",
+      "rpm_format": "lead + 签名头 + header + cpio payload",
+      "deb_lowlevel": "dpkg（/var/lib/dpkg 数据库）",
+      "deb_highlevel": "apt / apt-get（仓库 + 依赖解析）",
+      "rpm_lowlevel": "rpm（/var/lib/rpm 数据库）",
+      "rpm_highlevel": "yum / dnf（仓库 + 依赖解析）",
+      "query_installed": "dpkg -l <name> / rpm -q <name>",
+      "query_files": "dpkg -L <pkg> / rpm -ql <pkg>",
+      "signatures": "deb: InRelease + Release.gpg；rpm: header 签名 + rpm --checksig",
+      "alternatives": "Debian: update-alternatives；RPM 系无等价物（冲突由 Provides/Obsoletes 表达）"
+    },
+    "version_string_anatomy": {
+      "standard": "以本次实录 metasploit-framework 6.5.3~20260818061200~1rapid7-1 为例",
+      "upstream_version": "6.5.3",
+      "nightly_timestamp": "~20260818061200（构建时间戳，~ 在 deb 版本序中低于空，故 nightly < 同名正式版）",
+      "packager_revision": "1rapid7-1（打包者修订：rapid7 的第 1 次打包，deb 修订号 1）",
+      "architecture": "amd64（另见 i386/armhf/arm64；源码包为 all 或无架构）"
+    }
+  },
+  "network_repos": {
+    "name": "网络包管理器：apt/yum 仓库协议、GPG 签名与 pin 优先级",
+    "org": "Debian Repository Format（https://wiki.debian.org/DebianRepository/Format）/ apt-secure(8) / reprepro 官方手册 / Rapid7 metasploit-omnibus",
+    "url": "https://apt.metasploit.com/ / https://rpm.metasploit.com/ / https://wiki.debian.org/DebianRepository/Format",
+    "protocols": [
+      "apt 仓库三段式：dists/<suite>/<component>/binary-<arch>/Packages（索引）+ pool/（实体包）+ Release/InRelease（签名与校验和清单）；sources.list 一行 `deb [选项] URI suite component` 即订阅",
+      "签名链：仓库维护者用私钥签 Release（InRelease 内联签名或 Release + Release.gpg 分离签名），客户端用登记的公钥（/etc/apt/trusted.gpg.d/ 或 sources.list 的 signed-by 指向的 keyring）验签；验过签的 Release 里的 SHA256 再校验 Packages 与包体——**信任锚是公钥，不是 HTTPS**（HTTPS 只防偷窥）",
+      "signed-by 的精确绑定：现代 apt 支持 `deb [signed-by=/usr/share/keyrings/<name>.gpg]`，把「这个源只能用这把钥匙」写进源定义——比全局 trusted.gpg.d 更符合最小权限；msfinstall 正是这么做的",
+      "pin 优先级：/etc/apt/preferences.d/*.pref 可按 origin/version/release 调整候选版本优先级；Pin-Priority: 1000 表示「该源的包即使降级也装」——msf 的 pin 让官方源压过发行版源（供应链上这是把双刃剑：升级通道完全交给 Rapid7）",
+      "yum/dnf 仓库：/etc/yum.repos.d/*.repo 定义 baseurl/gpgkey/enabled；元数据为 repomd.xml + primary.xml.gz；gpgcheck=1 时用登记的 RPM-GPG-KEY 验签名",
+      "仓库不校验本地发行版：apt 源写 `lucid` 而本机是 noble 照样能装（实测 2026-10-23）——suite 名只是索引路径，仓库服务端（reprepro）不关心客户端是什么系统；风险自负：包内依赖按构建时的目标系统假设",
+      "metasploit apt 仓库实测结构（2026-10-23）：reprepro 管理；dists 覆盖 lucid→xenial（Ubuntu 10.04–16.04）+ wheezy/buster/sid（Debian）+ kali；唯一组件 main；架构 amd64/i386/arm64/armhf；GPG 公钥在 https://apt.metasploit.com/metasploit-framework.gpg.key",
+      "自包含包的依赖策略：metasploit-framework deb 把 Ruby 等依赖全部打进 /opt/metasploit-framework/embedded（omnibus 模式）——装它几乎不碰系统库，这是它能跨古老 suite 工作的原因，也是它体积 408 MB 的原因",
+      "curl|sh 引导器（msfupdate.erb）本质：探测包类型（rpm/suse/deb/pkg）→ 写源文件与 pin → 导入 GPG → 调 apt/yum/zypper/installer——它是包管理器的「预配置脚本」，不是新的安装机制",
+      "更新通道：nightly 包随时间戳日更；msfupdate 命令或包管理器直接升级；msfconsole 启动时自检陈旧（「more than two weeks old」）并提示 msfupdate——版本新鲜度有产品内建提示"
+    ],
+    "interfaces": [
+      "native/sysbase.py 只读盘点本机订阅的第三方仓库（/etc/apt/sources.list.d、/etc/apt/preferences.d、keyring、pin）",
+      "绝不添加/删除源、绝不导入密钥、绝不执行 apt-get update/install",
+      "与 EOL 巡检同纪律：只读报告，人工决策"
+    ],
+    "docs": [
+      "Debian Repository Format（wiki.debian.org）",
+      "apt-secure(8)、apt_preferences(5) man pages",
+      "reprepro 官方文档（reposurgeon 项目）",
+      "metasploit-omnibus GitHub 仓库（Rapid7 官方安装器与打包源码）"
+    ],
+    "summary": "网络包管理器 = 本地包管理器 + 仓库协议 + 信任链：apt/yum 从 HTTP(S) 仓库取索引与包，用登记的 GPG 公钥验签（信任锚是公钥不是 HTTPS），按依赖算法决定安装集。metasploit 的 apt 仓库是活教材：reprepro 三段式、signed-by 精确绑定、pin 1000、suite 不校验客户端、omnibus 自包含包。",
+    "advice": "本轴是「安全与检测」的供应链视角：第三方仓库订阅（源文件 + pin + keyring）是系统可信边界的变化，必须可清点；本次实录的四个痕迹文件就是最小检测集。",
+    "metasploit_apt_repo": {
+      "standard": "apt.metasploit.com 实测结构（2026-10-23）",
+      "manager": "reprepro",
+      "suites": "lucid maverick oneiric precise quantal raring saucy trusty utopic vivid wily xenial jessie wheezy buster sid kali",
+      "components": "main（唯一）",
+      "architectures": "amd64 i386 arm64 armhf",
+      "gpg_key_url": "https://apt.metasploit.com/metasploit-framework.gpg.key",
+      "latest_observed": "6.5.3~20260818061200~1rapid7-1（2026-08-18 构建）",
+      "package_count": "20 个 .deb（pool/main/m/metasploit-framework/）",
+      "note": "不含 bionic/focal/jammy/noble 等现代 Ubuntu suite——源侧不校验客户端发行版，装不装由用户自负"
+    },
+    "trust_chain": {
+      "standard": "apt 信任链四步（本工具检测口径）",
+      "step1": "源定义登记签名公钥（trusted.gpg.d 或 signed-by keyring）",
+      "step2": "公钥验 Release/InRelease 签名",
+      "step3": "Release 内 SHA256 校验 Packages 索引",
+      "step4": "Packages 内校验和校验包体",
+      "pitfall": "HTTPS 只保密不认证；认证全靠 GPG 公钥——公钥本身的分发（curl 拿到的 .gpg.key）是信任锚的软肋"
+    }
+  },
+  "msf_distro": {
+    "name": "Metasploit Framework 分发渠道、安装路径与检测面（安全与检测）",
+    "org": "Rapid7（Metasploit 项目）/ docs.metasploit.com / metasploit-omnibus",
+    "url": "https://docs.metasploit.com/docs/using-metasploit/getting-started/nightly-installers.html / https://apt.metasploit.com/ / https://github.com/rapid7/metasploit-framework",
+    "protocols": [
+      "官方分发矩阵：Linux/macOS 一键脚本（msfupdate.erb，curl|sh 官方文档形态）；Linux 手动 .deb（apt.metasploit.com，i386/amd64/armhf/arm64）与 .rpm（rpm.metasploit.com）；macOS .pkg（osx.metasploit.com/metasploitframework-latest.pkg，pkgutil 验签后 installer 安装）；Windows .msi（windows.metasploit.com，支持 /q 静装，默认落 C:\\metasploit-framework）",
+      "nightly 与 stable：nightly 按日构建（版本串带构建时间戳），未经稳定测试周期；stable 另有发版渠道——企业环境应明确自己订阅的是哪条通道",
+      "安装后布局：Linux/macOS 落 /opt/metasploit-framework（bin + embedded[捆绑 Ruby 工具链] + version-manifest.json）；Windows 落 C:\\metasploit-framework 并写入 %PATH%",
+      "命令接入：deb 包经 update-alternatives 把 msfconsole/msfd/msfdb/msfvenom/msfupdate/msfrpc/msfrpcd/msfrop/msfpescan/msfelfscan/msfmachscan/msfbinscan 共 12 个命令注册进 /usr/bin",
+      "版本自检：msfconsole 启动时检查副本陈旧（超过两周提示 msfupdate）——产品内建的新鲜度提示，与本工具 EOL 巡检同一目的",
+      "AV/EDR 视角：官方文档明示安装包会被杀软报毒（与恶意工具集同源同形），授权团队需白名单安装目录；**未授权环境出现 msfconsole/msfvenom 痕迹即高信号**",
+      "检测面（deb/apt 路径留四类痕迹）：① dpkg 数据库记录（metasploit-framework 包）；② /etc/apt/sources.list.d/metasploit-framework.list 源订阅；③ /etc/apt/preferences.d/pin-metasploit.pref（Pin-Priority 1000）；④ /usr/share/keyrings/metasploit-framework.gpg 签名密钥",
+      "检测面（git/源码路径）：无包数据库记录，只在工作目录留克隆（如 ~/metasploit-framework）+ Gemfile/bundler 依赖；检测须查文件系统与 PATH，不能只查包数据库",
+      "检测面（平台包路径）：macOS 查 /Applications 或 pkgutil --pkg-info；Windows 查 C:\\metasploit-framework 与注册表卸载项；rpm 路径查 rpm -q 与 /etc/yum.repos.d/metasploit-framework.repo",
+      "本机实录（2026-10-23，Ubuntu 24.04）：msfinstall 成功安装 6.5.3~20260818061200~1rapid7-1（408 MB deb / 907 MB 磁盘）；四类痕迹全部经核验存在；msfconsole --version → Framework Version: 6.5.3-dev-",
+      "供应链启示：官方文档推荐的 curl|sh 是便利与信任的交换；pin 1000 使 Rapid7 源压过发行版源；nightly 通道未走稳定测试——清点系统时应把「订阅了哪些第三方源 + pin 优先级」当作可信边界变更来记录"
+    ],
+    "interfaces": [
+      "native/sysbase.py 只读检测：msfconsole/msfvenom 等命令存在性、dpkg/rpm 包记录、四类 apt 痕迹、/opt 安装目录、git 克隆目录、版本解析",
+      "本机已真实安装（用户要求）——探针输出即「自我检测」活例：装了就能报出来",
+      "绝不启动 msfconsole 跑任何模块、不生成载荷、不做任何扫描/利用动作"
+    ],
+    "docs": [
+      "docs.metasploit.com Nightly Installers（Rapid7 官方）",
+      "metasploit-omnibus（GitHub，安装器与打包源码）",
+      "metasploit-framework（GitHub，框架源码，git 安装路径的上游）",
+      "apt.metasploit.com 仓库实测（2026-10-23）"
+    ],
+    "summary": "Metasploit 有完整的官方分发矩阵：apt/rpm 仓库（deb/rpm 二进制包）、osx/windows 安装器（pkg/msi）、curl|sh 引导器与 git 源码。deb 路径留四类可检测痕迹（包记录/源订阅/pin/keyring），git 路径只留工作目录——安全清点必须两路都查。本机已按官方渠道安装 6.5.3 并全部核验。",
+    "advice": "本轴把「安全工具的供应链与检测」落成只读探针：既服务蓝队清点（我这台机器装了什么、订阅了什么源），也服务授权渗透团队的合规自证（安装路径留痕可查）。探针本身不利用、不攻击。",
+    "official_channels": {
+      "standard": "官方分发矩阵（docs.metasploit.com nightly-installers，2026-10-23 核）",
+      "linux_macos_bootstrap": "curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall && chmod 755 msfinstall && ./msfinstall",
+      "linux_deb": "https://apt.metasploit.com（i386/amd64/armhf/arm64）",
+      "linux_rpm": "https://rpm.metasploit.com（x86_64）",
+      "macos_pkg": "https://osx.metasploit.com/metasploitframework-latest.pkg（pkgutil --check-signature 验签）",
+      "windows_msi": "https://windows.metasploit.com/metasploitframework-latest.msi（/q 静装，INSTALLLOCATION）",
+      "source_git": "https://github.com/rapid7/metasploit-framework（git 路径，bundler 自持依赖）",
+      "omnibus_source": "https://github.com/rapid7/metasploit-omnibus（安装器与打包器源码）"
+    },
+    "install_paths": {
+      "standard": "四条安装路径与检测面对照",
+      "apt_deb": "二进制包+仓库：dpkg 记录 + sources.list.d + pin + keyring 四痕迹；可经 msfupdate/apt 升级",
+      "bootstrap_script": "curl|sh：只是 apt/yum/zypper/installer 的预配置封装，痕迹同对应底层路径",
+      "platform_pkg": "pkg/msi 安装器：macOS /Applications 或 pkgutil；Windows C:\\metasploit-framework + %PATH%",
+      "git_source": "git 克隆 + bundler：无包记录，只留工作目录；检测须查文件系统",
+      "detection_rule": "两路都查：包数据库（dpkg/rpm）+ 文件系统（/opt、PATH、工作目录）+ 仓库订阅（源/pin/keyring）"
+    },
+    "local_install_record": {
+      "standard": "本机安装实录（2026-10-23，Ubuntu 24.04.3 noble，x86_64）",
+      "method": "官方 msfinstall（deb/apt 路径）",
+      "package": "metasploit-framework 6.5.3~20260818061200~1rapid7-1 amd64",
+      "size": "下载 408 MB / 安装 907 MB（/opt/metasploit-framework 967 MB 含 embedded）",
+      "repo_used": "https://downloads.metasploit.com/data/releases/metasploit-framework/apt lucid main（suite 硬编码 lucid，noble 上正常工作）",
+      "artifacts": [
+        "/etc/apt/sources.list.d/metasploit-framework.list",
+        "/etc/apt/preferences.d/pin-metasploit.pref（Pin-Priority: 1000）",
+        "/usr/share/keyrings/metasploit-framework.gpg（2271 B）",
+        "/opt/metasploit-framework/{bin,embedded,version-manifest.json}",
+        "dpkg: ii metasploit-framework 6.5.3~20260818061200~1rapid7-1",
+        "update-alternatives: 12 命令入 /usr/bin（msfconsole/msfd/msfdb/msfvenom/msfupdate/msfrpc/msfrpcd/msfrop/msfpescan/msfelfscan/msfmachscan/msfbinscan）"
+      ],
+      "verified": "msfconsole --version → Framework Version: 6.5.3-dev-（rc=0）；启动自检提示 msfupdate（超两周陈旧）"
+    }
+  },
+  "path_namespace": {
+    "name": "路径与命名空间：安装包的相对路径机理与「互联网的本质是目录服务」",
+    "org": "POSIX 路径解析（dirname/realpath）/ URI RFC 3986 / DNS RFC 1034-1035 / Debian 仓库格式",
+    "url": "https://www.rfc-editor.org/rfc/rfc3986 / https://www.rfc-editor.org/rfc/rfc1034 / https://www.debian.org/doc/debian-policy/",
+    "protocols": [
+      "**为什么安装包都是相对路径**：包内文件清单按「相对安装前缀」记录——deb 的 data.tar 里条目形如 ./opt/metasploit-framework/bin/msfconsole、./usr/bin/...，解包时落到 /；rpm 的 payload 文件列表同样是相对 / 的路径。好处：同一个包不绑死根位置（可重定位到 chroot/容器/自定义前缀），diff 与校验和不含机器相关前缀",
+      "仓库索引也是相对路径：apt 的 Packages 里 Filename: pool/main/m/metasploit-framework/xxx.deb 是相对仓库根的路径，客户端拼 baseurl + 相对路径得到下载 URL——「绝对 URL = 基址 + 相对路径」，这是 HTTP 内容寻址的基本式",
+      "自定位包装脚本模式：msfvenom 的用法行实证 /opt/metasploit-framework/bin/../embedded/framework/msfvenom——bin/ 下的包装器以 $0 为基准用 ../ 找到 embedded/ 里的真身；/opt 自包含软件（omnibus 模式）靠这个模式把「安装前缀」变成可搬家目录",
+      "update-alternatives 的相对性：/usr/bin/msfconsole → /etc/alternatives/msfconsole → /opt/metasploit-framework/bin/msfconsole 两跳符号链，系统命令位与实体分离，换提供者只改链不改命令",
+      "**互联网的本质是目录服务**：DNS 是把名字解析成地址的目录（层级域名空间 + 委派），URL 是目录路径（scheme://authority/path?query），apt/yum 仓库是按路径组织的包目录，搜索引擎是全网目录的倒排索引——互联网的主干协议都是在层级命名空间里做「查目录→取内容」",
+      "目录服务三要素（以 DNS 为例）：命名空间（层级域名）、解析器（名字→记录）、记录类型（A/AAAA/CNAME/...）；apt 仓库同构：suite/component/arch 是命名空间，Packages 索引是解析器，包记录是结果",
+      "安全与隐私是目录服务的两个衍生问题：安全——目录投毒（DNS 劫持/伪造仓库索引）与信任锚（DNSSEC/GPG 签名）；隐私——查询本身泄露兴趣（DNS 查询日志），于是有 DoH/DoT 加密查询",
+      "需求是目录服务的扩展方向：当「查目录」不够（要算力/存储/带宽）就有云计算，要实时就有消息推递，要身份就有账户体系——但底层仍是「在命名空间里定位资源」",
+      "冗余不是错误而是设计选择：目录/服务的「重复」有时是必要的——多入口（同服务的镜像/多 URL）、别名路径（/bin 与 /usr/bin 并存）、可读化命名（汉字目录名便于适老化与无障碍访问）都是为适老化（银发用户）与无障碍（a11y）而保留的冗余；原则是「允许冗余但不是不用」——明确别名的镜像提升可达性，但每个副本都要可追溯、可清点（本工具的检测面正是对这种冗余做资产登记）",
+      "目录即服务的后期演化就是根服务器 DNS：从本地目录 → 包仓库 → URL → 普通 DNS → 根服务器，层级目录服务的顶点是 13 组根服务器——它们是「目录的目录」，把顶级域委派给各注册局；根服务器 DNS 是目录服务演化的 apex，也是整张互联网目录之网的信任根",
+      "对本工具的意义：探针盘点的 /opt 目录、apt 源 URL、keyring 都是这张目录之网上的节点；「系统目录 + 包仓库 + DNS/URL + 根」是同一套目录思维的四层落地"
+    ],
+    "interfaces": [
+      "native/sysbase.py 展示包装脚本相对定位与符号链两跳结构（只读解析，不执行）",
+      "本轴为概念层供料：把「目录服务」提升为系统/网络/安全三轴共通的根概念"
+    ],
+    "docs": [
+      "RFC 3986（URI 通用语法：路径即目录）",
+      "RFC 1034/1035（域名系统：互联网的目录服务）",
+      "Debian Policy 5（二进制包结构与相对路径）",
+      "msfvenom --help 实测（2026-10-23，相对路径用法行实证）"
+    ],
+    "summary": "安装包用相对路径：包内清单相对安装前缀记录（./opt/...、pool/main/...），客户端按「基址+相对路径」解析；/opt 自包含软件更以 $0 相对的 ../ 包装脚本实现可搬家。上升到互联网：DNS 是名字目录、URL 是路径、apt 仓库是包目录——互联网的本质就是目录服务，安全（投毒与信任锚）与隐私（查询日志）是它的两个衍生问题，需求（算力/实时/身份）是它的扩展方向。目录即服务的后期演化为根服务器 DNS（目录的目录），而冗余（镜像/别名/可读化命名）常为适老化与无障碍（a11y）保留——允许冗余但不是不用。",
+    "advice": "本轴把「相对路径」与「目录服务」提升为系统基座的根概念：看懂包内相对路径就看懂仓库寻址，看懂 DNS/URL 就看懂互联网。三者共用同一套目录思维，是本工具连接「系统目录-包管理-网络」三轴的概念枢纽；把目录即服务推到 apex 即根服务器 DNS，把冗余视为适老化/无障碍的设计选择而非缺陷——概念系统据此既教「怎么定位资源」也教「为什么保留可达性的冗余」。",
+    "relpath_examples": {
+      "standard": "本次 msf 实录中的相对路径实证（2026-10-23）",
+      "deb_data_tar": "包内条目 ./opt/metasploit-framework/bin/msfconsole（相对 /，可重定位）",
+      "repo_index": "Packages: Filename: pool/main/m/metasploit-framework/xxx.deb（相对仓库根）",
+      "wrapper_script": "msfvenom 用法行 /opt/metasploit-framework/bin/../embedded/framework/msfvenom（$0 相对定位）",
+      "alternatives_two_hops": "/usr/bin/msfconsole → /etc/alternatives/msfconsole → /opt/metasploit-framework/bin/msfconsole"
+    },
+    "directory_service_stack": {
+      "standard": "互联网目录服务栈（本工具概念层口径）",
+      "dns": "名字→地址（层级域名 + 委派解析；DNSSEC 防投毒）",
+      "url_path": "scheme://authority/path（路径即目录定位）",
+      "pkg_repo": "suite/component/arch + Packages 索引（包目录寻址）",
+      "search_engine": "全网内容的倒排目录索引",
+      "root_dns_apex": "根服务器 DNS：目录服务的 apex——13 组根服务器是「目录的目录」，把顶级域委派给各注册局；目录即服务的后期演化就是根服务器 DNS（本地目录 → 包仓库 → URL → DNS → 根）",
+      "security": "衍生问题一：目录投毒与信任锚（GPG/DNSSEC）",
+      "privacy": "衍生问题二：查询即兴趣泄露（DoH/DoT 加密查询）",
+      "requirements": "扩展方向：算力/实时/身份——仍是在命名空间里定位资源"
+    }
+  }
+}

@@ -1,0 +1,156 @@
+{
+ "rfc8981": {
+  "name": "IPv6 隐私扩展 / 临时地址（现行）",
+  "standard": "RFC 8981（2021-02 取代 RFC 4941）",
+  "org": "IETF",
+  "summary": "为出站连接使用临时、定期轮换的 IPv6 地址，降低跨站点追踪。RFC 8981（2021-02）取代原 RFC 4941，机制一致并整合稳定隐私地址（RFC 8064）的默认行为；原 RFC 4941 已废弃，引用以 8981 为准。"
+ },
+ "rfc8200": {
+  "name": "IPv6 协议",
+  "standard": "RFC 8200",
+  "org": "IETF",
+  "summary": "互联网协议第 6 版，解决 IPv4 地址耗尽并简化报头。"
+ },
+ "rfc3168": {
+  "name": "ECN 显式拥塞通知",
+  "standard": "RFC 3168",
+  "org": "IETF",
+  "summary": "在 IP 报头标记拥塞，避免丢包即可降速，提升高延迟链路吞吐。"
+ },
+ "rfc9002": {
+  "name": "TCP BBR 拥塞控制",
+  "standard": "RFC 9002 (QUIC CC) / IETF CCRG BBR",
+  "org": "IETF",
+  "summary": "基于带宽-延迟乘积的拥塞控制，长肥管道下比传统丢包驱动（Cubic）更高效。"
+ },
+ "rfc1191": {
+  "name": "路径 MTU 发现",
+  "standard": "RFC 1191",
+  "org": "IETF",
+  "summary": "动态发现到目的地的路径 MTU，避免分片、提升吞吐。"
+ },
+ "rfc7858": {
+  "name": "DNS-over-TLS",
+  "standard": "RFC 7858",
+  "org": "IETF",
+  "summary": "在 TLS 上传输 DNS，防窃听/篡改（需支持 DoT 的解析器）。"
+ },
+ "rfc8484": {
+  "name": "DNS-over-HTTPS",
+  "standard": "RFC 8484",
+  "org": "IETF",
+  "summary": "在 HTTPS 上传输 DNS，规避审查/劫持（需支持 DoH 的解析器）。"
+ },
+ "ieee80211": {
+  "name": "Wi-Fi 节能",
+  "standard": "IEEE 802.11 (Power Save / WMM)",
+  "org": "IEEE",
+  "summary": "站点（STA）在空闲时进入节能模式，由 AP 缓存下行帧，省电但增延迟。"
+ },
+ "itu_y1541": {
+  "name": "IP 网络性能与 QoS 等级",
+  "standard": "ITU-T Y.1541",
+  "org": "ITU",
+  "summary": "定义 IP 网络性能目标与 QoS 等级，常用 DSCP 标记区分业务（路由器侧生效）。"
+ },
+ "itu_g992": {
+  "name": "ADSL 收发机",
+  "standard": "ITU-T G.992 (G.dmt / G.lite)",
+  "org": "ITU",
+  "summary": "ADSL 物理层规范；链路参数（交织/速率）由 DSLAM 与调制解调器协商。"
+ },
+ "itu_g993": {
+  "name": "VDSL 收发机",
+  "standard": "ITU-T G.993",
+  "org": "ITU",
+  "summary": "VDSL/VDSL2 物理层规范，短距高频宽带接入。"
+ },
+ "itu_g711": {
+  "name": "语音脉冲编码调制",
+  "standard": "ITU-T G.711",
+  "org": "ITU",
+  "summary": "PCM 语音编解码（A-law/μ-law），传统 VoIP/PSTN 互通基础。"
+ },
+ "rfc9330": {
+  "name": "L4S 低时延低丢包可扩展吞吐（架构）",
+  "standard": "RFC 9330（Informational，2023-01）",
+  "org": "IETF",
+  "summary": "Low Latency, Low Loss, and Scalable Throughput (L4S) Internet Service: Architecture。描述 L4S 架构，与 RFC 9331（协议）、RFC 9332（DualQ 耦合 AQM）共同构成体系；本身为信息类文档，非标准轨道。"
+ },
+ "rfc9331": {
+  "name": "L4S 的 ECN 协议（IP 层）",
+  "standard": "RFC 9331（Experimental，2023-01）",
+  "org": "IETF",
+  "summary": "The ECN Protocol for L4S：在 IP 层（IPv4/IPv6 报头）定义 L4S 使用的 ECN，以 ECT(1) 码点标识 L4S 流；含传输层（含 TCP 的 Prague 要求）与网络节点（AQM）行为，实现亚毫秒级排队时延。实验性规范。"
+ },
+ "rfc9332": {
+  "name": "L4S 双队列耦合 AQM",
+  "standard": "RFC 9332（Experimental，2023-01）",
+  "org": "IETF",
+  "summary": "Dual-Queue Coupled AQM for L4S：L4S 架构的网络侧组成；双队列（L4S 队列与 Classic 队列）耦合标记概率 p_C=(p_CL/k)^2（k=2），在公共互联网增量部署 Scalable 拥塞控制，缓解 bufferbloat。实验性规范。"
+ },
+ "rfc8033": {
+  "name": "PIE 比例积分增强队列管理（抗 bufferbloat）",
+  "standard": "RFC 8033（Experimental，2017-02）",
+  "org": "IETF",
+  "summary": "Proportional Integral Controller Enhanced (PIE)：轻量级 AQM 控制方案，以比例+积分控制响应排队时延，直接针对 bufferbloat；Linux 内核 tc pie qdisc（net/sched/sch_pie.c）即其实现，2026-10-23 经内核源码引用与 rfc_catalog 双重核实（R. Pan, P. Natarajan, F. Baker, G. White）。"
+ },
+ "ieee80211ax": {
+  "name": "Wi-Fi 6（高效率 WLAN）",
+  "standard": "IEEE 802.11ax-2021（Wi-Fi 6，2021-05-19 发布）",
+  "org": "IEEE",
+  "summary": "Wi-Fi 6（HE WLAN 修正案）：OFDMA、上行/下行 MU-MIMO、1024-QAM、TWT 目标唤醒时间，面向高密度场景（体育场、智能家居）；理论峰值 9.6 Gbit/s，重点在密集环境下的频谱效率与低功耗而非单纯提速。"
+ },
+ "ieee80211be": {
+  "name": "Wi-Fi 7（极高吞吐 EHT）",
+  "standard": "IEEE 802.11be-2024（Wi-Fi 7，IEEE-SA 2024-09 批准、2025-07-22 发布）",
+  "org": "IEEE",
+  "summary": "Wi-Fi 7（EHT 修正案）：320 MHz 信道（6 GHz）、4096-QAM、Multi-Link Operation (MLO) 多链路、前导码打孔、多 RU；理论峰值约 23 Gbit/s，改善最坏情况时延与抖动。Wi-Fi CERTIFIED 7 认证早于正式出版物。"
+ },
+ "rfc5905": {
+  "name": "网络时间协议 NTPv4",
+  "standard": "RFC 5905（Proposed Standard，2010-06）",
+  "org": "IETF",
+  "summary": "Network Time Protocol Version 4：分组交换网络上的时钟同步协议与算法；标准轨道（Proposed Standard）。注：RFC 5909 并非 NTP，而是 Securing Neighbor Discovery Proxy 问题陈述，NTP 主标准以 RFC 5905 为准。"
+ },
+ "ieee1588": {
+  "name": "精确时间协议 PTP",
+  "standard": "IEEE 1588-2019（活跃，2020 发布）",
+  "org": "IEEE",
+  "summary": "Precision Time Protocol：基于报文时间戳的精密时钟同步，异构系统可同步到主时钟（grandmaster），亚微秒乃至亚纳秒精度（取决于网络设计与 profile）；含 BMCA 最佳主钟算法，经 UDP/IP 或 IEEE 802.3 二层以太网映射。"
+ },
+ "ieee8021as": {
+  "name": "通用精确时间协议 gPTP（TSN 时间同步）",
+  "standard": "IEEE 802.1AS-2020（取代 802.1AS-2011）",
+  "org": "IEEE",
+  "summary": "generalized Precision Time Protocol：TSN 的定时与同步标准，IEEE 1588 的 PTP profile；要求对等与全双工链路、链路沿途每桥均具备定时能力，实现亚微秒级同步；支持多时间域与冗余。"
+ },
+ "itu_g8261": {
+  "name": "同步以太网 SyncE（架构与抖动漂移）",
+  "standard": "ITU-T G.8261 / G.8262 / G.8264",
+  "org": "ITU",
+  "summary": "SyncE：在以太网物理层（ETY）传送频率基准；G.8261 定义架构与 wander 性能，G.8262 定义 SyncE 设备时钟（EEC）精度/保持/噪声，G.8264 定义 ESMC 同步状态消息。提供高稳、可溯源的频率参考，与 PTP（相位/时间）互补。"
+ },
+ "white_rabbit": {
+  "name": "White Rabbit 亚纳秒光纤同步",
+  "standard": "CERN 对 IEEE 1588 PTP 的扩展（开放标准）",
+  "org": "CERN / White Rabbit 协作（基于 IEEE 1588 + SyncE）",
+  "summary": "White Rabbit (WR)：在 IEEE 1588 PTP 之上叠加 SyncE 频率锁定与硬件相位检测（DDMTD），在光纤链路上实现持续亚纳秒（<1 ns，RMS 抖动约 24 ps）时间/相位/频率同步；用于 LHC、射电天文、地理测绘、金融交易、量子网络等高精度场景。边界时钟输出标准 PTP 以兼容普通 PTP 从设备。"
+ },
+ "itu_g8271": {
+  "name": "分组网时间/相位同步架构",
+  "standard": "ITU-T G.8271/Y.1366（2016，2020 版）",
+  "org": "ITU",
+  "summary": "Time and phase synchronization aspects of packet networks：定义分组网中相位/时间同步的分配方法、性能与互操作要求；配套 G.8275（架构）、G.8275.1（PTP 电信相位/时间 profile，全定时支持，现行 2026 版）、G.8273.x（边界/时间时钟）、G.8272（PRTC 主参考时间钟）。与 NTP/PTP 共同覆盖从高延迟地理分布式到城域/接入的时间同步。"
+ },
+ "_national": {
+  "note": "国内场景优先参考国家平台（全国标准信息公共服务平台 std.samr.gov.cn）与中国通信行业标准 YD/T 系列；面向外国用户以 IETF/IEEE/ITU-T 等国际标准为准。"
+ },
+ "ydt": {
+  "name": "中国通信行业标准 YD/T 系列（路由 / 接入 / 传输）",
+  "standard": "YD/T（中华人民共和国通信行业标准，工业和信息化部发布）",
+  "org": "工业和信息化部（国家平台：std.samr.gov.cn）",
+  "tier": "national",
+  "summary": "国内网络与接入设备遵循的行业标准；个别场景按中国标准执行，跨国/对外场景以 RFC / IEEE / ITU-T 等国际标准为准。"
+ }
+}

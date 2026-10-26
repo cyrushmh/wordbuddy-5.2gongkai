@@ -1,0 +1,201 @@
+{
+  "libimobiledevice": {
+    "name": "libimobiledevice（iOS 设备端到端工具套件）",
+    "org": "libimobiledevice 开源项目（基于 Apple 私有 lockdown 协议逆向实现，纯 C、跨平台）",
+    "url": "https://libimobiledevice.org/",
+    "protocols": [
+      "usbmuxd（USB/TCP 多路复用，默认端口 27015）",
+      "lockdown（com.apple.mobile.lockdown 配对与服务发现协议）"
+    ],
+    "interfaces": [
+      "idevice_id（列出已连接设备 UDID）",
+      "ideviceinfo（读取 lockdown 设备值）",
+      "ideviceinstaller（安装/卸载/归档 App）",
+      "idevicesyslog（系统日志中继）",
+      "idevicecrashreport（崩溃报告拷贝）",
+      "idevicediagnostics（诊断与电源管理）",
+      "idevicebackup2（备份/恢复）",
+      "idevicepair / idevicename / idevicedate / idevicesetlocation / ideviceimagemounter"
+    ],
+    "docs": [
+      "套件经 usbmuxd 与 lockdown 与设备通信；PC 端不写入系统分区，无需越狱。",
+      "所有写操作均在「已配对且已信任」的设备上执行，越权操作（remount 系统分区）不在本工具范畴。"
+    ],
+    "summary": "iOS 在 PC 端的「系统接口」主要就是这套 libimobiledevice 命令：读设备值、备份、归档 App、清诊断日志、同步时间等，全部走 Apple 自身的 lockdown 服务。",
+    "advice": "把 iOS 优化严格限定在 libimobiledevice 暴露的安全接口内：备份、归档（非卸载）、清诊断日志、同步时间、清模拟定位。绝不推荐越狱或 remount。"
+  },
+  "lockdown": {
+    "name": "lockdown（iOS 核心配置协议，com.apple.mobile.lockdown）",
+    "org": "Apple Inc.（设备锁定/配对核心服务）",
+    "url": "https://libimobiledevice.org/documentation/",
+    "protocols": [
+      "lockdown 服务发现（StartService 按服务名建立加密通道）",
+      "配对（Pair）后获得设备级访问令牌"
+    ],
+    "interfaces": [
+      "ideviceinfo（读 DeviceName / ProductVersion / BuildVersion / ProductType / SerialNumber 等）",
+      "ideviceinfo -q <domain> -k <key>（按域查具体设备值，如 com.apple.mobile.battery）",
+      "idevicepair（配对/校验/取消配对）"
+    ],
+    "docs": [
+      "lockdown 设备值是 iOS 的「系统配置」载体；只读查询即可拿到机型、系统版本、电量、容量等。",
+      "写设备名用 idevicename；写时间用 idevicedate——二者均为 lockdown 之上的高层封装。"
+    ],
+    "summary": "iOS 没有注册表/plist 的 PC 端直写通道；lockdown 设备值就是它等效的「系统信息面」，只读即可，写仅限设备名与时间这类可逆项。",
+    "advice": "只读探测一律走 ideviceinfo（含 -q 域查询）；写仅限 idevicename / idevicedate 这类可逆操作，绝不改系统分区。"
+  },
+  "usbmuxd": {
+    "name": "usbmuxd（USB 多路复用守护进程）",
+    "org": "Apple Inc.（USB 复用）/ libimobiledevice（开源实现）",
+    "url": "https://github.com/libimobiledevice/usbmuxd",
+    "protocols": [
+      "TCP over USB（将设备上的 lockdown 服务映射到主机本地端口）",
+      "Plist 二进制/XML 帧（请求/响应均以 plist 封装）"
+    ],
+    "interfaces": [
+      "idevice_id -l（枚举当前连接的设备 UDID，即「设备在线」的唯一判定依据）",
+      "系统级 usbmuxd 守护进程（macOS 自带，Linux 需自行启动）"
+    ],
+    "docs": [
+      "所有 libimobiledevice 工具都依赖 usbmuxd 找到设备；无设备时一律优雅降级。",
+      "本工具用 idevice_id -l 探测在线设备，零参数函数内部自动取首个 UDID 派发。"
+    ],
+    "summary": "usbmuxd 是 iOS 设备与 PC 之间的「总线」，它决定了哪些设备在线、可被哪些服务访问。",
+    "advice": "所有 iOS 原生函数先经 idevice_id -l 判定在线；离线/未装 libimobiledevice 时降级为 (False, 文档指引)，不抛异常。"
+  },
+  "installation_proxy": {
+    "name": "installation_proxy（App 安装代理，com.apple.mobile.installation_proxy）",
+    "org": "Apple Inc. / libimobiledevice（ideviceinstaller）",
+    "url": "https://libimobiledevice.org/",
+    "protocols": [
+      "installation_proxy（列举/安装/卸载/归档 App）",
+      "lookup 按 IsUserApplication 区分系统 App 与用户 App"
+    ],
+    "interfaces": [
+      "ideviceinstaller -l -o list_all（列出已装 App）",
+      "ideviceinstaller -a <bundle_id>（归档 App：导出可恢复的 .ipa，非删除）",
+      "ideviceinstaller -U <bundle_id>（卸载，破坏性——本工具不调用）"
+    ],
+    "docs": [
+      "归档（-a）= 把 App 及其容器数据打成可恢复包；与「卸载」（-U，删数据）方向相反。",
+      "iOS 设置里的「卸载未使用的 App」正是归档语义，安全且可逆。"
+    ],
+    "summary": "iOS 的 App 层接口。优化方向是「归档」而非「卸载」：释放空间但不丢数据，随时可恢复。",
+    "advice": "只做归档（ideviceinstaller -a），绝不做卸载（-U）；系统 App 用 IsUserApplication 过滤跳过。"
+  },
+  "afc": {
+    "name": "AFC（Apple File Conduit，com.apple.afc / house_arrest）",
+    "org": "Apple Inc. / libimobiledevice（ifuse / idevicebackup2）",
+    "url": "https://libimobiledevice.org/",
+    "protocols": [
+      "AFC（沙盒内文件读写，受 App 容器与媒体目录限制）",
+      "house_arrest（按 App 沙盒挂载，仅用户数据区）"
+    ],
+    "interfaces": [
+      "ifuse（将 App 沙盒或媒体目录挂载到主机，只读为主）",
+      "idevicebackup2（备份走的是专用备份服务，非裸文件写）"
+    ],
+    "docs": [
+      "AFC 不提供系统分区写权限（那是越狱范畴）；可读取媒体与 App 容器。",
+      "本工具只读探测容量（com.apple.disk_usage），绝不清删系统文件。"
+    ],
+    "summary": "iOS 的文件接口，权限严格。只读用途（容量/媒体）安全，写系统目录越权不做。",
+    "advice": "只读探测用 ideviceinfo -q com.apple.disk_usage 取容量；不挂载写系统目录。"
+  },
+  "crashreport": {
+    "name": "crashreport（崩溃报告拷贝，com.apple.crashreportcopymobile）",
+    "org": "Apple Inc. / libimobiledevice（idevicecrashreport）",
+    "url": "https://libimobiledevice.org/",
+    "protocols": [
+      "crashreportcopymobile（拉取设备崩溃/诊断日志）",
+      "copy + erase（拷贝后删除，日志类数据可再生成）"
+    ],
+    "interfaces": [
+      "idevicecrashreport -l（仅列出崩溃报告，只读）",
+      "idevicecrashreport -e <dir>（拷贝到本地后删除设备端报告，仅日志、可逆）"
+    ],
+    "docs": [
+      "崩溃报告是纯诊断日志，删除后系统会重新生成，无用户数据损失。",
+      "与 Android 的 logcat -c 同属「只清日志缓冲」的安全方向。"
+    ],
+    "summary": "iOS 的诊断日志接口。清理只针对崩溃报告这类可再生的日志，绝不碰用户文档。",
+    "advice": "清理用 idevicecrashreport -e（拷贝+删除日志），不做任何用户数据删除。"
+  },
+  "syslog_relay": {
+    "name": "syslog_relay（系统日志中继，com.apple.syslog_relay）",
+    "org": "Apple Inc. / libimobiledevice（idevicesyslog）",
+    "url": "https://libimobiledevice.org/",
+    "protocols": [
+      "syslog_relay（实时转发设备内核/系统日志）",
+      "relay 通道支持过滤与有限行数抓取"
+    ],
+    "interfaces": [
+      "idevicesyslog（实时流，本工具只读抓末尾有限行做健康快照）",
+      "idevicesyslog -n <N>（仅取最近 N 行，避免长阻塞）"
+    ],
+    "docs": [
+      "只读抓取末尾日志用于「本机核对」，不写入设备。",
+      "仅取有限行数，防止流日志无限挂起。"
+    ],
+    "summary": "iOS 的日志输出接口，只读用于健康快照。",
+    "advice": "只读探测用 idevicesyslog -n 抓末尾有限行，绝不写设备日志。"
+  },
+  "diagnostics": {
+    "name": "diagnostics（诊断服务，com.apple.mobile.diagnostics）",
+    "org": "Apple Inc. / libimobiledevice（idevicediagnostics）",
+    "url": "https://libimobiledevice.org/",
+    "protocols": [
+      "mobile.diagnostics（查询诊断数据、电源与重启控制）",
+      "diagnostics all / ioreg（只读树）/ sleep / restart"
+    ],
+    "interfaces": [
+      "idevicediagnostics diagnostics all（只读诊断快照）",
+      "idevicediagnostics restart（优雅重启，无数据丢失，等效手动重启释放内存）",
+      "idevicediagnostics sleep（进入睡眠）"
+    ],
+    "docs": [
+      "诊断查询为只读；restart 是优雅重启（无数据损失），与 Android 的「重启清内存」同理。",
+      "本工具重启标 medium 风险（打断当前会话），但属安全方向（不删数据）。"
+    ],
+    "summary": "iOS 的诊断与电源接口。只读诊断 + 优雅重启是安全优化手段。",
+    "advice": "诊断用只读查询；重启（restart）仅作内存释放、标 medium 风险且需 --yes。"
+  },
+  "mobilebackup2": {
+    "name": "mobilebackup2（备份服务，com.apple.mobilebackup2）",
+    "org": "Apple Inc. / libimobiledevice（idevicebackup2）",
+    "url": "https://libimobiledevice.org/",
+    "protocols": [
+      "mobilebackup2（增量备份/恢复，加密可选）",
+      "backup 单向导出到主机，restore 反向写回设备"
+    ],
+    "interfaces": [
+      "idevicebackup2 backup <dir>（仅备份到本地，安全、可逆）",
+      "idevicebackup2 restore（反向写回，破坏性——本工具不调用）"
+    ],
+    "docs": [
+      "备份是把设备数据导出到 PC，单向、不触碰设备；是 iOS 最值得做的「优化前置」。",
+      "恢复（restore）会覆盖设备数据，属反向/破坏性，明确不纳入调优。"
+    ],
+    "summary": "iOS 的数据安全接口。优化前先做备份，方向只进不出。",
+    "advice": "只做 backup（导出到本地目录），绝不做 restore（反向写回设备）。"
+  },
+  "mobile_image_mounter": {
+    "name": "mobile_image_mounter（开发者磁盘镜像挂载，com.apple.mobile.mobile_image_mounter）",
+    "org": "Apple Inc. / libimobiledevice（ideviceimagemounter）",
+    "url": "https://libimobiledevice.org/",
+    "protocols": [
+      "mobile_image_mounter（挂载 DeveloperDiskImage 以启用开发者服务）",
+      "挂载后 Instruments / 调试服务可用"
+    ],
+    "interfaces": [
+      "ideviceimagemounter -i <DeveloperDiskImage.dmg>（挂载开发者磁盘镜像，可逆卸载）",
+      "镜像需与设备 iOS 版本匹配，缺失时优雅降级"
+    ],
+    "docs": [
+      "挂载开发者镜像用于启用开发者工具（如 Instruments），不修改用户数据。",
+      "镜像需匹配系统版本；找不到时降级为文档指引，不强行下载。"
+    ],
+    "summary": "iOS 的开发者接口。挂载是安全的可逆操作，但依赖本地镜像文件。",
+    "advice": "仅当本地存在匹配版本的 DeveloperDiskImage 时挂载，否则降级；不联网下载镜像。"
+  }
+}

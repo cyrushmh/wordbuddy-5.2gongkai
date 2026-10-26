@@ -1,0 +1,338 @@
+{
+  "ext4": {
+    "name": "ext4（第四代扩展文件系统，Linux 主流日志文件系统）",
+    "org": "The Linux Kernel / ext4 维护者",
+    "url": "https://docs.kernel.org/filesystems/ext4/index.html",
+    "protocols": [
+      "ext4 磁盘布局：super block / block group / inode table / extent tree（取代间接块）",
+      "ext4 日志(jbd2) 事务提交与回放",
+      "e2fsprogs 工具协议：tune2fs/dumpe2fs 读 superblock 与块组描述符，e2fsck 按组校验"
+    ],
+    "interfaces": [
+      "e2fsck -fn（只读一致性检查，不修复）",
+      "tune2fs -l（读 superblock 可调参数与特性标志）",
+      "dumpe2fs -h（读 superblock 与块组摘要）",
+      "e4defrag <dir>（在线碎片整理，仅对 extent 文件有效）",
+      "resize2fs（在线扩/缩容，须与文件系统同步）"
+    ],
+    "docs": [
+      "ext4 Data Structures and Algorithms（Linux Kernel 文档）",
+      "e2fsprogs(8) man"
+    ],
+    "summary": "ext4 是 Linux 默认日志文件系统，采用 extent 取代间接块、支持 64 位与大文件。碎片在 extent 时代已非主要问题，但长期随机小文件写入仍可能碎片；e4defrag 仅整理 extent 文件。一致性靠 jbd2 日志保证，e2fsck -fn 可只读校验不修复。",
+    "advice": "碎片整理用 e4defrag <dir>（仅对 extent 文件有效，目录或已连续文件无意义）；一致性检查用 e2fsck -fn（只读）。绝不直接操作块设备扇区或用 dd 改写 superblock——会破坏文件系统。扩容/缩容用 resize2fs，且缩容前须先收缩文件系统。"
+  },
+  "btrfs": {
+    "name": "Btrfs（B-tree 写时复制 COW 文件系统）",
+    "org": "The Btrfs Project / kernel.org",
+    "url": "https://btrfs.readthedocs.io/en/latest/",
+    "protocols": [
+      "Btrfs 写时复制(COW) + B-tree（chunk/extent/root tree）",
+      "子卷(subvolume) 与 快照(snapshot)（同 COW，只读快照写时复制）",
+      "配额组(qgroup) 引用计数",
+      "scrub 后台校验（每数据块 checksum）",
+      "balance 重分配（按 usage% 回收未用 chunk）"
+    ],
+    "interfaces": [
+      "btrfs filesystem df/usage（看 data/metadata/unallocated 占比）",
+      "btrfs filesystem defrag（在线碎片整理，COW 下谨慎使用）",
+      "btrfs balance start -dusage/-musage（回收未用 chunk，须控制 usage 幅度）",
+      "btrfs scrub start（后台校验并修复副本）",
+      "btrfs qgroup show（看子卷/快照引用占用）",
+      "btrfs device usage（看各设备分配）"
+    ],
+    "docs": [
+      "Btrfs documentation（readthedocs）",
+      "btrfs(8) man"
+    ],
+    "summary": "Btrfs 是 COW 文件系统，碎片问题被 COW + 自动整理缓解，但快照/子卷多、写入频繁时仍可能碎片；真正的空间杀手是未回收的 chunk（balance）与未清的旧快照/子卷。checksum 保证数据完整性，scrub 可后台校验修复。",
+    "advice": "空间回收用 btrfs balance start -dusage=20 -musage=20（仅搬动已用<20% 的 chunk，控制幅度避免全量重写）；不要裸跑 btrfs balance（全量，极重 IO）。清旧快照用 btrfs subvolume delete。碎片整理 btrfs filesystem defrag（COW 下会写新 extent，对快照文件反而增空间，慎用）。校验用 btrfs scrub。"
+  },
+  "xfs": {
+    "name": "XFS（SGI 高性能 64 位日志文件系统）",
+    "org": "SGI / The XFS Project",
+    "url": "https://man7.org/linux/man-pages/man5/xfs.5.html",
+    "protocols": [
+      "XFS 磁盘布局：AG 分配组 / inode B+tree / extent B+tree / BMBT",
+      "XFS 日志(xlog) 恢复",
+      "xfs_db 调试协议（-r 只读模式，禁止写挂载设备）"
+    ],
+    "interfaces": [
+      "xfs_info（看 AG/块大小/功能标志）",
+      "xfs_db -r -c frag（只读计算碎片率，务必带 -r）",
+      "xfs_fsr（在线碎片整理，仅对真实碎片文件有效）",
+      "xfs_growfs（在线扩容）",
+      "xfs_repair（离线修复，须先 umount）"
+    ],
+    "docs": [
+      "xfs(5) man",
+      "xfs_db(8) / xfs_fsr(8) man"
+    ],
+    "summary": "XFS 面向大文件与高并发，分配组(AG) 减少锁竞争。碎片主要来自大量小文件随机写；xfs_db -r -c frag 可只读计算碎片率，xfs_fsr 在线整理。一致性修复须离线 xfs_repair。",
+    "advice": "只读评估用 xfs_db -r -c frag /dev/...（不要漏 -r，避免写挂载设备）；整理用 xfs_fsr（仅对真实碎片文件有效）。修复务必先 umount 再 xfs_repair——对挂载设备跑 repair 会损坏数据。扩容用 xfs_growfs。"
+  },
+  "zfs": {
+    "name": "OpenZFS（ZFS 开源实现：存储池 + 数据集）",
+    "org": "OpenZFS",
+    "url": "https://github.com/openzfs/zfs",
+    "protocols": [
+      "ZFS 存储池(zpool) + 数据集(dataset/zvol) 架构",
+      "DMU（数据管理单元）对象 + SPA（存储池分配器）",
+      "uberblock + 事务组(TXG) + 校验和(checksum) 端到端",
+      "ARC/L2ARC 缓存",
+      "ZVOL（块卷，expose 为块设备）"
+    ],
+    "interfaces": [
+      "zpool list/status（看池健康/容量）",
+      "zpool scrub（后台校验并修复副本，COW）",
+      "zpool trim（对 SSD 后备盘发 TRIM，回收空闲块）",
+      "zfs list（看数据集占用/压缩/去重）",
+      "zfs destroy（删快照/数据集，释放空间）",
+      "zpool set autotrim=on（自动 TRIM）"
+    ],
+    "docs": [
+      "OpenZFS 源码与文档（GitHub）",
+      "zpool(8) / zfs(8) man"
+    ],
+    "summary": "ZFS 把物理盘组成存储池，上层是数据集/快照/zvol。空间靠快照引用计数、去重、压缩管理。真正的空间杀手是累积快照与未释放的旧数据集；SSD 后备池应定期 zpool trim 回收空闲块。",
+    "advice": "空间回收：删旧快照 zfs destroy <pool>/<ds>@<snap>，再释放数据集。SSD 池用 zpool trim <pool>（或 zpool set autotrim=on 自动）。完整性校验 zpool scrub（COW+校验和，可修副本）。勿直接操作底层 vdev 设备——ZFS 自己管理分配。"
+  },
+  "lvm": {
+    "name": "LVM（逻辑卷管理：物理卷/卷组/逻辑卷）",
+    "org": "Red Hat / LVM 维护者",
+    "url": "https://man7.org/linux/man-pages/man8/lvm.8.html",
+    "protocols": [
+      "LVM 元数据格式（PV 标签 / VG 元数据 / LV 结构）",
+      "device-mapper 映射（线性/条带/镜像/thin）",
+      "精简置备(thin pool) 元数据（按需分配，超额置备风险）"
+    ],
+    "interfaces": [
+      "pvs/vgs/lvs（看 PV/VG/LV 状态）",
+      "lvreduce/lvremove（缩容/删 LV，须先 umount 且先缩文件系统）",
+      "pvmove（数据迁移到他盘）",
+      "thin_check/thin_dump（thin pool 元数据校验）",
+      "lvresize --resizefs（缩前先缩文件系统）"
+    ],
+    "docs": [
+      "lvm(8) man",
+      "Red Hat LVM 管理指南"
+    ],
+    "summary": "LVM 在物理盘之上抽象出 VG/LV，靠 device-mapper 映射。空间杀手常是精简置备池(thin pool) 超额置备后元数据满、或 LV 未释放。缩容必须「先缩文件系统再缩 LV」，顺序反了会丢数据。",
+    "advice": "释放 LV 空间：先 resize2fs(ext)/btrfs filesystem resize(btrfs) 收缩文件系统，再 lvreduce 缩 LV；顺序反了破坏数据。删 LV 前确认无挂载。thin pool 超额用 fstrim 在挂载的 thin LV 上回收，或 thin_trim。迁移数据用 pvmove。安装期注意：根文件系统位于 LVM 时**必须**配 initrd（mkinitrd -L 含 LVM 支持），且引导器须显式 initrd= 行 + root=；Slackware 等发行版安装器通常不自动生成，须 chroot 后手动 mkinitrd 并改 lilo/elilo 配置（huge 内核须换 generic 内核方可配合 initrd）。",
+    "references": [
+      {
+        "name": "Slackware README_LVM.TXT（官方：在 LVM 逻辑卷上安装 Slackware，含 initrd/lilo 手动配置）",
+        "org": "Slackware（mirrors.slackware.com 发布树）",
+        "url": "https://mirrors.slackware.com/slackware/slackware-15.0/README_LVM.TXT"
+      }
+    ]
+  },
+  "fstrim": {
+    "name": "fstrim / FITRIM（SSD 与精简置备的未用块回收）",
+    "org": "util-linux / kernel block 层",
+    "url": "https://man7.org/linux/man-pages/man8/fstrim.8.html",
+    "protocols": [
+      "ATA TRIM / SCSI UNMAP / NVMe DSM（Deallocate） 命令",
+      "FITRIM ioctl（文件系统→块层→设备）",
+      "mount -o discard（挂载即异步 trim）",
+      "blkdiscard（整设备立即丢弃，破坏性）"
+    ],
+    "interfaces": [
+      "fstrim -v <mp>（对挂载点发 FITRIM，回收未用块）",
+      "fstrim -a / -A（对所有支持 discard 的挂载点）",
+      "fstrim -n（dry-run，不真发 ioctl）",
+      "blkdiscard <dev>（整盘立即丢弃，数据不可恢复）",
+      "lsblk -d -o ROTA,TRAN（看是否 SSD/旋转盘）"
+    ],
+    "docs": [
+      "fstrim(8) man",
+      "kernel block 层文档"
+    ],
+    "summary": "SSD 与精简置备存储靠 TRIM/UNMAP 回收被文件系统释放但设备仍占用的块。fstrim 对挂载文件系统发 FITRIM，让 SSD 控制器回收空闲页、让 thin 存储释放后端空间。频率过高伤低质 SSD 寿命，一周一次足够。",
+    "advice": "回收用 fstrim -av（对所有支持 discard 的挂载点），或定期 fstrim -v <mp>；不要日用。切勿用 blkdiscard 做常规回收——它整盘立即丢弃，数据不可恢复。可在 fstab 加 discard 挂载选项让内核异步 trim（但连续写入的 SSD 可能增加写放大）。"
+  },
+  "smart": {
+    "name": "S.M.A.R.T.（自监测分析与报告技术）",
+    "org": "smartmontools / T13(ATA) / T10(SCSI) / NVMe",
+    "url": "https://www.smartmontools.org/man/smartctl.8.html",
+    "protocols": [
+      "ATA SMART 属性与阈值（05 Reallocated / 197 CurrentPending / 198 OfflineUncorrectable）",
+      "SCSI 日志页(log sense)",
+      "NVMe SMART 日志（Critical Warning / 可用备件 / 介质错误）",
+      "smartd 守护进程后台轮询 + 邮件告警"
+    ],
+    "interfaces": [
+      "smartctl -H（看整体 PASS/FAIL）",
+      "smartctl -A（看全部属性与原始值）",
+      "smartctl -t short/long（离线自检，不读盘即测）",
+      "smartctl -l error（看错误日志）",
+      "smartctl -i（看型号/固件/支持能力）"
+    ],
+    "docs": [
+      "smartctl(8) man（smartmontools）",
+      "T13 / T10 规范"
+    ],
+    "summary": "SMART 让磁盘自我报告健康。关键预警指标：重映射扇区(05/197/198) 增长、待映射扇区、离线不可纠正、NVMe 可用备件下降。定期 smartctl -H 与 -t short 自检可在损坏前预警。",
+    "advice": "健康检查 smartctl -H <dev>（看 PASS/FAIL），smartctl -A 看原始值（关注 05/197/198）。后台自检 smartctl -t short（离线，不阻塞）；长测 smartctl -t long。发现重映射/待映射扇区增长应立即备份并计划换盘——不要再当主力盘。"
+  },
+  "swap": {
+    "name": "swap（交换空间：分页与休眠）",
+    "org": "util-linux / kernel mm",
+    "url": "https://man7.org/linux/man-pages/man8/swapon.8.html",
+    "protocols": [
+      "swap 签名页（\"SWAPSPACE2\" + 页槽位图）",
+      "swapon(2)/swapoff(2) 系统调用",
+      "fstab type=swap 挂载项",
+      "swap 文件（须连续、非 COW 文件系统，Btrfs 须 nocow）"
+    ],
+    "interfaces": [
+      "swapon -a / swapon <dev>（启用交换）",
+      "swapoff <dev>（禁用，须足够内存）",
+      "mkswap（初始化交换空间签名）",
+      "cat /proc/swaps（看当前交换区）",
+      "swapon --show（表格化）"
+    ],
+    "docs": [
+      "swapon(8) man",
+      "swapon(2) man"
+    ],
+    "summary": "swap 把磁盘当扩展内存，缓解内存压力、支持休眠。长期运行的 swap 文件/分区可能碎片（影响换入换出），重建可整理。Btrfs 上 swap 文件需 nocow 属性，COW 文件会被拒绝。",
+    "advice": "重建碎片 swap：先 swapoff <dev>（须剩余内存足够），mkswap <dev> 重建，swapon <dev> 重新启用——全程交换暂停。swap 文件在 Btrfs 须 mkswap --file（自动 nocow）。不要对正在使用的 swap 直接 dd 或删文件——先 off 再操作。"
+  },
+  "nvme_std": {
+    "name": "NVMe 非易失内存主机控制器接口（SSD/SSD 与 Fabrics 标准）",
+    "org": "NVM Express, Inc.（行业规范；非 IEEE/ISO）",
+    "url": "https://nvmexpress.org/specifications/",
+    "protocols": [
+      "NVM Express® Base Specification Rev 2.1（2024-08-05 批准；基于 PCIe，取代 AHCI 的面向 SSD 逻辑设备接口）",
+      "命令集：NVM Command Set / ZNS / Key Value；传输：PCIe、Fibre Channel、RDMA、TCP（NVMe-oF™）",
+      "NVMe-MI（管理接口）、Host Directed Data Placement（HMB/FDP）、Live Migration（2.1 新增）",
+      "面向 SSD 的低延迟、多队列、高并行；版本差异体现在控制器内，不要求换主板/CPU"
+    ],
+    "interfaces": [
+      "nvme list（读已识别 NVMe 设备与容量，只读）",
+      "nvme smart-log <dev>（读 SSD 健康/温度/磨损，只读）",
+      "nvme id-ctrl <dev> / nvme id-ns <dev>（读控制器/命名空间能力，只读）",
+      "nvme format <dev>（写/擦除：重建命名空间并清零，破坏性，opt-in，仅自有设备）"
+    ],
+    "docs": [
+      "NVM Express 规范主页（nvmexpress.org）",
+      "nvme(1) / nvme-cli 文档"
+    ],
+    "summary": "NVMe 是 SSD 的现代逻辑设备接口（基于 PCIe），相较 AHCI 大幅降低 I/O 开销、提升并行。规范由 NVM Express, Inc. 维护（2.1 为现行），覆盖 PCIe 本地盘与 NVMe-oF 网络存储。TRIM/UNMAP 在该层以 DSM（Deallocate）体现，与 fstrim 联动。",
+    "advice": "只读诊断用 nvme list / nvme smart-log / nvme id-ctrl（看健康与能力，不改盘）。nvme format 是破坏性清零操作（写，opt-in，仅自有设备）；绝不对正在挂载或含数据的盘执行。SSD 的空闲块回收靠 fstrim（见 fstrim 条目），NVMe DSM 由 fstrim 经 FITRIM ioctl 触发。"
+  },
+  "sata_sas_std": {
+    "name": "SATA 与 SAS 串行存储接口（磁盘/SSD 物理链路标准）",
+    "org": "SATA-IO（SATA）/ INCITS T10（SCSI / SAS；ISO/IEC 14776）",
+    "url": "https://www.sata-io.org/ / https://www.incits.org/committees/t10",
+    "protocols": [
+      "SATA：Serial ATA（SATA-IO）；SATA 3.x 物理层 6 Gbit/s（SATA 3.0 起），经 AHCI/NVMe（SATA Express）接入",
+      "SAS：Serial Attached SCSI（INCITS T10，ISO/IEC 14776）；点对点或扩展器拓扑，兼容 SATA 盘（SAS 控制器可接 SATA 盘，反之不可）",
+      "SCSI 命令集（SAM/SPC）：READ/WRITE(16)、MODE SENSE、log sense，被 SAS 与 USB/光纤通道存储共用",
+      "SAT（SCSI / ATA Translation）：让 SAS 主机用 SCSI 命令驱动 SATA 设备"
+    ],
+    "interfaces": [
+      "lsscsi -t（读 SCSI/SAS/SATA 设备拓扑，只读）",
+      "smartctl -d sat -a <dev>（经 SAT 读 SATA 盘 SMART，只读）",
+      "smartctl -d scsi -a <dev>（读 SAS 盘 SMART/log sense，只读）",
+      "sdparm -l <dev>（读/写 SCSI 模式页，写 opt-in）"
+    ],
+    "docs": [
+      "SATA-IO 规范 / INCITS T10 文档",
+      "smartctl(8)、sdparm(8)、lsscsi(8) man"
+    ],
+    "summary": "SATA 是消费/桌面盘的主流串行接口，SAS 是企业盘/服务器的高可靠串行 SCSI 接口，二者拓扑与可靠性不同但命令集相通（SAT 互转）。诊断以 lsscsi + smartctl 读 SMART 与日志为主；SAS 盘的黄金健康指标同样看重映射/介质错误。",
+    "advice": "只读诊断用 lsscsi -t / smartctl -d sat|scsi -a（看拓扑与健康，不改设备）。用 sdparm 改 SCSI 模式页属写操作（opt-in），错误会改设备行为。SATA 盘接 SAS 控制器可用，SAS 盘不能接 SATA 控制器——混插前确认链路。"
+  },
+  "ufs_emmc_std": {
+    "name": "UFS 与 eMMC 嵌入式闪存接口（移动/车载存储标准）",
+    "org": "JEDEC（JESD220 系列 UFS / JESD84 系列 eMMC）",
+    "url": "https://www.jedec.org/standards-documents/technology-focus-areas/flash-memory",
+    "protocols": [
+      "UFS：Universal Flash Storage（JEDEC JESD220G = UFS 4.1，2025-01 发布；4.0/4.1 采用 MIPI M-PHY v5.0 + UniPro 2.0，接口带宽约 4.2 GB/s，全双工 SCSI-like 命令队列）",
+      "eMMC：embedded Multi-Media Card（JEDEC JESD84-B51 = eMMC 5.1，2015；JESD84-B51B 2025 修订），并行 8-bit 半双工，峰值 400 MB/s",
+      "UFS/eMMC 均为 NAND + 控制器封装，内置坏块管理与 Wear Leveling；eMMC 5.1 是最后一代，新设计转向 UFS",
+      "车载/工业 UFS 需满足温度与 ASIL/ISO 21434 等附加要求"
+    ],
+    "interfaces": [
+      "lsblk（读块设备与大小，只读）",
+      "mmc extcsd read <dev>（读 eMMC/嵌入式 MMC 扩展 CSD 与能力，只读，需 mmc-utils）",
+      "cat /sys/class/block/*/device/name（读 eMMC/ufs 型号，只读）",
+      "mmc rpmb / mmc erase（写/擦除 eMMC RPMB 或区域，破坏性，opt-in，仅自有设备）"
+    ],
+    "docs": [
+      "JEDEC JESD220（UFS）/ JESD84（eMMC）规范",
+      "mmc-utils / Linux mmc 子系统文档"
+    ],
+    "summary": "UFS 与 eMMC 是焊死在主板上的嵌入式闪存，UFS 全双工高带宽（4.x/5.0 代）、eMMC 半双工低速，已逐步被 UFS 取代。它们对内是 NAND+控制器，对外暴露为块设备；磨损均衡与坏块管理由固件完成，SMART 信息受限于嵌入式接口。",
+    "advice": "只读诊断用 lsblk / mmc extcsd read（看型号与能力，不改设备）。mmc erase/rpmb 是破坏性操作（写，opt-in，仅自有设备）；eMMC/UFS 多为系统盘，误擦会 brick 设备。不要对这些嵌入式存储做 blkdiscard/fstrim 之外的任何整盘操作——fstrim 需在确认文件系统支持 discard 后再用。"
+  },
+  "posix_fs_std": {
+    "name": "POSIX 文件系统/OS 接口标准（可移植操作系统接口）",
+    "org": "IEEE / The Open Group（Austin 联合工作组；ISO/IEC/IEEE 9945）",
+    "url": "https://standards.ieee.org/ieee/1003.1/7101 / https://www.opengroup.org/austin",
+    "protocols": [
+      "IEEE 1003.1-2024（POSIX.1-2024 = Issue 8，2024-06-14 发布），同时是 ISO/IEC/IEEE 9945:2026，取代 1003.1-2017/Issue 7",
+      "Base Definitions / System Interfaces / Shell & Utilities / Rationale 四卷；规定系统调用、C 库接口、shell 与数百工具",
+      "定义文件/目录、I/O、权限、符号链接、fcntl、mmap 等文件系统语义，是 ext4/XFS/Btrfs/ZFS 在类 UNIX 上的行为基线",
+      "可移植性：应用按 POSIX 编写即可在合规 UNIX/Linux 间源码级移植"
+    ],
+    "interfaces": [
+      "getconf POSIX_VERSION / getconf -a（读系统 POSIX 符合性声明，只读）",
+      "mount -o posixacl/-o acl（挂 POSIX ACL 支持，写/opt-in）",
+      "ls -l / getfacl（读权限与 ACL，只读）"
+    ],
+    "docs": [
+      "IEEE 1003.1-2024 / The Open Group Base Specifications Issue 8",
+      "ISO/IEC/IEEE 9945:2026"
+    ],
+    "summary": "POSIX 是类 UNIX 文件系统与 OS 接口的互操作基线（现行 1003.1-2024 / Issue 8，也是 ISO/IEC/IEEE 9945）。ext4/XFS/Btrfs 等 Linux 文件系统都遵循其文件/权限/链接语义。它是存储栈的「上层标准」：决定应用如何可移植地读写文件，与底层 NVMe/SATA 物理接口标准正交。",
+    "advice": "只读核查用 getconf POSIX_VERSION / getfacl（看系统声明与 ACL，不改系统）。启用 POSIX ACL 用 mount -o acl（写/opt-in）。不要在非 POSIX 文件系统（如 FAT/exFAT/NTFS 默认）上强制 POSIX 权限——它们无 uid/gid/模式位语义，挂载时以 uid/gid/fmask 模拟，应用层不要假定 chmod 生效。"
+  },
+  "optical_fs_std": {
+    "name": "光盘文件系统 ISO 9660 与 UDF（只读/可重写光盘标准）",
+    "org": "ISO/IEC 9660 / ISO/IEC 13346 + ECMA-167（UDF）",
+    "url": "https://www.iso.org/standard/17520.html / https://www.ecma-international.org/publications-and-standards/standards/ecma-167/",
+    "protocols": [
+      "ISO 9660（1988）：CD-ROM 文件系统，Level 1/2/3 + Rock Ridge（Unix 权限/长名）/ Joliet（Unicode 长名）扩展",
+      "UDF（Universal Disk Format）：ISO/IEC 13346 / ECMA-167，面向可重写与大容量光盘（DVD/BD），支持增量写入与封盘",
+      "两者均经块设备接口（sr/光学驱动）挂载，Linux 用 isofs / udf 文件系统驱动",
+      "UDF 1.02/1.50/2.01/2.50/2.60 对应不同介质与能力"
+    ],
+    "interfaces": [
+      "mount -t iso9660 / -t udf <dev> <mp>（挂载光盘，只读或按需）",
+      "xorriso / mkisofs -iso-level 3 -J -R（制作用于 ISO 9660+Joliet+RockRidge 的镜像，写/opt-in）",
+      "isoinfo -l -i <iso>（读 ISO 9660 目录结构，只读）"
+    ],
+    "docs": [
+      "ISO/IEC 9660 / ISO/IEC 13346（ECMA-167）",
+      "xorriso / mkisofs 文档"
+    ],
+    "summary": "ISO 9660 是 CD-ROM 的通用只读文件系统（1988），靠 Rock Ridge/Joliet 扩展获得长名与 Unix 权限；UDF 是面向 DVD/BD 与大容量可重写光盘的现代标准。Linux 通过 isofs 与 udf 驱动挂载。主要用于安装介质、归档与只读分发。",
+    "advice": "只读挂载用 mount -t iso9660/-t udf（不改盘）。制作可启动/分发镜像用 xorriso/mkisofs（写，opt-in），务必加 -J（Joliet）与 -R（Rock Ridge）以保证跨平台长名与权限。UDF 重写光盘需先封盘（close session）才能被其它系统识别。"
+  },
+  "portable_fs_std": {
+    "name": "可移动文件系统 exFAT 与 NTFS（跨平台/大文件标准）",
+    "org": "Microsoft（exFAT 规范 2019 公开；ECMA-382 / ISO/IEC 30122）/ NTFS 专有",
+    "url": "https://docs.microsoft.com/windows/win32/fileio/exfat-specification",
+    "protocols": [
+      "exFAT（Extensible FAT）：Microsoft 2006 推出，2019 公开规范；ECMA-382（2010）、ISO/IEC 30122-1:2022（部分）；SDXC 默认文件系统",
+      "exFAT 去除 FAT32 的 4 GB 单文件/32 GB 卷限制，无日志、轻量、适合闪存交换介质",
+      "NTFS（New Technology File System）：Microsoft 1993（Windows NT），主日志（USN/MFT）、ACL、压缩/加密，桌面/外部盘常用",
+      "Linux 用 exfatprogs（mkfs.exfat/fsck.exfat）与 NTFS 由 ntfs3（内核）/ntfs-3g（FUSE）驱动"
+    ],
+    "interfaces": [
+      "lsblk -f（读文件系统类型与 UUID，只读）",
+      "fsck.exfat <dev> / ntfsfix <dev>（只读检查/轻修，不改数据）",
+      "mkfs.exfat <dev>（写：格式化，破坏性，opt-in）/ mkfs.ntfs（写，opt-in）",
+      "mount -t ntfs3 / -t exfat <dev>（挂载，只读或按需）"
+    ],
+    "docs": [
+      "Microsoft exFAT 规范 / ECMA-382",
+      "exfatprogs、ntfs-3g 文档"
+    ],
+    "summary": "exFAT 与 NTFS 是跨平台可移动/外部盘常用文件系统：exFAT 无 4 GB 限制、轻量、为闪存交换而生（SDXC/大容量 U 盘）；NTFS 功能全（日志/ACL/压缩）但跨平台写支持较弱。两者都不具备 POSIX 权限语义，挂载时由 uid/gid/fmask 模拟。",
+    "advice": "只读检查用 lsblk -f / fsck.exfat / ntfsfix（看类型与一致性）。格式化用 mkfs.exfat/mkfs.ntfs（写，破坏性，opt-in，仅自有介质）。NTFS 写优先用内核 ntfs3 驱动而非 ntfs-3g FUSE（更安全且快）；用 exFAT 做大文件交换盘，不要用 FAT32（4 GB 限制）。跨平台介质不要建 POSIX ACL——目标系统不识别。"
+  }
+}

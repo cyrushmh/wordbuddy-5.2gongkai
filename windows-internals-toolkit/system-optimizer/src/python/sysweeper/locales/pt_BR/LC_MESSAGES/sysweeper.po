@@ -1,0 +1,7985 @@
+# Portuguese (pt_BR) — 译文目录（translation catalog）
+#
+# 标准：GNU gettext / PO 文件格式。
+# 编译：tools/make_mo.py
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: sysweeper\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+# Portuguese (pt_BR) — 译文目录（translation catalog）
+#
+# 标准：GNU gettext / PO 文件格式。
+# 编译：tools/make_mo.py
+#
+
+msgid "清理系统与用户临时文件"
+msgstr ""
+
+msgid "删除 %TEMP% 与 C:\\Windows\\Temp 下的临时文件。"
+msgstr ""
+
+msgid "建议每月执行一次；不影响已安装软件。"
+msgstr ""
+
+msgid "清空回收站"
+msgstr ""
+
+msgid "永久删除回收站内容（不可恢复）。用 Shell32 原生 API（SHEmptyRecycleBinW）实现。"
+msgstr ""
+
+msgid "清空后文件不可恢复，请确认无需要保留的内容。"
+msgstr ""
+
+msgid "清理浏览器缓存（Chrome/Edge/Firefox）"
+msgstr ""
+
+msgid "删除常见浏览器的缓存与临时文件。"
+msgstr ""
+
+msgid "仅清理缓存，不删除书签/密码/历史记录。"
+msgstr ""
+
+msgid "清理传递优化缓存（Delivery Optimization）"
+msgstr ""
+
+msgid "删除 Windows 更新分发用的 P2P 缓存。"
+msgstr ""
+
+msgid "不影响已安装更新；下次更新会重新生成。"
+msgstr ""
+
+msgid "清理 Prefetch（预读取）"
+msgstr ""
+
+msgid "清空 Prefetch 以释放空间；下次开机略慢。"
+msgstr ""
+
+msgid "清空后首次启动常用程序会变慢，属正常现象。"
+msgstr ""
+
+msgid "清理 Windows 更新组件（DISM）"
+msgstr ""
+
+msgid "用 DISM 清理 WinSxS 组件存储，可释放数 GB。"
+msgstr ""
+
+msgid "若加 /ResetBase 将不可卸载已装更新；此处保守不加。"
+msgstr ""
+
+msgid "耗时较长，建议在插电状态下执行。"
+msgstr ""
+
+msgid "降低诊断与体验数据收集"
+msgstr ""
+
+msgid "关闭个性化体验/诊断数据上传。"
+msgstr ""
+
+msgid "仅影响当前用户；企业域策略可能覆盖此设置。"
+msgstr ""
+
+msgid "切换至高性能电源计划"
+msgstr ""
+
+msgid "笔记本可提升性能但缩短续航。"
+msgstr ""
+
+msgid "笔记本使用电池时续航明显下降。"
+msgstr ""
+
+msgid "Windows 10 终止支持提醒"
+msgstr ""
+
+msgid "本机为 Windows 10，已无安全更新。"
+msgstr ""
+
+msgid "Windows 10 已于 2025-10-14 结束支持，微软不再提供安全补丁。"
+msgstr ""
+
+msgid "强烈建议升级到 Windows 11（24H2 及以上）；若硬件不支持，请尽快规划替换并加强第三方防护。"
+msgstr ""
+
+msgid "关闭休眠以释放 hiberfil.sys"
+msgstr ""
+
+msgid "关闭休眠可删除与内存等大的 hiberfil.sys，释放数 GB（笔记本会失去休眠，但保留睡眠）。"
+msgstr ""
+
+msgid "关闭后将无法休眠（hibernate）；睡眠（sleep）不受影响。需要睡眠请保留。"
+msgstr ""
+
+msgid "SSD/大内存机器常关闭休眠以回收空间；无休眠需求时安全。"
+msgstr ""
+
+msgid "启用存储感知（Storage Sense）"
+msgstr ""
+
+msgid "开启系统自带存储感知，自动清理临时文件与回收站（按策略周期执行）。"
+msgstr ""
+
+msgid "仅当前用户生效；企业域策略可能覆盖。"
+msgstr ""
+
+msgid "存储感知是 Windows 原生机制，定期清理临时文件/回收站，无需第三方工具。"
+msgstr ""
+
+msgid "系统文件校验（SFC）"
+msgstr ""
+
+msgid "用系统文件检查器扫描并修复受损的系统文件（sfc /scannow）。"
+msgstr ""
+
+msgid "全程需管理员权限；耗时较长，建议在插电状态执行。"
+msgstr ""
+
+msgid "发现损坏文件时 SFC 会尝试从组件存储还原；若失败可先跑 DISM 修复。"
+msgstr ""
+
+msgid "视觉效果调整为最佳性能"
+msgstr ""
+
+msgid "关闭动画/阴影/透明等视觉效果，换取更流畅的界面响应（尤其老机器）。"
+msgstr ""
+
+msgid "仅影响界面观感、不影响功能；注销或重启资源管理器后生效。"
+msgstr ""
+
+msgid "仅当前用户生效，可逆：改回 0 即恢复系统默认；图形入口在 系统 → 高级系统设置 → 性能 → 视觉效果。"
+msgstr ""
+
+msgid "电源计划设为高性能 / 均衡"
+msgstr ""
+
+msgid "切换电源计划：插电用高性能（更高 CPU 频率、更跟手），笔记本续航用均衡 / 节能。"
+msgstr ""
+
+msgid "笔记本用电池时高性能会缩短续航；服务器 / 台式机推荐。"
+msgstr ""
+
+msgid "可逆：powercfg /setactive <均衡 GUID> 即切回；高性能更耗电。"
+msgstr ""
+
+msgid "组件存储清理（DISM StartComponentCleanup）"
+msgstr ""
+
+msgid "用 DISM 清理 WinSxS 组件存储中被取代的版本，回收系统盘空间。"
+msgstr ""
+
+msgid "需管理员权限；执行时间较长，勿中断。"
+msgstr ""
+
+msgid "清理后无法卸载已安装的 Windows 更新（属正常取舍）。"
+msgstr ""
+
+msgid "可加 /ResetBase 进一步压缩，但会移除所有被取代版本且不可逆。"
+msgstr ""
+
+msgid "NTFS 关闭最后访问时间更新（fsutil）"
+msgstr ""
+
+msgid "关闭 NTFS「最后访问时间」回写，每次读文件不再写元数据，减少 SSD 写放大、提升 IO 效率。"
+msgstr ""
+
+msgid "需管理员权限且重启后生效；依赖最后访问时间戳做审计/归档的软件需先确认。"
+msgstr ""
+
+msgid "参考：fsutil behavior 文档。只读核对：fsutil behavior query DisableLastAccess。"
+msgstr ""
+
+msgid "关闭 NTFS 8.3 短名生成（fsutil）"
+msgstr ""
+
+msgid "新建文件不再生成 8.3 短名（PROGRA~1 这类），减少目录元数据写入、加快大目录枚举。"
+msgstr ""
+
+msgid "极老的 16 位程序或写死 8.3 路径的脚本可能受影响，企业环境请先评估。"
+msgstr ""
+
+msgid "参考：fsutil 8dot3name 文档。只影响新建文件的短名，已有短名保留。"
+msgstr ""
+
+msgid "TCP 接收窗口自动调优（netsh，RFC 7323）"
+msgstr ""
+
+msgid "把接收窗口自动调优设为 normal，让 Windows 按带宽时延积自动缩放窗口——长肥管道下的推荐值。"
+msgstr ""
+
+msgid "只调到 normal，**绝不禁用**自动调优（禁用会显著拖慢高延迟链路）；老旧中间设备异常时可改回。"
+msgstr ""
+
+msgid "参考：RFC 7323 / netsh 文档。只读核对：netsh int tcp show global。"
+msgstr ""
+
+msgid "开启接收侧缩放 RSS（netsh）"
+msgstr ""
+
+msgid "开启 RSS 把收包处理散到多 CPU（与 Linux RPS 同一思路），高包率场景下降低单核瓶颈。"
+msgstr ""
+
+msgid "需网卡驱动支持 RSS；少数老驱动开启后反而不稳，可关回 disabled。"
+msgstr ""
+
+msgid "参考：netsh 文档。只读核对：netsh int tcp show global（看 Receive-Side Scaling State）。"
+msgstr ""
+
+msgid "开启 ECN 显式拥塞通知（netsh，RFC 3168）"
+msgstr ""
+
+msgid "在 IP 报头标记拥塞而非靠丢包降速（RFC 3168），拥塞链路下吞吐更稳、延迟更低。"
+msgstr ""
+
+msgid "个别老旧/错误配置的中间设备会丢弃带 ECN 标记的报文，遇连通性异常请关回 disabled。"
+msgstr ""
+
+msgid "参考：RFC 3168 / netsh 文档。"
+msgstr ""
+
+msgid "开启 Windows 防火墙全部配置档（netsh）"
+msgstr ""
+
+msgid "用官方接口把域、专用、公用三个配置档的防火墙全部开启——**只开不关**，恢复被关掉的防护。"
+msgstr ""
+
+msgid "开启后未放行规则的入站连接会被拦（如自建服务需先放行端口）；本工具绝不做 allprofiles state off（关防火墙会把机器直接暴露在网络上）。"
+msgstr ""
+
+msgid "参考：netsh advfirewall 文档。只读核对：netsh advfirewall show allprofiles state。"
+msgstr ""
+
+msgid "设显示器关闭超时（powercfg /change）"
+msgstr ""
+
+msgid "按官方接口设显示器关闭超时（插电 15 分钟 / 电池 10 分钟），省电且不打断正在跑的任务。"
+msgstr ""
+
+msgid "只改显示器超时，**不动睡眠/休眠**；做演示或下载时想保持亮屏请设 0。"
+msgstr ""
+
+msgid "参考：powercfg 命令行选项。0 表示「从不」；只读核对：powercfg /query。"
+msgstr ""
+
+msgid "缩减休眠文件 hiberfil.sys（powercfg /h /type reduced）"
+msgstr ""
+
+msgid "把休眠文件从 full 缩为 reduced：回收系统盘空间的同时**保留快速启动**，比彻底关休眠温和。"
+msgstr ""
+
+msgid "reduced 模式下「休眠」仍可用但部分场景受限；磁盘极紧张且不用休眠时再考虑彻底关闭。"
+msgstr ""
+
+msgid "参考：powercfg 命令行选项。彻底关闭休眠（会丢快速启动）请用 powercfg /hibernate off。"
+msgstr ""
+
+msgid "清理用户级缓存"
+msgstr ""
+
+msgid "删除 ~/Library/Caches 下各应用缓存。"
+msgstr ""
+
+msgid "不会删除应用本身，仅缓存；个别 App 下次启动稍慢。"
+msgstr ""
+
+msgid "清空废纸篓"
+msgstr ""
+
+msgid "永久删除废纸篓内容。"
+msgstr ""
+
+msgid "清空后不可恢复。"
+msgstr ""
+
+msgid "清理系统日志归档"
+msgstr ""
+
+msgid "删除 /private/var/log 下的旧日志与 .asl 归档（需 sudo）。"
+msgstr ""
+
+msgid "需管理员密码；不要删除正在写入的当前日志文件。"
+msgstr ""
+
+msgid "释放非活跃内存"
+msgstr ""
+
+msgid "将非活跃内存写回磁盘并回收（需 sudo）。"
+msgstr ""
+
+msgid "等效于重启的部分效果；不会影响正在运行的程序。"
+msgstr ""
+
+msgid "清理 Xcode 派生数据与模拟器"
+msgstr ""
+
+msgid "删除 ~/Library/Developer/Xcode/DerivedData 与旧模拟器（仅开发机适用）。"
+msgstr ""
+
+msgid "非开发者无需执行；会触发下次构建重新索引。"
+msgstr ""
+
+msgid "审查开机启动项（手动）"
+msgstr ""
+
+msgid "列出登录项与 launchd 代理，按需禁用。"
+msgstr ""
+
+msgid "不要禁用不清楚来源的代理，可能影响硬件驱动。"
+msgstr ""
+
+msgid "系统完整性保护（SIP）提示"
+msgstr ""
+
+msgid "macOS 受 SIP 保护，系统目录不可随意改动。"
+msgstr ""
+
+msgid "切勿手动删除 /System、/usr/lib 等受保护路径文件，否则系统可能无法启动。"
+msgstr ""
+
+msgid "清理只针对用户目录与 /Library/Caches 等可写位置。"
+msgstr ""
+
+msgid "清理休眠镜像（sleepimage）"
+msgstr ""
+
+msgid "删除 /private/var/vm/sleepimage，回收与内存等大的休眠文件（需 sudo）。"
+msgstr ""
+
+msgid "删除后下次休眠会重建；笔记本若依赖休眠请保留。"
+msgstr ""
+
+msgid "内存较大且不用休眠的机器可回收数 GB；重建由系统自动完成。"
+msgstr ""
+
+msgid "可用软件更新报告"
+msgstr ""
+
+msgid "用 softwareupdate -l 列出可用更新，供优化前确认是否需升级（不改系统）。"
+msgstr ""
+
+msgid "保持系统为最新正式版（macOS 26+）即可获得最佳性能与安全补丁。"
+msgstr ""
+
+msgid "重建 Spotlight 索引"
+msgstr ""
+
+msgid "对系统宗卷重建 Spotlight 索引（mdutil -E），搜索异常/卡顿时用（需 sudo）。"
+msgstr ""
+
+msgid "重建期间搜索暂时不可用，CPU/磁盘占用短暂升高；会自动完成。"
+msgstr ""
+
+msgid "仅当搜索结果异常或缺失时执行；日常无需操作。"
+msgstr ""
+
+msgid "减弱动态效果 / 透明（视觉效果优化）"
+msgstr ""
+
+msgid "减弱窗口透明与最小化动画，降低合成开销、更跟手（老 Mac / 集显更明显）。"
+msgstr ""
+
+msgid "减弱透明后菜单栏等不再毛玻璃；部分用户偏好关闭。"
+msgstr ""
+
+msgid "仅影响观感，可逆：改回 false / genie 并 killall Dock 即恢复。"
+msgstr ""
+
+msgid "清理 Time Machine 本地快照"
+msgstr ""
+
+msgid "列出并按需清理 APFS 本地 Time Machine 快照，回收被占用的本地空间。"
+msgstr ""
+
+msgid "仅清理本地快照，不影响 Time Machine 备份磁盘上的历史备份。"
+msgstr ""
+
+msgid "清理命令：tmutil deletelocalsnapshots <快照名>；系统空间紧张时会自动回收。"
+msgstr ""
+
+msgid "按机型设休眠模式（pmset -a hibernatemode）"
+msgstr ""
+
+msgid "按机型设休眠模式：笔记本 3（安全休眠：内存供电 + 落盘镜像）；台式机 0（不写休眠镜像，省出与内存等大的 /private/var/vm/sleepimage）。"
+msgstr ""
+
+msgid "改休眠模式后首次睡眠会重建/删除 sleepimage；依赖休眠唤醒的笔记本请保持 3。"
+msgstr ""
+
+msgid "参考：pmset(1)。机型由 sysctl hw.model 自动探测（含 Book 视为笔记本）。"
+msgstr ""
+
+msgid "延后进入待机（pmset -a standbydelay）"
+msgstr ""
+
+msgid "把进入待机（内存落盘后断电）的等待延长到 24 小时，减少频繁落盘写入、延长 SSD 寿命。"
+msgstr ""
+
+msgid "待机前内存保持供电，合盖待机期间会稍耗电；追求极致续航者请保守设置。"
+msgstr ""
+
+msgid "参考：pmset(1)。旧版 macOS 只有 standbydelay，函数自动回退。"
+msgstr ""
+
+msgid "提高文件描述符上限（sysctl -w kern.maxfiles）"
+msgstr ""
+
+msgid "把 kern.maxfiles / kern.maxfilesperproc 提到 65536 / 32768，避免开发/高并发场景出现「Too many open files」。"
+msgstr ""
+
+msgid "上限过高会略增内核内存占用；一般 65536 足够。"
+msgstr ""
+
+msgid "参考：sysctl(8)。重启失效，持久化写入 /etc/sysctl.conf。"
+msgstr ""
+
+msgid "DNS 交回 DHCP（networksetup -setdnsservers empty）"
+msgstr ""
+
+msgid "用官方取值 empty 清空手工 DNS，改由 DHCP/路由器下发——自愈被软件改写或被劫持的 DNS，不引入第三方解析器。"
+msgstr ""
+
+msgid "企业内网若依赖指定 DNS（内网域名解析），清空后可能解析不到，请先确认。"
+msgstr ""
+
+msgid "参考：networksetup(8)。主网络服务由 -listallnetworkservices 自动探测。"
+msgstr ""
+
+msgid "APFS 本地快照瘦身（tmutil thinlocalsnapshots）"
+msgstr ""
+
+msgid "按 APFS 官方接口瘦身本地快照、目标回收 1GB；由系统按自身策略回收，不误删备份磁盘上的历史备份。"
+msgstr ""
+
+msgid "系统空间紧张时本就会自动回收；无本地快照时命令返回失败属正常。"
+msgstr ""
+
+msgid "参考：tmutil(8)。只读核对用 tmutil listlocalsnapshots /。"
+msgstr ""
+
+msgid "Dock 自动隐藏（defaults write com.apple.dock）"
+msgstr ""
+
+msgid "Dock 自动隐藏并去掉弹出延迟，释放屏幕空间、减少常驻合成开销。"
+msgstr ""
+
+msgid "会重启 Dock（瞬间闪烁，不影响正在运行的应用）；可逆：改回 false 再 killall Dock。"
+msgstr ""
+
+msgid "参考：defaults(1)。改的是用户偏好 plist，仅当前用户生效。"
+msgstr ""
+
+msgid "开启软件更新自动排程（softwareupdate --schedule）"
+msgstr ""
+
+msgid "开启官方更新自动检查排程，让系统在空闲时按 SUS catalog 提示更新（只开排程，不自动安装）。"
+msgstr ""
+
+msgid "仅开启检查排程，不会在未经确认的情况下安装系统更新。"
+msgstr ""
+
+msgid "参考：softwareupdate(8)。只读列出用 softwareupdate -l；安装仍需用户确认或加 -i。"
+msgstr ""
+
+msgid "启用 Gatekeeper（spctl --master-enable）"
+msgstr ""
+
+msgid "按官方接口启用 Gatekeeper 准入评估（只开不关），恢复被关闭的应用来源校验。"
+msgstr ""
+
+msgid "启用后未签名/未公证的应用会被拦在门外（可用右键「打开」逐例放行）；本工具绝不做 spctl --master-disable 这类关闭安全校验的操作。"
+msgstr ""
+
+msgid "参考：spctl(8)。只读核对用 spctl --status / --assess。"
+msgstr ""
+
+msgid "APFS 宗卷一致性校验（diskutil verifyVolume）"
+msgstr ""
+
+msgid "对根宗卷跑官方一致性校验（只校验、不修复、不改动任何数据），排查文件系统异常。"
+msgstr ""
+
+msgid "校验若报告错误，请用 diskutil repairVolume 或进入恢复模式处理；本任务不会自动修复。"
+msgstr ""
+
+msgid "参考：diskutil(8)。只读核对用 diskutil apfs list / listSnapshots。"
+msgstr ""
+
+msgid "清理包管理器缓存"
+msgstr ""
+
+msgid "清除 apt / dnf / pacman 的下载缓存。"
+msgstr ""
+
+msgid "仅删除已下载的安装包，不影响已装软件。"
+msgstr ""
+
+msgid "移除孤立/无用依赖"
+msgstr ""
+
+msgid "卸载不再被需要的依赖包（autoremove / 孤包）。"
+msgstr ""
+
+msgid "可能顺带移除你手动装但无其他依赖的软件，执行前会列出。"
+msgstr ""
+
+msgid "压缩/清理 systemd 日志"
+msgstr ""
+
+msgid "将日志体积限制到 200MB。用 journalctl 原生接口。"
+msgstr ""
+
+msgid "journalctl 不存在的发行版（如非 systemd）该任务自动跳过。"
+msgstr ""
+
+msgid "清理缩略图缓存"
+msgstr ""
+
+msgid "删除 ~/.cache/thumbnails。"
+msgstr ""
+
+msgid "下次打开文件管理器会重新生成。"
+msgstr ""
+
+msgid "清理用户缓存目录"
+msgstr ""
+
+msgid "清理 ~/.cache 下可安全删除的缓存。"
+msgstr ""
+
+msgid "仅删旧文件，不影响正在使用的缓存。"
+msgstr ""
+
+msgid "优化交换倾向（swappiness）"
+msgstr ""
+
+msgid "桌面/大内存机器可降低 swappiness 减少不必要换页。"
+msgstr ""
+
+msgid "服务器/低内存机器不建议过低；修改前请了解 swap 策略。"
+msgstr ""
+
+msgid "重启后由 sysctl.d 文件持久化。"
+msgstr ""
+
+msgid "内核清理注意事项"
+msgstr ""
+
+msgid "保留正在运行的内核，不要删除当前启动内核。"
+msgstr ""
+
+msgid "apt autoremove 默认会保留当前及上一个内核；切勿手动 rm /boot/vmlinuz-* 当前内核。"
+msgstr ""
+
+msgid "可用 `uname -r` 确认当前内核，再决定清理哪些旧内核。"
+msgstr ""
+
+msgid "发行版信息报告（LSB）"
+msgstr ""
+
+msgid "用 LSB 规范文件 /etc/os-release 读取发行版与版本，供优化前确认环境。"
+msgstr ""
+
+msgid "LSB 是 Linux 标准基线的发行版信息规范；解析失败会自动降级到 lsb_release 命令与 uname。"
+msgstr ""
+
+msgid "清理 Docker 闲置资源"
+msgstr ""
+
+msgid "用 docker system prune 清理已停止容器、未用网络与悬空镜像（需 docker 守护进程）。"
+msgstr ""
+
+msgid "会移除未打标签的悬空镜像；运行中的容器不受影响。docker 未运行则自动跳过。"
+msgstr ""
+
+msgid "仅删除「悬空（dangling）」镜像与已停止容器；不含命名卷，避免误删数据。"
+msgstr ""
+
+msgid "清理 Flatpak 未用运行时"
+msgstr ""
+
+msgid "用 flatpak uninstall --unused 移除不再被任何应用引用的运行时（需 flatpak）。"
+msgstr ""
+
+msgid "无 flatpak 时自动跳过——不强求安装。"
+msgstr ""
+
+msgid "仅移除「无应用引用」的运行时；当前已装应用不受影响。"
+msgstr ""
+
+msgid "清理 Snap 旧版本修订"
+msgstr ""
+
+msgid "移除 Snap 已禁用（被新版取代）的旧修订，回收空间（需 snap）。"
+msgstr ""
+
+msgid "无 snap 时自动跳过；误删当前版本会由 snap 自动保护（awk 只选 disabled）。"
+msgstr ""
+
+msgid "仅删除标记为 disabled 的旧修订（升级后产生），当前版本不受影响。"
+msgstr ""
+
+msgid "SSD / NVMe IO 调度器调优"
+msgstr ""
+
+msgid "为 SSD/NVMe 设置 none 或 mq-deadline 调度器，降低延迟、延长寿命（需 root）。"
+msgstr ""
+
+msgid "需 root；高负载磁盘改错调度可能影响吞吐，建议先测再固化。"
+msgstr ""
+
+msgid "NVMe 默认即为 none，无需改动；SATA SSD 建议 none 或 mq-deadline。此修改重启后失效，需写 udev 规则或内核参数才能持久化。"
+msgstr ""
+
+msgid "swappiness / 缓存回收调优"
+msgstr ""
+
+msgid "下调 vm.swappiness 减少过早换出、提升交互响应（内存充足时）；可临时或写 sysctl 持久。"
+msgstr ""
+
+msgid "内存紧张时过低 swappiness 可能触发 OOM；按实际内存调整。"
+msgstr ""
+
+msgid "默认多为 60；大内存桌面可降到 10；仅影响换出倾向，不影响功能。"
+msgstr ""
+
+msgid "ZFS 存储池 TRIM / autotrim"
+msgstr ""
+
+msgid "按 OpenZFS 规范对 zpool 执行 trim（或开启 autotrim），维持 SSD 上的空间回收。"
+msgstr ""
+
+msgid "大规模 TRIM 期间 IO 有开销；生产环境建议低峰执行。"
+msgstr ""
+
+msgid "也可 `zpool set autotrim=on <pool>` 让 ZFS 自动回收；机械盘无需 TRIM。"
+msgstr ""
+
+msgid "固件更新检查（fwupd / LVFS）"
+msgstr ""
+
+msgid "用 fwupd 查询可用固件更新（LVFS 源），列出待更新的固件版本。"
+msgstr ""
+
+msgid "固件更新有风险，务必在供电稳定的情况下进行。"
+msgstr ""
+
+msgid "只读查询；实际刷新需 `fwupdmgr update` 且常需重启。"
+msgstr ""
+
+msgid "龙芯平台（LoongArch）源与包管理核对"
+msgstr ""
+
+msgid "在龙芯 Linux 上核对发行版源与包架构（loong64/loongarch64），避免装错架构包。"
+msgstr ""
+
+msgid "仅做模拟/查询，不实际升级。"
+msgstr ""
+
+msgid "龙芯平台应使用对应架构的源（如 loongnix/Loong 源）；x86 包不可用（除非经 LBT 翻译）。"
+msgstr ""
+
+msgid "MIPS / 嵌入式设备精简清理"
+msgstr ""
+
+msgid "MIPS 路由器与嵌入式设备上按端序与 ABI 核对后清理缓存与日志，释放有限存储。"
+msgstr ""
+
+msgid "嵌入式固件常为只读文件系统，清理前确认可写分区。"
+msgstr ""
+
+msgid "端序（mips 大端 / mipsel 小端）与 ABI（o32/n32/n64）需与已装软件一致。"
+msgstr ""
+
+msgid "嵌入式设备存储小，先清缓存与轮转日志收益最直接。"
+msgstr ""
+
+msgid "CFS 调度器参数核对"
+msgstr ""
+
+msgid "按内核文档 scheduler/sched-design-CFS.rst 核对 CFS 关键 sysctl（sched_latency_ns / min_granularity_ns / migration_cost_ns），给响应/吞吐建议。"
+msgstr ""
+
+msgid "改调度 sysctl 影响全局公平性与延迟；生产环境先评估再固化。"
+msgstr ""
+
+msgid "CFS 以 vruntime 公平分配 CPU；桌面可略降 sched_latency_ns 提升响应，服务器保持默认。"
+msgstr ""
+
+msgid "cgroups v2 层级核对"
+msgstr ""
+
+msgid "按内核文档 admin-guide/cgroup-v2.rst 核对 cgroups v2 统一层级与已委托控制器，给出资源隔离（cpu.weight/memory.max）建议。"
+msgstr ""
+
+msgid "误配 subtree_control 可能使子组收不到控制器；改前确认层级结构。"
+msgstr ""
+
+msgid "桌面发行版默认由 systemd 挂载 v2；为关键服务设 cpu.weight/memory.max 可防单进程拖垮整机。"
+msgstr ""
+
+msgid "OOM 防护核对"
+msgstr ""
+
+msgid "按内核文档 mm/oom_kill.rst 核对 OOM 防护 sysctl 与当前进程 oom_score_adj，给出关键守护进程保护建议。"
+msgstr ""
+
+msgid "oom_score_adj 误设为 -1000 会令该进程永不回收，可能拖垮系统；谨慎保护。"
+msgstr ""
+
+msgid "用 oom_score_adj(-1000~1000) 保护关键守护进程（如设为 -500）；-1000 使其永不成为牺牲品。"
+msgstr ""
+
+msgid "资源压力失忆（PSI）核对"
+msgstr ""
+
+msgid "按内核文档 accounting/psi.rst 读取 CPU/内存/IO 压力占比，预警资源争用瓶颈。"
+msgstr ""
+
+msgid "未启用 PSI 的内核无 /proc/pressure（自动降级为说明）。"
+msgstr ""
+
+msgid "监控 memory/io 的 full 占比可提前发现瓶颈；容器与桌面守护进程常用 PSI 做自适应限流。"
+msgstr ""
+
+msgid "THP 规整策略核对"
+msgstr ""
+
+msgid "按内核文档 admin-guide/mm/transhuge.rst 核对 transparent_hugepage/defrag 与 compaction 策略，给延迟敏感负载建议。"
+msgstr ""
+
+msgid "改 defrag 策略需 root；never 可消除抖动但增加 TLB 压力。"
+msgstr ""
+
+msgid "延迟敏感负载用 defrag=madvise 避免分配时同步规整抖动；compact_memory 可手动触发全系统规整。"
+msgstr ""
+
+msgid "脏页回写/缓存回收核对"
+msgstr ""
+
+msgid "按内核文档 admin-guide/sysctl/vm.rst 核对 dirty_* 与 vfs_cache_pressure，给写缓冲与目录缓存回收建议。"
+msgstr ""
+
+msgid "极端值可能引发写阻塞或目录缓存频繁回收；按实际负载调整。"
+msgstr ""
+
+msgid "大内存/数据库可调高 dirty_* 平滑写峰；频繁列目录负载可降 vfs_cache_pressure 保目录缓存。"
+msgstr ""
+
+msgid "TCP 协议栈参数核对"
+msgstr ""
+
+msgid "按内核文档 networking/ip-sysctl.rst 核对 TCP 缓冲(tcp_rmem/wmem)与特性开关（SACK/时间戳/窗口缩放），给吞吐建议。"
+msgstr ""
+
+msgid "改 tcp_* 影响全机网络；跨境/高延迟链路调优前先测基线。"
+msgstr ""
+
+msgid "长肥管道可调高 tcp_rmem 上限提升吞吐；时间戳/SACK 一般保持开启，仅老旧链路异常才关。"
+msgstr ""
+
+msgid "TCP 拥塞控制核对（BBR）"
+msgstr ""
+
+msgid "按内核文档 networking/ip-sysctl.rst 核对当前拥塞控制算法与可用项，给长肥管道改用 BBR 的建议。"
+msgstr ""
+
+msgid "误选未编译算法会回退到默认；改拥塞控制需 root。"
+msgstr ""
+
+msgid "长肥管道与跨境链路用 BBR 更稳定高效（需内核编译 tcp_bbr）；普通内网 Cubic 足够。"
+msgstr ""
+
+msgid "网络核心参数核对（net.core）"
+msgstr ""
+
+msgid "按内核文档 networking/ip-sysctl.rst 核对 net.core（netdev_max_backlog/budget/rmem_max/wmem_max/somaxconn），给高 PPS 服务器建议。"
+msgstr ""
+
+msgid "盲目调大缓冲可能增大延迟与内存占用；按实测吞吐调整。"
+msgstr ""
+
+msgid "高 PPS 服务器可调高 netdev_max_backlog/netdev_budget 与 rmem_max/wmem_max；somaxconn 影响并发 accept。"
+msgstr ""
+
+msgid "接收侧缩放（RPS/RFS）核对"
+msgstr ""
+
+msgid "按内核文档 networking/scaling.rst 核对网卡 RPS/RFS 配置，给单队列网卡多核利用建议。"
+msgstr ""
+
+msgid "rps_cpus 填错 CPU 位可能把软中断集中到少数核，需按拓扑设置。"
+msgstr ""
+
+msgid "单队列/多队列不足网卡用 RPS/RFS 提升多核利用率；多队列智能网卡通常无需开启。"
+msgstr ""
+
+msgid "清除 pkg / pkgin / pkg_add 的下载缓存。"
+msgstr ""
+
+msgid "卸载不再被需要的依赖包。"
+msgstr ""
+
+msgid "优化交换倾向（vm.swappiness）"
+msgstr ""
+
+msgid "桌面/大内存机器可降低换页倾向。"
+msgstr ""
+
+msgid "FreeBSD 用 vm.swappiness（近年版本）；OpenBSD/NetBSD 无此参数，会自动跳过。"
+msgstr ""
+
+msgid "FreeBSD 可加进 /etc/sysctl.conf 持久化。"
+msgstr ""
+
+msgid "发行版信息报告（sysctlbyname）"
+msgstr ""
+
+msgid "用 libc sysctlbyname 读取内核状态，供优化前确认环境。"
+msgstr ""
+
+msgid "BSD 用 sysctlbyname 内核接口获取系统信息，比解析文件更权威。"
+msgstr ""
+
+msgid "开机服务审查（rc 服务）"
+msgstr ""
+
+msgid "列出当前启用的 rc 服务（FreeBSD service -e），按需禁用不需要的服务以减负。"
+msgstr ""
+
+msgid "改动 rc.conf 后需重启或 `service <name> stop` 生效；谨慎操作。"
+msgstr ""
+
+msgid "不要禁用不清楚来源的底层服务（如网络/ssh 守护），可能影响远程访问。"
+msgstr ""
+
+msgid "清理孤立软件包依赖（pkg autoremove）"
+msgstr ""
+
+msgid "用 pkg autoremove 删除不再被任何软件依赖的孤立包，回收空间（FreeBSD）。"
+msgstr ""
+
+msgid "极少数情况 A 依赖 B 但元数据缺失，autoremove 可能误删；预演确认更稳妥。"
+msgstr ""
+
+msgid "只删“无人依赖”的包，不碰仍在用的软件；建议先 `pkg autoremove -n` 预演。"
+msgstr ""
+
+msgid "ZFS 存储池 TRIM（FreeBSD/OpenBSD）"
+msgstr ""
+
+msgid "按 OpenZFS 规范对 zpool 执行 trim，或开启 autotrim 自动回收 SSD 空间。"
+msgstr ""
+
+msgid "TRIM 期间有 IO 开销，建议低峰执行。"
+msgstr ""
+
+msgid "也可 `zpool set autotrim=on <pool>`；机械盘无需 TRIM。"
+msgstr ""
+
+msgid "清理 Ports 下载缓存（distfiles）"
+msgstr ""
+
+msgid "清理 /usr/ports/distfiles 中已下载的软件源码包缓存，可重新下载。"
+msgstr ""
+
+msgid "删除后重新编译该 port 需再次下载源码。"
+msgstr ""
+
+msgid "删除命令：make distclean（在 port 目录内）或直接删 distfiles 下文件。"
+msgstr ""
+
+msgid "启用 TCP 高性能扩展（sysctl net.inet.tcp.rfc1323）"
+msgstr ""
+
+msgid "开启 RFC 7323 的窗口缩放与时间戳，长肥管道（高带宽时延积）下显著提升吞吐。"
+msgstr ""
+
+msgid "个别老旧中间设备对时间戳/窗口缩放处理异常，遇问题可关回 0。"
+msgstr ""
+
+msgid "参考：RFC 7323 / tcp(4)。FreeBSD 默认即为 1，已是目标值时不动。"
+msgstr ""
+
+msgid "调大 TCP 收发缓冲（recvspace / sendspace）"
+msgstr ""
+
+msgid "把 TCP 收发缓冲上调到 64 KiB（仅当当前值更小才动），提升高带宽链路吞吐。"
+msgstr ""
+
+msgid "只上调不降低，避免覆盖内核自动调优的结果；缓冲过大会多占内核内存。"
+msgstr ""
+
+msgid "参考：tcp(4)。持久化写 /etc/sysctl.conf。"
+msgstr ""
+
+msgid "提高文件描述符上限（kern.maxfiles）"
+msgstr ""
+
+msgid "把 kern.maxfiles / kern.maxfilesperproc 提到 65536 / 32768，避免高并发/构建场景撞到描述符上限。"
+msgstr ""
+
+msgid "上限过高会略增内核内存占用；root 权限下才写成功。"
+msgstr ""
+
+msgid "参考：sysctl(8)。当前值已达标时不动；持久化写 /etc/sysctl.conf。"
+msgstr ""
+
+msgid "ZFS 池开启自动 TRIM（zpool set autotrim=on）"
+msgstr ""
+
+msgid "按 OpenZFS 官方接口给每个存储池开 autotrim，让 SSD 空闲块在后台持续回收，无需定期手动 trim。"
+msgstr ""
+
+msgid "后台 TRIM 有轻微 IO 开销；极老 SSD 固件慎用。"
+msgstr ""
+
+msgid "参考：zpool(8)。池名由 zpool list -H -o name 自动探测；机械盘无需 TRIM。"
+msgstr ""
+
+msgid "ZFS 池校验（zpool scrub）"
+msgstr ""
+
+msgid "对每个存储池启动官方 scrub 校验，遍历校验所有数据块、在有冗余时自动修复静默损坏。"
+msgstr ""
+
+msgid "scrub 会遍历全部数据、IO 开销明显；本任务只启动校验，绝不 destroy 池或数据集。"
+msgstr ""
+
+msgid "参考：zpool(8)。进度用 zpool status 查看；建议低峰期跑。"
+msgstr ""
+
+msgid "限制 ZFS ARC 上限（vfs.zfs.arc_max）"
+msgstr ""
+
+msgid "把 ZFS ARC 上限压到物理内存的 50%，把内存让给应用与页缓存（数据库/编译机常见诉求）。"
+msgstr ""
+
+msgid "ARC 变小会增加磁盘读放大；纯文件服务器不宜压太狠。"
+msgstr ""
+
+msgid "参考：zfs(4)。物理内存由 sysctl hw.physmem 自动探测；未加载 ZFS 则跳过。"
+msgstr ""
+
+msgid "启用 pf 防火墙并加载规则集（pfctl -e -f）"
+msgstr ""
+
+msgid "按官方接口启用 pf 并加载 /etc/pf.conf 规则集（只启用不停用），恢复未开启的防火墙。"
+msgstr ""
+
+msgid "规则集不存在时拒绝启用（不盲目开防火墙把自己锁在外面）；本工具绝不做 pfctl -d（停用）或 -F all（冲刷全部状态/规则）。"
+msgstr ""
+
+msgid "参考：pfctl(8)。只读核对用 pfctl -s rules/info/state。"
+msgstr ""
+
+msgid "手动跑一遍 periodic 维护脚本"
+msgstr ""
+
+msgid "按官方入口手动跑一遍 daily 周期脚本（清临时文件、轮转日志、安全报告等），补齐被跳过的例行维护。"
+msgstr ""
+
+msgid "脚本内容由系统自带，不改任何脚本；个别脚本会轮转日志，属预期行为。"
+msgstr ""
+
+msgid "参考：periodic(8)。只读核对用 ls /etc/periodic/*；输出进系统日志/邮件。"
+msgstr ""
+
+msgid "清理 IPS 包历史"
+msgstr ""
+
+msgid "清理 Solaris/illumos IPS 的包操作历史（pkg purge-history）。"
+msgstr ""
+
+msgid "历史清理不影响已装软件，仅释放元数据空间。"
+msgstr ""
+
+msgid "发行版信息报告（/etc/release）"
+msgstr ""
+
+msgid "读 Solaris /etc/release 与 uname，供优化前确认环境。"
+msgstr ""
+
+msgid "System V 系列用 /etc/release 而非 /etc/os-release 记录发行信息。"
+msgstr ""
+
+msgid "归档旧系统日志"
+msgstr ""
+
+msgid "压缩 30 天前的已轮转日志（/var/log、/var/adm），回收空间（需 root，仅压缩不改内容）。"
+msgstr ""
+
+msgid "勿压缩正在写入的当前日志（*.log 本身）；本任务已用后缀/轮转名过滤规避。"
+msgstr ""
+
+msgid "仅处理已轮转、非当前写入的日志；压缩即归档，不影响日志可读性（gunzip 还原）。"
+msgstr ""
+
+msgid "更稳妥做法是用系统 logadm / logrotate 统一轮转与压缩。"
+msgstr ""
+
+msgid "ZFS 存储池校验（zpool scrub）"
+msgstr ""
+
+msgid "按 OpenZFS 规范对 zpool 发起 scrub 校验，检测并修复数据校验和错误。"
+msgstr ""
+
+msgid "大容量池 scrub 耗时长且占 IO，建议维护窗口执行。"
+msgstr ""
+
+msgid "scrub 在后台进行，可用 zpool status 查看进度。"
+msgstr ""
+
+msgid "刷新 IPS 软件源目录（pkg refresh）"
+msgstr ""
+
+msgid "用 IPS 官方接口刷新 publisher 目录与本地元数据，让后续 pkg list/verify 基于最新清单。"
+msgstr ""
+
+msgid "需 root 且要能连到软件源；只更新元数据，不安装也不卸载任何包。"
+msgstr ""
+
+msgid "只读核对：pkg publisher、pkg list -u（列可更新包）。"
+msgstr ""
+
+msgid "按 IPS 清单校验修复不一致（pkg fix）"
+msgstr ""
+
+msgid "先用 pkg verify 比对已装文件与 IPS 清单，再用官方 pkg fix 还原被改动/缺失的文件。"
+msgstr ""
+
+msgid "需 root；会按官方清单覆盖被改动的系统文件（本地手工改过的文件可能被还原），属『恢复一致性』方向，不动用户数据。"
+msgstr ""
+
+msgid "只读核对：pkg verify（列出不一致文件，不改任何东西）。"
+msgstr ""
+
+msgid "开启 FMA 故障管理守护（svcadm enable）"
+msgstr ""
+
+msgid "启用 svc:/system/fmd:default，让 FMA 收集故障遥测并在硬件出问题时自动隔离（只开不关）。"
+msgstr ""
+
+msgid "本工具只做 enable——绝不对 fmd/ssh/svc.startd 等关键服务做 disable。"
+msgstr ""
+
+msgid "只读核对：svcs -a | grep fmd；故障看 fmadm faulty / fmdump -v。"
+msgstr ""
+
+msgid "清除服务 maintenance 状态（svcadm clear）"
+msgstr ""
+
+msgid "自动探测处于 maintenance 的服务 FMRI，用官方 svcadm clear 清状态，让服务重新受管。"
+msgstr ""
+
+msgid "只清状态、不做启停；真正的故障原因请先按 svcs -x 输出处理。"
+msgstr ""
+
+msgid "只读核对：svcs -x（看故障原因）；原因未除前清状态可能再次进入 maintenance。"
+msgstr ""
+
+msgid "ZFS 关闭访问时间更新（zfs set atime=off）"
+msgstr ""
+
+msgid "关掉 ZFS 的 atime 回写：读文件不再写元数据，减少写放大，与 NTFS 关最后访问时间同思路。"
+msgstr ""
+
+msgid "依赖 atime 做审计/归档判断的软件需先确认；可随时 zfs set atime=on 改回。"
+msgstr ""
+
+msgid "只读核对：zfs get atime <pool>；只作用于设置后的新访问，不重写已有数据。"
+msgstr ""
+
+msgid "ZFS 开启 LZ4 压缩（zfs set compression=lz4）"
+msgstr ""
+
+msgid "给池开 LZ4 压缩：CPU 开销极低、压缩解压快，通常能用很小的代价换明显空间。"
+msgstr ""
+
+msgid "只压缩设置后新写入的块，已有数据不会被重写（想重写需 zfs send/recv 或 rewrite）；已压缩数据改回 off 不会展开。"
+msgstr ""
+
+msgid "只读核对：zfs get compression <pool>；LZ4 在多数负载下接近零成本。"
+msgstr ""
+
+msgid "按官方配置轮转日志（logadm -r）"
+msgstr ""
+
+msgid "用官方 logadm 按 /etc/logadm.conf 立即轮转一次：归档改名、按保留份数淘汰最旧档。"
+msgstr ""
+
+msgid "需 root；轮转不删正在写入的日志，历史档按 -C 份数淘汰。"
+msgstr ""
+
+msgid "只读核对：logadm -V（校验配置语法）、logadm -v（预演）。"
+msgstr ""
+
+msgid "TCP 开启 ECN（ipadm set-prop，RFC 3168）"
+msgstr ""
+
+msgid "用官方 ipadm 把 TCP 的 ecn 设为 active：拥塞时用报头标记代替丢包降速，吞吐更稳、延迟更低。"
+msgstr ""
+
+msgid "个别老旧或错误配置的中间设备会丢弃带 ECN 标记的报文，遇连通性异常请用 ipadm set-prop -p ecn=passive tcp 退回（本工具只开不关）。"
+msgstr ""
+
+msgid "参考：RFC 3168 / ipadm(8) man。只读核对：ipadm show-prop tcp。"
+msgstr ""
+
+msgid "清理应用缓存（adb）"
+msgstr ""
+
+msgid "对第三方应用执行 trim（释放缓存），而非清空数据。"
+msgstr ""
+
+msgid "pm trim 仅释放缓存、不删账号数据；需设备已连接并授权。"
+msgstr ""
+
+msgid "删除下载目录与缩略图垃圾"
+msgstr ""
+
+msgid "删除 /sdcard/Download 的临时文件与 DCIM/.thumbnails。"
+msgstr ""
+
+msgid "不要误删 /sdcard/Download 下有用文件；建议先手动查看。"
+msgstr ""
+
+msgid "清理 Dalvik/ART 缓存（恢复模式向）"
+msgstr ""
+
+msgid "通常无需手动清；系统更新后会自动重建。"
+msgstr ""
+
+msgid "错误操作可能需重刷系统；普通用户不建议。"
+msgstr ""
+
+msgid "Android 手动优化指引"
+msgstr ""
+
+msgid "无需 adb 的日常优化项。"
+msgstr ""
+
+msgid "未 Root 的安卓无法深度清理系统分区，依赖厂商自带工具更稳妥。"
+msgstr ""
+
+msgid "存储分区 fstrim（原生 adb 接口）"
+msgstr ""
+
+msgid "用 adb 原生接口对内部存储执行 fstrim，回收已删除块、提升读写效率。"
+msgstr ""
+
+msgid "需设备已连接并授权 USB 调试；部分厂商 ROM 限制 fstrim，失败属正常。"
+msgstr ""
+
+msgid "开启自适应电池与后台限制"
+msgstr ""
+
+msgid "用系统自带的「自适应电池」限制后台耗电应用，提升续航与流畅度（无需 adb）。"
+msgstr ""
+
+msgid "纯系统设置，无数据风险；可随时改回。"
+msgstr ""
+
+msgid "存储分析与大文件清理"
+msgstr ""
+
+msgid "进入系统存储分析，定位「其他/大文件」并清理云端已备份的本地副本。"
+msgstr ""
+
+msgid "建议先确认已开启云备份，再删本地副本，避免数据丢失。"
+msgstr ""
+
+msgid "未使用应用休眠与权限回收"
+msgstr ""
+
+msgid "对长期未使用的应用启用休眠（撤销权限、停止后台、释放空间），提升续航与隐私。"
+msgstr ""
+
+msgid "勿对闹钟/无障碍/设备管理器类应用休眠，否则可能失效。"
+msgstr ""
+
+msgid "Android 10 及以下无此官方能力，改用「限制后台活动」或厂商的清理工具。"
+msgstr ""
+
+msgid "设置路径：设置 → 应用 → 未使用的应用 → 休眠；Android 12+ 原生支持。"
+msgstr ""
+
+msgid "休眠会撤销已授予权限并停止后台，重新打开时恢复。"
+msgstr ""
+
+msgid "关闭窗口动画（settings put global）"
+msgstr ""
+
+msgid "用官方 settings put 把窗口/过渡/Animator 动画缩放设为 0，界面更跟手、省一点合成开销；可随时改回 1 恢复。"
+msgstr ""
+
+msgid "个别依赖过渡动画反馈的 App 可能略显生硬；属可恢复体验项，非系统改动。"
+msgstr ""
+
+msgid "只读核对：settings get global window_animation_scale；动画关掉不影响任何功能。"
+msgstr ""
+
+msgid "释放全部应用缓存（pm trim-caches）"
+msgstr ""
+
+msgid "用官方 pm trim-caches 释放已装应用的可丢弃缓存，回收空间而不删账号数据。"
+msgstr ""
+
+msgid "只清缓存、不删数据；大数值=尽量多清，等价于设置里逐 App 清缓存的可批量化版本。"
+msgstr ""
+
+msgid "只读核对：pm list packages -3（看第三方应用数）。设置→存储能看到释放量。"
+msgstr ""
+
+msgid "开启 Wi-Fi（svc wifi enable）"
+msgstr ""
+
+msgid "用官方 svc wifi enable 确保 Wi-Fi 开启，便于同步与更新；只开不关。"
+msgstr ""
+
+msgid "本工具只往安全方向写——绝不替用户 disable 网络（那是减功能、可能误伤同步/支付）。"
+msgstr ""
+
+msgid "只读核对：settings get global wifi_on。需要关无线请在设置里自行操作。"
+msgstr ""
+
+msgid "清零电量统计（dumpsys batterystats --reset）"
+msgstr ""
+
+msgid "用官方 dumpsys batterystats --reset 清零电量统计，便于重新开始测量续航表现。"
+msgstr ""
+
+msgid "只是计数器归零，不是清电池校准；想重测续航请在清零后正常使用一段时间再看。"
+msgstr ""
+
+msgid "只读核对：dumpsys batterystats（看当前统计）。统计清零不影响运行、不删文件。"
+msgstr ""
+
+msgid "清空日志缓冲（logcat -c）"
+msgstr ""
+
+msgid "用官方 logcat -c 清空内存环形日志缓冲，排障前清场用；只清日志、不碰文件。"
+msgstr ""
+
+msgid "只清日志缓冲，不删 /data 下的任何日志文件，不影响 App 运行。"
+msgstr ""
+
+msgid "只读核对：logcat -d -t 40（看当前日志）。缓冲是内存环形，清了会重新产生。"
+msgstr ""
+
+msgid "回收后台内存（am kill-all）"
+msgstr ""
+
+msgid "用官方 am kill-all 杀掉所有后台进程，等价于一次内存回收；前台 App 不受影响。"
+msgstr ""
+
+msgid "只对后台进程生效；勿对正在前台、或带设备管理员/无障碍/闹钟角色的应用强停——可能触发拉起或短暂失效。"
+msgstr ""
+
+msgid "只读核对：dumpsys meminfo（看内存占用）。后台进程被杀后再次打开会自动重启。"
+msgstr ""
+
+msgid "清零网络流量统计（dumpsys netstats --reset）"
+msgstr ""
+
+msgid "用官方 dumpsys netstats --reset 清零网络流量统计计数器，便于重新计量。"
+msgstr ""
+
+msgid "只是统计归零，不切断任何连接、不改计费本身。"
+msgstr ""
+
+msgid "只读核对：dumpsys netstats（看当前统计）。清计数不影响连接与真实计费记录。"
+msgstr ""
+
+msgid "恢复默认显示（wm size reset / wm density reset）"
+msgstr ""
+
+msgid "用官方 wm reset 把显示尺寸与 DPI 恢复为设备物理默认，修复误设导致的界面不可点。"
+msgstr ""
+
+msgid "本工具只 reset 回默认、绝不自定义设具体 WxH/DPI——设错有「界面不可点、需恢复出厂」风险。"
+msgstr ""
+
+msgid "只读核对：wm size / wm density（看当前显示参数）。reset 是修复性操作，不丢数据。"
+msgstr ""
+
+msgid "适老化无障碍体检总报告（只读）"
+msgstr ""
+
+msgid "一次性读取字体缩放、显示无障碍、读屏服务、减弱动画、护眼五类适老化开关的当前状态，给出可读结论。"
+msgstr ""
+
+msgid "本工具不改设置——开启 TalkBack 会改变触控手势，须由本人或当面确认后进行。"
+msgstr ""
+
+msgid "需 adb + 设备已开启 USB 调试并授权；未连设备时降级为文档指引。"
+msgstr ""
+
+msgid "只读：只 settings get，不代为开启任何无障碍服务。"
+msgstr ""
+
+msgid "适老化：字体缩放与字重核对（只读）"
+msgstr ""
+
+msgid "读 font_scale（字体缩放，API 1 起）与 font_weight_adjustment（字重，API 28+），判断字号是否够大。"
+msgstr ""
+
+msgid "字号过大会挤版式、反而难用；建议 1.15–1.5 之间取稳。"
+msgstr ""
+
+msgid "判断口径：<1.0 未放大偏小；1.15–1.3 已放大；≥1.3 已属大字体档。"
+msgstr ""
+
+msgid "字重探针（font_weight_adjustment）在 Android 9+ 才有，低版本自动跳过。"
+msgstr ""
+
+msgid "适老化：放大镜 / 色彩校正 / 高对比度（只读，按版本门控）"
+msgstr ""
+
+msgid "读放大镜、色彩校正（色盲色弱）、高对比度文本、深色模式四类视觉辅助开关，低版本明说无此开关。"
+msgstr ""
+
+msgid "色彩校正会改变全屏配色，看视频/修图时需临时关回。"
+msgstr ""
+
+msgid "Android 8/9 无高对比度与深色模式开关，改用「亮度拉满 + 减少深色背景应用」等效替代。"
+msgstr ""
+
+msgid "放大镜在 Android 4.2+ 即有，是老设备上最实用的低视力辅助。"
+msgstr ""
+
+msgid "适老化：读屏服务（TalkBack）状态核对（只读）"
+msgstr ""
+
+msgid "读无障碍总开关与已启用服务列表，判断 TalkBack 是否已就绪。"
+msgstr ""
+
+msgid "TalkBack 开启后单指点=朗读、双指点=返回，务必当面教一次再放手。"
+msgstr ""
+
+msgid "本工具只读状态，绝不代为开启。"
+msgstr ""
+
+msgid "读屏是视力障碍用户的核心依赖；已启用列表会显示服务 component 名。"
+msgstr ""
+
+msgid "开启路径：设置 → 辅助功能 → TalkBack。"
+msgstr ""
+
+msgid "适老化：移除动画 + 保留触感反馈（只读核对）"
+msgstr ""
+
+msgid "读窗口/过渡/Animator 动画缩放与触感、提示音开关，核对「防眩晕」与「非视觉确认」是否到位。"
+msgstr ""
+
+msgid "本工具只报状态不改设置；改动画是「移除动画」开关，属用户偏好。"
+msgstr ""
+
+msgid "动画降到 0 可显著降低前庭敏感老人的眩晕与迷向感。"
+msgstr ""
+
+msgid "触感与提示音建议至少留触感开——操作是否生效能「摸到」，不必盯屏确认。"
+msgstr ""
+
+msgid "适老化：亮度 / 息屏 / 护眼夜览核对（只读）"
+msgstr ""
+
+msgid "读屏幕亮度、自动息屏超时与护眼夜览状态，结合老花与白内障的视觉需求给判断。"
+msgstr ""
+
+msgid "仅报告状态，不代替长辈做决定。"
+msgstr ""
+
+msgid "老花与白内障用户普遍需要更高亮度；自动亮度忽明忽暗反而更累。"
+msgstr ""
+
+msgid "息屏调长可减少反复点亮，但更耗电——建议与本人确认。"
+msgstr ""
+
+msgid "API 28 以下无夜览开关，多在厂商显示设置里。"
+msgstr ""
+
+msgid "适老化设置指引（纯文字，无需 adb）"
+msgstr ""
+
+msgid "不连设备也能给出的适老化调整清单，可直接照着念给长辈逐条设置。"
+msgstr ""
+
+msgid "替长辈改设置前先问一句：他们愿不愿意换熟悉的操作方式。"
+msgstr ""
+
+msgid "本任务为纯文字指引，不执行任何命令、无数据风险。"
+msgstr ""
+
+msgid "专门用于「PC 没连安卓设备」或「想让子女远程照着念」的场景。"
+msgstr ""
+
+msgid "Android 8 向下兼容口径总览（只读）"
+msgstr ""
+
+msgid "列出各 Android 接口的最低 API 与本机可用性，回答「这台老安卓还能不能被管」。"
+msgstr ""
+
+msgid "部分厂商 ROM 裁剪了 settings 键，即便 API 达标也可能读不到值——此时会明说「未暴露该键」。"
+msgstr ""
+
+msgid "本工具承诺下探到 Android 8.0（API 26）；低于此值的适老化项给系统设置路径指引。"
+msgstr ""
+
+msgid "会显式标出「本机 API < 所需 API」的项，避免在老设备上给出必然失败的命令。"
+msgstr ""
+
+msgid "卸载未使用的 App（保留数据）"
+msgstr ""
+
+msgid "设置中开启「卸载未使用的 App」，或手动卸载大体积 App。"
+msgstr ""
+
+msgid "卸载仅删程序本身，文档数据保留，重装即可恢复。"
+msgstr ""
+
+msgid "清理 Safari 与浏览器缓存"
+msgstr ""
+
+msgid "清除 Safari 历史与网站数据（不含 iCloud 钥匙串）。"
+msgstr ""
+
+msgid "会退出已登录网站的会话，需重新登录。"
+msgstr ""
+
+msgid "清理信息与大附件"
+msgstr ""
+
+msgid "删除「设置 → 通用 → iPhone 存储 → 信息」中的大附件。"
+msgstr ""
+
+msgid "iCloud 照片开启时，删除会同步到云端，谨慎操作。"
+msgstr ""
+
+msgid "释放内存（重启）"
+msgstr ""
+
+msgid "iOS 无等效「清理内存」开关，重启是最有效方式。"
+msgstr ""
+
+msgid "iOS 自动管理内存，无需第三方「内存清理」App（多数无效且耗电）。"
+msgstr ""
+
+msgid "越狱风险提示"
+msgstr ""
+
+msgid "不推荐越狱来「深度清理」。"
+msgstr ""
+
+msgid "越狱会失去官方安全更新与保修，并显著降低安全性；App Store 外的「清理大师」类工具多无效或含广告/隐私风险。"
+msgstr ""
+
+msgid "保持系统为最新正式版（iOS 26 及以上）即可获得最佳性能与安全。"
+msgstr ""
+
+msgid "读取设备信息（libimobiledevice 接口）"
+msgstr ""
+
+msgid "用 libimobiledevice 的 ideviceinfo 读取型号/系统版本（不触碰隐私字段）。"
+msgstr ""
+
+msgid "需设备已信任本机且装有 libimobiledevice；未装/未连接时自动降级为手动指引。"
+msgstr ""
+
+msgid "照片「优化 iPhone 存储」"
+msgstr ""
+
+msgid "开启「优化 iPhone 存储」，仅保留缩略图，原图留存 iCloud，释放本地空间。"
+msgstr ""
+
+msgid "需已登录 iCloud 且开启照片同步；原图在云端可随时下载。"
+msgstr ""
+
+msgid "关闭不必要的后台 App 刷新"
+msgstr ""
+
+msgid "关闭非必要 App 的后台刷新，省电省流量、减少后台占用。"
+msgstr ""
+
+msgid "即时通讯类建议保留，避免收不到消息。"
+msgstr ""
+
+msgid "iPhone 存储分析与清理"
+msgstr ""
+
+msgid "进入「iPhone 存储」等待系统分析后，清理「文稿与数据」中可精简项。"
+msgstr ""
+
+msgid "「卸载 App」只删程序、保留数据，比重删更安全。"
+msgstr ""
+
+msgid "关闭分析与个性化广告跟踪"
+msgstr ""
+
+msgid "关闭 iOS 的分析共享与个性化广告跟踪，减少行为数据上传。"
+msgstr ""
+
+msgid "不影响应用核心功能，仅个性化广告相关性下降。"
+msgstr ""
+
+msgid "iOS 14.5+ 起 App 跟踪需显式授权（ATT 框架）。"
+msgstr ""
+
+msgid "整机备份到本地（优化前置）"
+msgstr ""
+
+msgid "用 idevicebackup2 把设备备份导出到 ./ios_backup，单向、不写回设备。"
+msgstr ""
+
+msgid "备份写入本机目录，需要足够磁盘空间；首次为全量、后续增量。"
+msgstr ""
+
+msgid "备份是所有 iOS 优化的安全前置；与「恢复」方向相反，绝不 restore。"
+msgstr ""
+
+msgid "归档未使用用户 App（保留数据）"
+msgstr ""
+
+msgid "用 ideviceinstaller -a 归档用户 App，打成可恢复包，而非卸载删数据。"
+msgstr ""
+
+msgid "仅归档用户 App（IsUserApplication=User），系统 App 自动跳过。"
+msgstr ""
+
+msgid "归档 = 导出可恢复包，重装即可复原；与「卸载」（-U，删数据）方向相反。"
+msgstr ""
+
+msgid "清理崩溃/诊断报告（仅日志）"
+msgstr ""
+
+msgid "用 idevicecrashreport -e 拷贝到本地后删除设备端崩溃报告，纯日志、可逆。"
+msgstr ""
+
+msgid "与 Android 的 logcat -c 同属「只清日志」的安全方向。"
+msgstr ""
+
+msgid "崩溃报告是诊断日志，删除后系统会重新生成，无用户数据损失。"
+msgstr ""
+
+msgid "同步设备时间为主机时间"
+msgstr ""
+
+msgid "用 idevicedate -s 把设备时钟同步为当前主机时间（可逆）。"
+msgstr ""
+
+msgid "时间错位会导致证书/同步异常；同步为主机时间是安全方向。"
+msgstr ""
+
+msgid "清除模拟定位"
+msgstr ""
+
+msgid "用 idevicesetlocation clear 清除开发者模拟定位，恢复真实 GPS（可逆）。"
+msgstr ""
+
+msgid "仅清除调试用的模拟坐标，不影响真实定位权限。"
+msgstr ""
+
+msgid "归一化设备名"
+msgstr ""
+
+msgid "用 idevicename 把设备名设为 Optimized-iOS（设置中可随时改回，可逆）。"
+msgstr ""
+
+msgid "仅改显示名，不触碰任何数据；设置 → 通用 → 关于本机可改回。"
+msgstr ""
+
+msgid "优雅重启释放内存"
+msgstr ""
+
+msgid "用 idevicediagnostics restart 发送优雅重启，释放内存、无数据丢失。"
+msgstr ""
+
+msgid "medium 风险：执行会重启设备，需 --yes 确认；进行中操作请先保存。"
+msgstr ""
+
+msgid "等效手动重启；会打断当前会话，但无数据损失——属安全方向。"
+msgstr ""
+
+msgid "挂载开发者磁盘镜像（启用开发者服务）"
+msgstr ""
+
+msgid "用 ideviceimagemounter 挂载匹配版本的 DeveloperDiskImage，启用 Instruments 等。"
+msgstr ""
+
+msgid "需本机存在与系统版本匹配的 DeveloperDiskImage；不联网下载。"
+msgstr ""
+
+msgid "挂载可逆（可卸载），不修改用户数据；缺镜像时自动降级为文档指引。"
+msgstr ""
+
+msgid "OpenWrt 探测与板型/固件识别（只读）"
+msgstr ""
+
+msgid "读取 /etc/openwrt_release、/etc/os-release、/tmp/sysinfo/{board_name,model}，识别设备型号、固件版本、目标平台与架构。纯只读。"
+msgstr ""
+
+msgid "刷机（sysupgrade）为写操作，本工具不自动执行，仅给文档指引。"
+msgstr ""
+
+msgid "board_name / model 给出硬件型号；DISTRIB_RELEASE/TARGET/ARCH 给出固件与架构。"
+msgstr ""
+
+msgid "非 OpenWrt 环境会降级为指引（说明需在路由器上运行）。"
+msgstr ""
+
+msgid "UCI 配置只读审计（/etc/config/*，不打印 secret 明文）"
+msgstr ""
+
+msgid "解析 /etc/config/*（network/system/wireless/firewall/dhcp…），列出每文件节数、接口、桥接与含敏感配置项的存在性；敏感值绝不回显。"
+msgstr ""
+
+msgid "写配置用 `uci set` + `uci commit`，本工具不自动执行任何 uci set。"
+msgstr ""
+
+msgid "可选 `uci show` 检视；无 uci 命令时回退文件解析。"
+msgstr ""
+
+msgid "含 key/password/secret/psk 等配置项仅报告「存在」，不打印值。"
+msgstr ""
+
+msgid "已装软件包只读盘点（opkg/apk 自适应）"
+msgstr ""
+
+msgid "盘点 OpenWrt 已装软件包：24.10 用 apk（/usr/lib/apk/db/installed），更早用 opkg（/usr/lib/opkg/status）；命令不可用则解析状态文件。"
+msgstr ""
+
+msgid "`opkg install` / `apk add` 为写操作，本工具不自动执行。"
+msgstr ""
+
+msgid "23.05 及更早：opkg；24.10 起默认：apk。"
+msgstr ""
+
+msgid "安装/升级为写操作，仅给指引。"
+msgstr ""
+
+msgid "网络接口只读报告（netifd / ubus / UCI network）"
+msgstr ""
+
+msgid "解析 /etc/config/network 列出接口/桥接/VLAN；可选 `ubus call network.interface dump`读取运行时状态。纯只读。"
+msgstr ""
+
+msgid "改接口为写操作（uci set + commit 或 ubus 写方法），本工具不自动执行。"
+msgstr ""
+
+msgid "接口/桥接/VLAN 来自 UCI；运行时状态来自 ubus（只读方法）。"
+msgstr ""
+
+msgid "OpenWrt 构建系统参考（ImageBuilder/SDK/feeds，仅文档）"
+msgstr ""
+
+msgid "列出定制固件的三种路径：ImageBuilder（最快，基于预编译根文件挑包）、SDK（交叉编译软件包）、完整 menuconfig 编译。均为写操作，仅给文档指引。"
+msgstr ""
+
+msgid "`make image` / SDK make / 完整编译 / sysupgrade 均为写操作，本工具不调用。"
+msgstr ""
+
+msgid "ImageBuilder 最快；SDK 用于编译单包；完整编译最灵活最慢。"
+msgstr ""
+
+msgid "防火墙只读报告（/etc/config/firewall，zone/转发/规则）"
+msgstr ""
+
+msgid "解析 /etc/config/firewall，列出区域(zone)、转发(forwarding)、规则(rule)、重定向(redirect)数量与各区域网络归属、NAT(masq)、input/output 策略；运行时实现（firewall4/nftables 或 firewall3/iptables）只读检视。纯只读。"
+msgstr ""
+
+msgid "改防火墙规则为写操作（uci set + commit + reload），本工具不自动执行。"
+msgstr ""
+
+msgid "zone/forwarding/rule/redirect 来自 UCI；运行时状态只读检视。"
+msgstr ""
+
+msgid "无线只读报告（/etc/config/wireless，不回显密码）"
+msgstr ""
+
+msgid "解析 /etc/config/wireless，列出无线电(wifi-device)频段/信道/禁用状态与无线接口(wifi-iface)的设备/模式/加密方式。含密码的接口仅标记存在性，绝不回显密钥明文。纯只读。"
+msgstr ""
+
+msgid "改无线为写操作（uci set + commit + wifi reload），本工具不自动执行。"
+msgstr ""
+
+msgid "无线密码(encryption key)仅提示「含密码」，不打印明文。"
+msgstr ""
+
+msgid "DHCP/DNS 只读报告（/etc/config/dhcp，dnsmasq/odhcpd）"
+msgstr ""
+
+msgid "解析 /etc/config/dhcp，列出 dnsmasq 实例（端口/上游DNS/域）、各接口 DHCP 地址池(start/limit)与静态租约(host)条目数量。纯只读。"
+msgstr ""
+
+msgid "改 DHCP/DNS 为写操作（uci set + commit + dnsmasq restart），本工具不自动执行。"
+msgstr ""
+
+msgid "静态租约仅统计条目数，不逐条展开敏感字段。"
+msgstr ""
+
+msgid "存储只读报告（/etc/config/fstab + df，不 resize/格式化）"
+msgstr ""
+
+msgid "解析 /etc/config/fstab 列出挂载点（fstype/enabled），并用只读 `df -h` 展示容量；识别 overlay（叠加根）是否存在。纯只读，不 resize/格式化。"
+msgstr ""
+
+msgid "resize/格式化/清理 overlay 为写操作，本工具不自动执行。"
+msgstr ""
+
+msgid "overlay 为固件叠加层；容量不足时清理/扩容是写操作。"
+msgstr ""
+
+msgid "sysupgrade 固件刷写指引（高危·opt-in·只给命令，不执行）"
+msgstr ""
+
+msgid "**只读预检**当前板型(board_name/model)与固件(DISTRIB_RELEASE/TARGET)，给出 sysupgrade 备份(backup)与刷写命令的**文本指引**。本工具只读预检、绝不执行 sysupgrade——刷机为高危写操作，须同型号固件 + 先备份。"
+msgstr ""
+
+msgid "sysupgrade 重写固件分区，型号/固件不匹配可致设备变砖；本工具绝不执行刷写。"
+msgstr ""
+
+msgid "命令仅作文本展示，需你自行确认后手动执行。"
+msgstr ""
+
+msgid "默认关闭（opt_in）：需 --opt-in 且确认后才出现，避免误触高危刷机指引。"
+msgstr ""
+
+msgid "先 sysupgrade -b 备份配置，再刷写；固件必须与同型号匹配。"
+msgstr ""
+
+msgid "包管理写操作指引（高危·opt-in·install/upgrade/remove 只给命令）"
+msgstr ""
+
+msgid "**只读预检**识别包管理器(opkg/apk)，给出 update/install/upgrade/remove 的**命令文本指引**。本工具绝不执行包安装/卸载（写操作）。"
+msgstr ""
+
+msgid "opkg install / apk add/del 为写操作，本工具绝不执行；命令仅作文本展示。"
+msgstr ""
+
+msgid "23.05 及更早 opkg；24.10 起默认 apk。卸载/升级牵动依赖，务必先只读确认。"
+msgstr ""
+
+msgid "UCI 配置写操作指引（高危·opt-in·uci set/commit 只给命令）"
+msgstr ""
+
+msgid "**只读预检**列出 /etc/config 配置包，给出 uci show/changes(只读) 与 uci set/commit/revert 的**命令文本指引**，并强调先备份、先看 changes。本工具绝不执行任何 uci set/commit。"
+msgstr ""
+
+msgid "uci set/commit 为写操作，本工具绝不执行；命令仅作文本展示。"
+msgstr ""
+
+msgid "改前 uci export 备份、写前 uci changes 预览、uci revert 可回滚未提交变更。"
+msgstr ""
+
+msgid "服务启停/重载指引（高危·opt-in·restart/reload 只给命令）"
+msgstr ""
+
+msgid "**只读预检**列举 /etc/init.d 可管理服务，给出 status(只读) 与 restart/reload/enable 的**命令文本指引**。本工具绝不执行服务启停（写操作）。"
+msgstr ""
+
+msgid "/etc/init.d/<svc> restart/reload 为写操作，本工具绝不执行；命令仅作文本展示。"
+msgstr ""
+
+msgid "重启网络/防火墙类服务会短暂断网；远程操作请确保有回带/带外通道。"
+msgstr ""
+
+msgid "无障碍环境报告（ORCA / AT-SPI2）"
+msgstr ""
+
+msgid "只读探测屏幕阅读器（ORCA）、AT-SPI2 辅助技术总线、读屏器自启动开关与语音后端，输出屏幕阅读器友好的纯文本报告。"
+msgstr ""
+
+msgid "缺少 orca / dbus / gsettings 时逐项降级提示，不影响其他任务。"
+msgstr ""
+
+msgid "协议：AT-SPI2 构建在 D-Bus 之上（辅助技术总线 org.a11y.Bus），ORCA 通过 libatspi / pyatspi2 访问应用程序的无障碍树。"
+msgstr ""
+
+msgid "报告已去除框线等装饰字符，便于屏幕阅读器连续朗读。"
+msgstr ""
+
+msgid "AT-SPI2 辅助技术总线自检"
+msgstr ""
+
+msgid "探测 org.a11y.Bus 是否响应（dbus-send / gdbus 调 Registry.GetRegisteredEvents），判断读屏器能否收到应用的无障碍事件。"
+msgstr ""
+
+msgid "纯 SSH / 无图形会话环境一般不可用，属正常现象。"
+msgstr ""
+
+msgid "接口：org.a11y.atspi.Registry（对象路径 /org/a11y/atspi/registry）。"
+msgstr ""
+
+msgid "未响应通常是 at-spi-bus-launcher 未启动或处于非图形会话（SSH/TTY）。"
+msgstr ""
+
+msgid "ORCA 屏幕阅读器状态"
+msgstr ""
+
+msgid "读取 ORCA 版本与「是否随会话自动启动」开关（gsettings screen-reader-enabled）。"
+msgstr ""
+
+msgid "开关：org.gnome.desktop.a11y.applications screen-reader-enabled。"
+msgstr ""
+
+msgid "未安装 ORCA 时提示可用包管理器安装（gnome-orca / orca）。"
+msgstr ""
+
+msgid "启用屏幕阅读器自启动（ORCA）"
+msgstr ""
+
+msgid "把 GNOME 的 screen-reader-enabled 置为 true，使 ORCA 随会话自动启动。"
+msgstr ""
+
+msgid "仅在 GNOME/兼容桌面生效；KDE 等桌面请用其自带无障碍设置。"
+msgstr ""
+
+msgid "回退：gsettings set org.gnome.desktop.a11y.applications screen-reader-enabled false"
+msgstr ""
+
+msgid "启动/重启 ORCA：orca --replace；设置：orca --setup。"
+msgstr ""
+
+msgid "配置目录：~/.local/share/orca（首次运行后生成）。"
+msgstr ""
+
+msgid "启用 AT-SPI 辅助技术接口（toolkit-accessibility）"
+msgstr ""
+
+msgid "开启 GNOME 的 toolkit-accessibility，让 GTK/Qt 应用向 AT-SPI2 总线暴露无障碍树。"
+msgstr ""
+
+msgid "开启后应用会额外暴露无障碍接口，资源占用略有增加（通常可忽略）。"
+msgstr ""
+
+msgid "该开关是 AT-SPI2 生效的前提之一：应用需向 org.a11y.Bus 注册无障碍对象。"
+msgstr ""
+
+msgid "回退：gsettings set org.gnome.desktop.interface toolkit-accessibility false"
+msgstr ""
+
+msgid "Windows 讲述人（Narrator）入口"
+msgstr ""
+
+msgid "给出 Windows 讲述人的开关与快捷键指引（对应 Linux ORCA 的读屏能力）。"
+msgstr ""
+
+msgid "Windows 的无障碍接口为 UI Automation（UIA）与 MSAA，与 Linux AT-SPI2 属同类机制。"
+msgstr ""
+
+msgid "标准参考：GB/T 37668（国标）/ WCAG 2.2（国际）/ Section 508（地区）。"
+msgstr ""
+
+msgid "macOS VoiceOver 入口"
+msgstr ""
+
+msgid "给出 macOS VoiceOver 的开关与快捷键指引（对应 Linux ORCA 的读屏能力）。"
+msgstr ""
+
+msgid "macOS 的无障碍接口为 NSAccessibility（AX API），与 Linux AT-SPI2 属同类机制。"
+msgstr ""
+
+msgid "多系统无障碍适配报告（Windows/macOS/Linux/Android/iOS/鸿蒙）"
+msgstr ""
+
+msgid "按各系统各自的协议与接口只读探测屏幕阅读器状态：Windows 讲述人（UI Automation/MSAA）、macOS VoiceOver（NSAccessibility AX）、Linux ORCA（AT-SPI2/D-Bus）、Android TalkBack（AccessibilityService/adb settings secure）、iOS VoiceOver（设备端）、鸿蒙屏幕朗读（AccessibilityExtensionAbility/hdc）。"
+msgstr ""
+
+msgid "iOS 与鸿蒙不允许主机直接开启读屏器，本任务只给设备端指引。"
+msgstr ""
+
+msgid "适配原则：每个系统用**它自己**的原生无障碍接口，不做跨系统猜测；非当前平台一律降级为「请在目标系统操作」的指引，不报错。"
+msgstr ""
+
+msgid "Windows: HKCU\\Software\\Microsoft\\Narrator + Win+Ctrl+Enter；macOS: com.apple.universalaccess 域 + Cmd+F5；Linux: org.a11y.Bus + gsettings screen-reader-enabled；Android: adb shell settings get secure accessibility_enabled；iOS/鸿蒙: 只能在设备端设置中开启。"
+msgstr ""
+
+msgid "多系统无障碍权威文档（协议与接口出处）"
+msgstr ""
+
+msgid "列出各系统无障碍的权威文档与对应协议/接口：AT-SPI2、UI Automation、NSAccessibility、AccessibilityService、AccessibilityExtensionAbility，并给出 WCAG 2.2 / ISO 9241-171 / GB/T 37668 等标准出处。"
+msgstr ""
+
+msgid "文档来源：GNOME docs、Microsoft Learn、Apple Developer、Android Developers、华为开发者文档、W3C、ISO、SAC。"
+msgstr ""
+
+msgid "启用 Windows 讲述人（UI Automation 通道）"
+msgstr ""
+
+msgid "给出 Windows 讲述人的启用命令与设置入口（对应 Linux ORCA 自启动开关）。"
+msgstr ""
+
+msgid "Windows 上改注册表有风险，本任务只给 GUI 与命令行入口，不写注册表。"
+msgstr ""
+
+msgid "接口：UI Automation（UIA）/ MSAA；应用需实现 IUIAutomation 提供者的属性与控件模式。"
+msgstr ""
+
+msgid "注册表仅作**只读**探测（HKCU\\Software\\Microsoft\\Narrator），不主动改写。"
+msgstr ""
+
+msgid "启用 macOS VoiceOver（NSAccessibility 通道）"
+msgstr ""
+
+msgid "给出 macOS VoiceOver 的启用快捷键与设置入口（对应 Linux ORCA 自启动开关）。"
+msgstr ""
+
+msgid "不写 defaults（避免破坏用户偏好），启用请在系统设置中操作。"
+msgstr ""
+
+msgid "接口：NSAccessibility（AX API），AXUIElement 暴露 AXRole/AXTitle/AXValue 等属性。"
+msgstr ""
+
+msgid "Android TalkBack 状态与启用指引（adb 只读）"
+msgstr ""
+
+msgid "只读查询 Android 无障碍服务开关状态，并给出 TalkBack 启用指引。"
+msgstr ""
+
+msgid "需要设备已授权 USB 调试；未连接设备时降级为指引。"
+msgstr ""
+
+msgid "只读：adb shell settings get secure accessibility_enabled / enabled_accessibility_services。"
+msgstr ""
+
+msgid "启用：设置 → 无障碍 → TalkBack；用 adb settings put secure 属变更，默认不做。"
+msgstr ""
+
+msgid "鸿蒙屏幕朗读（AccessibilityExtensionAbility）指引"
+msgstr ""
+
+msgid "给出鸿蒙系统「屏幕朗读」的启用入口与无障碍扩展能力说明。"
+msgstr ""
+
+msgid "同 iOS，主机不允许直接开启读屏器，只给指引。"
+msgstr ""
+
+msgid "接口：HarmonyOS Accessibility（AccessibilityExtensionAbility）；主机侧可用 hdc shell 做只读查询。"
+msgstr ""
+
+msgid "无障碍标准对照（国标/国际/地区）"
+msgstr ""
+
+msgid "列出无障碍分类的三层标准出处，并按受众（国内/对外/按地区）给出引用优先级。"
+msgstr ""
+
+msgid "引用策略：国内优先国家平台/国家标准；给外国人用改用国际标准；个别场景按所在国家/地区标准执行。"
+msgstr ""
+
+msgid "查找家目录大文件（Python）"
+msgstr ""
+
+msgid "用 Python 标准库列出 $HOME 下体积最大的 20 个文件，辅助定位可清理项。"
+msgstr ""
+
+msgid "只读分析，不删除任何文件；据此手动判断是否可清理。"
+msgstr ""
+
+msgid "查找重复文件（Ruby）"
+msgstr ""
+
+msgid "用 Ruby 标准库按大小初筛潜在重复文件，辅助清理冗余副本。"
+msgstr ""
+
+msgid "仅按大小初筛，不哈希比对；真正删除前请人工确认。"
+msgstr ""
+
+msgid "清理 Go 模块缓存"
+msgstr ""
+
+msgid "用 go 自带的 `go clean -modcache` 清理已下载的模块缓存。"
+msgstr ""
+
+msgid "可重下载；不影响源码与构建产物。"
+msgstr ""
+
+msgid "清理 Go 构建缓存（GOCACHE）"
+msgstr ""
+
+msgid "用 `go clean -cache` 清理构建缓存（GOCACHE），释放编译中间产物占用的空间。"
+msgstr ""
+
+msgid "CI/离线环境清理后若无法重新编译需留意；本地一般无影响。"
+msgstr ""
+
+msgid "构建缓存可重建：清理后首次编译会重新生成，耗时略增。"
+msgstr ""
+
+msgid "不影响模块缓存（GOMODCACHE）与源码；两者独立，可分别清理。"
+msgstr ""
+
+msgid "Go 工程预构建校验（go build）"
+msgstr ""
+
+msgid "在当前 Go 工程执行 `go build ./...`，预编译并校验可构建性，同时把构建结果写入缓存以加速后续编译。"
+msgstr ""
+
+msgid "构建失败通常是代码/依赖问题，属正常反馈，不会修改源码。"
+msgstr ""
+
+msgid "有 go.mod 时才执行；无则跳过，不报错。"
+msgstr ""
+
+msgid "构建产物写入 GOCACHE，可让后续 `go build` / `go test` 显著加快。"
+msgstr ""
+
+msgid "交叉编译可加 GOOS/GOARCH（如 GOOS=windows GOARCH=amd64 go build ./...）。"
+msgstr ""
+
+msgid "整理 Go 依赖（go mod tidy）"
+msgstr ""
+
+msgid "执行 `go mod tidy` 移除未使用依赖、补齐缺失依赖，保持 go.mod / go.sum 干净。"
+msgstr ""
+
+msgid "需联网解析模块；离线环境会失败。执行前请确认依赖变更可回退。"
+msgstr ""
+
+msgid "会重写 go.mod 与 go.sum，属「结构性」改动，故风险定为 medium。"
+msgstr ""
+
+msgid "建议先提交/备份 go.mod、go.sum，再执行以便对比回退。"
+msgstr ""
+
+msgid "校验/清理 Node 缓存"
+msgstr ""
+
+msgid "用 npm 的 `npm cache verify` 整理 Node 依赖缓存（需 npm）。"
+msgstr ""
+
+msgid "仅整理校验缓存，不删依赖；无 npm 时自动跳过。"
+msgstr ""
+
+msgid "汇总大日志文件（Perl）"
+msgstr ""
+
+msgid "用 Perl 扫描 /var/log 与家目录日志，列出体积偏大的日志。"
+msgstr ""
+
+msgid "只读列出；压缩/轮转日志请结合系统 logrotate。"
+msgstr ""
+
+msgid "环境报告（Lua）"
+msgstr ""
+
+msgid "用 Lua 输出基础环境信息，演示「有 Lua 才启用」的自动显隐。"
+msgstr ""
+
+msgid "仅展示信息，无副作用。"
+msgstr ""
+
+msgid "清理 Rust 构建缓存（cargo）"
+msgstr ""
+
+msgid "用 cargo 自带的 `cargo clean` 清理当前工程 target，必要时清理全局 registry 缓存。"
+msgstr ""
+
+msgid "清理 registry 缓存后下次构建需重新下载依赖，首次略慢。"
+msgstr ""
+
+msgid "可重编译；不影响源码与 Cargo.lock。"
+msgstr ""
+
+msgid "全局缓存 ~/.cargo/registry、~/.cargo/git 体积较大，可用 `cargo clean`（配合 `--target-dir` 或手动清 registry）释放，但会触发重新下载。"
+msgstr ""
+
+msgid "清理 Java 构建缓存（Gradle/Maven）"
+msgstr ""
+
+msgid "清理 Gradle 与 Maven 的本地依赖/构建缓存（可从仓库重新拉取，不删源码）。"
+msgstr ""
+
+msgid "清理后首次构建需联网重新下载依赖，耗时增加。"
+msgstr ""
+
+msgid "Gradle/Maven 缓存均为可重建的下载产物，清理后下次构建会自动重新解析与下载。"
+msgstr ""
+
+msgid "不影响项目源码与构建脚本。"
+msgstr ""
+
+msgid "清理 .NET NuGet 缓存"
+msgstr ""
+
+msgid "用 dotnet CLI 清理 NuGet 全局缓存（http-cache / global-packages / temp）。"
+msgstr ""
+
+msgid "清理后首次还原需重新下载包，耗时增加。"
+msgstr ""
+
+msgid "NuGet 缓存可重新还原；不影响项目源码与 .csproj 引用。"
+msgstr ""
+
+msgid "清理 PHP Composer 缓存"
+msgstr ""
+
+msgid "清理 Composer 的包缓存目录（可重新下载，不影响 vendor 与源码）。"
+msgstr ""
+
+msgid "清理后首次安装需重新下载依赖，耗时增加。"
+msgstr ""
+
+msgid "Composer 缓存可重建；不影响项目 vendor 与 composer.lock。"
+msgstr ""
+
+msgid "清理 RubyGems 旧版本包"
+msgstr ""
+
+msgid "用 `gem cleanup` 移除已安装 gem 的旧版本，只保留最新版。"
+msgstr ""
+
+msgid "个别项目锁定旧版本时需重新 `bundle install`。"
+msgstr ""
+
+msgid "只清理同一 gem 的历史版本，不影响当前依赖可解析性。"
+msgstr ""
+
+msgid "磁盘 S.M.A.R.T. 健康自检"
+msgstr ""
+
+msgid "按 T13/ATA8-ACS 标准读取磁盘 SMART 健康，预警坏道/重映射扇区。"
+msgstr ""
+
+msgid "未安装 smartmontools 时无此能力；安装后即可启用，本工具不强求。"
+msgstr ""
+
+msgid "参考标准：INCITS T13 ATA8-ACS；重映射扇区/待映射扇区升高即应备份换盘。"
+msgstr ""
+
+msgid "ACPI 电源状态优化"
+msgstr ""
+
+msgid "按 UEFI Forum ACPI 规范核对可用睡眠态，给出节能建议。"
+msgstr ""
+
+msgid "修改 CPU/设备电源态可能影响唤醒延迟，服务器/虚拟机谨慎。"
+msgstr ""
+
+msgid "参考标准：ACPI Specification（UEFI Forum）；笔记本用 S3/S4 节能，服务器慎用深度睡眠。"
+msgstr ""
+
+msgid "SSD TRIM 维护"
+msgstr ""
+
+msgid "按 ATA TRIM（DATA SET MANAGEMENT）定期释放无效块，维持 SSD 性能。"
+msgstr ""
+
+msgid "未安装 util-linux（fstrim）时无此能力。"
+msgstr ""
+
+msgid "参考标准：INCITS T13 ATA/ATAPI Command Set；已启用连续 TRIM 的文件系统可不定时跑。"
+msgstr ""
+
+msgid "PCI/USB 设备清单（按标准类代码）"
+msgstr ""
+
+msgid "按 PCI-SIG / USB-IF 类代码列出设备，辅助排查驱动缺失。"
+msgstr ""
+
+msgid "未装 lspci/lsusb 时仅给指引。"
+msgstr ""
+
+msgid "参考标准：PCI-SIG PCIe Base Spec / USB-IF Device Class Definitions。"
+msgstr ""
+
+msgid "CPU 信息报告"
+msgstr ""
+
+msgid "读取 CPU 型号/核心数（跨平台：sysctl / /proc/cpuinfo），供调优前确认硬件。"
+msgstr ""
+
+msgid "CPU 频率调节参考 P-state/C-state（ACPI）；修改前确认硬件与散热。"
+msgstr ""
+
+msgid "CPU 频率调节策略核对（CPUFreq）"
+msgstr ""
+
+msgid "按内核文档 admin-guide/pm/cpufreq.rst 核对当前调频 governor（schedutil/powersave/performance/ondemand），给出功耗/性能取舍建议。"
+msgstr ""
+
+msgid "改 governor 影响功耗与响应；笔记本用 schedutil/powersave 节能，高负载服务器用 performance。"
+msgstr ""
+
+msgid "参考内核文档 cpufreq.rst：schedutil/powersave 偏节能，performance 偏性能，ondemand/conservative 为经典采样策略。"
+msgstr ""
+
+msgid "改 governor：echo schedutil > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor（需 root，且不同发行版持久化方式不同）。"
+msgstr ""
+
+msgid "CPU 空闲状态核对（cpuidle）"
+msgstr ""
+
+msgid "按内核文档 admin-guide/pm/cpuidle.rst 核对可用 C-state，给出节能/唤醒延迟权衡建议。"
+msgstr ""
+
+msgid "服务器/低延迟负载可限制最深 C-state，但会牺牲节能。"
+msgstr ""
+
+msgid "参考内核文档 cpuidle.rst：越深 C-state 越省电，但唤醒延迟越大。限制最深 C-state 需内核/固件支持。"
+msgstr ""
+
+msgid "Intel P-State 调速器核对"
+msgstr ""
+
+msgid "按内核文档 admin-guide/pm/intel_pstate.rst 核对 intel_pstate 状态（active/passive），建议配合 schedutil。"
+msgstr ""
+
+msgid "仅 Intel 平台有此接口；AMD 请改用 amd_pstate（amd-pstate.rst）。"
+msgstr ""
+
+msgid "现代 Intel CPU 建议保留 intel_pstate（active），配合 schedutil 最稳；可经 max_perf_pct/min_perf_pct 限制性能窗口。"
+msgstr ""
+
+msgid "温控与降频核对（thermal sysfs）"
+msgstr ""
+
+msgid "按内核文档 admin-guide/thermal/sysfs-api.rst 读取热区温度与策略，预警过热降频。"
+msgstr ""
+
+msgid "温度阈值由固件/内核定义，软件层面无法长期压制过热，属硬件维护范畴。"
+msgstr ""
+
+msgid "过热降频会拖慢系统；软件仅能核对热区与阈值，硬件层面需清灰/换硅脂/改善风道。"
+msgstr ""
+
+msgid "透明大页（THP）策略核对"
+msgstr ""
+
+msgid "按内核文档 admin-guide/mm/transhuge.rst 核对 transparent_hugepage 状态（always/madvise/never），给出内存/延迟权衡。"
+msgstr ""
+
+msgid "改 THP 状态需 root；never 可消除抖动但增加 TLB 压力。"
+msgstr ""
+
+msgid "THP 对大内存/数据库有收益，但对延迟敏感负载可能引入 compaction 抖动；用 madvise 更稳妥。"
+msgstr ""
+
+msgid "zswap 压缩交换缓存核对"
+msgstr ""
+
+msgid "按内核文档 mm/zswap.rst 核对 zswap 是否启用，给出换页压力下的内存扩展建议。"
+msgstr ""
+
+msgid "低端机或已大量 swap 时收益明显，但会增加一点 CPU 占用；可调 max_pool_percent 控制内存占用。"
+msgstr ""
+
+msgid "zswap 以 CPU 换内存：换页前先压缩存入内存池，超限或失败再落入后端 swap。"
+msgstr ""
+
+msgid "zram 内存压缩块设备核对"
+msgstr ""
+
+msgid "按内核文档 admin-guide/blockdev/zram.rst 核对 zram 设备，建议以压缩内存块替代磁盘 swap。"
+msgstr ""
+
+msgid "配置 zram 需 root；disksize 过大可能挤占可用内存。"
+msgstr ""
+
+msgid "把 /dev/zram<N> 用作 swap 比磁盘 swap 快得多；注意设置合理 disksize 并监控压缩率。"
+msgstr ""
+
+msgid "I/O 调度器核对（BFQ/mq-deadline）"
+msgstr ""
+
+msgid "按内核文档 block/ 核对根盘队列调度器，SSD 建议 none/mq-deadline，机械盘建议 bfq。"
+msgstr ""
+
+msgid "改调度器需重挂或写入 /sys；部分发行版默认已合理，谨慎改动。"
+msgstr ""
+
+msgid "SSD/NVMe 用 none 或 mq-deadline；机械盘用 bfq 更顺滑；数据库盘改调度器前先评估延迟。"
+msgstr ""
+
+msgid "NVMe 固态盘核对（队列/TRIM）"
+msgstr ""
+
+msgid "按内核文档 nvme/index.rst 核对 NVMe 设备与多队列，结合 TRIM 维持性能。"
+msgstr ""
+
+msgid "fstrim 需 util-linux；未装时仅 report。"
+msgstr ""
+
+msgid "NVMe 多队列默认可用，无需手工调 nr_requests；定期 fstrim 维持性能与寿命。"
+msgstr ""
+
+msgid "x86 能效偏好（EPB）核对"
+msgstr ""
+
+msgid "按内核 intel_pstate 文档核对 energy_perf_bias，给出性能/能效偏好建议（x86 专属）。"
+msgstr ""
+
+msgid "改 EPB 需特权；仅 x86 Intel/AMD 支持，ARM/龙芯等无此接口（自动隐藏）。"
+msgstr ""
+
+msgid "energy_perf_bias 0=性能优先、15=能效优先、6=平衡；可经 x86_energy_perf_policy 或 sysfs 设置。"
+msgstr ""
+
+msgid "NUMA 自动平衡核对"
+msgstr ""
+
+msgid "按内核文档 admin-guide/mm/numa_memory_policy.rst 核对 numa_balancing，给出多路内存延迟优化建议。"
+msgstr ""
+
+msgid "多路服务器开启收益明显；单路/桌面误开反而有跨节点开销。"
+msgstr ""
+
+msgid "NUMA 平衡对单路/桌面收益有限，多路服务器才明显；误开可能引入跨节点开销。"
+msgstr ""
+
+msgid "硬件看门狗心跳核对"
+msgstr ""
+
+msgid "按内核文档 watchdog/watchdog-api.rst 核对看门狗设备，确认守护进程保活，避免假死无重启。"
+msgstr ""
+
+msgid "误关守护进程会导致周期性硬重启。"
+msgstr ""
+
+msgid "关键服务器应启用看门狗并配守护进程（如 watchdog/systemd）定期喂狗；超时则硬重启。"
+msgstr ""
+
+msgid "交换倾向 vm.swappiness 核对"
+msgstr ""
+
+msgid "按内核文档 admin-guide/sysctl/vm.rst 核对 swappiness，给出内存压力下换页激进度建议。"
+msgstr ""
+
+msgid "内存极端紧张时过低 swappiness 易触发 OOM。"
+msgstr ""
+
+msgid "0=尽量不换页、100=激进换页；桌面/服务器可适当降低以减少换页抖动。"
+msgstr ""
+
+msgid "能耗感知调度（EAS）核对"
+msgstr ""
+
+msgid "按内核文档 scheduler/sched-energy.rst 核对 sched_energy_aware，给出移动/笔记本节能调度建议。"
+msgstr ""
+
+msgid "仅异构/能效敏感平台意义大；同构桌面影响不大。"
+msgstr ""
+
+msgid "异构大小核（big.LITTLE / 混合架构）开启 EAS 收益最大；需 Energy Model 与 schedutil 配合。"
+msgstr ""
+
+msgid "启用 IPv6 隐私扩展（临时地址）"
+msgstr ""
+
+msgid "为出站连接使用临时、轮换的 IPv6 地址，降低跨站点追踪（RFC 4941）。"
+msgstr ""
+
+msgid "某些严格按 IP 做审计/白名单的服务可能受影响；需确认后再开。"
+msgstr ""
+
+msgid "参考：IETF RFC 4941。仅影响地址生成策略，不改变连通性。"
+msgstr ""
+
+msgid "启用/禁用 IPv6"
+msgstr ""
+
+msgid "按 RFC 8200 启用或禁用 IPv6 栈（默认启用；仅在确需禁用时选择）。"
+msgstr ""
+
+msgid "禁用 IPv6 可能导致仅 IPv6 可达的服务不可访问。"
+msgstr ""
+
+msgid "参考：IETF RFC 8200。现代网络建议保持启用。"
+msgstr ""
+
+msgid "启用 ECN 显式拥塞通知"
+msgstr ""
+
+msgid "在 IP 报头标记拥塞，避免丢包即降速（RFC 3168）。"
+msgstr ""
+
+msgid "个别老旧设备对 ECN 处理异常，遇问题可关回。"
+msgstr ""
+
+msgid "参考：IETF RFC 3168。高延迟/拥塞链路可提升吞吐。"
+msgstr ""
+
+msgid "改用 BBR 拥塞控制"
+msgstr ""
+
+msgid "改用基于带宽-延迟乘积的 BBR，长肥管道下比 Cubic 更高效（IETF/CCRG）。"
+msgstr ""
+
+msgid "与部分中间设备/限速策略不兼容时请回退 Cubic。"
+msgstr ""
+
+msgid "参考：IETF CCRG BBR / RFC 9002 思路。需内核支持 tcp_bbr 模块。"
+msgstr ""
+
+msgid "启用路径 MTU 发现"
+msgstr ""
+
+msgid "动态发现路径 MTU，避免分片、提升吞吐（RFC 1191）。"
+msgstr ""
+
+msgid "参考：IETF RFC 1191。"
+msgstr ""
+
+msgid "Wi-Fi 节能模式"
+msgstr ""
+
+msgid "空闲时让无线网卡进入节能模式（IEEE 802.11）。"
+msgstr ""
+
+msgid "实时音视频/游戏场景建议关闭以减少抖动。"
+msgstr ""
+
+msgid "参考：IEEE 802.11 Power Save。笔记本可省电，增延迟。"
+msgstr ""
+
+msgid "DNS-over-TLS（DoT）"
+msgstr ""
+
+msgid "在 TLS 上传输 DNS 防窃听/篡改（RFC 7858）；需在解析器侧启用。"
+msgstr ""
+
+msgid "参考：IETF RFC 7858。属指引项，不改变本机配置。"
+msgstr ""
+
+msgid "DNS-over-HTTPS（DoH）"
+msgstr ""
+
+msgid "在 HTTPS 上传输 DNS 规避劫持（RFC 8484）；需在解析器/浏览器侧启用。"
+msgstr ""
+
+msgid "参考：IETF RFC 8484。属指引项。"
+msgstr ""
+
+msgid "QoS / DSCP 业务分级（ITU-T Y.1541）"
+msgstr ""
+
+msgid "按 ITU-T Y.1541 的性能目标用 DSCP 标记区分业务（路由器侧生效）。"
+msgstr ""
+
+msgid "误标记 DSCP 可能被上游运营商丢弃，企业网需与运维确认。"
+msgstr ""
+
+msgid "参考：ITU-T Y.1541。主机侧强行标记通常需 eBPF/tc，风险较高，默认仅指引。"
+msgstr ""
+
+msgid "ADSL 链路参数（ITU-T G.992）"
+msgstr ""
+
+msgid "ADSL 物理层由 DSLAM 与调制解调器协商（ITU-T G.992）；本机仅说明。"
+msgstr ""
+
+msgid "参考：ITU-T G.992（G.dmt/G.lite）。属指引项。"
+msgstr ""
+
+msgid "语音编码 G.711（ITU-T）"
+msgstr ""
+
+msgid "传统 VoIP/PSTN 互通的 PCM 语音编码（ITU-T G.711）；本机仅说明。"
+msgstr ""
+
+msgid "参考：ITU-T G.711。属指引项。"
+msgstr ""
+
+msgid "开启网卡卸载（GRO/GSO/TSO，ethtool -K）"
+msgstr ""
+
+msgid "让网卡/驱动做大部分分段与校验和卸载，显著降低 CPU、提升吞吐（ethtool -K）。转发设备切勿开 LRO。"
+msgstr ""
+
+msgid "转发/路由场景不要开 LRO（LRO 不重算校验和，跨网段会出错）；终端/服务器保留 GRO/TSO/GSO。"
+msgstr ""
+
+msgid "参考：ethtool(8) / kernel ethtool-netlink.rst。仅作用于本机主接口的卸载开关。"
+msgstr ""
+
+msgid "调网卡中断聚合（ethtool -C）"
+msgstr ""
+
+msgid "适当提高中断聚合窗口，降低每秒中断数、省 CPU（ethtool -C rx-usecs/tx-usecs）。"
+msgstr ""
+
+msgid "窗口过大可能增加接收延迟，需按业务权衡后再调。"
+msgstr ""
+
+msgid "参考：ethtool(8)。高吞吐场景可加大窗口；实时性敏感场景要保守。"
+msgstr ""
+
+msgid "单队列网卡开启 RPS（sysfs rps_cpus）"
+msgstr ""
+
+msgid "单队列网卡把收包软中断散到多 CPU（rps_cpus 写 CPU 掩码），补多核短板（scaling.rst）。"
+msgstr ""
+
+msgid "掩码写错（含离线 CPU）可能不生效或降性能，函数已自动读取 /sys 在线 CPU 拓扑。"
+msgstr ""
+
+msgid "参考：scaling.rst。多队列网卡优先靠驱动 RSS，无需 RPS。"
+msgstr ""
+
+msgid "发送侧开启 XPS（sysfs xps_cpus）"
+msgstr ""
+
+msgid "按 CPU 选 TX 队列，减少发送锁竞争（tx-*/xps_cpus 写 CPU 掩码，scaling.rst）。"
+msgstr ""
+
+msgid "掩码写错可能不生效，函数已自动读取在线 CPU 拓扑。"
+msgstr ""
+
+msgid "参考：scaling.rst。与 RPS 互补，发送路径优化。"
+msgstr ""
+
+msgid "出口挂 fq_codel 抗缓冲膨胀（tc qdisc）"
+msgstr ""
+
+msgid "用 fq_codel 主动管理出口队列，缓解 bufferbloat（上传占满时延迟暴涨），降延迟不牺牲吞吐（tc qdisc）。"
+msgstr ""
+
+msgid "勿用 tc qdisc del 误删正在使用的根 qdisc（会瞬间断该设备出口）；本任务用 replace 安全覆盖。"
+msgstr ""
+
+msgid "参考：RFC 8290 / bufferbloat.net。只读诊断用 tc qdisc show。"
+msgstr ""
+
+msgid "调高连接跟踪表上限（nf_conntrack_max）"
+msgstr ""
+
+msgid "高并发短连接/NAT 网关下，count 逼近 max 会丢新连接；调高上限避免（sysctl nf_conntrack_max）。"
+msgstr ""
+
+msgid "勿用 conntrack -F 清空正在用的连接表（会切断所有已建立连接）。"
+msgstr ""
+
+msgid "参考：nf_conntrack 文档。默认 262144；也可缩短 established 超时让空闲连接更快过期。"
+msgstr ""
+
+msgid "调高 NAPI 收包 backlog（netdev_max_backlog）"
+msgstr ""
+
+msgid "调高 NAPI 收包软中断 backlog 上限，高包率场景减少丢包（sysctl netdev_max_backlog）。"
+msgstr ""
+
+msgid "过高会多用内存，按实际负载调整。"
+msgstr ""
+
+msgid "参考：ip-sysctl.rst。默认 5000。"
+msgstr ""
+
+msgid "XDP/eBPF 数据面加速（指引，高危）"
+msgstr ""
+
+msgid "XDP 在驱动收包最早点处理（DDoS 过滤/负载均衡），tc clsact 在 ingress/egress 挂 BPF。加载属高级写操作。"
+msgstr ""
+
+msgid "切勿 detach/删除不认识的 eBPF 程序（会断网或丢观测）；只在自有机器、明确意图下做。"
+msgstr ""
+
+msgid "参考：bpftool 只读检视 prog/map/net list。已加载程序常被 Cilium/监控/防火墙依赖。"
+msgstr ""
+
+msgid "网卡 IRQ 亲和（smp_affinity，指引）"
+msgstr ""
+
+msgid "把网卡收包中断绑到特定 CPU（/proc/irq/<n>/smp_affinity），配合 RPS 减少跨核抖动。"
+msgstr ""
+
+msgid "绑错 CPU 可能反而降性能；多队列网卡优先用驱动 RSS+irqbalance。"
+msgstr ""
+
+msgid "参考：irq-affinity.rst。通常配合 RPS/XPS 一起调。"
+msgstr ""
+
+msgid "开启 RFS 流亲和（rps_flow_cnt，指引）"
+msgstr ""
+
+msgid "按套接字 CPU 亲和把同一流导向同一 CPU（rps_sock_flow_entries + 每队列 rps_flow_cnt），降低缓存 miss。"
+msgstr ""
+
+msgid "流表过小不生效、过大占内存；按连接数规模设置。"
+msgstr ""
+
+msgid "参考：scaling.rst。RFS 在 RPS 基础上进一步优化，需先开 RPS。"
+msgstr ""
+
+msgid "导入多种网络链接协议（注册表 + 本机能力）"
+msgstr ""
+
+msgid "按各协议自身的规范登记链接层/传输层协议（TCP、UDP、蓝牙 RFCOMM、串口 UART、BLE 低功耗蓝牙、802.15.4），并只读探测本机是否具备对应能力。"
+msgstr ""
+
+msgid "探测只判断接口可用性，不代表已配对/已授权设备。"
+msgstr ""
+
+msgid "注册表：TCP(RFC 9293)、UDP(RFC 768)、RFCOMM(蓝牙串口模拟)、串口(UART/RS-232)、BLE(GATT)、802.15.4(低速率无线个域网，如 Zigbee/Thread 底层)。"
+msgstr ""
+
+msgid "每项自带官方组织与文档出处，能力探测只读，非本机具备的协议优雅降级为「未探测到」。"
+msgstr ""
+
+msgid "启用本地自组网（多设备自通信 + 人机交互）"
+msgstr ""
+
+msgid "启用网络后让多于 1 台设备自己通信：UDP 广播发现邻居 + TCP 可靠命令通道；命令通道只有 info/ping/probe/msg 四个只读安全命令，**绝不执行对端发来的任意命令**。"
+msgstr ""
+
+msgid "需在可信局域网内启用；跨公网暴露需自行做访问控制。"
+msgstr ""
+
+msgid "发现：UDP 受限广播信标；可靠通道：TCP；命令白名单：info/ping/probe/msg。"
+msgstr ""
+
+msgid "人机交互：msg 通道仅回显并记录到会话收件箱，不触发任何写操作。"
+msgstr ""
+
+msgid "握手自带 share 字段：宣告愿共享的算力（CPU/GPU/NPU/TPU/内存/网络）与永不共享的数据（个人数据/关键资产）。"
+msgstr ""
+
+msgid "发现本网段内的其他设备（只读）"
+msgstr ""
+
+msgid "广播发现本网段内同样启用自组网的设备，列出名称/地址/版本/链接能力。"
+msgstr ""
+
+msgid "只在本地网段发信标，不向外网发送数据。"
+msgstr ""
+
+msgid "设备间人机交互消息（msg 通道）"
+msgstr ""
+
+msgid "通过 mesh 的消息通道与已发现设备互发文本（人机交互）；仅回显与记录到会话收件箱，不执行、不落盘。"
+msgstr ""
+
+msgid "消息通道属于只读安全白名单内的命令；对端任何非白名单命令一律被忽略。"
+msgstr ""
+
+msgid "按网络维度的隐私验证（两项以上个人信息）"
+msgstr ""
+
+msgid "不同网络用「个人输入的两个以上信息」作验证（如姓名+身份证号，或邮箱+手机号）；**原始信息不作保存**，只存随机 salt + PBKDF2 派生令牌 + 字段标签；下次启动重新输入同样信息即可重新连接。"
+msgstr ""
+
+msgid "验证信息一经设定不可找回（因为未保存原始值），忘记需重新设置。"
+msgstr ""
+
+msgid "派生：token = PBKDF2-HMAC-SHA256(salt, 归一化字段)；不同网络用不同 salt，同名同 ID 在两个网络派生结果不同（防跨网关联）。"
+msgstr ""
+
+msgid "落盘只含 salt + 令牌 + 字段标签，原始姓名/证件号/邮箱/手机号一律不落盘。"
+msgstr ""
+
+msgid "重连：重新输入同样两项信息，重派生后常量时间比对，一致即重连。"
+msgstr ""
+
+msgid "跨设备认定同一人：identity_fingerprint(字段, 网络, 共享口令) 确定性派生，不知道原始信息与口令者无法伪造。"
+msgstr ""
+
+msgid "同人登录的多设备资源共享（算力共享，数据不共享）"
+msgstr ""
+
+msgid "同一人登录的多台设备共享硬件资源：CPU、内存、GPU、NPU、TPU、网络出口；**个人数据与关键资产数据（凭据、密钥、钱包、通讯录、文档等）一律不共享**，以防他人盗用你的网络互联互通能力。"
+msgstr ""
+
+msgid "授权前请确认对方确为本人设备；发现异常授权可随时撤销（revoke）。"
+msgstr ""
+
+msgid "可共享：cpu / memory / gpu / npu / tpu / network（只有算力与网络）。"
+msgstr ""
+
+msgid "永不共享：personal_data / contacts / credentials / crypto_keys / asset_data / biometric / storage_content。"
+msgstr ""
+
+msgid "认定同一人：netauth 跨设备身份指纹一致才授权；他人指纹一律拒绝并记审计。只落盘指纹与授权种类，绝不落盘个人信息。"
+msgstr ""
+
+msgid "清理编译产物（unpackage/dist、build）"
+msgstr ""
+
+msgid "uni-app 发行（发行到 App/H5/小程序）后产生的编译输出目录，删除不影响源码。"
+msgstr ""
+
+msgid "删除后需重新点击「发行」或「运行」才会重新生成；CI 环境可安全清理以节省空间。"
+msgstr ""
+
+msgid "工程目录约定见 API 清单的 fs 组（unpackage/ dist/ build/）。"
+msgstr ""
+
+msgid "清理构建缓存（node_modules/.cache、.vite）"
+msgstr ""
+
+msgid "Vite / webpack 的构建缓存，删除后首次构建稍慢，可安全重建。"
+msgstr ""
+
+msgid "属于开发机缓存，不影响已发布的包；大规模项目可显著释放空间。"
+msgstr ""
+
+msgid "校验/清理依赖缓存（npm / pnpm / yarn）"
+msgstr ""
+
+msgid "uni-app 工程依赖（vue、@dcloudio 等）下载的本地缓存，可校验瘦身。"
+msgstr ""
+
+msgid "无 npm/pnpm 时自动跳过——不强求安装任何包管理器。"
+msgstr ""
+
+msgid "`pnpm store prune` 会删除未被任何项目引用的包；`npm cache verify` 仅整理校验。"
+msgstr ""
+
+msgid "清理 HBuilderX 编辑器缓存与日志"
+msgstr ""
+
+msgid "HBuilderX 的插件缓存、运行日志会随时间增长，影响启动与构建速度。"
+msgstr ""
+
+msgid "请先关闭 HBuilderX 再清理，避免正在写入的文件被删导致配置丢失。"
+msgstr ""
+
+msgid "若使用 CLI（如 @dcloudio/uvm）而非 HBuilderX，可跳过本项。"
+msgstr ""
+
+msgid "清理端上 storage（uni.clearStorageSync）"
+msgstr ""
+
+msgid "App / 小程序 / H5 端上的本地存储（含登录态、表单草稿、缓存数据）。"
+msgstr ""
+
+msgid "清空 storage 会一并清掉登录态与本地草稿，务必让用户知情并确认后再执行。"
+msgstr ""
+
+msgid "各端容量上限不同：微信小程序约 10MB，App 端受系统配额限制。"
+msgstr ""
+
+msgid "推荐做法：先用 uni.getStorageInfoSync() 展示已用/上限，再由用户点「清理」。"
+msgstr ""
+
+msgid "API 参考：data/uniapp_api.json 的 storage 组（W3C Web Storage）。"
+msgstr ""
+
+msgid "清理 H5 端 localStorage / CacheStorage"
+msgstr ""
+
+msgid "H5 端落在浏览器/内核的存储：localStorage、sessionStorage、Service Worker 缓存。"
+msgstr ""
+
+msgid "若启用了 Service Worker 离线缓存，清理后首次访问需重新联网加载。"
+msgstr ""
+
+msgid "API 参考：W3C Web Storage / Service Worker（CacheStorage）。"
+msgstr ""
+
+msgid "依赖与体积报告（辅助定位可瘦身项）"
+msgstr ""
+
+msgid "uni-app 包体积直接影响 App 安装体积与小程序主包限制，先量化再优化。"
+msgstr ""
+
+msgid "小程序主包/分包有体积限制（如微信小程序主包 2MB），建议把大资源放分包或 CDN。"
+msgstr ""
+
+msgid "本任务只读分析，不删除任何文件，可放心执行。"
+msgstr ""
+
+msgid "分包与路由级懒加载（跨端优化指引）"
+msgstr ""
+
+msgid "通过 pages.json 分包（subPackages）与组件按需引入，降低首屏/主包体积，提升各端启动速度。"
+msgstr ""
+
+msgid "API 参考：data/uniapp_api.json 的 fs 组（unpackage/dist 可清理）与 system 组。"
+msgstr ""
+
+msgid "属工程侧优化指引，不影响已发布包；实施后代重新构建生效。"
+msgstr ""
+
+msgid "静态图片压缩与 WebP 化"
+msgstr ""
+
+msgid "压缩工程内静态图片并转 WebP，降低包体与首屏加载体积。"
+msgstr ""
+
+msgid "转换前保留原图备份，避免透明通道/动画帧丢失。"
+msgstr ""
+
+msgid "小程序端需确认 webp 支持版本；不支持时退回压缩后的 png/jpg。"
+msgstr ""
+
+msgid "图片体积通常是 H5 首屏的最大占比，压缩收益明显。"
+msgstr ""
+
+msgid "系统文本编码 UTF-8 检查"
+msgstr ""
+
+msgid "按 Unicode 18.0.0 / ISO/IEC 10646 建议核对系统默认文本编码是否为 UTF-8，避免跨平台文本与字体元数据乱码。"
+msgstr ""
+
+msgid "仅检查并报告，不修改编码设置；改区域/语言环境需用户手动并评估影响。"
+msgstr ""
+
+msgid "参考标准：The Unicode Standard 18.0.0（最新稳定版）/ ISO/IEC 10646；建议系统区域与文件系统默认 UTF-8。"
+msgstr ""
+
+msgid "长期支持（LTS）：以运行时锁定的 Unicode 版本（ICU / .NET / Python unicodedata）为准，不强制追新。"
+msgstr ""
+
+msgid "前瞻编码：声明 UTF-128 模式时落盘规范化为 UTF-8，保持对既有 UTF-8 文件的向下兼容（见 data/fonts_standards.json 的 utf128）。"
+msgstr ""
+
+msgid "字体冗余检查（疑似重复字体）"
+msgstr ""
+
+msgid "按字体标准类（OpenType/TrueType/WOFF）列出已安装字体，标记同名/同族冗余，供精简。"
+msgstr ""
+
+msgid "未安装 fontconfig 时无此能力；安装后即可启用，本工具不强求。"
+msgstr ""
+
+msgid "参考格式：OpenType（ISO/IEC 14496-22）/ TrueType（Apple）/ W3C WOFF。"
+msgstr ""
+
+msgid "冗余字体多来自多份同名拷贝；精简可加快字体枚举与程序启动。"
+msgstr ""
+
+msgid "字体缓存重建"
+msgstr ""
+
+msgid "字体显示异常（缺字/乱码/回退错误）时，按字体引擎规范重建字体缓存（fontconfig / macOS atsutil / Windows FontCache）。"
+msgstr ""
+
+msgid "macOS 重建后需注销/重启才完全生效；Windows 会重启 FontCache 服务（字体短暂切换）。"
+msgstr ""
+
+msgid "执行前请确认无正在进行的排版/打印任务；需 --apply 且中高风险 --yes 确认。"
+msgstr ""
+
+msgid "参考格式：OpenType（ISO/IEC 14496-22）；缓存损坏会导致字体回退异常，重建可修复。"
+msgstr ""
+
+msgid "Windows 已安装字体清点"
+msgstr ""
+
+msgid "清点 Windows 已安装字体数量（参考字体/字符标准），作为优化与冗余判断起点。"
+msgstr ""
+
+msgid "仅清点数量，不删除任何字体（删系统字体可能影响 UI 显示）。"
+msgstr ""
+
+msgid "参考标准：OpenType/TrueType（Windows 字体引擎）；字体清单存于 %windir%\\Fonts 与注册表 Fonts 键。"
+msgstr ""
+
+msgid "启用网络字体（@font-face 拉取 WOFF2）"
+msgstr ""
+
+msgid "开启网络协议后，可在页面/应用中以 @font-face 按需拉取 WOFF2 网络字体（W3C WOFF 2.0 + RFC 9110 缓存语义）；字体文本编码保持 UTF-8 兼容。"
+msgstr ""
+
+msgid "网络字体经外部拉取，受网络与隐私策略影响；自定义字体请自托管或选用可信来源。"
+msgstr ""
+
+msgid "默认关闭（opt_in=True）；须 --opt-in 选择 + --yes 确认后才会纳入，不乱启用。"
+msgstr ""
+
+msgid "依赖：需先开启网络协议开关（toggles / --opt-in），否则本项不出现。"
+msgstr ""
+
+msgid "参考：W3C WOFF 2.0（2018）/ RFC 9110（HTTP 缓存与条件请求）。"
+msgstr ""
+
+msgid "网络字体文本编码保持 UTF-8 兼容；声明 UTF-128 模式时亦向下兼容 UTF-8。"
+msgstr ""
+
+msgid "文本 Unicode 规范化检查（UAX #15）"
+msgstr ""
+
+msgid "按 UAX #15 检查系统文本配置是否为 NFC 规范化形态，便于等价比较与去重；与 UTF-8 / UTF-128 编码策略配合，保证跨平台文本一致。"
+msgstr ""
+
+msgid "仅检查并报告，不修改文件；如需规范化请用 unicodedata.normalize 处理，注意等价语义。"
+msgstr ""
+
+msgid "参考：Unicode 规范化（UAX #15）：NFC/NFD/NFKC/NFKD；系统文本建议统一为 NFC。"
+msgstr ""
+
+msgid "与编码策略配合：UTF-8（推荐）/ UTF-128（向下兼容 UTF-8）均依赖一致的码位规范化。"
+msgstr ""
+
+msgid "用户缓存目录清点（跨平台）"
+msgstr ""
+
+msgid "按 XDG Base Directory / Windows LocalAppData 规范列出当前用户缓存目录与体积，辅助定位可清理项（不删除）。"
+msgstr ""
+
+msgid "不在 analyze 模式删除任何文件；清理请用对应平台任务并评估影响。"
+msgstr ""
+
+msgid "参考规范：XDG Base Directory（~/.cache）/ Windows 用户库（LOCALAPPDATA）。"
+msgstr ""
+
+msgid "仅清点，不删除；真正清理请用各平台对应的缓存清理任务（如 linux_user_cache）。"
+msgstr ""
+
+msgid "临时目录清点（跨平台）"
+msgstr ""
+
+msgid "列出系统/用户临时目录（POSIX /tmp、Windows %TEMP%）体积，仅分析不清理。"
+msgstr ""
+
+msgid "多数系统临时目录重启即清；analyze 仅列举遗留旧文件。"
+msgstr ""
+
+msgid "参考规范：各平台临时目录约定（POSIX /tmp、Windows Temp）。"
+msgstr ""
+
+msgid "家目录最大子目录报告（辅助瘦身）"
+msgstr ""
+
+msgid "用 Python 标准库列出家目录下体积最大的若干子目录，辅助定位可瘦身项（只读）。"
+msgstr ""
+
+msgid "纯标准库 os.walk 递归统计；不删除任何文件，可安全执行。"
+msgstr ""
+
+msgid "刷新 DNS 解析器缓存（指引）"
+msgstr ""
+
+msgid "给出刷新本地 DNS 缓存的命令（systemd-resolved / nscd / mDNSResponder / Windows），排查 DNS 污染或解析陈旧时可用。"
+msgstr ""
+
+msgid "刷新 DNS 缓存后已解析的域名需重新查询，属正常行为。"
+msgstr ""
+
+msgid "属优化类指引：解析器缓存（glibc nss / systemd-resolved）刷新可加速新解析生效。"
+msgstr ""
+
+msgid "需 --apply 且 --yes 才会执行对应命令；部分环境需管理员权限。"
+msgstr ""
+
+msgid "架构/指令集探测报告"
+msgstr ""
+
+msgid "探测当前 CPU 架构（龙芯 LoongArch / MIPS / RISC-V / x86 / ARM …），给出对应标准出处与建议。"
+msgstr ""
+
+msgid "探测接口：uname -m / /proc/cpuinfo / sysctl hw.machine / %PROCESSOR_ARCHITECTURE%。"
+msgstr ""
+
+msgid "未收录的架构会提示可在 data/arch.json 补充，不会报错。"
+msgstr ""
+
+msgid "龙芯 LoongArch 专项报告与调优指引"
+msgstr ""
+
+msgid "识别龙芯平台（LoongArch 或早期 Godson/MIPS 授权机型），报告向量/虚拟化/二进制翻译扩展并给出工具链与调优建议。"
+msgstr ""
+
+msgid "二进制翻译（LBT）运行非原生程序有性能损耗，生产环境建议原生编译。"
+msgstr ""
+
+msgid "LoongArch 是国产自主指令集（2021 年随 3A5000 发布），由 MIPS 授权演进而来。"
+msgstr ""
+
+msgid "扩展含义：LSX/LASX 向量、LVZ 虚拟化、LBT 二进制翻译（可跑 x86/ARM 程序但有损耗）。"
+msgstr ""
+
+msgid "优先取龙芯/系统厂商提供的源与原生包；交叉工具链为 loongarch64-linux-gnu-*。"
+msgstr ""
+
+msgid "MIPS 架构专项报告（含龙芯早期授权机型）"
+msgstr ""
+
+msgid "识别 MIPS 平台，报告位数、端序与 ABI，并区分是否为龙芯早期 Godson 机型。"
+msgstr ""
+
+msgid "MIPS 常见于路由器/嵌入式设备与龙芯早期机型；大端 mips 与小端 mipsel ABI 不通用。"
+msgstr ""
+
+msgid "装包须与端序匹配，混用会直接报格式错误。"
+msgstr ""
+
+msgid "RISC-V 开源架构专项报告"
+msgstr ""
+
+msgid "识别 RISC-V 平台，读取 isa 扩展字符串并引用 RVA20/22/23 profiles 规范。"
+msgstr ""
+
+msgid "RISC-V 为开源、免授权费指令集；常用编译参数 -march=rv64gc -mabi=lp64d。"
+msgstr ""
+
+msgid "不同扩展组合（如缺 V 向量）影响软件可用性，装包前先核对 isa 字符串。"
+msgstr ""
+
+msgid "开源硬件认证与许可核对（OSHWA / CERN OHL）"
+msgstr ""
+
+msgid "列出开源硬件的定义、认证（OSHWA UID）与许可（CERN OHL v2 / DIN SPEC 3105），供复用硬件设计前核对。"
+msgstr ""
+
+msgid "开源硬件 = 设计文件（原理图/PCB/HDL/机械图纸）在开放许可下发布。"
+msgstr ""
+
+msgid "企业复用需留意 copyleft 义务：CERN OHL 衍生设计同样需开放。"
+msgstr ""
+
+msgid "交叉工具链与构建目标提示"
+msgstr ""
+
+msgid "按当前架构给出交叉工具链三元组与 Go 的 GOARCH 映射，便于交叉编译。"
+msgstr ""
+
+msgid "GOARCH 映射：龙芯 loong64、MIPS mips64le/mipsle、RISC-V riscv64、OpenPOWER ppc64le、x86 amd64、ARM arm64。"
+msgstr ""
+
+msgid "按当前架构交叉构建 Go（GOARCH 映射）"
+msgstr ""
+
+msgid "按探测到的架构设置 GOARCH 执行 `go build ./...`，覆盖龙芯(loong64)/MIPS(mips64le)/RISC-V(riscv64) 等非 x86 目标。"
+msgstr ""
+
+msgid "交叉构建不产生可运行于本机的二进制（除非架构一致）；仅做构建校验。"
+msgstr ""
+
+msgid "未识别架构时回退默认目标，不报错。"
+msgstr ""
+
+msgid "龙芯（loong64）需 Go 1.19+；MIPS 上 Go 官方支持 mips64le/mipsle。"
+msgstr ""
+
+msgid "龙芯平台优化指引（原生优先 / 翻译层取舍）"
+msgstr ""
+
+msgid "龙芯平台的优化要点：优先原生包、源选择、编译参数与二进制翻译（LBT）取舍。"
+msgstr ""
+
+msgid "全部为核对型指引，不自动修改系统。"
+msgstr ""
+
+msgid "MIPS / 嵌入式资源受限优化指引"
+msgstr ""
+
+msgid "MIPS 路由器与嵌入式设备常见资源受限场景的优化要点：优先清缓存日志、关无用服务、避免重包。"
+msgstr ""
+
+msgid "压缩格式可读性核对（tar/zip/gz/xz/bz2/7z/rar/zstd）"
+msgstr ""
+
+msgid "只读探测本机可读哪些压缩格式：核心格式走标准库永远可用，7z/rar/zstd 缺库时明确标「跳过」，不强求安装。"
+msgstr ""
+
+msgid "只读任务：仅探测，不解压、不读取任何文件内容。"
+msgstr ""
+
+msgid "核心格式（tar/tar.gz/tar.xz/tar.bz2/zip/gz/xz/bz2）用标准库，零依赖总可用。"
+msgstr ""
+
+msgid "7z 需 py7zr、rar 需 rarfile 且另需 unrar/unar/bsdtar 后端、zstd 需 zstandard；缺哪个就明确跳过哪个，绝不假装支持。"
+msgstr ""
+
+msgid "压缩空间分析（找出还能压出多少空间，只读）"
+msgstr ""
+
+msgid "只读扫描目录，按「还值不值得再压」分类统计，对体积最大的可压缩文件实测 LZMA 压缩率并估算可回收空间；同时流式读取最大的几个压缩包内部条目（不解压、不驻留内存）。"
+msgstr ""
+
+msgid "只读任务：不压缩、不解压、不删除任何文件。"
+msgstr ""
+
+msgid "采样估算有误差（文件前后段内容差异大时尤甚），仅用于判断「哪些值得先压」。"
+msgstr ""
+
+msgid "分类口径：归档/已压缩（zip、7z、rar…）与图片音视频/PDF（已编码）**再压几乎无收益**，报告会标「别白压」，只压文本/日志/结构化数据这类真正有收益的。"
+msgstr ""
+
+msgid "压缩率只对前 1 MiB 采样实测（LZMA，接近 7z 的 LZMA2）后按比例推算，属估算而非精确值——目的是排序优先级，不是给出承诺数字。"
+msgstr ""
+
+msgid "省内存的三处关键实现：扫目录用 heapq 只留体积 Top N（内存恒定）；压测只读前 1 MiB 而不是整个文件；读包内部只过 header / 分块读统计。"
+msgstr ""
+
+msgid "扫描带文件数上限（2 万）与时间预算（20 秒），达上限会标注「非全量」，避免拖慢机器。"
+msgstr ""
+
+msgid "归档命令指引（tar / 7z，只给命令不代劳）"
+msgstr ""
+
+msgid "给出常见归档场景的命令文本与选型建议：兼容性优先用 tar，压缩率优先用 7z。本任务只输出指引，绝不自动执行任何压缩动作。"
+msgstr ""
+
+msgid "指引类任务：只打印命令文本，不自动执行——是否归档、归档哪些，由你决定。"
+msgstr ""
+
+msgid "压缩大目录会占用 CPU 与 IO；高压缩级别（-mx=9 / -19）耗时会明显变长。"
+msgstr ""
+
+msgid "选型：要「谁都能解开」用 tar.gz；要「压到最小」用 7z -mx=9；要「压得快又不太差」用 zstd（-19 兼顾，压缩/解压都远快于 LZMA）。"
+msgstr ""
+
+msgid "已经压过的（zip/7z/rar/mp4/png/pdf/office）别再压一遍：收益接近 0，纯浪费 CPU 与时间。"
+msgstr ""
+
+msgid "归档前确认目标目录不再变动；归档后**先校验再删原件**（如 tar -tf 列一遍、7z t 测试）。"
+msgstr ""
+
+msgid "清理 GNOME 私有缓存"
+msgstr ""
+
+msgid "清理 GNOME 软件中心 / gdm / dconf 等私有缓存（~/.cache 下），回收空间。"
+msgstr ""
+
+msgid "仅删 ~/.cache 下内容；切勿删除 ~/.config（含全部 GNOME 设置）。"
+msgstr ""
+
+msgid "参考 GNOME dconf 文档：缓存位于 ~/.cache，删除不影响设置（设置存于 ~/.config/dconf/user）。"
+msgstr ""
+
+msgid "下次启动对应组件会重建缓存。"
+msgstr ""
+
+msgid "清理 KDE Plasma 私有缓存"
+msgstr ""
+
+msgid "清理 KDE plasmashell / krunner / ksycoca 等私有缓存（~/.cache 下）。"
+msgstr ""
+
+msgid "仅删 ~/.cache 下内容；删除 ~/.config 的 .rc 会丢失 KDE 应用设置。"
+msgstr ""
+
+msgid "参考 KDE KConfig 文档：缓存位于 ~/.cache；设置存于 ~/.config/*.rc（勿删）。"
+msgstr ""
+
+msgid "清理后可 `kbuildsycoca5` 重建服务/菜单缓存。"
+msgstr ""
+
+msgid "清理 XFCE 私有缓存"
+msgstr ""
+
+msgid "清理 XFCE Thunar / xfce4 等私有缓存（~/.cache 下），轻量桌面清理收益直接。"
+msgstr ""
+
+msgid "仅删 ~/.cache 下内容；xfconf 配置存于 ~/.config/xfce4，误删会丢失面板/窗口设置。"
+msgstr ""
+
+msgid "参考 XFCE xfconf 文档：缓存与配置散落 ~/.cache 与 ~/.config/xfce4；设置走 xfconf。"
+msgstr ""
+
+msgid "清理最近文档记录（隐私）"
+msgstr ""
+
+msgid "删除最近文档列表（~/.local/share/recently-used.xbel），去除使用痕迹。"
+msgstr ""
+
+msgid "删除后文件管理器/应用的「最近」列表清空，属隐私清理，非删除真实文件。"
+msgstr ""
+
+msgid "参考 freedesktop.org 规范：recently-used.xbel 跨桌面共享最近文档，删除即去痕迹，不影响文件本身。"
+msgstr ""
+
+msgid "清理失效的桌面启动项"
+msgstr ""
+
+msgid "检查 ~/.local/share/applications 下 .desktop 启动项是否指向已缺失的可执行文件。"
+msgstr ""
+
+msgid "本任务不直接删除 .desktop；确认失效后再手动移除对应文件。"
+msgstr ""
+
+msgid "参考桌面项规范：.desktop 的 Exec= 指向程序；程序已卸载则该启动项失效。本任务仅列出，删除需手动确认。"
+msgstr ""
+
+msgid "重置 GNOME 用户设置（dconf）"
+msgstr ""
+
+msgid "将 GNOME dconf 用户键清空回到默认（可选：全清或仅某 Schema）。高影响，需确认。"
+msgstr ""
+
+msgid "高危：会清空全部 GNOME 个性化设置（壁纸/字体/快捷键/扩展），执行前务必确认；建议先备份 dconf dump。"
+msgstr ""
+
+msgid "参考 GNOME dconf 文档：dconf 以二进制库 ~/.config/dconf/user 存设置；reset -f / 清空全部用户键。"
+msgstr ""
+
+msgid "仅影响当前用户，不影响系统级默认值。"
+msgstr ""
+
+msgid "重建 KDE 服务/菜单缓存"
+msgstr ""
+
+msgid "用 kbuildsycoca5 重建 KDE 服务(Sycoca)缓存，修复菜单/关联异常（只读重建，不改设置）。"
+msgstr ""
+
+msgid "无 KDE 环境时自动跳过——不强求安装。"
+msgstr ""
+
+msgid "参考 KDE KConfig 文档：Sycoca 缓存影响菜单/文件关联；重建不改变用户设置，仅刷新索引。"
+msgstr ""
+
+msgid "XFCE 配置核对（xfconf）"
+msgstr ""
+
+msgid "用 xfconf-query 列出 XFCE 配置通道，供维护前确认窗口管理器/面板设置。"
+msgstr ""
+
+msgid "无 XFCE 环境或未装 xfconf-query 时自动降级为说明。"
+msgstr ""
+
+msgid "参考 XFCE xfconf 文档：xfconf 以通道/属性模型存设置；`xfconf-query -c xfwm4 -l` 可看窗口管理器键。"
+msgstr ""
+
+msgid "桌面主题/字体规范核对（freedesktop）"
+msgstr ""
+
+msgid "按 freedesktop 图标主题规范与 GNOME/KDE HIG 核对当前主题/字体设置是否规范一致。"
+msgstr ""
+
+msgid "仅核对/读取设置，不改主题；修改主题请走桌面环境自身设置界面。"
+msgstr ""
+
+msgid "参考 freedesktop 图标主题规范：主题须含 index.theme 并在 XDG_DATA_DIRS 下；不一致会导致图标缺失。"
+msgstr ""
+
+msgid "桌面缓存可回收量只读核对（对比报告）"
+msgstr ""
+
+msgid "估算 GNOME/KDE/XFCE 私有缓存与 XDG 通用缓存（缩略图/着色器/mozilla 等）的可回收空间，生成清理前对比报告。只读，不删除任何文件。"
+msgstr ""
+
+msgid "纯只读：绝不删除文件，也不修改任何设置；报告仅用于清理前决策。"
+msgstr ""
+
+msgid "参考 XDG 缓存规范：~/.cache 下为可重建临时数据；本任务只估算可回收量并生成对比报告，真正回收请执行 desktop_gnome_cache / desktop_kde_cache / desktop_xfce_cache（需 --apply）。"
+msgstr ""
+
+msgid "配合 `desktop --report <path>` 可导出 Markdown/JSON 对比报告。"
+msgstr ""
+
+msgid "回收 systemd 日志（journalctl --vacuum）"
+msgstr ""
+
+msgid "用 journalctl --vacuum-time 按官方接口回收 systemd journal 日志，避免直接删 /var/log/journal。"
+msgstr ""
+
+msgid "会删除 7 天前的日志（审计/排障记录），确认无需保留再执行；如需留档请先 journalctl -o export 导出。"
+msgstr ""
+
+msgid "参考 systemd-journald.service(8)：journal 以二进制字段化存储，回收须走 journalctl --vacuum-size/--vacuum-time，直接删文件会破坏索引与轮转状态。"
+msgstr ""
+
+msgid "持久化需 /var/log/journal 存在（Storage=persistent）；否则日志仅在内存 /run/log/journal。"
+msgstr ""
+
+msgid "启动耗时分析（systemd-analyze blame / critical-chain）"
+msgstr ""
+
+msgid "用 systemd-analyze 找出启动最慢的单元与关键链，为开机优化提供官方依据。"
+msgstr ""
+
+msgid "禁用系统关键单元（如 dbus / systemd-udevd）会导致系统不可用；仅对明确可省的第三方服务操作。"
+msgstr ""
+
+msgid "参考 systemd-analyze(1)：blame 按单元耗时降序，critical-chain 显示启动关键路径；两者都是只读分析，不改任何单元。"
+msgstr ""
+
+msgid "定位到慢单元后可 `systemctl disable <unit>` 或 `systemctl mask <unit>`（需确认影响）。"
+msgstr ""
+
+msgid "失败单元核对（systemctl --failed）"
+msgstr ""
+
+msgid "列出启动失败的 systemd 单元，便于定位反复重启/退化的服务。"
+msgstr ""
+
+msgid "仅读取状态，不重启/不重置失败单元（重置需 systemctl reset-failed，本任务不执行）。"
+msgstr ""
+
+msgid "参考 systemctl(1)：--failed 仅列出进入 failed 状态的单元（不修改任何东西）；配合 `systemctl status <unit>` 看具体错误。"
+msgstr ""
+
+msgid "单元状态经 org.freedesktop.systemd1 的 Unit 对象暴露，程序化核对同理。"
+msgstr ""
+
+msgid "D-Bus 总线服务自省（busctl，按 D-Bus 规范）"
+msgstr ""
+
+msgid "按 D-Bus Specification 列出系统总线的服务名，核对哪些服务在总线上注册。"
+msgstr ""
+
+msgid "D-Bus 只做进程间通信，不产生可清理的垃圾；本任务仅核对，不调用任何变更方法。"
+msgstr ""
+
+msgid "参考 D-Bus Specification：服务以「总线名 + 对象路径 + 接口」三元组寻址；busctl list 即按规范枚举总线名。"
+msgstr ""
+
+msgid "自省某服务: `busctl introspect <name> <path>`；会话总线用 `busctl --user list`。"
+msgstr ""
+
+msgid "NetworkManager 连接与状态核对（nmcli）"
+msgstr ""
+
+msgid "用 nmcli 核对 NetworkManager 全局状态与活动连接，确认网络由 NM 官方接口管理。"
+msgstr ""
+
+msgid "仅只读核对，不改连接/DNS；改 DNS 后端请改 NetworkManager.conf 的 [main].dns，勿手改 /etc/resolv.conf。"
+msgstr ""
+
+msgid "参考 nmcli(1) 与 org.freedesktop.NetworkManager：nmcli 是官方 CLI，其每一项都映射到 D-Bus 属性，故核对结果与程序化查询一致。"
+msgstr ""
+
+msgid "连接配置以 keyfile 存于 /etc/NetworkManager/system-connections（格式见 nm-settings(5)）。"
+msgstr ""
+
+msgid "PipeWire 音视频节点图核对（pw-cli）"
+msgstr ""
+
+msgid "按 PipeWire 协议列出节点图，核对音频/视频链路与采样率，定位无声/卡顿根因。"
+msgstr ""
+
+msgid "仅读取节点图，不重载守护进程、不改默认设备（设默认设备需 pw-metadata，属用户选择）。"
+msgstr ""
+
+msgid "参考 docs.pipewire.org：PipeWire 把设备抽象为节点(node)、经端口(port)链接成图；pw-cli ls / pw-top 即按协议展示该图。"
+msgstr ""
+
+msgid "采样率/量子缓冲在 pipewire.conf 或 wireplumber 策略中调整；未装 pw-cli 时降级为套接字探测。"
+msgstr ""
+
+msgid "蓝牙适配器与配对设备核对（BlueZ）"
+msgstr ""
+
+msgid "按 org.bluez 列出蓝牙适配器与已配对设备，便于停用无用蓝牙省电或排查连接问题。"
+msgstr ""
+
+msgid "仅读取设备列表；清 /var/lib/bluetooth 会丢失全部配对密钥，本任务绝不执行。"
+msgstr ""
+
+msgid "参考 bluetoothd(8)：BlueZ 经 org.bluez 暴露 Adapter1/Device1；bluetoothctl 是官方 CLI。"
+msgstr ""
+
+msgid "不需要蓝牙时可 `systemctl stop/disable bluetooth.service` 省电（走 systemd 单元管理）。"
+msgstr ""
+
+msgid "udev 自定义规则核对（udevadm）"
+msgstr ""
+
+msgid "核对 /etc/udev/rules.d 下的自定义规则数量，并按 udev(7) 提示只读调试接口。"
+msgstr ""
+
+msgid "仅统计与提示，不修改/不重载规则；误写规则会导致网卡重命名或设备无权限，改前先备份。"
+msgstr ""
+
+msgid "参考 udev(7)：规则以匹配键(MATCH)筛选设备、赋值键(ASSIGN)命名/设权限；udevadm info 可只读查看设备属性。"
+msgstr ""
+
+msgid "新增/修改规则后需 `udevadm control --reload && udevadm trigger` 生效。"
+msgstr ""
+
+msgid "polkit 授权 action 审计（pkaction）"
+msgstr ""
+
+msgid "列出已注册的 polkit action 与默认授权，核对是否存在过度宽松的提权策略。"
+msgstr ""
+
+msgid "仅审计不改策略；收紧授权请新增 /etc/polkit-1/rules.d/*.rules，勿改发行版自带 .policy（升级会被覆盖）。"
+msgstr ""
+
+msgid "参考 polkit(8)：action 由服务注册于 /usr/share/polkit-1/actions/*.policy，管理员可用 /etc/polkit-1/rules.d/*.rules 覆盖判定。"
+msgstr ""
+
+msgid "判定经 org.freedesktop.PolicyKit1 的 CheckAuthorization 完成，本任务只枚举不调用。"
+msgstr ""
+
+msgid "Wayland 会话与合成器协议核对"
+msgstr ""
+
+msgid "判定当前是否为 Wayland 会话，并按 wayland.xml / xdg-shell 提示核对合成器支持的协议。"
+msgstr ""
+
+msgid "仅读取环境变量与协议列表，不改显示会话；缺失扩展协议属合成器支持范围，非配置问题。"
+msgstr ""
+
+msgid "参考 Wayland 协议规范：核心协议 wayland.xml 定义 surface/seat 等全局接口，窗口行为由 xdg-shell 等扩展协议标准化。"
+msgstr ""
+
+msgid "`wayland-info` 可列出合成器实际支持的全部全局接口（需安装）；X11 应用经 XWayland 兼容。"
+msgstr ""
+
+msgid "鸿蒙设备连接核对（hdc list targets）"
+msgstr ""
+
+msgid "用 hdc 官方接口核对已连接的鸿蒙设备，作为后续设备侧操作的前提。"
+msgstr ""
+
+msgid "仅读取设备列表，不安装/不卸载应用；未装 hdc 时自动降级为指引。"
+msgstr ""
+
+msgid "参考 hdc（HarmonyOS Device Connector）文档：hdc 为 client-server-daemon 三端架构，支持 Windows/Linux/macOS。"
+msgstr ""
+
+msgid "hdc 与 adb 命令不通用（adb devices → hdc list targets），勿混用两套工具。"
+msgstr ""
+
+msgid "鸿蒙设备信息核对（型号 / 版本 / 存储）"
+msgstr ""
+
+msgid "经 hdc 官方接口读取设备型号、系统/API 版本与 /data 存储占用，作为优化前基线。"
+msgstr ""
+
+msgid "仅读取，不改任何设备参数；无设备或未装 hdc 时降级为指引。"
+msgstr ""
+
+msgid "参考 hdc 文档：设备侧参数经 `hdc shell param get <name>` 只读查询；型号 const.product.model、API 版本 const.ohos.apiversion。"
+msgstr ""
+
+msgid "存储占用用 `hdc shell df -h /data`；与 Android 的 getprop 不同，勿混用。"
+msgstr ""
+
+msgid "鸿蒙已安装应用核对（bm dump -a）"
+msgstr ""
+
+msgid "用 Bundle Manager 列出设备已安装应用，便于核对冗余应用与空间占用。"
+msgstr ""
+
+msgid "仅只读列出；部分系统版本需授权否则 bm dump 无返回，此时降级为指引。"
+msgstr ""
+
+msgid "参考应用包文档：鸿蒙以 Bundle Manager（bm）管理已安装 HAP；`bm dump -a` 可列出全部 bundleName。"
+msgstr ""
+
+msgid "列出的应用仅供核对，卸载需走 `bm uninstall` 或系统设置（本任务不执行）。"
+msgstr ""
+
+msgid "HiLog 日志核对（域 / 标签 / 级别）"
+msgstr ""
+
+msgid "按 HiLog 三维协议核对设备日志；只读，且明确不做删除（鸿蒙无官方 vacuum 接口）。"
+msgstr ""
+
+msgid "鸿蒙未提供类似 journalctl --vacuum 的官方回收接口（日志由系统按配额轮转），直接删 /data/log/hilog 会破坏轮转——本任务只读，绝不删除。"
+msgstr ""
+
+msgid "参考 HiLog 文档：级别 D/I/W/E/F、域（应用层常用 0xD000）、标签 tag；排障用 `hdc shell hilog -L E`（只看 Error 及以上）或 `-T <tag>` 过滤。"
+msgstr ""
+
+msgid "设备持久日志为编码后的 gz 二进制，直接解压看不到明文，须用 hilogtool 解析。"
+msgstr ""
+
+msgid "Stage 应用模型核对（UIAbility / module.json5）"
+msgstr ""
+
+msgid "核对鸿蒙工程的 Stage 模型配置（AppScope / module.json5），确认组件声明规范。"
+msgstr ""
+
+msgid "仅读取工程配置；勿在 UIAbility 之外自管进程（系统按 Stage 模型统一调度）。"
+msgstr ""
+
+msgid "参考 Stage 模型文档：一个 HAP 对应一个 AbilityStage 进程容器；UIAbility 承载界面、ExtensionAbility 承载无界面扩展，声明于 module.json5。"
+msgstr ""
+
+msgid "组件间经 Want（显式/隐式）调度；生命周期走官方 UIAbility 接口。"
+msgstr ""
+
+msgid "系统能力核对（SysCap / canIUse）"
+msgstr ""
+
+msgid "核对 SysCap 能力声明，并提示用 canIUse() 做运行期判定，避免低能力设备崩溃。"
+msgstr ""
+
+msgid "仅核对声明与提示，不改工程配置；能力声明过宽会导致应用商店分发范围受限。"
+msgstr ""
+
+msgid "参考 SystemCapability 文档：构建期在 syscap.json / module.json5 声明依赖能力，运行期用 canIUse() 判定后再调用 @ohos.* API。"
+msgstr ""
+
+msgid "低能力设备（如穿戴）上缺失能力要能优雅降级，而不是 try/catch 兜底。"
+msgstr ""
+
+msgid "应用包与构建产物占用核对（HAP / Hvigor）"
+msgstr ""
+
+msgid "估算鸿蒙工程可重建生成目录（build / .hvigor / oh_modules）的占用，生成清理前依据。"
+msgstr ""
+
+msgid "仅估算占用，不删除任何文件；真正回收请用 harmony_package_cache（需 --apply）。"
+msgstr ""
+
+msgid "参考应用包文档：HAP 为部署单元，HSP/HAR 复用代码；三方库由 ohpm 管理、产物由 Hvigor 构建，生成目录均可重建。"
+msgstr ""
+
+msgid "清理鸿蒙工程构建产物（可重建生成目录）"
+msgstr ""
+
+msgid "清理鸿蒙工程下可重建的生成目录（build/、.hvigor/、.preview/），回收磁盘空间。"
+msgstr ""
+
+msgid "切勿删除 AppScope/app.json5、module.json5 与签名文件（p12/cer/p7b）——删了无法打包发布。删除前建议先提交版本库。"
+msgstr ""
+
+msgid "参考 ohpm / Hvigor 文档：build、.hvigor、.preview 均为构建生成目录，删除后重新构建即可恢复。"
+msgstr ""
+
+msgid "需在鸿蒙工程根目录执行；oh_modules 由 ohpm 管理，本任务保留不删。"
+msgstr ""
+
+msgid "IPC/RPC 与分布式软总线核对"
+msgstr ""
+
+msgid "核对鸿蒙 IPC/RPC（@ohos.rpc）与分布式软总线的能力与前提（设备需先组网认证）。"
+msgstr ""
+
+msgid "仅核对能力；未装 hdc 或未连设备时降级为指引，不做任何设备侧变更。"
+msgstr ""
+
+msgid "参考 @ohos.rpc 文档：MessageSequence / RemoteObject 提供统一 IPC/RPC；跨设备还需 @ohos.distributedDeviceManager 完成发现与认证组网。"
+msgstr ""
+
+msgid "分布式调用耗电与延迟高于本地 IPC，非必要不要高频跨设备 RPC。"
+msgstr ""
+
+msgid "uni-app 鸿蒙端核对（Harmony Next / vue3）"
+msgstr ""
+
+msgid "按 uni-app 鸿蒙文档核对工程：HBuilderX 4.27+ 支持、仅 vue3、条件编译隔离差异。"
+msgstr ""
+
+msgid "仅核对工程，不改配置/不发起编译；不要假设鸿蒙端 API 与 Android/iOS 端一致，差异请用条件编译隔离。"
+msgstr ""
+
+msgid "参考 uni-app 鸿蒙篇（uniapp.dcloud.net.cn/tutorial/harmony/）：自 HBuilderX 4.27 起支持 Harmony Next 平台 App 开发，**仅支持 vue3 项目**，vue2 需先迁移（migration-to-vue3）。"
+msgstr ""
+
+msgid "调用鸿蒙原生 API 与嵌入原生组件见官方对应章节；uni.* 内置模块在鸿蒙端的支持度以「内置模块说明」为准。"
+msgstr ""
+
+msgid "跨端映射核对（uni.* → 各端原生 API）"
+msgstr ""
+
+msgid "核对 manifest 中已启用的小程序端，及各端条件编译覆盖情况，避免运行时猜平台。"
+msgstr ""
+
+msgid "仅核对工程配置与源码宏使用统计，不改任何文件。"
+msgstr ""
+
+msgid "参考 uni-app 跨平台文档：uni.* 统一 API 会映射到各端原生 API（uni.request → wx/my/swan/tt/qq/ks.request）。"
+msgstr ""
+
+msgid "无法抹平的差异一律用 #ifdef MP-WEIXIN 等条件编译隔离，不要运行时猜平台。"
+msgstr ""
+
+msgid "跨端静态检查（直调某端 API 未加条件编译保护）"
+msgstr ""
+
+msgid "静态扫描源码，找出直接调用某端原生 API（如 wx.request）却未用该端条件编译（#ifdef MP-WEIXIN）保护的位置——这类代码发行到别的端会直接报错。"
+msgstr ""
+
+msgid "纯静态扫描（不执行代码），可能有少量误报/漏报；结果供核对参考，本任务绝不修改任何源码文件。"
+msgstr ""
+
+msgid "参考 uni-app 跨平台文档：uni.* 统一 API 会映射到各端原生 API，因此业务代码应优先用 uni.request 而非 wx.request。"
+msgstr ""
+
+msgid "确需调用某端独有 API 时，必须用该端条件编译包裹（wx.* → #ifdef MP-WEIXIN，my.* → #ifdef MP-ALIPAY，依此类推）。"
+msgstr ""
+
+msgid "微信小程序端核对（wx.* / 双线程）"
+msgstr ""
+
+msgid "核对微信端 mp-weixin 配置、产物与条件编译；按 wx.* 规范核对缓存与登录要点。"
+msgstr ""
+
+msgid "仅只读核对；微信端需 appid 与服务器域名配置，发行前在 manifest 的 mp-weixin 节点核对。"
+msgstr ""
+
+msgid "参考微信小程序文档：双线程架构（逻辑层 AppService + 视图层 WebView 经 Native 通信）；缓存 wx.getStorage/setStorage 有单 key 与总配额限制。"
+msgstr ""
+
+msgid "登录以 wx.login 换 code 交服务端，勿在前端保存敏感凭据。"
+msgstr ""
+
+msgid "支付宝小程序端核对（my.* / 白名单）"
+msgstr ""
+
+msgid "核对支付宝端 mp-alipay 配置与产物，按 my.* 规范提醒域名白名单与授权要点。"
+msgstr ""
+
+msgid "仅只读核对；支付宝端对支付/会员类能力有额外资质要求。"
+msgstr ""
+
+msgid "参考支付宝小程序文档：网络请求域名必须加入白名单，否则真机必失败；授权用 my.getAuthCode 而非自行实现登录态。"
+msgstr ""
+
+msgid "缓存接口（my.getStorage/setStorage）为异步回调风格，注意 success/fail 处理。"
+msgstr ""
+
+msgid "百度智能小程序端核对（swan.*）"
+msgstr ""
+
+msgid "核对百度端 mp-baidu 配置与产物，按 swan.* 规范隔离差异。"
+msgstr ""
+
+msgid "仅只读核对；涉及搜索/AI 能力的接口需按百度开放平台规范申请。"
+msgstr ""
+
+msgid "参考百度智能小程序文档：能力经 swan.* 暴露（swan.request / swan.getStorage / swan.login）。"
+msgstr ""
+
+msgid "百度端偏重搜索与 AI 能力接入；与微信同名不同前缀，勿直接沿用 wx.* 写法。"
+msgstr ""
+
+msgid "抖音小程序端核对（tt.*）"
+msgstr ""
+
+msgid "核对抖音端 mp-toutiao 配置与产物，按 tt.* 规范隔离差异。"
+msgstr ""
+
+msgid "仅只读核对；内容发布相关接口审核较严，按官方审核规范准备资质。"
+msgstr ""
+
+msgid "参考抖音小程序文档：能力经 tt.* 暴露（tt.request / tt.getStorage / tt.login）。"
+msgstr ""
+
+msgid "注意：抖音端在 uni-app 中的平台节点为 mp-toutiao，条件编译宏为 MP-TOUTIAO。"
+msgstr ""
+
+msgid "QQ 小程序端核对（qq.*）"
+msgstr ""
+
+msgid "核对 QQ 端 mp-qq 配置与产物；QQ 端与微信同源度高，但仍需条件编译隔离差异。"
+msgstr ""
+
+msgid "仅只读核对；勿因同源度高就省掉条件编译。"
+msgstr ""
+
+msgid "参考 QQ 小程序文档：能力经 qq.* 暴露，架构与微信小程序高度同源。"
+msgstr ""
+
+msgid "差异主要在社交关系链与部分开放能力上，需按 QQ 开放平台规范申请权限。"
+msgstr ""
+
+msgid "快手小程序端核对（ks.*）"
+msgstr ""
+
+msgid "核对快手端 mp-kuaishou 配置与产物，按 ks.* 规范隔离差异。"
+msgstr ""
+
+msgid "仅只读核对；勿复用其他端的权限判断逻辑。"
+msgstr ""
+
+msgid "参考快手小程序文档：能力经 ks.* 暴露（ks.request / ks.getStorage / ks.login）。"
+msgstr ""
+
+msgid "形态与字节/微信系相近，但自有内容生态与审核规范。"
+msgstr ""
+
+msgid "清理各小程序端构建产物（可重建）"
+msgstr ""
+
+msgid "清理 unpackage/dist 与 dist 下各 mp-* 端构建产物，回收空间（重新发行即可恢复）。"
+msgstr ""
+
+msgid "切勿删除 src/、manifest.json、pages.json 与 node_modules——前者丢失无法恢复，后者需重新安装。删除前建议先提交版本库。"
+msgstr ""
+
+msgid "参考 uni-app 发行文档：mp-* 产物由发行操作生成，删除后重新发行即可恢复。"
+msgstr ""
+
+msgid "需在 uni-app 工程根目录执行。"
+msgstr ""
+
+msgid "清 APT 下载的 .deb 缓存（apt-get clean）"
+msgstr ""
+
+msgid "用官方接口清空 /var/cache/apt/archives 下已下载的 .deb——重装时会重新下载，不影响已装包。"
+msgstr ""
+
+msgid "清缓存后若处于离线环境，重装同名包将无法从本地缓存取用，需要联网重新下载。"
+msgstr ""
+
+msgid "参考 apt-get(8)：clean 只清 /var/cache/apt/archives 与 partial 下的 .deb，不影响 /var/lib/dpkg/status 中的已装包记录；autoclean 只清无法再下载到的旧版本。"
+msgstr ""
+
+msgid "缓存来自 Packages 索引（RFC822 段落式）解析后的下载，重新 apt-get install 会再次获取。"
+msgstr ""
+
+msgid "移除不再被依赖的包（apt-get autoremove）"
+msgstr ""
+
+msgid "按 APT 的 auto 标记移除「当初作为依赖装进来、现已无人依赖」的包（含旧内核的对应模块包）。"
+msgstr ""
+
+msgid "会真实删除软件包：若某包是你手动用但被标成 auto，会被一并移除；执行前务必看 dry-run 列表，必要时先 apt-mark manual 固定。"
+msgstr ""
+
+msgid "参考 apt-mark(8)：包被标记为 auto（自动安装）还是 manual（手动安装）决定了 autoremove 是否移除它；误删可用 `apt-mark manual <pkg>` 提前保住。"
+msgstr ""
+
+msgid "旧内核镜像多由 autoremove 处理（/boot 塞满的典型解法）；保留当前运行内核。"
+msgstr ""
+
+msgid "清 DNF / YUM 仓库缓存（dnf clean all）"
+msgstr ""
+
+msgid "清空 /var/cache/dnf（或 /var/cache/yum）中的仓库元数据与已下载 rpm，官方 clean 接口。"
+msgstr ""
+
+msgid "清后首次 dnf 操作需重新下载元数据（约几十 MB，取决于启用仓库数量）；离线环境慎用。"
+msgstr ""
+
+msgid "参考 dnf(8)：clean all 清的是仓库元数据（repomd.xml / primary.xml 等）与下载的 rpm，不触碰 rpmdb（/usr/lib/sysimage/rpm）中的已装包记录。"
+msgstr ""
+
+msgid "长期不想缓存可在 /etc/dnf/dnf.conf 设 keepcache=False（见 dnf.conf(5)）。"
+msgstr ""
+
+msgid "清 apk 包缓存（apk cache clean）"
+msgstr ""
+
+msgid "用 Alpine 官方接口清理 /etc/apk/cache（或 /var/cache/apk）下的 .apk 与索引缓存。"
+msgstr ""
+
+msgid "清缓存后离线重装同名包需重新下载；容器构建层内清理才真正减小镜像体积。"
+msgstr ""
+
+msgid "参考 apk(8)：cache clean 清的是索引（APKINDEX.tar.gz）与已下载 .apk，不动 /lib/apk/db/installed 中的已装包记录。"
+msgstr ""
+
+msgid "构建镜像时用 `apk add --no-cache` 可让缓存不落盘，是 Alpine 镜像瘦身的标准做法。"
+msgstr ""
+
+msgid "按保留版本清理 pacman 缓存（paccache -rk2）"
+msgstr ""
+
+msgid "用 pacman-contrib 的 paccache 保留最近 2 个版本、清理更旧的包缓存，优于 -Scc 全清。"
+msgstr ""
+
+msgid "若确实要腾出全部空间可用 pacman -Scc，但之后无法离线降级到旧版本；本任务默认只保留 2 版。"
+msgstr ""
+
+msgid "参考 paccache(8)：-r 清理已安装包的旧版本缓存，-k2 表示每个包保留最近 2 个版本，比 `pacman -Scc`（清空全部缓存）稳健——留着旧版才能离线降级。"
+msgstr ""
+
+msgid "pacman 包为 .pkg.tar.zst（zstd 压缩 tar，含 .PKGINFO），缓存目录 /var/cache/pacman/pkg。"
+msgstr ""
+
+msgid "清 Homebrew 下载缓存（brew cleanup）"
+msgstr ""
+
+msgid "按 Homebrew 保留策略回收 formula/cask 的旧版本下载缓存，默认不动已装包的当前版本。"
+msgstr ""
+
+msgid "`brew cleanup --prune=0` 会清空全部缓存（含未安装包），后续安装需重新下载；本任务只用默认行为，不使用 --prune。"
+msgstr ""
+
+msgid "参考 brew(1) Manpage：cleanup 默认删除已安装 formula 的旧版本下载缓存；`--prune=<days>` 连未安装/更旧的缓存一并清，属更激进选项，先用 `-n` 干跑确认。"
+msgstr ""
+
+msgid "Formula/Cask 用 Ruby DSL 声明（url / sha256 / depends_on），预编译产物是 bottle。"
+msgstr ""
+
+msgid "清 winget 下载缓存（%LOCALAPPDATA%\\Temp\\WinGet）"
+msgstr ""
+
+msgid "删除 Windows Package Manager 的临时下载缓存；winget 再次安装时会重新下载。"
+msgstr ""
+
+msgid "不要手动删除或改动 WinGet\\Packages 下的安装目录（卸载应走 winget uninstall，否则注册表 UninstallString 与实际文件不一致）。"
+msgstr ""
+
+msgid "参考 WinGet 文档：下载缓存落在 %LOCALAPPDATA%\\Temp\\WinGet，属临时目录，删除后重新安装会再次拉取，不影响 %LOCALAPPDATA%\\Microsoft\\WinGet\\Packages 下已装内容。"
+msgstr ""
+
+msgid "winget 以 YAML 清单（version / installer / locale，schema v1.x）描述包，源为 REST 接口。"
+msgstr ""
+
+msgid "清 pip 下载缓存（pip cache purge）"
+msgstr ""
+
+msgid "用 PyPA 官方的 pip cache 接口回收 wheel 与 HTTP 响应缓存，不影响任何已安装的包。"
+msgstr ""
+
+msgid "清缓存后离线安装同名包会失败（需重新下载）；CI 环境建议直接 --no-cache-dir。"
+msgstr ""
+
+msgid "参考 pip cache 文档：purge 只清缓存目录（Linux ~/.cache/pip、macOS ~/Library/Caches/pip、Windows %LOCALAPPDATA%\\pip\\cache），已装包在 site-packages，完全不受影响。"
+msgstr ""
+
+msgid "缓存内容按 PEP 427 wheel 与 HTTP 响应分层；想长期不缓存可安装时加 --no-cache-dir。"
+msgstr ""
+
+msgid "校验并回收 npm 缓存（npm cache verify）"
+msgstr ""
+
+msgid "按官方推荐用 verify 校验 _cacache 内容寻址缓存，回收损坏与过期条目（非破坏性）。"
+msgstr ""
+
+msgid "本任务不用 `npm cache clean --force`——那会全清缓存，令后续每次安装都重新下载；verify 只删无效内容。"
+msgstr ""
+
+msgid "参考 npm-cache 文档：verify 会遍历 _cacache（index-v5 索引 + content-v2 内容，按 sha512 完整性哈希寻址），回收损坏与过期条目并输出统计；官方明确把 `npm cache clean --force` 标注为破坏性操作。"
+msgstr ""
+
+msgid "npm 元数据来自 Registry HTTP API 的 JSON packument，lockfileVersion 决定锁定语义。"
+msgstr ""
+
+msgid "清 Flatpak 无引用的 runtime（flatpak uninstall --unused）"
+msgstr ""
+
+msgid "移除不再被任何应用引用的 Flatpak runtime 与扩展（OSTree 仓库中无 ref 指向者）。"
+msgstr ""
+
+msgid "若之后要装回依赖该 runtime 的应用，需要重新下载；删应用数据请用 --delete-data（本任务不使用，避免误删用户数据）。"
+msgstr ""
+
+msgid "参考 flatpak(1) / flatpak-uninstall(1)：--unused 指「没有任何已安装应用引用的runtime / extension」；应用本体不会被动到。"
+msgstr ""
+
+msgid "Flatpak 用 OSTree 仓库（refs + commit objects）去重共享，删除 runtime 可能释放数百 MB。"
+msgstr ""
+
+msgid "将 snap 保留版本数降为 2（refresh.retain）"
+msgstr ""
+
+msgid "设置 snapd 的 refresh.retain=2，减少每个 snap 保留的历史版本（默认 3），只改配置不删包。"
+msgstr ""
+
+msgid "本任务只改配置、不删任何现存版本；存量旧版本需自行确认后按 revision 删除。"
+msgstr ""
+
+msgid "参考 snapcraft.io 文档：snapd 默认每个 snap 保留 3 个版本（含当前），refresh.retain 调整的是「刷新时保留的旧版本数」；snapd 经 Unix socket /run/snapd.socket 暴露 /v2/snaps 等 REST 端点。"
+msgstr ""
+
+msgid "snap 是 squashfs 只读镜像，历史版本常是 /var/lib/snapd 变大的主因。"
+msgstr ""
+
+msgid "孤儿/未引用包核对（各包管理器自身接口，只读）"
+msgstr ""
+
+msgid "按各发行版自身的查询接口找出孤儿包：pacman -Qdt、dnf repoquery --unneeded、apt-get -s autoremove。"
+msgstr ""
+
+msgid "不同发行版结果不可互相套用；删除孤儿包前请逐个确认，尤其是驱动与内核相关包。"
+msgstr ""
+
+msgid "「孤儿包」的判定完全取决于各包管理器自己的记账：APT 看 auto/manual 标记（apt-mark(8)）、pacman 看是否被依赖（-Qdt）、DNF 看 repoquery --unneeded——不存在统一定义，因此这里逐个按其自身接口核对。"
+msgstr ""
+
+msgid "只读核对，不删除任何包；确认后再用对应发行版的官方删除命令。"
+msgstr ""
+
+msgid "清 Docker 悬空镜像（docker image prune -f）"
+msgstr ""
+
+msgid "删除「无标签且不被任何容器引用」的悬空镜像——典型由构建失败遗留，删了不影响任何运行中的容器。"
+msgstr ""
+
+msgid "无数据破坏性（悬空镜像本就不被引用）；离线环境重构建需重新拉取。"
+msgstr ""
+
+msgid "参考 docker image prune：默认只删 dangling（无仓库:标签且未被引用）的镜像；加 -a 才删「无容器引用」的所有未使用镜像。"
+msgstr ""
+
+msgid "悬空层按 digest 共享，只删引用计数归零的层，不影响其他镜像。"
+msgstr ""
+
+msgid "清 Docker 已停止容器（docker container prune -f）"
+msgstr ""
+
+msgid "删除所有已退出（Exited）状态的容器。容器只读层可重建，但容器内未提交到镜像的改动会丢失。"
+msgstr ""
+
+msgid "会真实删除容器元数据与可写层：运行 docker rm 前确认其中无未保存改动。"
+msgstr ""
+
+msgid "参考 docker container prune：只针对 status=exited/created 的容器；运行中的容器不受影响。"
+msgstr ""
+
+msgid "若容器是用作临时调试（未 commit），其中改动随之消失——先 docker commit 再清。"
+msgstr ""
+
+msgid "清 Docker 未用卷（docker volume prune -f）"
+msgstr ""
+
+msgid "删除没有任何容器（含已停止）引用的卷。卷常存数据库/持久化数据，删了可能永久丢失。"
+msgstr ""
+
+msgid "高风险数据丢失：生产数据库卷务必先备份或 `docker run --rm -v <vol> busybox tar` 导出后再清。"
+msgstr ""
+
+msgid "参考 docker volume prune：默认保留仍被任意容器（哪怕已停止）引用的卷；-f 才删真正孤儿卷。"
+msgstr ""
+
+msgid "匿名卷（未命名）最易被清；命名卷请先 docker volume inspect 确认内容。"
+msgstr ""
+
+msgid "清 Docker BuildKit 构建缓存（docker builder prune -f）"
+msgstr ""
+
+msgid "回收 /var/lib/docker/buildkit 下内容寻址的构建缓存——随构建次数累积极易膨胀，且不影响已构建镜像。"
+msgstr ""
+
+msgid "清后首次构建变慢（需重算缓存）；不影响运行中的容器。"
+msgstr ""
+
+msgid "参考 docker builder prune：缓存按 diffID 内容寻址，清了下次构建重新计算，不影响已 push/pull 的镜像。"
+msgstr ""
+
+msgid "加 -a 清更彻底（含仍可能被引用的中间层）；--filter until=24h 可按时间保留。"
+msgstr ""
+
+msgid "Docker 系统级组合清理（docker system prune -a -f）"
+msgstr ""
+
+msgid "组合清理：悬空镜像 + 已停止容器 + 未用网络 +（加 -a）所有未使用镜像。一举回收但面较大，需谨慎。"
+msgstr ""
+
+msgid "面最大：会删你本地所有「当前没在跑」的镜像，下次构建/运行需重新拉取。"
+msgstr ""
+
+msgid "参考 docker system prune：-a 会删所有未容器引用的镜像（不只是悬空），加 --volumes 才连未用卷一起清（默认不删卷，防误删数据）。"
+msgstr ""
+
+msgid "比逐项 prune 省事，但 -a 会让你下次拉镜像重新下载——CI 机常用，个人开发机慎用 -a。"
+msgstr ""
+
+msgid "清 Podman 未使用镜像（podman image prune -a -f）"
+msgstr ""
+
+msgid "删除无容器引用的镜像（含有标签但未使用的）。Podman 无 daemon，rootless 下清的是用户命名空间存储。"
+msgstr ""
+
+msgid "rootless 时注意用运行容器的同一用户执行，否则权限不匹配会漏清或报错。"
+msgstr ""
+
+msgid "参考 podman image prune：与 docker 同语义；rootless 模式数据在 ~/.local/share/containers/storage，需用对应用户执行。"
+msgstr ""
+
+msgid "不加 -a 只删悬空；加 -a 删所有无容器引用的镜像。"
+msgstr ""
+
+msgid "清 Podman 未用卷（podman volume prune -f）"
+msgstr ""
+
+msgid "删除无容器引用的 Podman 卷；rootless 下清的是用户命名空间内的卷，数据可能永久丢失。"
+msgstr ""
+
+msgid "数据丢失风险同 docker volume prune；生产卷先备份。"
+msgstr ""
+
+msgid "参考 podman volume prune：只删无容器（含停止）引用的卷；命名卷先 podman volume inspect 确认内容。"
+msgstr ""
+
+msgid "rootless 卷路径在 ~/.local/share/containers/storage/volumes。"
+msgstr ""
+
+msgid "Podman 系统级组合清理（podman system prune -a -f）"
+msgstr ""
+
+msgid "组合清理：未使用镜像 + 已停止容器 + 未用卷 + 网络。无 daemon 架构，清理与 docker 同语义但命令名不同。"
+msgstr ""
+
+msgid "面大：会删本地所有未运行镜像与其卷；CI 常用，个人机慎用 -a/-f。"
+msgstr ""
+
+msgid "参考 podman system prune：等价于逐项 image/container/volume prune 的组合；rootless 务必用运行容器的同一用户执行。"
+msgstr ""
+
+msgid "Podman 兼容 docker CLI 语义，但 podman.sock 默认也支持 docker API 客户端。"
+msgstr ""
+
+msgid "回收 containerd 孤儿 blob（nerdctl system prune / ctr prune）"
+msgstr ""
+
+msgid "containerd 无 docker 那套 system prune；借助 nerdctl 组合回收，或直接对 content store 回收无 lease 引用的孤儿 blob。"
+msgstr ""
+
+msgid "直接删 /var/lib/containerd/io.containerd.content.v1.content 下文件会破坏内容寻址，导致镜像 digest 校验失败——务必走 GC 接口。"
+msgstr ""
+
+msgid "参考 containerd 架构：content store 按 digest 存 blob，snapshotter 管可写层；「孤儿」指不再被任何 lease（镜像/容器引用）指向的 blob。"
+msgstr ""
+
+msgid "ctr content prune / ctr snapshots prune 只删无 lease 引用的孤儿，比直接 rm 目录安全。"
+msgstr ""
+
+msgid "清 Docker Buildx 缓存（docker buildx prune -a -f）"
+msgstr ""
+
+msgid "回收 buildx 多驱动（docker-container/kubernetes/remote）下的构建缓存；与 builder prune 同源但覆盖 buildx 专属缓存。"
+msgstr ""
+
+msgid "清后首次 buildx 构建变慢；不影响运行中的容器。"
+msgstr ""
+
+msgid "参考 docker buildx prune：覆盖 buildx 各驱动缓存；--filter until=24h 按时间保留，-a 清更彻底。"
+msgstr ""
+
+msgid "与 docker builder prune 同属 BuildKit，但分属不同缓存命名空间。"
+msgstr ""
+
+msgid "回收 LXC/LXD 未使用镜像与孤儿卷"
+msgstr ""
+
+msgid "LXC 是系统容器（每容器独立可写层/存储池卷），不作镜像分层共享；清理须按 LXD 各自存储后端接口，而非删目录。"
+msgstr ""
+
+msgid "系统容器可能存有重要状态；删前确认容器/镜像确属废弃，且存储池无需缩容。"
+msgstr ""
+
+msgid "参考 LXD 存储：卷是存储池（ZFS/Btrfs/LVM/dir）内对象，删除须走 lxc storage volume rm，直接删 /var/lib/lxd 会破坏池元数据。"
+msgstr ""
+
+msgid "停止容器用 lxc delete（默认保留可写层 12 天，可加 --force 立即删）。"
+msgstr ""
+
+msgid "OCI 规范核对（镜像分层与 digest 内容寻址）"
+msgstr ""
+
+msgid "只读核对 OCI 工具能力与规范要点：所有运行时镜像分层、digest、diff_id 都遵循 Image Spec，删共享层须看引用计数。"
+msgstr ""
+
+msgid "只读任务：仅核对接口能力，不做任何修改。"
+msgstr ""
+
+msgid "参考 OCI image-spec：manifest 指向 config 与各 layer，descriptor 用 digest 内容寻址，同一层被多镜像共享。"
+msgstr ""
+
+msgid "清理共享层依赖各运行时 GC，不要按文件名手动删层（误删会让其他镜像失效）。"
+msgstr ""
+
+msgid "容器运行时磁盘占用总览（各运行时 system df）"
+msgstr ""
+
+msgid "只读汇总本机各容器运行时（Docker/Podman/containerd/BuildKit/LXC/CRI）的可用性与磁盘占用，定位空间杀手。"
+msgstr ""
+
+msgid "只读任务：仅汇总，不修改系统。"
+msgstr ""
+
+msgid "各运行时的磁盘占用口径不同：docker/podman system df 四项（镜像/容器/卷/构建缓存），containerd 靠 nerdctl/ctr，LXC 靠 lxc image list。"
+msgstr ""
+
+msgid "定位到具体运行时后，再用对应的 prune 接口回收，而非直接删数据目录。"
+msgstr ""
+
+msgid "ext4 挂载点与一致性核对（e2fsck -fn 只读 + e4defrag 建议）"
+msgstr ""
+
+msgid "只读列出本机 ext4 挂载点与用量，给出 e2fsck -fn（只读校验，不修复）与 e4defrag（仅 extent 文件）的整理建议。"
+msgstr ""
+
+msgid "只读任务：仅核对，不修改系统。"
+msgstr ""
+
+msgid "参考 ext4 文档：e2fsck -fn 仅检查不修复（-f 强制，-n 假定 no 不写）；e4defrag 只对 extent 文件有效，目录或已连续文件无意义。"
+msgstr ""
+
+msgid "Btrfs 用量与未用 chunk 核对（btrfs filesystem df）"
+msgstr ""
+
+msgid "只读列出本机 Btrfs 挂载点的 data/metadata/unallocated 占比，定位未回收 chunk 与旧快照空间杀手。"
+msgstr ""
+
+msgid "参考 Btrfs 文档：空间杀手是未回收的 chunk（balance）与未清的旧快照/子卷；btrfs filesystem df 看已用占比，unallocated 为可回收空间。"
+msgstr ""
+
+msgid "XFS 挂载点与碎片率核对（xfs_db -r -c frag 只读）"
+msgstr ""
+
+msgid "只读列出本机 XFS 挂载点，用 xfs_db -r -c frag 计算碎片率（-r 只读，禁止写挂载设备）。"
+msgstr ""
+
+msgid "参考 XFS 文档：碎片主要来自大量小文件随机写；xfs_db -r -c frag 只读算碎片率，务必带 -r 否则可能写挂载设备。"
+msgstr ""
+
+msgid "ZFS 存储池健康与容量核对（zpool list / zfs list）"
+msgstr ""
+
+msgid "只读列出本机 ZFS 存储池健康/容量与数据集占用，定位快照累积与未释放数据集。"
+msgstr ""
+
+msgid "参考 OpenZFS 文档：空间靠快照引用计数管理；zpool list 看健康(cap)，zfs list 看 used/available。"
+msgstr ""
+
+msgid "LVM 逻辑卷与精简池占比核对（pvs/vgs/lvs）"
+msgstr ""
+
+msgid "只读列出本机 LVM 逻辑卷与精简池(thin-pool) 已用占比，定位超额置备与未释放 LV。"
+msgstr ""
+
+msgid "参考 LVM 文档：精简池(thin-pool) 超额置备后元数据满是常见空间杀手；data_percent 即已用占比。"
+msgstr ""
+
+msgid "磁盘类型与 TRIM 支持核对（lsblk ROTA + discard_max_bytes）"
+msgstr ""
+
+msgid "只读判断每块磁盘是 SSD/NVMe 还是 HDD，以及是否支持 discard（TRIM/UNMAP），给出 fstrim 回收建议。"
+msgstr ""
+
+msgid "只读任务：仅核对，不修改系统（不发 FITRIM，不跑 blkdiscard）。"
+msgstr ""
+
+msgid "参考 fstrim 文档：SSD/NVMe 靠 TRIM 回收空闲页；/sys/block/<dev>/queue/discard_max_bytes > 0 表示设备支持 discard。"
+msgstr ""
+
+msgid "磁盘健康核对（smartctl -H，只读不跑自检）"
+msgstr ""
+
+msgid "只读读取每块磁盘 SMART 整体健康(PASSED/FAILED) 与重映射/待映射扇区原始值，预警坏盘。"
+msgstr ""
+
+msgid "只读任务：仅核对，不修改系统（不跑 -t 自检）。"
+msgstr ""
+
+msgid "参考 smartctl 文档：05 Reallocated / 197 CurrentPending / 198 OfflineUncorrectable 增长预示坏道；NVMe 看可用备件下降。"
+msgstr ""
+
+msgid "交换空间用量核对（swapon --show / /proc/swaps）"
+msgstr ""
+
+msgid "只读列出本机已启用交换空间的大小与已用量，判断是否需要重建碎片 swap。"
+msgstr ""
+
+msgid "参考 swapon 文档：长期运行的 swap 可能碎片；重建须先 swapoff 再 mkswap 再 swapon。"
+msgstr ""
+
+msgid "ext4 在线碎片整理（e4defrag 首个 ext4 挂载点）"
+msgstr ""
+
+msgid "对首个 ext4 挂载点跑 e4defrag——仅整理 extent 文件，目录或已连续文件无效果，安全低风险。"
+msgstr ""
+
+msgid "仅整理 extent 文件，不影响数据；大目录可能耗时但不破坏。"
+msgstr ""
+
+msgid "参考 ext4 文档：e4defrag 只对 extent 文件有效；挂载点用 findmnt 取首个 ext4。"
+msgstr ""
+
+msgid "XFS 在线碎片整理（xfs_fsr 全部已挂载）"
+msgstr ""
+
+msgid "xfs_fsr 整理所有已挂载 XFS 文件系统的真实碎片文件；会重写 extent，对极少碎片文件无意义且耗 IO，需 --yes。"
+msgstr ""
+
+msgid "会重写 extent 增加 IO；运行前确认无关键写入在进行（需 --apply 且 --yes）。"
+msgstr ""
+
+msgid "参考 XFS 文档：xfs_fsr 仅对真实碎片文件有效；无参整理全部已挂载 XFS。"
+msgstr ""
+
+msgid "Btrfs 回收未用 chunk（btrfs balance -dusage/-musage 20）"
+msgstr ""
+
+msgid "对首个 Btrfs 挂载点跑 balance，仅搬动已用<20% 的 chunk 以回收未分配空间——控制幅度避免全量重写。"
+msgstr ""
+
+msgid "balance 会重写数据增加 IO 与写放大；运行期间勿中断（需 --apply 且 --yes）。"
+msgstr ""
+
+msgid "参考 Btrfs 文档：裸 btrfs balance 全量重写极重 IO；-dusage/-musage=20 只搬动已用<20% 的 chunk，回收空间同时控制幅度。"
+msgstr ""
+
+msgid "Btrfs 后台校验（btrfs scrub start）"
+msgstr ""
+
+msgid "对首个 Btrfs 挂载点启动 scrub——后台按 checksum 校验并修复副本，只读验证不丢数据。"
+msgstr ""
+
+msgid "仅校验修复，不修改用户数据；大文件系统耗时但不阻断读写。"
+msgstr ""
+
+msgid "参考 Btrfs 文档：scrub 按每数据块 checksum 校验，副本可自修复；后台运行，可用 btrfs scrub status 查看进度。"
+msgstr ""
+
+msgid "ZFS SSD 池回收空闲块（zpool trim 全部池）"
+msgstr ""
+
+msgid "对所有 ZFS 存储池发 TRIM，回收 SSD 后备盘上被释放但设备仍占用的空闲块。"
+msgstr ""
+
+msgid "trim 为后台异步，不影响数据；HDD 池无需 trim。"
+msgstr ""
+
+msgid "参考 OpenZFS 文档：zpool trim 对 SSD 后备盘发 TRIM；也可用 zpool set autotrim=on 让其自动回收。"
+msgstr ""
+
+msgid "SSD/精简置备未用块回收（fstrim -av）"
+msgstr ""
+
+msgid "对所有支持 discard 的挂载点发 FITRIM，让 SSD 控制器回收空闲页、让 thin 存储释放后端空间。"
+msgstr ""
+
+msgid "切勿用 blkdiscard 做常规回收——整盘立即丢弃，不可恢复。"
+msgstr ""
+
+msgid "参考 fstrim 文档：fstrim 对挂载文件系统发 FITRIM，不破坏数据；频率过高伤低质 SSD 寿命，一周一次足够。"
+msgstr ""
+
+msgid "重建碎片交换空间（swapoff + mkswap + swapon）"
+msgstr ""
+
+msgid "对所有已启用交换区：先 swapoff（须剩余内存足够）、mkswap 重建签名、再 swapon 重新启用——全程交换暂停，整理碎片。"
+msgstr ""
+
+msgid "swapoff 期间无交换空间，内存不足会 OOM；确保物理内存够用再执行（需 --apply 且 --yes）。"
+msgstr ""
+
+msgid "参考 swapon 文档：重建须先 swapoff（剩余内存须足够，否则 OOM）；Btrfs 上的 swap 文件须 mkswap --file（自动 nocow）。"
+msgstr ""
+
+msgid "导入第三方网络互联互通方案（合并到共享资源，只读引用）"
+msgstr ""
+
+msgid "把 p2wlan/dae/gfw-pac/v2rayN 作为「同人设备网络互联互通」的可选方案只读登记；本工具不打包其二进制，用户自行按许可证与平台安装。"
+msgstr ""
+
+msgid "这些仓库为第三方项目，各自许可证见仓库 licenses/ 文件夹与引用的许可证全文链接。"
+msgstr ""
+
+msgid "p2wlan：P2P 虚拟局域网（NAT 穿透/房间组网/Relay），补强本地自组网。"
+msgstr ""
+
+msgid "dae：eBPF 透明代理（Linux），用于本人设备出网分流。"
+msgstr ""
+
+msgid "gfw-pac：PAC 直连/代理域名分流规则（仅规则，不传流量）。"
+msgstr ""
+
+msgid "v2rayN：Xray/sing-box GUI 客户端。"
+msgstr ""
+
+msgid "三者均汇入「net_reshare 同人资源共享」模型：只用于本人授权网络。"
+msgstr ""
+
+msgid "网络互联互通的 CDN / P2P 开关（可选）"
+msgstr ""
+
+msgid "为网络互联互通提供两套开关语义：CDN 开关（走 HTTP/FTP 镜像源多连接分片）、P2P 开关（走 BitTorrent/Metalink 多源）。仅用于本人有权获取/分享的资源的。"
+msgstr ""
+
+msgid "P2P 开关仅用于合法资源；不用于转发他人流量、不蹭用他人网络出口。"
+msgstr ""
+
+msgid "CDN 开关：aria2c --max-connection-per-server=N --split=N <镜像URL>。"
+msgstr ""
+
+msgid "P2P 开关：aria2c <*.torrent|.metalink>，关闭用 --bt-enabled=false。"
+msgstr ""
+
+msgid "硬件优化：DLSS5 一键安装/调优/还原（由用户选择）"
+msgstr ""
+
+msgid "把 DLSS5-Swapper 作为「GPU 硬件优化（由用户选择）」的可选工具登记；它改写游戏内超分 DLL，需用户逐游戏确认，且自动备份原文件便于还原。"
+msgstr ""
+
+msgid "会修改游戏目录内的 DLL；仅在本人设备、本人拥有的游戏上操作；本工具不打包其二进制。"
+msgstr ""
+
+msgid "支持 DLSS5、RenoDX、DLSS5-Feeder（无 DLSS 游戏注入）、OptiScaler 与多通道路由。"
+msgstr ""
+
+msgid "覆盖 DirectX 8/9/11/12、Vulkan、OpenGL、DirectDraw 与模拟器；游戏内 F8 覆盖层。"
+msgstr ""
+
+msgid "操作前自动备份，风险由用户自负。"
+msgstr ""
+
+msgid "引入开源下载软件 aria2（CDN / P2P 开关，可选）"
+msgstr ""
+
+msgid "把 aria2 作为「开源下载软件」的可选实现登记，提供 CDN（HTTP/FTP 镜像源）与 P2P（BitTorrent/Metalink）两套开关；本工具不打包其二进制。"
+msgstr ""
+
+msgid "GPL-2.0；若与专有代码静态链接须注意传染性；仅下载本人有权获取的资源的。"
+msgstr ""
+
+msgid "aria2 支持 HTTP/HTTPS、FTP/SFTP、BitTorrent、Metalink，可多连接加速。"
+msgstr ""
+
+msgid "CDN 开关 = 启用 HTTP/FTP 镜像源；P2P 开关 = 启用 BT/Metalink 多源。"
+msgstr ""
+
+msgid "同人资源共享安全护栏（默认，必读）"
+msgstr ""
+
+msgid "重声安全护栏：同一人登录的多设备可共享硬件资源（CPU/GPU/NPU/TPU/内存/网络），但个人数据与关键资产数据（凭据/密钥/钱包/通讯录/文档）一律不共享，且**绝不盗用他人网络互联互通能力**（不蹭他人房间/代理出口、不转发他人流量）。"
+msgstr ""
+
+msgid "任何以「共享」之名要求提供密码/密钥/证件原件的，均为盗用风险，应拒绝。"
+msgstr ""
+
+msgid "共享对象：本人登录的、经身份指纹（netauth）确认的多台设备。"
+msgstr ""
+
+msgid "可共享：cpu/memory/gpu/npu/tpu/network。"
+msgstr ""
+
+msgid "永不共享：personal_data/contacts/credentials/crypto_keys/asset_data/biometric/storage_content。"
+msgstr ""
+
+msgid "第三方网络互联工具（p2wlan/dae/v2rayN 等）只用于本人**授权**网络。"
+msgstr ""
+
+msgid "插件支持：已注册的安全只读插件清单（只读）"
+msgstr ""
+
+msgid "展示「插件支持」：当前已注册的安全只读插件（内置 openwrt / interop 聚合，以及用户通过 $SYSWEEPER_PLUGINS_DIR 或仓库 plugins/ 目录 drop-in 的清单）。插件 native 入口仅限 NATIVE_ALLOWLIST 白名单内的只读函数，绝不执行任意代码。"
+msgstr ""
+
+msgid "插件不能执行任意代码：其 native 入口只能是 sysweeper.native 下已审读的零参只读函数；"
+msgstr ""
+
+msgid "含任意命令/路径/shell 元字符或非白名单函数的清单会被直接拒绝（防注入）。"
+msgstr ""
+
+msgid "内置插件：openwrt（路由器系统只读接口）、interop（第三方网络互联引用聚合）。"
+msgstr ""
+
+msgid "用户插件：把一枚 *.json 清单放到 $SYSWEEPER_PLUGINS_DIR 或仓库 plugins/ 目录即被自动发现；"
+msgstr ""
+
+msgid "清单须通过 plugin_validate：id 合法、native 入口全部在只读白名单内，否则拒绝注册。"
+msgstr ""
+
+msgid "OpenJDK 运行时总览（java -version / JAVA_HOME，只读）"
+msgstr ""
+
+msgid "读 java 版本、javac 是否可用、JAVA_HOME 与运行架构，确认当前用的是哪个 JDK。"
+msgstr ""
+
+msgid "输出含 java.home 等本机路径，属预期（本机自检），不外传。"
+msgstr ""
+
+msgid "多版本并存时用 JAVA_HOME 或 PATH 顺序决定实际生效的 JDK。"
+msgstr ""
+
+msgid "本工具不安装 JDK、不改 JAVA_HOME、不动 PATH。"
+msgstr ""
+
+msgid "JVM 系统属性体检（白名单键，口令类不回显）"
+msgstr ""
+
+msgid "读 -XshowSettings:properties 的白名单键；疑似口令/令牌的键只报「存在」不打印值。"
+msgstr ""
+
+msgid "这是隐私体检项：它证明「我们不打印敏感值」，不要反过来用去 dump 全部属性。"
+msgstr ""
+
+msgid "为什么不全量输出：属性表里混有 http.proxyPassword、令牌、带凭据 URL，整段 dump 会造成敏感信息落盘。"
+msgstr ""
+
+msgid "白名单机制与 OpenWrt 层的敏感键处理同一条底线。"
+msgstr ""
+
+msgid "JPMS 模块系统体检（java --list-modules，只读）"
+msgstr ""
+
+msgid "列出 JPMS 模块清单与顶层分类统计，判断模块层是否完整、java.se 根模块是否在位。"
+msgstr ""
+
+msgid "模块清单本身不敏感，但会暴露用了哪些框架（可作资产测绘参考，请勿外传）。"
+msgstr ""
+
+msgid "JDK 8 无 JPMS，会明确降级为「此版本无模块系统」而非报错。"
+msgstr ""
+
+msgid "排查 NoClassDefFoundError / IllegalAccessError 时先看模块层。"
+msgstr ""
+
+msgid "用 jlink 裁剪运行时镜像是写操作，本工具只给指引。"
+msgstr ""
+
+msgid "垃圾收集器体检（PrintFlagsFinal，只读不改）"
+msgstr ""
+
+msgid "读各 Use*GC 标志的最终生效值，报告当前实际选中的收集器。"
+msgstr ""
+
+msgid "本工具只报告，不替你选 GC——换 GC 是架构决策，应以官方调优指南与压测为准。"
+msgstr ""
+
+msgid "PrintFlagsFinal 是只打印不修改的诊断开关，JVM 执行完即退出。"
+msgstr ""
+
+msgid "JDK 9+ 默认 G1；JDK 8 默认 Parallel GC。"
+msgstr ""
+
+msgid "JIT 分层编译体检（启动慢的根因定位，只读）"
+msgstr ""
+
+msgid "读 TieredCompilation / CompileThreshold / 内联上限等标志，解释「刚启动慢、跑一会就快」。"
+msgstr ""
+
+msgid "只看当前默认值，无法反映你实际启动脚本里带的 -XX 参数（那些不在 JVM 标志里）。"
+msgstr ""
+
+msgid "分层编译关闭时只有解释器 + C2，冷启动明显更慢——这是最常见的「启动慢」原因。"
+msgstr ""
+
+msgid "MaxInlineSize / FreqInlineSize 影响热点方法内联，是吞吐/体积的权衡点。"
+msgstr ""
+
+msgid "OpenJDK 诊断工具面与本机 JVM 进程（只读）"
+msgstr ""
+
+msgid "列出 jcmd/jps/jstack/jmap/jstat/jfr 是否在 PATH，并用 jps/jcmd -l 列本机 JVM 进程。"
+msgstr ""
+
+msgid "jmap -histo:live 会触发 full GC、jfr start 持续写盘——均属高开销，本工具禁跑。"
+msgstr ""
+
+msgid "进程列表会暴露命令行参数（可能含口令），属本机自检，勿外传。"
+msgstr ""
+
+msgid "jstack/jmap/jfr 虽有副作用，本工具**不执行**，只报告可用性。"
+msgstr ""
+
+msgid "「有没有东西在偷偷跑 JVM」是内存占用的常见排查起点。"
+msgstr ""
+
+msgid "JFR 飞行记录器能力核对（只查不录制）"
+msgstr ""
+
+msgid "核对当前 JDK 是否具备 JFR、jfr 工具是否在 PATH，并给出录制用法的指引文本。"
+msgstr ""
+
+msgid "录制会持续写盘并可能带来轻微停顿，属诊断期短时操作，不是常驻项。"
+msgstr ""
+
+msgid "用法指引：jcmd <pid> JFR.start name=x duration=60s filename=a.jfr，随后 jfr print a.jfr 查看——**本工具只给文本，不代跑**。"
+msgstr ""
+
+msgid "JFR 是 JDK 自带的低开销剖析器，已取代大部分传统的 jstack 抓取流程。"
+msgstr ""
+
+msgid "Java 构建缓存体积统计（Gradle / Maven，只读）"
+msgstr ""
+
+msgid "统计 ~/.gradle/caches 与 ~/.m2/repository 体积，只报数不删任何文件。"
+msgstr ""
+
+msgid "本工具只统计，**不删任何缓存**——Maven 仓库里可能有你自己 install 的 SNAPSHOT 构件。"
+msgstr ""
+
+msgid "统计体积以便判断「值不值得清」，清理动作请自行决定。"
+msgstr ""
+
+msgid "Gradle 缓存可安全重建（下次构建重新下载），Maven 本地仓库同理但可能含未发布的 SNAPSHOT。"
+msgstr ""
+
+msgid "JVM 调优：只给指引不代改（高危动作清单）"
+msgstr ""
+
+msgid "列出那些「会真改 JVM 行为」的高危动作及其官方依据，本工具一律只给文本。"
+msgstr ""
+
+msgid "任何 JVM 参数调整都应先在预发环境验证并观察 GC 日志。"
+msgstr ""
+
+msgid "本任务的 action 是 manual 文本——它把「不该自动做的事」明确写出来。"
+msgstr ""
+
+msgid "已加载内核模块盘点（/proc/modules，只读）"
+msgstr ""
+
+msgid "读 /proc/modules：已加载可加载模块清单、内存合计、引用计数非 0 的模块。"
+msgstr ""
+
+msgid "**卸载内核模块是 root 级高危操作**，用错一个可致网络/存储不可用甚至不可开机。本工具只给判断依据与官方指引，绝不代为卸载。"
+msgstr ""
+
+msgid "refcnt 非 0 = 模块仍被引用，卸载必然失败——这是「rmmod 报模块在用」的根因。"
+msgstr ""
+
+msgid "内建模块（builtin）不出现在 /proc/modules，而在 /sys/module 下且 initstate=builtin。"
+msgstr ""
+
+msgid "模块 sysfs 全景（builtin vs 可加载，只读）"
+msgstr ""
+
+msgid "遍历 /sys/module，统计内建/可加载模块数与暴露参数节点数量。"
+msgstr ""
+
+msgid "写 /sys/module/*/parameters/* 等于运行期改内核行为——本工具**只读**。"
+msgstr ""
+
+msgid "「暴露了 parameters 的模块数」= 可调内核行为的入口数量，是判断驱动可调性的量化指标。"
+msgstr ""
+
+msgid "关键模块参数当前值（只读 sysfs）"
+msgstr ""
+
+msgid "只读列出拥塞控制、intel_powerclamp、nf_conntrack 等模块参数的当前值。"
+msgstr ""
+
+msgid "**写这些节点=运行期改内核**（如改 rmem_max、改内存回收行为），属高危操作，本工具只读且不给自动修复。"
+msgstr ""
+
+msgid "完整参数清单用只读命令：ls /sys/module/*/parameters/。"
+msgstr ""
+
+msgid "调参前务必看 kernel.org 对应 Documentation 确认语义与取值域。"
+msgstr ""
+
+msgid "模块元数据与许可证分布（modinfo，只读）"
+msgstr ""
+
+msgid "用 modinfo 汇总已加载模块的 license 字段分布，辅助判断 taint 来源。"
+msgstr ""
+
+msgid "未安装 kmod 工具包时会明确降级，不报错。"
+msgstr ""
+
+msgid "加载「专有」或「GPL 不兼容」许可证的模块会让内核被标记 tainted，之后内核会把责任推给该模块、不再报它的 bug。"
+msgstr ""
+
+msgid "查单模块：modinfo <name>；查固件需求：modinfo -F firmware <name>。"
+msgstr ""
+
+msgid "内核固件库盘点（/lib/firmware，只读统计）"
+msgstr ""
+
+msgid "统计固件库目录的顶层分类、文件数与体积，辅助定位「设备功能静默失效」类问题。"
+msgstr ""
+
+msgid "**绝不从非官方渠道替换固件**——错配的固件会让硬件直接不可用。"
+msgstr ""
+
+msgid "本工具只统计体积与分类，不删不换。"
+msgstr ""
+
+msgid "固件缺失的表现是「设备功能静默失效」（不报错、不崩），排查网卡/显卡/打印机/无线不工作时第一件事就是看固件在不在。"
+msgstr ""
+
+msgid "只读自查某模块需要哪些固件：modinfo -F firmware <mod>。"
+msgstr ""
+
+msgid "已加载固件标识核对（/sys/class/firmware，只读）"
+msgstr ""
+
+msgid "读 firmware_class 已注册的设备与实际加载到的固件标识，确认驱动走的是哪份固件。"
+msgstr ""
+
+msgid "固件标识可能含内网设备序列号等环境信息，属本机自检，勿外传。"
+msgstr ""
+
+msgid "纯 CPU 计算节点上通常没有条目（无设备走固件流程），属正常。"
+msgstr ""
+
+msgid "eBPF 能力体检（BTF / bpffs / 非特权开关，只读）"
+msgstr ""
+
+msgid "核对内核 BTF 是否可用、bpffs 是否挂载、非特权 BPF 开关状态与可挂 kprobe 函数数量。"
+msgstr ""
+
+msgid "**不 attach、不 load 任何 BPF 程序**——加载需 CAP_BPF/CAP_SYS_ADMIN，挂错程序可能拖垮内核路径。"
+msgstr ""
+
+msgid "有 BTF → BPF CO 可用：同一份 .o 能跨内核版本加载（libbpf 按 BTF 重定位）。"
+msgstr ""
+
+msgid "unprivileged_bpf_disabled=1 是较安全的基线（防非特权注入内核态程序）。"
+msgstr ""
+
+msgid "eBPF 是现代 Linux 事实上的「内核级可编程插件」：Cilium/bpftrace/systemd 单元都建在它上面。"
+msgstr ""
+
+msgid "内核模块/加载相关 sysctl（taint / modules_disabled，只读）"
+msgstr ""
+
+msgid "读 tainted、modules_disabled、unprivileged_bpf_disabled、kptr_restrict 等关键开关。"
+msgstr ""
+
+msgid "**写这些 sysctl 会真改系统行为**（如清 taint、禁止加载模块），本工具只读。"
+msgstr ""
+
+msgid "tainted 非空 = 内核被标记「不再为其报 bug」，通常因为加载了专有模块等。"
+msgstr ""
+
+msgid "modules_disabled=1 表示已禁止再加载新模块（加固状态）。"
+msgstr ""
+
+msgid "kptr_restrict=1 限制 /proc 里的内核地址暴露（较安全）。"
+msgstr ""
+
+msgid "modprobe 黑名单/加载策略（只读）"
+msgstr ""
+
+msgid "只读列出 /etc/modprobe.d 与内核命令行里的 blacklist / install 指令。"
+msgstr ""
+
+msgid "**不写 /etc/modprobe.d**——改加载策略是 root 级改动，配错会导致开不了无线网卡，只能从救援模式改回。"
+msgstr ""
+
+msgid "黑名单本质是 modprobe 侧拒绝加载，**不是内核级硬禁止**——用 insmod 仍可能绕过。"
+msgstr ""
+
+msgid "批量黑名单第三方驱动（部分开源网卡驱动）省电效果因机型而异。"
+msgstr ""
+
+msgid "电源状态与温区（/sys/power、/sys/class/thermal，只读）"
+msgstr ""
+
+msgid "读睡眠态支持、mem_sleep 策略与各温区当前温度。"
+msgstr ""
+
+msgid "**写 /sys/power/state 会让机器真的睡下去**（数据风险），本工具绝不执行。"
+msgstr ""
+
+msgid "调温控策略（写 trip_point）属 root 级改动，同样只给指引。"
+msgstr ""
+
+msgid "mem_sleep=auto 由系统自行选 suspend/hibernate；deep=进 hibernate。"
+msgstr ""
+
+msgid "温区由 thermal framework 统一导出；容器/虚拟机中可能被屏蔽。"
+msgstr ""
+
+msgid "内核模块卸载/固件更换：只给指引的高危清单"
+msgstr ""
+
+msgid "把「卸载模块、换固件、锁 BPF、改加载策略」等高危动作与前置检查写成指引文本。"
+msgstr ""
+
+msgid "卸载关键模块（存储/网络/输入子系统）可能直接导致系统不可用甚至不可开机。"
+msgstr ""
+
+msgid "本任务是 manual 文本：把高危动作的前置条件讲清楚，而不是替用户按下按钮。"
+msgstr ""
+
+msgid "定位与距离综合（先网络+基站，有导航再共同综合）"
+msgstr ""
+
+msgid "只读探测本机定位源，按「网络 + 基站为首选基线，检测到导航定位则共同综合」的口径解算位置，并给出两源偏差与是否存疑。"
+msgstr ""
+
+msgid "只读任务：只用 nmcli / mmcli / adb shell dumpsys location 这类只读命令探测。"
+msgstr ""
+
+msgid "Android 需 adb 且设备授权调试；坐标是系统最后已知位置（last location），非实时。"
+msgstr ""
+
+msgid "首选基线为什么要先用网络 + 基站：室内、地铁、隧道、省电模式下常常没有导航信号，而网络与基站几乎总在——先用它，保证任何情况下都有一个可用的位置与距离。"
+msgstr ""
+
+msgid "共同综合怎么算：按精度倒数平方加权（精度越高话语权越大），并给基线留 5% 最低话语权；导航主导但不独占，一次 GNSS 跳变不至于把位置甩飞。"
+msgstr ""
+
+msgid "两源偏差超过 2 km 标「存疑」，两套结果都摆出来，不替你判定哪个对。"
+msgstr ""
+
+msgid "Linux 上若没有 ModemManager/GeoClue 或没有基站经纬度库，就**拿不到坐标**——这时明确报「未取到」，绝不凭 IP 编造一个位置出来。"
+msgstr ""
+
+msgid "预警评估（距你多远 / 是否在影响范围内，只评估不报警）"
+msgstr ""
+
+msgid "对已登记的预警逐条评估：距你多远、是否落在影响半径内、粗估多久到达边界，按由近到远排序。只评估，不自动报警。"
+msgstr ""
+
+msgid "只读任务：只评估，不自动报警、不拨号、不发短信。"
+msgstr ""
+
+msgid "预警需你手动登记或自己配置订阅源后拉取；默认**不联网**。"
+msgstr ""
+
+msgid "字段对齐 CAP 1.2：event / severity / urgency / certainty / area / effective / expires / instruction；四色预警只作显示映射，不改变判定逻辑。"
+msgstr ""
+
+msgid "粗估到达时间按事件类型的典型传播速度算（地震 P 波约 6 km/s、台风移速约 8 m/s），**只是量级参考，不是预报**，报告里会写明这句。"
+msgstr ""
+
+msgid "位置精度本身就是上千米（纯基站时），距离值同量级误差——报告会把精度一起打出来，避免你把 14.2 km 当成 14.2 km 精确值。"
+msgstr ""
+
+msgid "没有预警就是没有预警：本层不会凭空生成，也不会把「未取到数据」包装成「安全」。"
+msgstr ""
+
+msgid "应急呼救文本生成（只生成，绝不自动发送）"
+msgstr ""
+
+msgid "把当前位置、情况、最近避险点、已通知的人组装成一段呼救文本，由你自己选择发送通道。本任务**绝不自动发送任何内容**。"
+msgstr ""
+
+msgid "断网时只有局域网通道可用；手机信号基站拥塞时短信可能延迟。"
+msgstr ""
+
+msgid "呼救文本里的联系人只是你本地填写的名字，本工具不读取通讯录。"
+msgstr ""
+
+msgid "红线：不自动报警、不拨号、不发短信、不自动发送任何内容。文本给你，通道你选。"
+msgstr ""
+
+msgid "位置精度会一并写进文本（例如 ±72 m），让收到的人知道这个坐标有多准——报一个±1.5 km 的坐标却不说明精度，是害人不是救人。"
+msgstr ""
+
+msgid "定位不可用时会明确写「未能确定」，并提示说明周边标志物，绝不瞎填坐标。"
+msgstr ""
+
+msgid "应急准备度核对（避险点距离排序 + 物资清单）"
+msgstr ""
+
+msgid "按到你的距离给避险点排序（近的先走），并核对 10 项基础应急物资的备齐情况。"
+msgstr ""
+
+msgid "只读任务：只排序与核对，不替代官方疏散指引。"
+msgstr ""
+
+msgid "直线距离 ≠ 步行距离，山区/水网地区差异可能很大。"
+msgstr ""
+
+msgid "避险点要你自己填（家庭/社区/单位的实际集合点）——工具不知道你那儿哪儿能躲，凭空列一批「附近避难所」是在造假。"
+msgstr ""
+
+msgid "物资清单按「3 天自救」基线：水每人每天 3 升、即食食品 3 天量、手电+备用电池、急救包、口哨、充电宝、收音机（断网还能听官方广播）、证件复印件与少量现金。"
+msgstr ""
+
+msgid "排序只按直线距离，不考虑路况、桥梁是否通行——实际撤离以官方指引为准。"
+msgstr ""
+
+msgid "预警应急手动开关（逐项开/关，持久化记住）"
+msgstr ""
+
+msgid "列出全部手动开关并说明每一项关掉后会怎样：定位、首选基站网络、与导航共同综合、预警评估、联网订阅（默认关）、呼救文本、避险点、物资核对。"
+msgstr ""
+
+msgid "指引类动作：只给改法文本，不代你改——开关状态由你决定。"
+msgstr ""
+
+msgid "关掉定位后，所有距离类评估会退化为「无法计算」，这是预期行为不是故障。"
+msgstr ""
+
+msgid "开关只存布尔值与坐标数字，落在 XDG ~/.config/sysweeper/emergency.json，**不存命令、不存代码**；文件损坏就回退默认，绝不拖垮界面。"
+msgstr ""
+
+msgid "联网订阅默认关闭：不主动联网是默认值，开了也只拉你自己填的 http(s) 地址。"
+msgstr ""
+
+msgid "关掉 locate_enabled 后只认手动录入的坐标——给「不想被探测位置」的人留的出口。"
+msgstr ""
+
+msgid "关掉 sos_enabled / shelter_enabled / kit_enabled 后对应功能直接返回关闭提示，不做「关了还偷偷跑」这种事。"
+msgstr ""
+
+msgid "组网通信协议核对（IPMsg / 飞鸽传书 / iptux 兼容）"
+msgstr ""
+
+msgid "核对本机对 IPMsg（飞鸽传书）协议的编解码能力：命令字、选项位、附件属性串、UDP 2425 消息 / TCP 2425 文件。只读核对，不发包。"
+msgstr ""
+
+msgid "只读任务：只核对编解码与常量表，不发包、不监听。"
+msgstr ""
+
+msgid "IPMsg 是明文协议且默认无认证，只适合可信局域网；跨公网请走加密通道。"
+msgstr ""
+
+msgid "包格式是六个字段：`版本:序号:用户:主机:命令字:附加`，命令字 = 基本命令 | 选项位，全部十进制。端口 2425（0x0979），消息走 UDP，文件走 TCP。"
+msgstr ""
+
+msgid "为什么要兼容现成协议而不是自创：网里已有的飞鸽 / iptux 客户端能直接收到消息，**不用说服所有人装新软件**——自创协议在真实环境里等于没人可用。"
+msgstr ""
+
+msgid "字段里的冒号用转义（`:` 在文件属性串里很常见），解析按转义切分，不按裸 split(':')——后者遇到 `a:photo.png` 这种名字就会解析错。"
+msgstr ""
+
+msgid "表情与颜文字支持核对（emoji / kaomoji）"
+msgstr ""
+
+msgid "核对 emoji（Unicode Emoji，UTS #51）与颜文字（全角符号拼组）的分类与显示支持，确认哪些能在对端正常显示。"
+msgstr ""
+
+msgid "只读任务：只核对，不发送。"
+msgstr ""
+
+msgid "emoji 显示依赖对端字库；颜文字依赖等宽字体，否则可能错位。"
+msgstr ""
+
+msgid "emoji 走 Unicode 标准码位（UTS #51），只要两端字库有就能显示；颜文字是**普通字符拼组**（＾▽＾ 之类），零依赖、任何终端都能显示——在老设备和纯文本环境里比 emoji 更可靠。"
+msgstr ""
+
+msgid "消息类型（文字/图片/视频/文件/emoji/颜文字）**只是载荷类型不同**，通道是同一条，不需要为每种类型各造一套协议。"
+msgstr ""
+
+msgid "收件箱与待收文件核对（收到的东西不自动落盘）"
+msgstr ""
+
+msgid "列出已收消息与**待收文件清单**。收到的图片/视频/文件一律不自动落盘，需你显式接受——自动接收等于别人能往你机器里塞东西。"
+msgstr ""
+
+msgid "只读任务：只列清单，不接收、不落盘、不打开任何文件。"
+msgstr ""
+
+msgid "来源只显示 IP:端口，不做主机名反解（避免 DNS 侧信道与伪造 PTR）。"
+msgstr ""
+
+msgid "处置纪律：文件类载荷进**待收清单**并给出大小与来源，接受才落盘——这是本层最重要的一条安全边界。"
+msgstr ""
+
+msgid "对超大载荷设上限，超限直接拒绝并在清单里标注，不硬扛（防止内存被吃光）。"
+msgstr ""
+
+msgid "组网通信发送（单播 / 全体广播 / 带附件，需 --apply）"
+msgstr ""
+
+msgid "向同网段设备发送文字、图片、视频、文件，或用 wall 式全体广播通知所有终端。**这是会发包的实际动作，需 --apply 且 --yes 才执行。**"
+msgstr ""
+
+msgid "**会实际发包**：需 --apply 且 --yes 才执行，默认只打印计划。"
+msgstr ""
+
+msgid "广播会影响网段内所有设备；公共网络慎用，勿用于打扰他人。"
+msgstr ""
+
+msgid "附件是对端来取，你这边要保持在线直到对端取完。"
+msgstr ""
+
+msgid "全体广播（wall 语义）用受限广播地址，同网段的终端都能收到——断网时这是**最可靠的通知方式**，不依赖任何外部服务器。"
+msgstr ""
+
+msgid "要回执就带 SENDCHECK 选项位（0x0100）：对端收到会回 RECVMSG，你才知道消息到了；不要回执就不带，省一次往返。"
+msgstr ""
+
+msgid "带附件时先发消息包（含 FILEATTACHOPT 与文件属性串），对端主动来 TCP 2425 取——**是对方拉，不是我们推**，这样对端可以拒绝。"
+msgstr ""
+
+msgid "IPMsg 明文且无认证，只适合可信局域网；跨公网请另走加密通道。"
+msgstr ""
+
+msgid "本机算力画像与图形能力登记（只读探测）"
+msgstr ""
+
+msgid "只读探测本机可捐献的算力：核心数、每核负载、可用内存、供电状态、是否计量网络，并登记 GPU/NPU 型号（只登记，不跑负载）。"
+msgstr ""
+
+msgid "只读任务：只探测，不改任何系统设置。"
+msgstr ""
+
+msgid "无 lspci 或虚拟化环境下可能探测不到 GPU，此时如实写「未探测到」。"
+msgstr ""
+
+msgid "可捐献评分 = 核心数归一化 × 空闲度 × 供电系数 × 网络计费系数。**电池低于 20% 直接不派活**（返回 0），用电池时系数降到 0.6。"
+msgstr ""
+
+msgid "计量网络（手机热点 / 按量计费）降权到 30%：不是安全考量，是**别让人替你交流量费**。"
+msgstr ""
+
+msgid "GPU 只登记型号（lspci 的 VGA / 3D controller / Display controller），**不跑任何负载、不改驱动、不超频**。"
+msgstr ""
+
+msgid "内置可验证算子清单（为什么不执行任意代码）"
+msgstr ""
+
+msgid "列出白名单内的三个可验证算子与各自的校验方式，并说明与 BOINC 「下发可执行程序」模式的根本差异。"
+msgstr ""
+
+msgid "只读任务：只列算子与校验口径，不执行计算。"
+msgstr ""
+
+msgid "白名单外的算子一律拒绝执行（有测试守着），这是设计不是缺陷。"
+msgstr ""
+
+msgid "BOINC 让项目方下发可执行程序，信任链是「我信任这个项目方」；本层砍掉这条链——**绝不下载、绝不执行任何外部代码**。"
+msgstr ""
+
+msgid "代价：算不了真实的科学项目。收益：**任何机器入网都不会获得在你机器上执行代码的能力**。"
+msgstr ""
+
+msgid "校验必须比计算便宜，否则冗余双投没有意义：哈希 O(1) 校验 vs N 次搜索；矩阵抽一行一列 O(n) vs O(n²)；蒙特卡洛固定种子可原样复算。"
+msgstr ""
+
+msgid "分布式调度计划（按能力派活 + 冗余双投，只出计划）"
+msgstr ""
+
+msgid "把算子切成工作单元，按节点可捐献评分排序派活，每个单元冗余 k 份独立计算，结果一致才接受。**只出计划，不真跑。**"
+msgstr ""
+
+msgid "只读任务：只出计划，不派活、不联网、不执行计算。"
+msgstr ""
+
+msgid "本层不含真实集群通信：跨机派活需要你已有的组网通道（IPMsg/iptux 通道或 SSH）。"
+msgstr ""
+
+msgid "工作单元（WU）切分：哈希按 nonce 区间、矩阵按行块、蒙特卡洛按样本量与种子——**每个单元可独立复算**，这是冗余校验的前提。"
+msgstr ""
+
+msgid "冗余双投：同一单元派给 k 个节点各自算，结果一致才接受；不一致标**存疑并重投**——不信任任何单个节点的自述。"
+msgstr ""
+
+msgid "评分低的节点排在后面但不会被排除（只要不是 0），因为弱节点算慢一点也比闲着强。"
+msgstr ""
+
+msgid "分布式链路自测（本地试跑 + 复算校验，有 CPU 预算）"
+msgstr ""
+
+msgid "在**时间预算内**本地跑一批工作单元并复算校验，验证「切分 → 计算 → 校验 → 记账」整条链路可用。跑满预算立即停，绝不拖慢机器。"
+msgstr ""
+
+msgid "**会占用 CPU**（受预算约束）：需 --apply 才执行，默认只打印计划。"
+msgstr ""
+
+msgid "非实时系统上的耗时可能超预算（调度抖动），这是预期行为不是故障。"
+msgstr ""
+
+msgid "默认预算 2 秒：够验证链路，不够拖慢机器。**跑满即停**，不会为了跑完而超时。"
+msgstr ""
+
+msgid "自测的意义：先确认「本地这条链是通的」，再谈跨机——在没验证过的链路上派活，等于把问题放大 N 倍。"
+msgstr ""
+
+msgid "credit 只在本地记一笔（谁干了多少活），**不换任何东西、不上链、不结算**。"
+msgstr ""
+
+msgid "跨机派活（经组网通道派工作单元，默认只出计划）"
+msgstr ""
+
+msgid "把工作单元**经组网通信通道**（IPMsg/飞鸽传书/iptux 兼容的文本通道）派给网内节点，冗余 k 份各自独立算，结果回来复算校验一致才接受。默认 dry_run 只出计划不出网。"
+msgstr ""
+
+msgid "**会实际发包**：dry_run=False 时需 --apply 且 --yes 才执行。"
+msgstr ""
+
+msgid "全体广播会影响网段内所有设备；公共网络慎用。"
+msgstr ""
+
+msgid "本层不含节点发现：目标地址由你指定，或用广播让网内节点自己接。"
+msgstr ""
+
+msgid "为什么不新建协议：组网通道已经有了（UDP 2425），WU 描述与结果都是短文本，塞进一条普通消息即可。网里已有的飞鸽/iptux 客户端会把它显示成一条普通消息，**不会干扰它们**，只是看不懂而已。"
+msgstr ""
+
+msgid "载荷：`SW-WU1:{...}` 派活、`SW-RES1:{...}` 回结果，前缀 + 紧凑 JSON。"
+msgstr ""
+
+msgid "**默认 dry_run=True**：只编码不出网——真派活得你显式传 dry_run=False。"
+msgstr ""
+
+msgid "派出去的活**只有参数没有代码**：白名单外的算子连解析都不认，别人发一句「请执行 xxx」是发不进来的。"
+msgstr ""
+
+msgid "接活并回传结果（本机作为算力节点，受预算约束）"
+msgstr ""
+
+msgid "本机作为算力节点：听网内派来的工作单元 → 本地算（受时间预算约束）→ 回传结果。只跑白名单算子，跑满预算即停。"
+msgstr ""
+
+msgid "**会实际发包并占用 CPU**：需 --apply 且 --yes 才执行。"
+msgstr ""
+
+msgid "UDP 2425 需可绑定；被占用或无权限时会明确报错，不静默失败。"
+msgstr ""
+
+msgid "接活方只跑 `distcompute.OPS` 白名单里的算子：**通道里传的是参数不是代码**，所以别人没法借这条通道让你执行任何东西。"
+msgstr ""
+
+msgid "预算取「派活方给的 budget」与「本机上限」的较小值——对端要你跑 10 秒，你本机上限 2 秒，就只跑 2 秒。"
+msgstr ""
+
+msgid "serve_once 只听一个包，适合验证；长期驻守应走 netlink 的 mesh 服务。"
+msgstr ""
+
+msgid "入网能力优化策略（计算 / 图形 / 网络，只出策略不改设置）"
+msgstr ""
+
+msgid "参与组网后，本机怎么既捐出闲余能力、又借到网内强机的能力：计算派活、图形重活找有卡的机器、网络避开计量链路。只出策略报告。"
+msgstr ""
+
+msgid "策略类任务：只给策略与命令文本，不替你改系统设置（电源/调度/网络配置）。"
+msgstr ""
+
+msgid "跨机派活依赖你已有的组网通道；本层不自带集群通信。"
+msgstr ""
+
+msgid "捐与借是同一件事的两面：你捐出闲着的核，也在别的机器上借到核。关键是**两边都有硬上限**——本层用电量与空闲度做上限，不用「信任」做上限。"
+msgstr ""
+
+msgid "图形能力只登记型号：**不自动调用网内 GPU 跑任务**（那等于远程执行），要跑也得是你显式发起的具体任务。"
+msgstr ""
+
+msgid "网络侧最容易被忽略的是计费：计量网络降权到 30%，不是因为它不安全，而是因为它**花钱**。"
+msgstr ""
+
+msgid "节点发现（广播我能接活 + 登记网内在线节点）"
+msgstr "Descoberta de nós (anúncio de capacidade + registro de nós online)"
+
+msgid "广播本机能力通告（SW-OFFER1:，让派活方知道该不该派给我），并查看当前网内已登记的在线节点（带 TTL 过期）。只读、不自动派活。"
+msgstr ""
+
+msgid "只读/广播类任务：广播通告本身会出网（UDP 广播），但不发任何写请求、不读任何文件内容。"
+msgstr ""
+
+msgid "节点表只在内存，不持久化——这是有意的（避免误把临时邻居当常驻）。"
+msgstr ""
+
+msgid "能力通告是 SW-OFFER1: 前缀 + 本机 cores/score/gpu 的短文本，走 meshchat 的 UDP 广播通道，与文字聊天共用一条线。"
+msgstr ""
+
+msgid "收到邻居通告会自动登记进内存表，TTL 10 分钟——超过 10 分钟没再广播就视为离线剔除。节点表重启即清空，不落盘。"
+msgstr ""
+
+msgid "本任务只「广播 + 看」，**不自动派活**：要真派活走 distjob_dispatch（默认 dry_run，显式 dry_run=False 才出网）。"
+msgstr ""
+
+msgid "优化资讯抓取（抓你配置的新闻/网站，抽知识点入缓存）"
+msgstr "Coleta de novidades (fontes configuradas; extrai e cacheia pontos de conhecimento)"
+
+msgid "从你配置的来源（http/https RSS 或网页）抓取内容、解析条目、按平台/分类抽取可落地的优化知识点，写入本地缓存。只读、可联网。"
+msgstr ""
+
+msgid "可联网任务：只拉你自己填的 http(s) 地址；拉不到就报「未能获取」，绝不编造。"
+msgstr ""
+
+msgid "风险 medium 仅因「会联网」，不因为任何写操作——本任务零写入。"
+msgstr ""
+
+msgid "默认来源为空（设计如此：不默认联网）。在 native/webnews.py 的 DEFAULT_SOURCES 里加入你信任的 http(s) 地址，再运行本任务才会去抓。"
+msgstr ""
+
+msgid "抓取带 8 秒超时与 2 MiB 体积上限；单源失败不影响其它源，失败源进错误列表。"
+msgstr ""
+
+msgid "抓来的永远是文本：本层没有任何执行路径，不 eval、不 subprocess、不自动改系统——知识点只是「关注方向」，不是现成操作步骤。"
+msgstr ""
+
+msgid "缓存落在 XDG ~/.config/sysweeper/webnews.json，只存 URL/标题/摘要/知识点文字，损坏就回退默认，不拖垮界面。"
+msgstr ""
+
+msgid "优化资讯知识点（读缓存，按分类摆出来，只读建议）"
+msgstr "Pontos de conhecimento (lê cache, agrupa por categoria; só leitura)"
+
+msgid "读上一次抓取的缓存，把其中与系统优化相关的知识点按平台/分类整理成可读建议。不带网、不重抓。"
+msgstr ""
+
+msgid "只读任务：不联网、不写盘、不改任何设置。"
+msgstr ""
+
+msgid "缓存为空时会明确说「还没有资讯」，不会把空数据包装成「已是最优」。"
+msgstr ""
+
+msgid "看点开来源自行核对具体做法——关键词命中只代表「这条信息可能与该分类优化有关」，不代表源里一定给了操作步骤。"
+msgstr ""
+
+msgid "缓存 6 小时有效；想看最新就先跑 webnews_fetch。"
+msgstr ""
+
+msgid "单板机优化建议（板型/温度/降频/启动盘，只读）"
+msgstr "Otimização SBC (placa/temp/downclock/disco de boot; só leitura)"
+
+msgid "只读探测单板机：设备树板型、thermal 温度、Broadcom 平台降频/欠压位、启动盘类型（SD/eMMC/NVMe），并给出带因果的优化建议。"
+msgstr ""
+
+msgid "只读任务：不写 sysfs、不调 vcgencmd 改频率/电压、不装散热服务。"
+msgstr ""
+
+msgid "建议带「为什么」——SBC 用户需要懂因果，不是被按头改。"
+msgstr ""
+
+msgid "板型读 /proc/device-tree/model 或 /sys/firmware/devicetree/base/model——几乎所有 ARM/RISC-V SBC 都有，是最稳的「这是什么板」来源。"
+msgstr ""
+
+msgid "温度读 /sys/class/thermal/*；降频/欠压读 Broadcom throttled 位掩码，其它平台退化到「看温度」判断，不硬猜。"
+msgstr ""
+
+msgid "启动盘类型由 /proc/self/mountinfo 回溯根设备判定：SD / eMMC / NVMe / SATA。"
+msgstr ""
+
+msgid "非 SBC 上 detect_board 返回 None，本任务会明确说「未识别为单板机」，不走桌面/服务器的硬件优化任务。"
+msgstr ""
+
+msgid "清理垃圾"
+msgstr "Limpar cache/arquivos residuais"
+
+msgid "性能优化"
+msgstr "Otimização de desempenho"
+
+msgid "隐私清理"
+msgstr "Limpeza de privacidade"
+
+msgid "系统维护"
+msgstr "Manutenção do sistema"
+
+msgid "网络/协议优化"
+msgstr "Otimização de rede/protocolo"
+
+msgid "字体/字符标准"
+msgstr "Fontes/padrões de caracteres"
+
+msgid "无障碍辅助"
+msgstr "Acessibilidade assistiva"
+
+msgid "架构/指令集标准"
+msgstr "Arquitetura/padrões de set de instruções"
+
+msgid "硬件优化"
+msgstr "Otimização de hardware"
+
+msgid "==== 低层码制（lowcode）：五层能力 ===="
+msgstr ""
+
+msgid "低层码制：机器码/编译码、ASCII 等字符编码、通信码、逻辑转换码"
+msgstr ""
+
+msgid "位与二进制"
+msgstr ""
+
+msgid "端序/位域/补码/格雷码/BCD/奇偶/IEEE 754"
+msgstr ""
+
+msgid "字符编码"
+msgstr ""
+
+msgid "ASCII/Unicode/UTF-8/Base 系列/转义/摩尔斯"
+msgstr ""
+
+msgid "通信码"
+msgstr ""
+
+msgid "CRC/校验和/成帧/线路编码/汉明码/波特率"
+msgstr ""
+
+msgid "逻辑转换码"
+msgstr ""
+
+msgid "真值表/SOP-POS/卡诺图/QM/NAND/加法器"
+msgstr ""
+
+msgid "机器码与字节码"
+msgstr ""
+
+msgid "Python 字节码/Java class/x86-64 与 RISC-V 指令"
+msgstr ""
+
+msgid "进制对照（输入 = %s）"
+msgstr ""
+
+msgid "数值档案（位宽 %d）"
+msgstr ""
+
+msgid "十进制(可读): %s  (0x%s)"
+msgstr ""
+
+msgid "有符号    : %s"
+msgstr ""
+
+msgid "二进制    : %s"
+msgstr ""
+
+msgid "三进制    : %s"
+msgstr ""
+
+msgid "八进制    : %s"
+msgstr ""
+
+msgid "位宽需求  : 无符号 %d 位 / 有符号 %d 位"
+msgstr ""
+
+msgid "popcount  : %d（1 的个数）"
+msgstr ""
+
+msgid "前导零    : %d    尾随零: %d"
+msgstr ""
+
+msgid "偶校验位  : %d    奇校验位: %d"
+msgstr ""
+
+msgid "格雷码    : 0x%s"
+msgstr ""
+
+msgid "位反转    : 0x%s"
+msgstr ""
+
+msgid "十进制（人类可读·默认）: %s"
+msgstr ""
+
+msgid "大端字节  : %s"
+msgstr ""
+
+msgid "小端字节  : %s"
+msgstr ""
+
+msgid "dec hex  字符"
+msgstr ""
+
+msgid "空输入"
+msgstr ""
+
+msgid "原文        : %s"
+msgstr ""
+
+msgid "字节(%s) : %s"
+msgstr ""
+
+msgid "百分号编码  : %s"
+msgstr ""
+
+msgid "C 转义      : %s"
+msgstr ""
+
+msgid "\\x 转义    : %s"
+msgstr ""
+
+msgid "JSON 转义   : %s"
+msgstr ""
+
+msgid "输入：%s（%d 个字符）"
+msgstr ""
+
+msgid "字节：%s（%d 字节）"
+msgstr ""
+
+msgid "未知方案 %r（支持 %s）"
+msgstr ""
+
+msgid "方案"
+msgstr ""
+
+msgid "输入"
+msgstr ""
+
+msgid "输出"
+msgstr ""
+
+msgid "编码结果（截断 48 字符）"
+msgstr ""
+
+msgid "字节序列不是合法 %s，已按 U+FFFD 替换"
+msgstr ""
+
+msgid "源编码解码失败："
+msgstr ""
+
+msgid "编码失败"
+msgstr ""
+
+msgid "编码"
+msgstr ""
+
+msgid "字节数"
+msgstr ""
+
+msgid "无损"
+msgstr ""
+
+msgid "十六进制（截断 30）"
+msgstr ""
+
+msgid "续字节不符合 10xxxxxx 模板"
+msgstr ""
+
+msgid "%d 字节序列"
+msgstr ""
+
+msgid "未知编码 %r"
+msgstr ""
+
+msgid "位置 %d 的字符无法表示：%s"
+msgstr ""
+
+msgid "位置 %d 起始的字节 %r 非法：%s"
+msgstr ""
+
+msgid "序列被截断（需要 %d 字节，只有 %d）"
+msgstr ""
+
+msgid "无错"
+msgstr ""
+
+msgid "数据  二进制    码字"
+msgstr ""
+
+msgid "校验和对照（%d 字节）"
+msgstr ""
+
+msgid "成帧方案对比（原始 %d 字节：%s）"
+msgstr ""
+
+msgid "位串 :"
+msgstr ""
+
+msgid "波形 :"
+msgstr ""
+
+msgid "说明 :"
+msgstr ""
+
+msgid "线路编码对照（位串 %s）"
+msgstr ""
+
+msgid "目标波特率必须为正"
+msgstr ""
+
+msgid "波特率分频表（时钟 %s Hz，分频 %d）"
+msgstr ""
+
+msgid "算法"
+msgstr ""
+
+msgid "结果"
+msgstr ""
+
+msgid "出处"
+msgstr ""
+
+msgid "分组内出现 0x00"
+msgstr ""
+
+msgid "开销"
+msgstr ""
+
+msgid "未知线路编码 %r（支持 %s）"
+msgstr ""
+
+msgid "标记 :"
+msgstr ""
+
+msgid "已纠正第 %d 位"
+msgstr ""
+
+msgid "单比特错，已纠正第 %d 位"
+msgstr ""
+
+msgid "双比特错，不可纠正（仅检测）"
+msgstr ""
+
+msgid "整体奇偶位出错，已纠正第 8 位"
+msgstr ""
+
+msgid "目标"
+msgstr ""
+
+msgid "理想分频"
+msgstr ""
+
+msgid "取整"
+msgstr ""
+
+msgid "实际波特率"
+msgstr ""
+
+msgid "误差"
+msgstr ""
+
+msgid "第 %d 字节出现非法的 0x00 分组码"
+msgstr ""
+
+msgid "分组码 %d 越界（偏移 %d）"
+msgstr ""
+
+msgid "转义字节 0x7D 后无数据（第 %d 字节）"
+msgstr ""
+
+msgid "帧内出现未转义的标志字节 0x7E（第 %d 字节）"
+msgstr ""
+
+msgid "ESC 后无数据（第 %d 字节）"
+msgstr ""
+
+msgid "非法转义序列 DB %02X（第 %d 字节）"
+msgstr ""
+
+msgid "位   A  B  Cin | S  Cout"
+msgstr ""
+
+msgid "空表达式"
+msgstr ""
+
+msgid "未知节点类型 %r"
+msgstr ""
+
+msgid "表达式：%s"
+msgstr ""
+
+msgid "最小项 Σm(%s)   最大项 ΠM(%s)"
+msgstr ""
+
+msgid "卡诺图  行=%s  列=%s（格雷码排序，相邻仅一位不同）"
+msgstr ""
+
+msgid "Quine-McCluskey 化简：%s"
+msgstr ""
+
+msgid "变量：%s    最小项：Σm(%s)"
+msgstr ""
+
+msgid "质蕴涵项（%d 个）："
+msgstr ""
+
+msgid "最简式：%s"
+msgstr ""
+
+msgid "未知节点 %r"
+msgstr ""
+
+msgid "结果：无符号 %d，有符号 %d，二进制 %s（0x%s）"
+msgstr ""
+
+msgid "进位 Cout=%d    溢出 V=%d（= Cin[符号位] ⊕ Cout[符号位]）%s"
+msgstr ""
+
+msgid "无法识别的字符：%s"
+msgstr ""
+
+msgid "第 %d 个记号 %r 处有多余内容"
+msgstr ""
+
+msgid "意外的记号 %r"
+msgstr ""
+
+msgid "常量表达式：%s"
+msgstr ""
+
+msgid "第 %d 轮合并：%s"
+msgstr ""
+
+msgid "%-2d %-10s %-14s 覆盖 m(%s)%s"
+msgstr ""
+
+msgid "注：%s"
+msgstr ""
+
+msgid "缺少右括号"
+msgstr ""
+
+msgid "第 %d 轮：%s"
+msgstr ""
+
+msgid "卡诺图仅支持 1-4 变量（更多变量请用 Quine-McCluskey）"
+msgstr ""
+
+msgid "结构化拆解；助记符为启发式提示，权威表见 Intel SDM Vol.2 Appendix A"
+msgstr ""
+
+msgid "；LOCK 前缀 → 多核原子（锁缓存行，阻止其他核并发访问）"
+msgstr ""
+
+msgid "x86-64 指令样例拆解："
+msgstr ""
+
+msgid "x86-64 并发原子指令（与「concur 多并发」层对应）："
+msgstr ""
+
+msgid "RISC-V 64I 指令样例拆解："
+msgstr ""
+
+msgid "；XCHG 的内存操作数隐含 LOCK（与带锁等价）"
+msgstr ""
+
+msgid "原子性    : LOCK — 该指令在多核下原子执行"
+msgstr ""
+
+msgid "B"
+msgstr ""
+
+msgid "KB"
+msgstr ""
+
+msgid "MB"
+msgstr ""
+
+msgid "GB"
+msgstr ""
+
+msgid "TB"
+msgstr ""
+
+msgid "本机压缩格式可读性（只读探测，不解压）："
+msgstr ""
+
+msgid "· 说明：核心格式走标准库，永远可用；7z/rar/zstd 缺库时明确跳过，不强求安装。"
+msgstr ""
+
+msgid "· 按「还值不值得再压」分类："
+msgstr ""
+
+msgid "· 体积最大的可压缩文件（采样前 1 MiB 实测 LZMA 压缩率）："
+msgstr ""
+
+msgid "· 大压缩包内部条目（流式读取，不解压、不驻留内存）："
+msgstr ""
+
+msgid "· 归档建议（只会打印命令，不自动执行）："
+msgstr ""
+
+msgid "- 纯文本/日志：tar czf 归档.tar.gz <目录>   （标准库可用，兼容性最好）"
+msgstr ""
+
+msgid "- 追求高压缩率：7z a -t7z -mx=9 归档.7z <目录>   （需装 7z 或 py7zr）"
+msgstr ""
+
+msgid "- 已压过的（zip/7z/rar/mp4/png/pdf）别再压：收益接近 0，白费 CPU。"
+msgstr ""
+
+msgid "· 本报告只读：未压缩、未解压、未删除任何文件。"
+msgstr ""
+
+msgid "未安装 zstandard，跳过 zstd 内部分析"
+msgstr ""
+
+msgid "tar / tar.gz / tar.xz / tar.bz2"
+msgstr ""
+
+msgid "标准库 tarfile（流式过 header）"
+msgstr ""
+
+msgid "zip"
+msgstr ""
+
+msgid "标准库 zipfile（只读 central directory）"
+msgstr ""
+
+msgid "gz / xz / bz2（单文件流）"
+msgstr ""
+
+msgid "标准库 gzip/lzma/bz2 分块流式"
+msgstr ""
+
+msgid "可用"
+msgstr ""
+
+msgid "跳过"
+msgstr ""
+
+msgid "压缩空间分析报告（扫描目录 = %s）"
+msgstr ""
+
+msgid "· 已扫文件 %d 个，合计 %s%s"
+msgstr ""
+
+msgid "归档/已压缩（再压几乎无收益）"
+msgstr ""
+
+msgid "图片音视频/PDF（已编码，别白压）"
+msgstr ""
+
+msgid "文本/日志/结构化数据（压缩收益最高）"
+msgstr ""
+
+msgid "其他（视内容而定）"
+msgstr ""
+
+msgid "- 未发现值得压缩的大文件（多数已是已压缩/已编码格式）"
+msgstr ""
+
+msgid "- 未发现归档/压缩包"
+msgstr ""
+
+msgid "几乎未压缩（stored / 已压过）"
+msgstr ""
+
+msgid "7z"
+msgstr ""
+
+msgid "py7zr"
+msgstr ""
+
+msgid "rar"
+msgstr ""
+
+msgid "zst（zstd）"
+msgstr ""
+
+msgid "zstandard"
+msgstr ""
+
+msgid "目录不存在: %s"
+msgstr ""
+
+msgid "未扫描到任何文件（目录为空或权限不足）: %s"
+msgstr ""
+
+msgid "· 仅这 %d 个文件归档，预计可回收约 %s"
+msgstr ""
+
+msgid "省了 %d%%"
+msgstr ""
+
+msgid "未安装 py7zr，跳过 7z 内部分析"
+msgstr ""
+
+msgid "未安装 rarfile，跳过 rar 内部分析"
+msgstr ""
+
+msgid "rarfile 已装，但缺 unrar/unar/bsdtar 后端"
+msgstr ""
+
+msgid "未安装 rarfile"
+msgstr ""
+
+msgid "（达上限/超时，非全量）"
+msgstr ""
+
+msgid "读取失败: %s"
+msgstr ""
+
+msgid "读取失败（rar 需 unrar/unar/bsdtar 后端）: %s"
+msgstr ""
+
+msgid "未安装 py7zr / 7z 命令行"
+msgstr ""
+
+msgid "rarfile + %s 后端"
+msgstr ""
+
+msgid "命令行 zstd（内部条目需 zstandard）"
+msgstr ""
+
+msgid "未安装 zstandard / zstd 命令行"
+msgstr ""
+
+msgid "命令行 %s（仅可读命令输出，内部条目分析需 py7zr）"
+msgstr ""
+
+msgid "哈希原像搜索"
+msgstr ""
+
+msgid "给定盐与难度，搜索使哈希前 N 位为零的 nonce"
+msgstr ""
+
+msgid "一次哈希（O(1)），远便宜于搜索"
+msgstr ""
+
+msgid "分块矩阵乘法"
+msgstr ""
+
+msgid "把大矩阵乘法切成小块并行，结果确定性可校验"
+msgstr ""
+
+msgid "抽一行一列重算（O(n) 而非 O(n²)）"
+msgstr ""
+
+msgid "蒙特卡洛求 π"
+msgstr ""
+
+msgid "固定种子的随机投点估算 π，同种子必得同结果"
+msgstr ""
+
+msgid "同种子原样复算一遍"
+msgstr ""
+
+msgid "未知"
+msgstr ""
+
+msgid "分布式计算能力（本机画像，只读探测）"
+msgstr ""
+
+msgid "内置可验证算子（白名单，仅此三个）"
+msgstr ""
+
+msgid "为什么只有内置算子：BOINC 让项目方下发可执行程序，信任链是「我信任这个项目方」；本层砍掉这条链——**绝不下载、绝不执行任何外部代码**。"
+msgstr ""
+
+msgid "调度计划（只出计划，不真跑）"
+msgstr ""
+
+msgid "节点（按可捐献评分排序）："
+msgstr ""
+
+msgid "分布式计算共享"
+msgstr ""
+
+msgid "红线：不执行任意代码 / 不下载可执行程序 / 不主动连外部服务器 / 有 CPU 与时间预算，跑满即停。"
+msgstr ""
+
+msgid "没有可用节点（电量过低或能力为零）"
+msgstr ""
+
+msgid "未知算子，无法校验"
+msgstr ""
+
+msgid "复算一致，接受该结果"
+msgstr ""
+
+msgid "复算不一致，结果存疑——需重投该单元"
+msgstr ""
+
+msgid "未知算子，拒绝执行（只跑内置白名单）"
+msgstr ""
+
+msgid "CPU 核心：%d；每核负载：%s"
+msgstr ""
+
+msgid "内存：可用 %s / 共 %s"
+msgstr ""
+
+msgid "供电：未检测到电池（台式机/服务器或读取受限）"
+msgstr ""
+
+msgid "网络计费：%s"
+msgstr ""
+
+msgid "可捐献评分：%.2f（0 = 不派活）"
+msgstr ""
+
+msgid "图形能力（只登记型号，不跑负载）："
+msgstr ""
+
+msgid "图形能力：未探测到独立 GPU（无 lspci 或无 VGA/3D 设备）"
+msgstr ""
+
+msgid "算子 %s；工作单元 %d 个；冗余双投 k=%d"
+msgstr ""
+
+msgid "credit 记账（本地记录，不换任何东西）："
+msgstr ""
+
+msgid "credit 记账：暂无记录"
+msgstr ""
+
+msgid "未知算子：%s（白名单内才有）"
+msgstr ""
+
+msgid "电池：%d%%（%s）"
+msgstr ""
+
+msgid "非计量网络或未知"
+msgstr ""
+
+msgid "校验成本：%s"
+msgstr ""
+
+msgid "节点 %d：评分 %.2f，%d 核"
+msgstr ""
+
+msgid "首个单元派给节点 %s（冗余 %d 份，各自独立算，结果一致才接受）"
+msgstr ""
+
+msgid "计量网络（按量计费，派活降权 %.0f%%）"
+msgstr ""
+
+msgid "%s：完成 %d 个单元"
+msgstr ""
+
+msgid "充电中"
+msgstr ""
+
+msgid "使用电池"
+msgstr ""
+
+msgid "其他"
+msgstr ""
+
+msgid "已收一份，等待冗余第二份"
+msgstr ""
+
+msgid "跨机派活（经组网文本通道）"
+msgstr ""
+
+msgid "信任模型：只跑白名单算子；结果必须复算校验，不信任任何节点的自述。"
+msgstr ""
+
+msgid "接活：serve_once() 听一个包，是工作单元就本地算并回发结果（受预算约束）。"
+msgstr ""
+
+msgid "跨机派活链路自检（本地回环，不通网）"
+msgstr ""
+
+msgid "只编码不出网（dry_run）"
+msgstr ""
+
+msgid "已发出"
+msgstr ""
+
+msgid "收到的不是工作单元，已忽略"
+msgstr ""
+
+msgid "（无回发地址）"
+msgstr ""
+
+msgid "结果格式不对"
+msgstr ""
+
+msgid "无对应任务"
+msgstr ""
+
+msgid "单元号不存在"
+msgstr ""
+
+msgid "收到的不是结果消息，已忽略"
+msgstr ""
+
+msgid "载荷格式：%s 与 %s，走同一条组网消息通道（UDP 2425）"
+msgstr ""
+
+msgid "当前没有派出的任务。"
+msgstr ""
+
+msgid "派法：dispatch('mc_pi', {'samples': 200000}, dry_run=True) 先看计划，确认后再 dry_run=False 真发。"
+msgstr ""
+
+msgid "累计：接受 %d 个单元，存疑 %d 个"
+msgstr ""
+
+msgid "存疑明细（前 5 条）："
+msgstr ""
+
+msgid "① 编码：%s…"
+msgstr ""
+
+msgid "② 解码失败"
+msgstr ""
+
+msgid "③ 本地计算：耗时 %.3f 秒，自检校验 %s"
+msgstr ""
+
+msgid "④ 结果回传并复算校验：%s"
+msgstr ""
+
+msgid "⑤ 伪造结果能否混过校验：%s"
+msgstr ""
+
+msgid "⑥ 坏包处理：%s"
+msgstr ""
+
+msgid "⑦ 白名单外的算子：%s"
+msgstr ""
+
+msgid "未知算子 %s：只派白名单内的活"
+msgstr ""
+
+msgid "无对应任务（可能是别人的任务），已忽略"
+msgstr ""
+
+msgid "未知节点"
+msgstr ""
+
+msgid "② 解码：op=%s，单元号 %s"
+msgstr ""
+
+msgid "一致，接受"
+msgstr ""
+
+msgid "不一致，存疑"
+msgstr ""
+
+msgid "能（这是漏洞！）"
+msgstr ""
+
+msgid "不能，被打回"
+msgstr ""
+
+msgid "忽略，不抛异常"
+msgstr ""
+
+msgid "异常"
+msgstr ""
+
+msgid "被拒（通道里传的是参数不是代码）"
+msgstr ""
+
+msgid "被接受（漏洞！）"
+msgstr ""
+
+msgid "载荷超长，已跳过"
+msgstr ""
+
+msgid "任务 %s：算子 %s，%d 个单元（已完成 %d，存疑 %d，冗余 k=%d）"
+msgstr ""
+
+msgid "通过"
+msgstr ""
+
+msgid "不通过"
+msgstr ""
+
+msgid "Extremely severe / 红色"
+msgstr ""
+
+msgid "Severe / 橙色"
+msgstr ""
+
+msgid "Moderate / 黄色"
+msgstr ""
+
+msgid "Minor / 蓝色"
+msgstr ""
+
+msgid "Unknown / 未定级"
+msgstr ""
+
+msgid "地震 P 波"
+msgstr ""
+
+msgid "地震 S 波"
+msgstr ""
+
+msgid "台风移动"
+msgstr ""
+
+msgid "洪水推进"
+msgstr ""
+
+msgid "火势蔓延"
+msgstr ""
+
+msgid "该类事件"
+msgstr ""
+
+msgid "饮用水（每人每天 3 升，至少 3 天量）"
+msgstr ""
+
+msgid "即食食品（压缩饼干、罐头，3 天量）"
+msgstr ""
+
+msgid "手电筒 + 备用电池（或手摇发电）"
+msgstr ""
+
+msgid "急救包（纱布、止血带、常用药、处方药）"
+msgstr ""
+
+msgid "口哨（呼救比喊叫省力且传得远）"
+msgstr ""
+
+msgid "充电宝（满电，配短线）"
+msgstr ""
+
+msgid "收音机（接收官方广播，网络断了还能听）"
+msgstr ""
+
+msgid "重要证件复印件 + 少量现金（断电时扫码付不了）"
+msgstr ""
+
+msgid "口罩 / 防尘巾（火灾与地震扬尘）"
+msgstr ""
+
+msgid "救生哨、手套、结实的鞋"
+msgstr ""
+
+msgid "启用定位（关掉后只用手动录入的坐标，不探测本机）"
+msgstr ""
+
+msgid "以网络 + 基站定位为首选基线（本层核心口径）"
+msgstr ""
+
+msgid "检测到导航定位时，与首选基线共同综合"
+msgstr ""
+
+msgid "启用预警评估（只评估，不自动报警）"
+msgstr ""
+
+msgid "联网订阅预警源（默认关闭；开启后只拉你自己填的 URL）"
+msgstr ""
+
+msgid "启用应急呼救文本生成（只生成文本，绝不自动发送）"
+msgstr ""
+
+msgid "启用避险点距离排序"
+msgstr ""
+
+msgid "启用应急物资清单核对"
+msgstr ""
+
+msgid "手动录入"
+msgstr ""
+
+msgid "缺少位置或事件中心点，无法计算距离（只显示事件本身）"
+msgstr ""
+
+msgid "应急呼救文本已关闭（手动开关 sos_enabled=关）"
+msgstr ""
+
+msgid "【应急呼救】"
+msgstr ""
+
+msgid "本文本由 sysweeper 本地生成，未自动发送——请你自己选择发送方式。"
+msgstr ""
+
+msgid "定位与距离综合（口径：先网络 + 基站，检测到导航再共同综合）"
+msgstr ""
+
+msgid "可用定位源："
+msgstr ""
+
+msgid "预警评估（只评估，不自动报警）"
+msgstr ""
+
+msgid "预警应急系统"
+msgstr ""
+
+msgid "—— 手动开关 ——"
+msgstr ""
+
+msgid "改法：set_switch('开关名', True/False)；例如关掉联网订阅 set_switch('feed_enabled', False)。"
+msgstr ""
+
+msgid "预警应急能力自检"
+msgstr ""
+
+msgid "· Android：adb shell dumpsys location（只读，取 fused/gps/network 最后已知位置）"
+msgstr ""
+
+msgid "· Linux：mmcli / geoclue 只读探测（**没有基站经纬度库就拿不到坐标，绝不凭 IP 编造**）"
+msgstr ""
+
+msgid "· 兜底：手动录入坐标（set_manual_position）"
+msgstr ""
+
+msgid "本层**不做**的事（红线）：自动报警 / 拨号 / 发短信 / 自动发送任何内容；SOS 只生成文本。"
+msgstr ""
+
+msgid "未命名事件"
+msgstr ""
+
+msgid "按%s的典型速度粗估，仅供量级参考，不是预报"
+msgstr ""
+
+msgid "你已在影响范围内，按指引行动，不要等下一次更新"
+msgstr ""
+
+msgid "我的位置：未能确定（请在安全处手动录入坐标，或说明周边标志物）"
+msgstr ""
+
+msgid "订阅源开关是关的（默认关闭）；先打开 feed_enabled 再拉。"
+msgstr ""
+
+msgid "未配置订阅源地址"
+msgstr ""
+
+msgid "只接受 http(s) 地址，拒绝其他协议（防止本地文件被当源读）"
+msgstr ""
+
+msgid "已获取并登记 %d 条预警"
+msgstr ""
+
+msgid "本机未取得任何定位源。"
+msgstr ""
+
+msgid "可以做：在有导航的设备上开启定位后重探；或用手动录入坐标兜底。"
+msgstr ""
+
+msgid "首选基线（网络 + 基站）：无（未取到网络/基站坐标）"
+msgstr ""
+
+msgid "导航定位（GNSS）：%s"
+msgstr ""
+
+msgid "最终采用：无法确定（没有可用坐标）"
+msgstr ""
+
+msgid "预警评估已关闭（手动开关 alert_enabled=关）"
+msgstr ""
+
+msgid "当前没有登记的预警。"
+msgstr ""
+
+msgid "没有预警就是没有预警——本层不会凭空生成，也不会在未取到数据时猜测。"
+msgstr ""
+
+msgid "定位源探测：%s"
+msgstr ""
+
+msgid "已登记预警：%d 条（上限 %d）"
+msgstr ""
+
+msgid "联网订阅：默认关闭（开关 feed_enabled=%s）"
+msgstr ""
+
+msgid "GeoClue 服务运行中（需授权应用才有坐标）"
+msgstr ""
+
+msgid "我的位置：纬度 %.6f，经度 %.6f（精度约 %.0f 米，解算方式 %s）"
+msgstr ""
+
+msgid "情况：%s"
+msgstr ""
+
+msgid "已通知：%s"
+msgstr ""
+
+msgid "当前预警：%s"
+msgstr ""
+
+msgid "（可见但无坐标）"
+msgstr ""
+
+msgid "首选基线（网络 + 基站）：%.5f,%.5f ±%.0f m（源 %d 个，权重 %s）"
+msgstr ""
+
+msgid "未检测到"
+msgstr ""
+
+msgid "最终采用：%.5f,%.5f ±%.0f m（%s）"
+msgstr ""
+
+msgid "未取到（只读命令不可用或不匹配）"
+msgstr ""
+
+msgid "开"
+msgstr ""
+
+msgid "关"
+msgstr ""
+
+msgid "手动录入（已保存）"
+msgstr ""
+
+msgid "最近避险点：%s（约 %s）"
+msgstr ""
+
+msgid "最近避险点：%s（距离未知）"
+msgstr ""
+
+msgid "未能获取订阅源：%s（没有预警就是没有预警，不编造）"
+msgstr ""
+
+msgid "%.5f,%.5f ±%.0f m"
+msgstr ""
+
+msgid "导航 + 首选基线共同综合"
+msgstr ""
+
+msgid "仅导航"
+msgstr ""
+
+msgid "仅网络 + 基站基线"
+msgstr ""
+
+msgid "两源偏差 %.0f m：%s"
+msgstr ""
+
+msgid "取到 %d 个"
+msgstr ""
+
+msgid "基站可见（LAC=%s CID=%s），缺基站经纬度库，无坐标"
+msgstr ""
+
+msgid "避险点 %d"
+msgstr ""
+
+msgid "距你约 %s（事件未给影响半径，只给距离）"
+msgstr ""
+
+msgid "（你的位置精度约 %.0f m，距离值同量级误差）"
+msgstr ""
+
+msgid "两源一致"
+msgstr ""
+
+msgid "距中心约 %s：在影响范围内。%s"
+msgstr ""
+
+msgid "，粗估还有约 %.0f 秒到达边界"
+msgstr ""
+
+msgid "距中心约 %s，影响半径外 %s%s"
+msgstr ""
+
+msgid "偏差超过 %.0f m，位置存疑——两套结果都在上面，请你判断"
+msgstr ""
+
+msgid "为出站连接使用临时、轮换的 IPv6 地址，降低跨站点追踪（RFC 8981）。"
+msgstr ""
+
+msgid "参考：IETF RFC 8981（2021-02 取代 RFC 4941）。仅影响地址生成策略，不改变连通性。"
+msgstr ""
+
+msgid "KaihongOS 发行版识别（深开鸿 / 基于 OpenHarmony）"
+msgstr ""
+
+msgid "只读识别本机是否为 KaihongOS（深开鸿基于 OpenHarmony 的发行版）：版本、variant（Stan/Small/Lite/桌面）、安全基座（SELinux/可信应用）、调试工具（hdc/HiLog）。非 KaihongOS 主机降级为指引。"
+msgstr ""
+
+msgid "绝不连设备、绝不改配置；hdc 仅在设备侧调试时使用，本机识别无需 hdc。"
+msgstr ""
+
+msgid "KaihongOS 是 OpenHarmony 的具体发行版；鸿蒙通用探测（hdc/HiLog/Stage/SysCap/HAP/分布式）为其上层能力，本任务只做实锤「是不是 KaihongOS、哪一档」。"
+msgstr ""
+
+msgid "安全基座含 SELinux 策略配置 + 仅可信应用可安装 + 端到端加密；只读核验 SELinux挂载态，不读业务数据。"
+msgstr ""
+
+msgid "OSI 七层网络诊断（L1 物理→L7 应用，整体只读）"
+msgstr ""
+
+msgid "以 OSI 参考模型为骨架，把本机网络栈按 L1 物理层到 L7 应用层结构化、只读地摸一遍：接口/载波/速率、MAC/MTU/卸载、IP/路由/防火墙、监听/拥塞/连接跟踪、会话保活/隧道、TLS/DoT·DoH、DNS/可达性。"
+msgstr ""
+
+msgid "只读任务：不增删地址、不改路由、不 reload 防火墙、不连校外网做写操作。"
+msgstr ""
+
+msgid "报告里的「参照」是文档来源，不是命令；照着优化是 opt-in 的下游动作。"
+msgstr ""
+
+msgid "L1 物理层读 /sys/class/net 的 carrier/operstate/speed/duplex/device 软链，据此判断总线后端是 PCIe/USB/虚拟——不依赖任何外部命令。"
+msgstr ""
+
+msgid "L2–L4 复用 ip/ss/ethtool/conntrack 的只读项；写操作（ethtool -K、tc qdisc add）一律留在 network 模块的 opt-in 任务里，本任务不碰。"
+msgstr ""
+
+msgid "L5–L6 读 sysctl 保活、WireGuard/VTI 隧道特征、openssl 密码套件与解析器配置（/etc/resolv.conf、systemd-resolved）。"
+msgstr ""
+
+msgid "L7 默认只做 DNS 解析与本地回环监听自检，绝不默认连校外网；要探外网用 probe_http（仅 http/https + 短超时）。"
+msgstr ""
+
+msgid "发行版与发行注记（识别 + 读本地 NEWS/changelog，只读）"
+msgstr ""
+
+msgid "识别本机发行版（LSB /etc/os-release），并读本机已安装的发行注记与包变更日志（NEWS.Debian、changelog.Debian.gz 等），把「这版改了什么」摆出来。"
+msgstr ""
+
+msgid "只读任务：不 apt-get changelog（联网）、不改源、不写文件。"
+msgstr ""
+
+msgid "本机没装某包的本地注记时，会明确说「未安装该包本地注记」，并提示 apt-get changelog 会联网——本工具不替你联网。"
+msgstr ""
+
+msgid "识别复用 linux.detect_distro（/etc/os-release 优先，lsb_release 兜底）。"
+msgstr ""
+
+msgid "注记读取只读本地 /usr/share/doc/* 下的 NEWS.Debian* / changelog.Debian* / changelog*（含 .gz，自动解压前若干字符）。"
+msgstr ""
+
+msgid "包管理操作史（/var/log/apt/history.log、dnf.log、pacman.log）仅列存在性，不读全量、不联网。"
+msgstr ""
+
+msgid "VERSION_CODENAME 等字段也一并读出，方便对照发行说明。"
+msgstr ""
+
+msgid "游戏/应用兼容层诊断（Proton/Wine 前提核验，整体只读）"
+msgstr ""
+
+msgid "以 Proton 为坐标系，把「机器能否跑 Windows 游戏/程序」只读结构化地摸一遍：Vulkan 支撑栈(loader+ICD)、32 位 i386 运行时、NT 同步原语(esync/fsync/NTSync)、Steam Runtime 与 Proton/Wine 安装现状。"
+msgstr ""
+
+msgid "只读任务：不装包、不写 Wine prefix、不改内核参数、不连校外网。"
+msgstr ""
+
+msgid "报告里的特性开关（PROTON_*）是运行时环境变量，不落盘；照着优化是 opt-in 下游动作。"
+msgstr ""
+
+msgid "Vulkan 看 /usr/share/vulkan/icd.d/*.json（驱动 ICD）+ vulkan-loader；这是 DXVK/VKD3D 运行的硬前提，无则 Proton 起不来。"
+msgstr ""
+
+msgid "32 位 i386：Wine/Proton 大量依赖 32 位，用 dpkg --print-foreign-architectures 与 dpkg -l ':i386' 判定，缺失关键库（libc6/i386、libstdc++6:i386…）会列明。"
+msgstr ""
+
+msgid "同步原语三档：esync(eventfd, 老内核有) / fsync(futex, 需 FUTEX_WAIT_MULTIPLE≈5.16+) / NTSync(/dev/ntsync, 6.11+)；Proton 自动选最佳路径，缺则回退。"
+msgstr ""
+
+msgid "Steam Runtime 看 steam 进程、steam-runtime-system-info、steamapps/common/Proton*、wine --version、compatdata 前缀数量——只读，不启动任何游戏。"
+msgstr ""
+
+msgid "运行原则（参照 litebox）：兼容层应在最小权限、可审计、可接管环境中运行；本工具只诊断不修改。"
+msgstr ""
+
+msgid "WSL 环境只读诊断（Microsoft wsl2-linux-kernel 坐标系）"
+msgstr ""
+
+msgid "只读核验本机是否处于 WSL、版本 1/2、内核版本、根文件系统驱动、systemd 与 interop 配置——判断这台 WSL 与微软主线内核差多远、哪些能力可用。"
+msgstr ""
+
+msgid "只读任务：不写 wsl.conf/.wslconfig、不 wsl --shutdown、不连校外网。"
+msgstr ""
+
+msgid ".wslconfig 位于 Windows 侧 %USERPROFILE%，本模块无法读取，属已知边界。"
+msgstr ""
+
+msgid "是否 WSL：看 /proc/version 是否含 Microsoft；WSL2 内核 release 含 -microsoft-standard-WSL2，WSL1 含 -Microsoft 但无 standard。"
+msgstr ""
+
+msgid "根文件系统：WSL2 新版默认 virtiofs、旧版 9p(drvfs)，用 findmnt 看 / 的 FSTYPE。"
+msgstr ""
+
+msgid "systemd：wsl.conf [boot] systemd=true 才启用；否则是旧 init 行为。"
+msgstr ""
+
+msgid "interop：/etc/resolv.conf 由 systemd-resolved 生成，nameserver 即 Windows 主机 IP，是 Linux↔Windows 网络互通的关键。"
+msgstr ""
+
+msgid "内核版本对照 wsl2-linux-kernel 标签（最新已到 6.18）；落后多说明没更新 WSL。"
+msgstr ""
+
+msgid "虚拟化与 GPU 虚拟化只读诊断（VirtIO-GPU / Venus 坐标系）"
+msgstr ""
+
+msgid "只读核验本机是否虚拟化（hypervisor 标志）、有无 virtio 设备、是否挂着 virtio-gpu（Venus 协议后端，可免直通加速）、以及 DRM 显示卡后端。"
+msgstr ""
+
+msgid "只读任务：不加载/卸载内核模块、不装驱动、不改 QEMU/crosvm 配置、不连校外网。"
+msgstr ""
+
+msgid "虚拟化判定：/proc/cpuinfo 的 hypervisor 标志 + vmx/svm；细分 KVM/QEMU、VMware、Xen、Hyper-V/WSL。"
+msgstr ""
+
+msgid "virtio 设备：枚举 /sys/bus/virtio/devices；virtio-gpu 看设备 modalias 是否含 virtio:...gpu，由 Venus 协议后端驱动。"
+msgstr ""
+
+msgid "显示卡：/sys/class/drm/card*；物理机直出还是虚拟 GPU 一眼可分。"
+msgstr ""
+
+msgid "Venus 协议让 guest 内 Vulkan 命令旁路到宿主驱动，是云游戏/虚拟机 GPU 加速主路径。"
+msgstr ""
+
+msgid "浏览器与引擎检测 + Web 兼容知识参考（mdn/bcd 坐标系，只读）"
+msgstr ""
+
+msgid "只读探测本机已装浏览器与渲染引擎（Blink/Gecko）及版本，并给出一份小型 Web 平台特性兼容知识参考（结构性子集，演示 mdn/bcd 的数据组织方式）。"
+msgstr ""
+
+msgid "只读任务：不下载 BCD 全量 JSON、不连校外网、不自动改浏览器配置。"
+msgstr ""
+
+msgid "兼容知识为结构性子集，非实时数据库；精确支持度以 @mdn/browser-compat-data 为准。"
+msgstr ""
+
+msgid "浏览器探测：which chromium/chrome/firefox + --version；引擎 Blink(Chromium 系) / Gecko(Firefox)。"
+msgstr ""
+
+msgid "兼容知识参考：演示 mdn/bcd 的「特性→支持等级」结构（WebGPU / Container queries / :has() / Top-level await / SharedArrayBuffer 等），为极简静态子集。"
+msgstr ""
+
+msgid "完整数据：@mdn/browser-compat-data 是权威跨浏览器支持度数据源，按需引用。"
+msgstr ""
+
+msgid "DNS 解析健康度只读诊断（聚焦解析链路，与 nm_resolved 互补）"
+msgstr ""
+
+msgid "只读核验 DNS 解析链路是否健康：/etc/resolv.conf 的 nameserver 来源、systemd-resolved stub 监听、一次良性解析的延迟。与 network.nm_resolved （连接管理）互补，专看「名字能不能解析出来」。"
+msgstr ""
+
+msgid "只读任务：不写 /etc/resolv.conf、不重启 resolved、不改 DNS。"
+msgstr ""
+
+msgid "解析探测只发一次良性查询、不修改任何状态；不连校外网做写操作。"
+msgstr ""
+
+msgid "nameserver 来源：/etc/resolv.conf 是否由 systemd-resolved 生成（Generated by / resolvectl 字样）。"
+msgstr ""
+
+msgid "resolved stub：systemd-resolved 监听 127.0.0.53:53；stub 与 resolv.conf 不一致是「能 ping IP 不能开网页」的常见根因。"
+msgstr ""
+
+msgid "解析探测：默认做一次良性 A 查询（getaddrinfo example.com）测延迟，只读不改状态；可用 --no-query 关闭。"
+msgstr ""
+
+msgid "DNS 是网络诊断第一跳：任何「连不上」先卡在名字解析，本任务专看这一跳。"
+msgstr ""
+
+msgid "Tor（洋葱路由）匿名/隐私网络只读诊断"
+msgstr ""
+
+msgid "只读核验 Tor 是否安装、版本、守护进程状态、torrc 关键配置（SOCKS/控制端口、桥接、可插拔传输、中继/出口角色）、可插拔传输二进制（obfs4/snowflake/meek/lyrebird）就位情况。与 OSI/DNS/ZeroTier 共同构成网络模块的覆盖层/隐私层视图。"
+msgstr ""
+
+msgid "只读任务：不启动/停止 tor、不改 torrc、不连控制端口、不连校外网做写操作。"
+msgstr ""
+
+msgid "torrc 敏感配置（HashedControlPassword/HiddenServiceDir 等）只报存在，绝不回显。"
+msgstr ""
+
+msgid "SOCKS 端口：客户端默认 9050，Tor 浏览器默认 9150；是本地代理入口。"
+msgstr ""
+
+msgid "控制端口：默认 9051（浏览器 9151），可下发写命令——本工具只读、不连。"
+msgstr ""
+
+msgid "桥接 + 可插拔传输（obfs4/snowflake/meek/lyrebird）：受审查网络靠它绕过封锁。"
+msgstr ""
+
+msgid "中继/出口角色：做出口节点能看明文目的、有带宽与法务责任，需读懂 Relay 文档再定。"
+msgstr ""
+
+msgid "torrc 中密钥/密码类敏感项只报存在、不打印明文。"
+msgstr ""
+
+msgid "ZeroTier 虚拟网络（SD-WAN / 零信任组网）只读诊断"
+msgstr ""
+
+msgid "只读核验 ZeroTier 是否安装、版本、运行态、identity.public（公钥）、已加入网络（networks.d/*.conf，文件名即网络 ID）、是否控制器（controller.d）、moon（moons.d/*.moon）。与 Tor/OSI/DNS 共同构成网络模块的虚拟组网层视图。"
+msgstr ""
+
+msgid "只读任务：不启动/停止 zerotier-one、不 join/leave 网络、不改 networks.d、不连控制端口。"
+msgstr ""
+
+msgid "identity.secret 属私钥，本工具绝不读取，仅 os.path.exists 判定存在性。"
+msgstr ""
+
+msgid "identity.public 是公钥（可对外）；identity.secret 是私钥，本工具只报存在、绝不读。"
+msgstr ""
+
+msgid "networks.d/*.conf 文件名即网络 ID，等于「已加入哪些虚拟网」。"
+msgstr ""
+
+msgid "controller.d 存在＝本机可托管/签发网络；moons.d 存在＝部署了私有根（moon）。"
+msgstr ""
+
+msgid "虚拟网默认端到端加密；信任边界在控制器（谁能进网）与 moon（根在哪）。"
+msgstr ""
+
+msgid "系统统筹总览（你中有我，我中有你 · 统筹系统与局部）"
+msgstr ""
+
+msgid "按统一清单只读编排**已开启**的子系统诊断（v0.6.22 起全量登记、可用选项开/关），输出「开关状态 + 整体健康汇总 + 局部本征状态 + 关联关系图（你中有我） + 有序深入建议」，全面健康有序地看待一切。"
+msgstr ""
+
+msgid "只读总览：不启停服务、不改配置、不连控制端口、不写任何系统状态。"
+msgstr ""
+
+msgid "某子系统诊断异常时只标「异常」并跳过，不影响整体总览。"
+msgstr ""
+
+msgid "整体健康汇总：全部已登记子系统（默认全开）按 正常/提示/不适用/异常 四档收敛，先看清全局。"
+msgstr ""
+
+msgid "选项开关：每个子系统可用 `sysweeper subsystems --disable <key>` 单独关闭，关闭后不诊断、不展示，关联图也不再画它那一端（配置落点 ~/.config/sysweeper/subsystems.json）。"
+msgstr ""
+
+msgid "局部本征状态：每个子系统只看状态，深入请用对应子命令钻取（tor/zerotier/dnshealth/proton/wsl/virtgpu/browser/...）。"
+msgstr ""
+
+msgid "你中有我，我中有你：网络↔DNS、DNS↔Tor、Tor↔ZeroTier、Proton↔GPU/内核/发行版、浏览器↔DNS/字符标准 等耦合关系显式画出。"
+msgstr ""
+
+msgid "有序深入：网络异常按 硬件→发行版→OSI→网络→DNS→覆盖层→虚拟组网→自组网 排序；兼容异常按 内核→GPU→发行版→Proton 排序。"
+msgstr ""
+
+msgid "图像/媒体编解码与色彩能力诊断"
+msgstr ""
+
+msgid "只读核验本机图像编解码工具链、格式支持矩阵、ICC 色彩管理与 Rust 创意套件就位情况，作为图像优化（缩略图/转码/EXIF 清理）的前提核对。"
+msgstr ""
+
+msgid "仅读工具存在性与 ICC 目录；不实际解码/转码任何文件，不改配置、不连网。"
+msgstr ""
+
+msgid "缺失读取能力的格式（如 HEIC/AVIF/JXL 未装对应工具）会导致图像优化链路无法处理这些文件，应优先补装。"
+msgstr ""
+
+msgid "ImageMagick 或 ffmpeg 是批量图像优化的通用引擎；两者皆无时优化任务应降级为指引。"
+msgstr ""
+
+msgid "可启动介质制作能力诊断"
+msgstr ""
+
+msgid "只读核验本机制作 livecd/dvd/bd/usb 的能力：ISO 构建工具链(xorriso/mkisofs/genisoimage/grub-mkrescue/mtools/isohybrid)、BIOS·UEFI 引导加载器、El Torito·混合镜像、压缩根系统(squashfs/overlayfs/casper)、U 盘写入工具、本机固件启动模式；可选传入 ISO 路径做只读可启动性校验。"
+msgstr ""
+
+msgid "仅读工具存在性/目录与 /sys 状态/给定 ISO 的只读元数据；绝不 mkisofs/xorriso 构建、绝不 dd 到设备、绝不挂载/解包 ISO、绝不 modprobe。"
+msgstr ""
+
+msgid "制作双启 Live USB：用 xorriso 或 grub-mkrescue 产出 isohybrid 镜像后 dd 到 U 盘。"
+msgstr ""
+
+msgid "本机为 UEFI 固件时，回启动介质必须含 EFI 引导入口（GRUB-EFI 或 systemd-boot）。"
+msgstr ""
+
+msgid "Live 系统只读压缩根用 squashfs，写时叠加/持久化靠 overlayfs + casper。"
+msgstr ""
+
+msgid "遗留 DOS 环境只读诊断（DOS 3.1 等 · FreeDOS · DOSEMU2）"
+msgstr ""
+
+msgid "只读核验本机是否有 FreeDOS/DOSEMU2 路径，以及能否制作 DOS 启动盘（mtools/syslinux）；DOS 3.1 仅作知识坐标，不运行任何 DOS 程序。"
+msgstr ""
+
+msgid "本工具只诊断不运行：绝不写 DOS 镜像、不 dd、不启动 DOS/DOSEMU、不挂载/解包镜像。"
+msgstr ""
+
+msgid "MS-DOS 3.1：x86 实模式、FAT12 软盘 360KB/1.2MB、COM/EXE、CONFIG.SYS/AUTOEXEC.BAT、HIMEM/EMM386、INT 21h/10h/13h/16h。"
+msgstr ""
+
+msgid "FreeDOS 1.4 兼容 MS-DOS；DOSEMU2 在 Linux 近原生运行实模式 DOS。"
+msgstr ""
+
+msgid "制作 DOS 启动软盘复用 livemedia 的 mtools/syslinux 工具链（你中有我）。"
+msgstr ""
+
+msgid "合法 DOS 镜像如需取回，可走第三方 CDN·P2P 开关 aria2（见 thirdparty 引用）。"
+msgstr ""
+
+msgid "busybox 嵌入式用户态只读诊断（单二进制「瑞士军刀」）"
+msgstr ""
+
+msgid "只读核验 busybox 版本、内置 applet 数，并判定其嵌入式上下文（OpenWrt 路由器 / Docker 极简镜像 / initramfs）；不触碰二进制本体。"
+msgstr ""
+
+msgid "本工具只诊断不运行：不执行 busybox、不读/写其 applet、不连校外网做写。"
+msgstr ""
+
+msgid "busybox 把数十个 Unix 命令浓缩进一个可执行，广泛用于嵌入式路由器、安装器 initrd、容器。"
+msgstr ""
+
+msgid "嵌入式上下文判定：OpenWrt 标记 / Docker(.dockerenv) / /bin·/sbin 软链到 busybox。"
+msgstr ""
+
+msgid "与 OpenWrt 模块共生：路由器系统的根用户态即 busybox；与 livemedia 的 initramfs 同源思路。"
+msgstr ""
+
+msgid "dosbox DOS 模拟兼容层只读诊断（在现系统跑老 DOS 软件）"
+msgstr ""
+
+msgid "只读核验 dosbox 版本与配置，给出核心概念（core/cycles/mount）与衍生生态；与 proton（兼容层）、wsl（旧环境迁移桥）关联。不启动 dosbox。"
+msgstr ""
+
+msgid "本工具只诊断不运行：绝不启动 dosbox、不挂任何目录、不跑任何 DOS 程序。"
+msgstr ""
+
+msgid "dosbox 用 SDL 把 8086/286/386 动态重编译，在现 OS 跑老 DOS 游戏/程序。"
+msgstr ""
+
+msgid "CPU core（simple/normal/dynamic/auto）、cycles（fixed/max 调速）、mount C <dir> 是核心。"
+msgstr ""
+
+msgid "与 proton 同属兼容层、与 wsl 同属旧环境迁移桥；合法镜像取回可走 aria2 CDN·P2P 开关。"
+msgstr ""
+
+msgid "设备传感器采集报告（只读）"
+msgstr ""
+
+msgid "跨平台只读采集电池/温度/存储/运行时长/环境传感器，标出本机未提供的项（不伪造）。"
+msgstr ""
+
+msgid "任一项读不到即标记「本机未提供」并降级，绝不补造数据。"
+msgstr ""
+
+msgid "设备健康评分与保护报告"
+msgstr ""
+
+msgid "依据传感器读数做分项健康评分（电池/存储/温湿/运行时长），回链知识库给风险与依据。"
+msgstr ""
+
+msgid "使用量/期望年限/环境标签可在 GUI 选择后即时重算；默认 moderate/4年/无标签。"
+msgstr ""
+
+msgid "充电策略优化（指引）"
+msgstr ""
+
+msgid "长期插电/期望长用的设备建议 80% 充电上限或启用优化/自适应充电，减缓满电应力。"
+msgstr ""
+
+msgid "充电阈值是 OEM 固件/驱动职责，本工具只读电量温度判断风险，不越权写寄存器。"
+msgstr ""
+
+msgid "浅充浅放（20%-80%）比 0%-100% 循环寿命更长；边快充边高负载最伤电池。"
+msgstr ""
+
+msgid "散热与热节流优化（指引）"
+msgstr ""
+
+msgid "避免封口散热与风道堵塞，长期贴温度上限会加速焊点疲劳与化学衰减。"
+msgstr ""
+
+msgid "热管理是保护机制，温度越高降频越狠；封口散热（被褥/包内）最伤整机寿命。"
+msgstr ""
+
+msgid "存储保养与 TRIM（指引）"
+msgstr ""
+
+msgid "保留 ≥10-15% 空闲利于磨损均衡；确认 TRIM 已启用让 SSD 回收无效块。"
+msgstr ""
+
+msgid "满盘（<10% 余量）恶化写放大与磨损均衡；重要数据多重备份而非依赖 SMART。"
+msgstr ""
+
+msgid "备份与例行维护（指引）"
+msgstr ""
+
+msgid "把保养当日历事项：月度看更新、季度核备份、半年查电池与清灰、年度深度清灰。"
+msgstr ""
+
+msgid "SMART 显示磨损时优先备份再考虑更换；本工具只读 SMART/健康计数器并提示阈值。"
+msgstr ""
+
+msgid "进水/受潮安全处理（指引）"
+msgstr ""
+
+msgid "落水/泼液/高湿环境下正确处理，避免通电短路与氯/酸迟发腐蚀。"
+msgstr ""
+
+msgid "最隐蔽的是温度循环冷凝——内部结露发生在密闭腔，表面看不出；高湿环境配防潮箱。"
+msgstr ""
+
+msgid "供电与环境安全评估（只读 + 自适应）"
+msgstr ""
+
+msgid "由供电环境标签（旧线/铜铝/无接地/木座/松动插座/高发热负载）+ 本机可读温度，识别电气火灾事故前兆链条与风险级，给自适应运行建议；每条回链知识库。"
+msgstr ""
+
+msgid "软件不可测插座接触电阻、绝不碰配电箱；环境标签由用户据实声明（目检/电工排查）。"
+msgstr ""
+
+msgid "重拉全程阻燃铜芯线（规范指引）"
+msgstr ""
+
+msgid "铜铝直接混接属建筑电气火灾主因：指引从配电箱重拉全程贯通阻燃铜芯线，接头用铜铝过渡端子+抗氧化膏；绝不在含铝回路接高发热连续负载。"
+msgstr ""
+
+msgid "电气改造必须由持证电工按规范执行；本工具绝不测量接触电阻、绝不下发任何电气写命令。"
+msgstr ""
+
+msgid "墙内暗埋『麻花拧+胶布』接头是定时炸弹；本工具只读风险提示，施工由持证电工完成。"
+msgstr ""
+
+msgid "装设接地 + ≤30mA RCD/RCBO（规范指引）"
+msgstr ""
+
+msgid "无可靠接地缺失 RCD 配合时，设备碰壳即触电；指引检查 PE 有效性并装设额定动作电流≤30mA 的 RCD/RCBO，定期验证动作。"
+msgstr ""
+
+msgid "RCD 是防触电最后一道闸，须在心室颤动前（≤30mA）切断；老式无接地布线缺此配合。"
+msgstr ""
+
+msgid "更换老化插座 + 加装 AFDD（规范指引）"
+msgstr ""
+
+msgid "松动/老化插座弹片疲劳、接触电阻倍增且易激发串联电弧（需 AFDD 检测）；指引更换GB/T 2099 阻燃 PC 插座+标准底盒，并在配电箱加装 AFDD。"
+msgstr ""
+
+msgid "普通保险丝/空开对串联电弧完全失明，只有 AFDD 能识别；消除松动接头即除电弧源。"
+msgstr ""
+
+msgid "远程接入与传输客户端 只读安全审计"
+msgstr ""
+
+msgid "跨平台只读审计 ssh/telnet/filezilla/putty 可用性与安全配置，标出明文风险项（不读解密口令、不改配置）。"
+msgstr ""
+
+msgid "telnet 明文、明文 FTP、口令登录均会被标出；本机无相关客户端即降级为文档指引。"
+msgstr ""
+
+msgid "SSH 服务端加固（指引）"
+msgstr ""
+
+msgid "建议 sshd 禁用口令登录改公钥、限制 root 直登、仅留 SSH-2，降低凭据与暴力风险。"
+msgstr ""
+
+msgid "sshd_config 是服务端关键文件，本工具只给指引；是否改、何时改由你确认并自行备份。"
+msgstr ""
+
+msgid "改配置前先确保有另一可用登录方式（控制台/现有密钥），避免锁死自己。"
+msgstr ""
+
+msgid "停用 telnet 明文（指引）"
+msgstr ""
+
+msgid "telnet 全程明文，口令与数据可被嗅探；建议停用 telnetd 并改用 SSH。"
+msgstr ""
+
+msgid "仅本地串行控制台/老网管设备调试才用 telnet 客户端，勿上不可信网。"
+msgstr ""
+
+msgid "FileZilla 站点安全（指引）"
+msgstr ""
+
+msgid "避免明文 FTP、给站点口令设主密码二次加密，降低凭据泄露风险。"
+msgstr ""
+
+msgid "本工具只读 sitemanager.xml 的协议取值与主密码提示，绝不读取或解密任何口令。"
+msgstr ""
+
+msgid "PuTTY 安全（指引，Windows）"
+msgstr ""
+
+msgid "PuTTY 默认 SSH + ED25519 公钥，避免用其 Telnet 模式上不可信网。"
+msgstr ""
+
+msgid "PuTTY 的 Telnet 模式仅本地串行调试用；私钥放 pageant 而非明文落盘口令。"
+msgstr ""
+
+msgid "连接保活与重连（只读观测 + 指引）"
+msgstr ""
+
+msgid "只读检查 SSH 客户端 ServerAliveInterval 保活心跳，给 TCP keepalive / autossh / VPN 自动重连的通用指引（D10 借鉴自 docker-easyconnect 自动保活实践）；绝不改连接配置、绝不注入重连进程。"
+msgstr ""
+
+msgid "对外服务暴露面遵循「默认拒绝入站、端口只绑 localhost」的基线（见安全基线）——保活只管本端连接韧性，不扩大对外暴露面。"
+msgstr ""
+
+msgid "证书与加密 只读安全审计"
+msgstr ""
+
+msgid "整合 OpenSSL/LibreSSL/BoringSSL/GnuTLS 等开源加密栈与硬件信任根，做只读审计；标出 EOL 加密库、未启用 TPM、临近过期证书等风险。绝不读私钥、绝不解密、绝不改配置。"
+msgstr ""
+
+msgid "审计结果含无障碍纯文本(a11y_cert_summary)，屏幕阅读器可直接朗读"
+msgstr ""
+
+msgid "升级 EOL 开源加密库（指引）"
+msgstr ""
+
+msgid "OpenSSL 1.0.2/1.1.0/1.1.1 等已 EOL，存在未修漏洞；提示升级到受支持分支或接入开源替代。"
+msgstr ""
+
+msgid "中危指引，需用户在 GUI 确认后自行执行"
+msgstr ""
+
+msgid "启用硬件信任根（TPM/Secure Enclave，指引）"
+msgstr ""
+
+msgid "以 TPM 2.0 / 设备身份证书(802.1AR IDevID) 为硬件信任根，把高价值私钥锁在芯片/Enclave 内。"
+msgstr ""
+
+msgid "中危指引，涉及固件/加密设置，需用户确认"
+msgstr ""
+
+msgid "密钥锁平台硬件密钥库（指引）"
+msgstr ""
+
+msgid "引导高价值私钥进入平台硬件支持密钥库（Keychain/Secure Enclave/CNG/Android Keystore）。"
+msgstr ""
+
+msgid "低风险指引，纯建议"
+msgstr ""
+
+msgid "证书到期只读预警"
+msgstr ""
+
+msgid "只读核查常见证书位置到期日，临近过期给出续期提醒（优先 ACME 自动续期），避免通信中断。"
+msgstr ""
+
+msgid "只读预警；续期由用户/ACME 客户端执行"
+msgstr ""
+
+msgid "兼容层串联盘点（四层依赖 + 场景结论，只读）"
+msgstr ""
+
+msgid "把 proton/dosbox/wsl/virtgpu/legacy 串成一条四层依赖链：宿主底座 → 设备与图形 → 兼容运行时 → 供给。按场景给结论（跑 Windows 程序 / 跑 DOS 程序 / 在 Windows 上跑 Linux / 跑遗留嵌入式），缺任一层即判「缺层」，本机不适用不判「已通」。"
+msgstr ""
+
+msgid "只读任务：不安装任何运行时、不启用任何服务、不改任何配置。"
+msgstr ""
+
+msgid "盘点结果来自各模块既有的零参只读报告，与同名 CLI `compat` 完全一致。"
+msgstr ""
+
+msgid "上层能不能用取决于下层给不给得了：Proton 要 Vulkan（设备层）与 32 位运行时（供给层），缺任何一层，运行时这一层就是空转。"
+msgstr ""
+
+msgid "**不适用 ≠ 已就绪**：本机 Linux 时 WSL 探测会跑通但正文是「未识别为 WSL 环境」，报告判「本机不适用」而不是「链路已通」。"
+msgstr ""
+
+msgid "跑 Windows 程序/游戏的官方路径（只给命令，不代装）"
+msgstr ""
+
+msgid "给出在 Linux 上跑 Windows 程序的两条官方路径与选型：办公老程序用 Wine（独立前缀），游戏用 Proton（自带依赖与图形转译层）。只输出命令文本，是否安装由你决定。"
+msgstr ""
+
+msgid "指引类任务：只打印命令文本，不自动安装、不启用任何东西。"
+msgstr ""
+
+msgid "装 Wine/Proton 会占用磁盘与依赖；游戏前缀动辄数 GB，留好空间。"
+msgstr ""
+
+msgid "选型：要「能跑起来」用 Proton；要「干净可控」用 Wine + 独立 WINEPREFIX，别混用默认前缀。"
+msgstr ""
+
+msgid "同步原语优先 NTSync（新内核）→ fsync → esync 逐档降级；内核太老就退到 esync。"
+msgstr ""
+
+msgid "32 位程序要装对应的 32 位运行时（i386），发行版不给就装不上——这是供给层的事。"
+msgstr ""
+
+msgid "跑 DOS 与遗留嵌入式的官方路径（只给命令，不代装）"
+msgstr ""
+
+msgid "给出跑老 DOS 程序（DOSBox 模拟）与遗留/嵌入式用户态（busybox）的官方路径与命令文本。"
+msgstr ""
+
+msgid "指引类任务：只打印命令文本，不代装、不启用。"
+msgstr ""
+
+msgid "DOSBox 的 cycles 调太高会让老程序跑飞；从低档往上试。"
+msgstr ""
+
+msgid "DOSBox 是**模拟**（连 CPU 都模拟），Wine 是**重实现**（翻译 API）——两者思路不同，前者兼容性高、后者性能好。"
+msgstr ""
+
+msgid "WSL 是反向桥：别人在 Windows 上跑 Linux，与 Wine/Proton 方向相反、思路同源。"
+msgstr ""
+
+msgid "外部设备连接与兼容评估（只读 + 标准引入）"
+msgstr ""
+
+msgid "整体引入星闪(NearLink)标准，并据设备标签（触控/USB-C PD/HID/星闪）只读识别触控设备与多点触控协议、USB 版本与 PD 能力、HID 即插即用状态，给兼容与选型建议；每条回链知识库。"
+msgstr ""
+
+msgid "软件只读能力面：不刷固件、不装私有驱动、不挂钩输入流、不改写 PD 协商。"
+msgstr ""
+
+msgid "按星闪(NearLink)选型无线外设（规范指引）"
+msgstr ""
+
+msgid "把星闪作为外部设备连接与兼容的推荐国产短距无线标准整体引入：无线鼠标/键盘/手写笔/耳机优先按星闪选型，微秒时延+一拖上千并发，接入须配对与身份校验。"
+msgstr ""
+
+msgid "星闪固件写入/刷写属不可逆高风险，本工具绝不执行；由用户在厂商工具确认。"
+msgstr ""
+
+msgid "星闪经 SoC/复合 dongle 接入，软件只能力面识别，不探测私有固件。"
+msgstr ""
+
+msgid "触控设备驱动与兼容（规范指引）"
+msgstr ""
+
+msgid "只读识别触控屏/精确触控板与多点触控协议（MT-A/MT-B）；缺 hid-multitouch/I2C-HID 即给官方指引，绝不采集按键/触控内容。"
+msgstr ""
+
+msgid "本工具只读识别触控设备与协议类型，绝不挂钩输入流（契合键盘/输入内容刻意不采集的红线）。"
+msgstr ""
+
+msgid "USB-C/USB4 与 PD 供电兼容（规范指引）"
+msgstr ""
+
+msgid "只读识别 USB 版本（2.0/3.2/4）与 PD 能力（是否 EPR/双向）；提示带 e-Marker 线缆才支持 100W/视频，标注欧盟 IEC 62680 强制 USB-C；绝不改写 PD 协商、不刷接口固件。"
+msgstr ""
+
+msgid "PD 由端口与设备经 CC 线私有协商，软件只能读已协商结果，不能改写功率档。"
+msgstr ""
+
+msgid "时空与全维度报告（只读观测 + 循环往复管理器）"
+msgstr ""
+
+msgid "以量子/计算机原理为透镜，只读观测时间维（时钟/时区/生命周期）、空间维（存储/地址空间/NUMA）、施时空组合维（事件-资源因果链）、未来兼容维（标准 EOL/后量子），并跑全时空全维度循环往复管理器（round-robin 周而复始、每维一视同仁），每条回链知识库。"
+msgstr ""
+
+msgid "软件只读能力面：不改时钟/时区、不分区/格式化、不升级替换组件、不执行量子写操作。"
+msgstr ""
+
+msgid "时钟同步与时区校准（规范指引）"
+msgstr ""
+
+msgid "只读观测时间维（时钟同步偏差、时区一致性、生命周期阶段）；给出 NTP/PTP 同步与时区校准的规范指引，绝不自动改时钟/时区。"
+msgstr ""
+
+msgid "时间维只观测不改正；任何改时钟/时区由用户在系统设置或厂商工具确认。"
+msgstr ""
+
+msgid "空间维盘点与扩容（规范指引）"
+msgstr ""
+
+msgid "只读盘点空间维（磁盘分区占用、内存容量、挂载点、NUMA 拓扑）；给出扩容/迁移的规范指引，绝不自动分区/格式化/清理。"
+msgstr ""
+
+msgid "空间维只盘点不整理；任何分区/格式化/清理由用户在图形界面或厂商工具确认。"
+msgstr ""
+
+msgid "未来兼容迁移（EOL / 后量子，规范指引）"
+msgstr ""
+
+msgid "只读评估未来兼容维（标准/组件 EOL、后量子迁移、前向兼容原则）；给出迁移方向，绝不自动升级/替换组件。"
+msgstr ""
+
+msgid "未来兼容维只评估给迁移方向；任何升级/替换由用户/厂商工具执行。"
+msgstr ""
+
+msgid "软件包规范审计（按系统/硬件/相关软件包检测包管理器 + 四类操作层级应对）"
+msgstr ""
+
+msgid "只读检测当前系统的包管理器（apt/dnf/pacman/brew/winget/choco/apk/scoop/zypper），审计安装/卸载/配置/设置优化四类操作是否符合包规范，并给出层级应对（一律指引不代执行）。"
+msgstr ""
+
+msgid "软件只读能力面：只审计、只出层级应对，不 install/uninstall/configure/optimize 任何包。"
+msgstr ""
+
+msgid "包安装规范（层级应对指引）"
+msgstr ""
+
+msgid "给出在当前包管理器下安装软件包的规范与层级应对：走官方接口、禁止手工改包数据库、签名/GPG 校验失败即停。绝不自动安装。"
+msgstr ""
+
+msgid "安装属写操作，一律只给层级应对指引；是否施工由用户在系统包管理器确认。"
+msgstr ""
+
+msgid "包卸载规范（层级应对指引）"
+msgstr ""
+
+msgid "给出在当前包管理器下卸载软件包的规范与层级应对：走官方接口回收依赖、不手工删库。绝不自动卸载。"
+msgstr ""
+
+msgid "卸载属写操作，一律只给层级应对指引；是否施工由用户确认。"
+msgstr ""
+
+msgid "包配置规范（层级应对指引）"
+msgstr ""
+
+msgid "给出在当前包管理器下配置软件包/源的规范与层级应对：源与钉版走 drop-in 片段、不内联改主文件。绝不自动改写。"
+msgstr ""
+
+msgid "配置属写操作，一律只给层级应对指引；是否施工由用户确认。"
+msgstr ""
+
+msgid "包设置优化规范（层级应对指引）"
+msgstr ""
+
+msgid "给出在当前包管理器下设置优化（缓存清理/升级）的规范与层级应对：缓存回收走官方 clean、升级逐包确认。绝不自动大版本跨跳。"
+msgstr ""
+
+msgid "优化属写操作，一律只给层级应对指引；是否施工由用户确认。"
+msgstr ""
+
+msgid "虚拟机环境识别与优雅降级（只读报告）"
+msgstr ""
+
+msgid "只读识别本工具自身运行在裸金属/KVM/VMware/VirtualBox/Hyper-V/Xen/WSL/容器哪一层，并给出该环境下各只读探针的「可用/退化」结论，确保整体在不同虚拟机内都能正常运行（只降级不崩溃）。绝不装增强工具/改配置/加载模块。"
+msgstr ""
+
+msgid "软件只读能力面：只探测、只降级、只给指引，不装驱动/不改配置/不加载内核模块。"
+msgstr ""
+
+msgid "guest 内增强工具安装（规范指引）"
+msgstr ""
+
+msgid "给出在 KVM/QEMU、VMware、VirtualBox、Hyper-V、WSL 内安装增强工具（open-vm-tools/Guest Additions/virtio 驱动/Linux 集成服务）的规范指引，绝不自动安装。"
+msgstr ""
+
+msgid "增强工具安装属于写操作，一律只给规范指引；是否施工由用户在 guest 内或厂商工具确认。"
+msgstr ""
+
+msgid "虚拟机完整运行支持（只读探测 + 模板生成）"
+msgstr ""
+
+msgid "只读探测本机能否完整跑起一层虚拟化（/dev/kvm 可读性、CPU VT-x/AMD-V 标志、嵌套开关 kvm_intel.nested/kvm_amd.nested），列出可嵌入 initramfs 的半虚拟化驱动模块（virtio/9p/vhost/DRM/Hyper-V/Xen 前端）并给 dracut/mkinitcpio/update-initramfs 嵌入指引，生成各 Hypervisor 只读运行配置模板（libvirt XML / QEMU 命令行 / VBoxManage / VMware .vmx / WSL .wslconfig）。绝不加载内核模块/启动 VM/装驱动/改配置——只探测、只生成模板、只给指引。"
+msgstr ""
+
+msgid "完整运行支持严守只读红线：只探测/模板/指引，不加载内核模块、不启动 VM、不装驱动、不改配置；是否施工始终由用户在 guest 内或厂商工具确认。"
+msgstr ""
+
+msgid "AP 集中控制器只读审计（hostapd/NetworkManager/dnsmasq/apcontroller）"
+msgstr ""
+
+msgid "只读审计本机/网内有哪些 AP 栈与集中管理痕迹：hostapd 配置（不回显口令）、NetworkManager 共享热点、dnsmasq DHCP/DNS、apcontroller 思路的脚本/配置目录；给出集中下发 WiFi 配置的合规指引。绝不读解密口令、绝不改任何 AP 配置。"
+msgstr ""
+
+msgid "AP 只读审计：只探测、只给指引、绝不下发配置、绝不读解密口令。"
+msgstr ""
+
+msgid "AP Group 下发 WiFi 配置（规范指引）"
+msgstr ""
+
+msgid "给出按 AP Group 集中下发 WiFi 配置的规范指引（obsy/apcontroller 思路），绝不自动下发。"
+msgstr ""
+
+msgid "下发属于写操作，一律只给规范指引；是否施工由用户在控制器或厂商工具确认。"
+msgstr ""
+
+msgid "LLVM 工具链与交叉编译目标矩阵（只读）"
+msgstr ""
+
+msgid "只读探测 LLVM 工具链（clang/lld/mlir），并给出按时间序列逐步扩充的交叉编译目标矩阵（aarch64/armv7/riscv64/x86_64-mingw/wasm32…），含 sysroot 指引与 CHANGELOG。绝不编译、绝不下载 sysroot、绝不改写工具链配置。"
+msgstr ""
+
+msgid "LLVM 只读探测：只探测、只出矩阵、只给 sysroot 指引。"
+msgstr ""
+
+msgid "LLVM 交叉编译（规范指引）"
+msgstr ""
+
+msgid "给出用 clang --target=<triple> 做交叉编译的规范指引，绝不自动编译。"
+msgstr ""
+
+msgid "编译属于写操作，一律只给规范指引；是否施工由用户在构建脚本确认。"
+msgstr ""
+
+msgid "组网优化与设备协同只读报告（WireGuard P2P + 设备能力适配）"
+msgstr ""
+
+msgid "只读观测组网：WireGuard 拓扑（wg show）、设备能力适配（算力/GPU/存储缓存）、负载均衡与协同共享。来源缺口：Mullvad 官方页未抓取，基于已知 Meshnet 模型。绝不新增 peer、绝不改 wg 配置、绝不动设备权限。"
+msgstr ""
+
+msgid "Meshnet 只读观测：只观测、只给指引、绝不写 wg 配置、绝不共享个人数据。"
+msgstr ""
+
+msgid "WireGuard 新增 Meshnet 设备（规范指引）"
+msgstr ""
+
+msgid "给出用 wg set 新增 Meshnet 设备的规范指引（双端密钥、allowed-ips、权限），绝不自动执行。"
+msgstr ""
+
+msgid "加 peer 属于写操作，一律只给规范指引；是否施工由用户在设备/厂商工具确认。"
+msgstr ""
+
+msgid "虚拟根 DNS 与多 CDN 只读报告"
+msgstr ""
+
+msgid "只读观测虚拟根 DNS（/etc/resolv.conf nameserver、DoH/DoT 是否可用）、多 CDN 选择（/etc/hosts 与常见 CDN 域名）与一次良性解析健康。绝不改 DNS、绝不切 DoH/DoT。"
+msgstr ""
+
+msgid "vdns 只读观测：只观测、只给指引、绝不写 DNS 配置。"
+msgstr ""
+
+msgid "启用 DoT/DoH（规范指引）"
+msgstr ""
+
+msgid "给出启用 DoT/DoH 的规范指引（systemd-resolved / stubby / cloudflared），绝不自动改 DNS。"
+msgstr ""
+
+msgid "改 DNS 属于写操作，一律只给规范指引；是否施工由用户在网络管理或厂商工具确认。"
+msgstr ""
+
+msgid "IPP 打印协议发现只读报告（CUPS / mDNS / 本地管理页）"
+msgstr ""
+
+msgid "只读发现 IPP 打印设备：CUPS 队列（lpstat -v）、网内 mDNS（avahi-browse _ipp._tcp）、CUPS 管理页 localhost:631 可达性、协议标准（RFC 8010/8011/IPP Everywhere）。绝不改打印队列、绝不连控制端口写。"
+msgstr ""
+
+msgid "IPP 只读发现：只发现、只给指引、绝不写打印配置。"
+msgstr ""
+
+msgid "添加 IPP 打印机（规范指引）"
+msgstr ""
+
+msgid "给出用 lpadmin 添加 IPP 打印机的规范指引（IPP Everywhere 驱动无关），绝不自动加打印机。"
+msgstr ""
+
+msgid "加打印机属于写操作，一律只给规范指引；是否施工由用户在系统设置或 CUPS 管理页确认。"
+msgstr ""
+
+msgid "现代设备显示与 GPU 只读报告（保留控制台/终端/远程终端）"
+msgstr ""
+
+msgid "只读观测显示服务器（XDG_SESSION_TYPE 判 X11/Wayland/Tty）、GPU 与渲染后端（lspci/glxinfo/vulkaninfo）、当前分辨率（xrandr）；显式确认控制台/终端/远程终端入口始终保留。推进图形化不移除这些入口。绝不装驱动、绝不切 Wayland。"
+msgstr ""
+
+msgid "display 只读观测：只观测、只给指引、绝不写显示配置；控制台/终端/远程终端始终保留。"
+msgstr ""
+
+msgid "GPU 驱动安装（规范指引）"
+msgstr ""
+
+msgid "给出 GPU 驱动安装的规范指引（开源栈优先：Mesa + 对应内核驱动），绝不自动装驱动。"
+msgstr ""
+
+msgid "装驱动属于写操作，一律只给规范指引；是否施工由用户在系统设置或厂商工具确认。"
+msgstr ""
+
+msgid "常态化回头看、久久为功（维护节奏表 + 长期保障要点 + 易漂移维度复盘）"
+msgstr ""
+
+msgid "只读汇总「该定期回头看什么」：维护节奏表（各维按什么周期回头看）、长期保障要点（从 durability/electrical 只读汇总）、易漂移维度复盘提示（标准 EOL/后量子/驱动）。与 novel-framework「每卷末/每 20 章体检」同源思路——常态化的回头看。"
+msgstr ""
+
+msgid "retro 只读汇总提醒：不替你做任何操作，只把「该回头看什么」说清楚。"
+msgstr ""
+
+msgid "人类文明重启计划场景透镜（维度清单 + 保命优先级 + 知识库沉淀）"
+msgstr ""
+
+msgid "只读场景透镜：文明重启维度清单（计算/网络/供电/存储与知识库/制造与供应链/人才与训练）、保命优先级（不可再生优先——知识库>制造>人才>供电>计算网络）、知识库离线沉淀指引（与 sysweeper 知识库同口径，优先开放许可）。绝不替你做任何施工/搬运。"
+msgstr ""
+
+msgid "restart 只读场景透镜：只帮你想清楚「重启要保什么、按什么序」，不做任何施工。"
+msgstr ""
+
+msgid "TLS 1.3 配置态势 只读审计"
+msgstr ""
+
+msgid "以 RFC 9846（TLS 1.3, 2026-07）为基准，只读核查系统 TLS 配置并分级：淘汰 SSL 2.0/3.0、TLS 1.0/1.1，为老旧设备保留并硬化 TLS 1.2，把 TLS 1.3 作主力。输出为纯文本，屏幕阅读器可朗读、适老人话。绝不读私钥、绝不改配置。"
+msgstr ""
+
+msgid "无障碍：纯文本输出，含『人话简述』，屏幕阅读器可直接朗读，无图形依赖"
+msgstr ""
+
+msgid "『KEM 就绪度』仅检测加密栈是否提供 KEM 组，不实现 ML-KEM"
+msgstr ""
+
+msgid "老旧设备兼容：不会一刀切要求关停 TLS 1.2，而是保留为兼容桥并提示加固"
+msgstr ""
+
+msgid "禁用真正淘汰的旧 TLS 版本（指引）"
+msgstr ""
+
+msgid "按 RFC 8996/9846 淘汰 SSL 2.0/3.0、TLS 1.0/1.1；明确保留 TLS 1.2 以免老旧设备/设施失联。"
+msgstr ""
+
+msgid "中危指引，需用户在 GUI 确认后自行执行；本工具不代改任何设置"
+msgstr ""
+
+msgid "关键：保留 TLS 1.2 作老旧设备兼容桥，不做一刀切"
+msgstr ""
+
+msgid "老旧设备/设施 TLS 兼容共存（指引）"
+msgstr ""
+
+msgid "为仍依赖 TLS 1.2 的老旧设备/设施提供兼容共存方案：保留并硬化 TLS 1.2、渐进迁移、隔离或替换收尾。"
+msgstr ""
+
+msgid "低风险指引，纯建议；『保留并硬化』而非一刀切是关键"
+msgstr ""
+
+msgid "后量子(KEM/ML-KEM)就绪评估（指引）"
+msgstr ""
+
+msgid "基于 RFC 9846 的 KEM 密钥交换能力，给后量子 TLS 就绪度评估与迁移指引（纯建议）。"
+msgstr ""
+
+msgid "低风险前瞻指引，纯建议；与老旧设备兼容桥并行不冲突"
+msgstr ""
+
+msgid "汇编语言优化（只读报告）"
+msgstr ""
+
+msgid "只读探测汇编器（nasm/yasm/gas/llvm-mc/gcc -S），并给出优化要点（SIMD：SSE/AVX/NEON/SVE/RVV；对齐/寄存器/缓存/分支/指令/内联约束）与 LLVM 交叉编译汇编指引（clang -target=<triple> -S）。绝不编译、绝不改源码、绝不写汇编文件。"
+msgstr ""
+
+msgid "软件只读能力面：只探测、只给优化要点与指引，不编译/不改源码/不写汇编文件。"
+msgstr ""
+
+msgid "LLVM 交叉编译汇编指引（规范指引）"
+msgstr ""
+
+msgid "给出用 clang -target=<triple> -S 为各架构生成汇编（只读观察自动向量化与指令选择）的规范指引，绝不自动交叉汇编。"
+msgstr ""
+
+msgid "交叉汇编属于写操作，一律只给规范指引；是否施工由用户在构建脚本确认。"
+msgstr ""
+
+msgid "分布式计算看门狗（模式说明，不执行）"
+msgstr ""
+
+msgid "模式来源：mihomo-kubernetes 用「健康检查 + 定时重启」清掉常驻代理里可能泄漏的敏感上游状态，而非去 patch 上游。"
+msgstr ""
+
+msgid "本层映射：distcompute 的本地采集进程若常驻，会在内存里攒结果 / 对端句柄；看门狗周期性重启它，把这些易失状态清零，降低长期驻留风险。"
+msgstr ""
+
+msgid "触发口径：健康检查（进程在 / 心跳新鲜 / 内存占用 / 距上次重启时长）超阈值 → 重启。"
+msgstr ""
+
+msgid "红线：sysweeper 绝不自动重启任何进程。只出重启计划（命令文本），由你显式执行。"
+msgstr ""
+
+msgid "健康检查超阈值（进程僵死 / 心跳陈旧 / 内存超基线 / 距上次重启超时）"
+msgstr ""
+
+msgid "sysweeper 不执行此命令；仅给出计划。确认无误后由你手动运行。"
+msgstr ""
+
+msgid "首次出现："
+msgstr ""
+
+msgid "范式："
+msgstr ""
+
+msgid "类型系统："
+msgstr ""
+
+msgid "内存管理："
+msgstr ""
+
+msgid "一句话定位："
+msgstr ""
+
+msgid "工程落法："
+msgstr ""
+
+msgid "  十进制(可读): %s  (0x%s)"
+msgstr ""
+
+msgid "  有符号    : %s"
+msgstr ""
+
+msgid "  二进制    : %s"
+msgstr ""
+
+msgid "  三进制    : %s"
+msgstr ""
+
+msgid "  八进制    : %s"
+msgstr ""
+
+msgid "  位宽需求  : 无符号 %d 位 / 有符号 %d 位"
+msgstr ""
+
+msgid "  popcount  : %d（1 的个数）"
+msgstr ""
+
+msgid "  前导零    : %d    尾随零: %d"
+msgstr ""
+
+msgid "  偶校验位  : %d    奇校验位: %d"
+msgstr ""
+
+msgid "  格雷码    : 0x%s"
+msgstr ""
+
+msgid "  位反转    : 0x%s"
+msgstr ""
+
+msgid "  十进制（人类可读·默认）: %s"
+msgstr ""
+
+msgid "  大端字节  : %s"
+msgstr ""
+
+msgid "  小端字节  : %s"
+msgstr ""
+
+msgid "位串 : "
+msgstr ""
+
+msgid "波形 : "
+msgstr ""
+
+msgid "说明 : "
+msgstr ""
+
+msgid "标记 : "
+msgstr ""
+
+msgid "  第 %d 轮合并：%s"
+msgstr ""
+
+msgid "  %-2d %-10s %-14s 覆盖 m(%s)%s"
+msgstr ""
+
+msgid "  第 %d 轮：%s"
+msgstr ""
+
+msgid "  原子性    : LOCK — 该指令在多核下原子执行"
+msgstr ""
+
+msgid "   · 说明：核心格式走标准库，永远可用；7z/rar/zstd 缺库时明确跳过，不强求安装。"
+msgstr ""
+
+msgid "   · 按「还值不值得再压」分类："
+msgstr ""
+
+msgid "   · 体积最大的可压缩文件（采样前 1 MiB 实测 LZMA 压缩率）："
+msgstr ""
+
+msgid "   · 大压缩包内部条目（流式读取，不解压、不驻留内存）："
+msgstr ""
+
+msgid "   · 归档建议（只会打印命令，不自动执行）："
+msgstr ""
+
+msgid "       - 纯文本/日志：tar czf 归档.tar.gz <目录>   （标准库可用，兼容性最好）"
+msgstr ""
+
+msgid "       - 追求高压缩率：7z a -t7z -mx=9 归档.7z <目录>   （需装 7z 或 py7zr）"
+msgstr ""
+
+msgid "       - 已压过的（zip/7z/rar/mp4/png/pdf）别再压：收益接近 0，白费 CPU。"
+msgstr ""
+
+msgid "   · 本报告只读：未压缩、未解压、未删除任何文件。"
+msgstr ""
+
+msgid "   · 已扫文件 %d 个，合计 %s%s"
+msgstr ""
+
+msgid "       - 未发现值得压缩的大文件（多数已是已压缩/已编码格式）"
+msgstr ""
+
+msgid "       - 未发现归档/压缩包"
+msgstr ""
+
+msgid "       · 仅这 %d 个文件归档，预计可回收约 %s"
+msgstr ""
+
+msgid "  校验成本：%s"
+msgstr ""
+
+msgid "  节点 %d：评分 %.2f，%d 核"
+msgstr ""
+
+msgid "  %s：完成 %d 个单元"
+msgstr ""
+
+msgid " Extremely severe / 红色"
+msgstr ""
+
+msgid " Severe / 橙色"
+msgstr ""
+
+msgid " Moderate / 黄色"
+msgstr ""
+
+msgid " Minor / 蓝色"
+msgstr ""
+
+msgid " Unknown / 未定级"
+msgstr ""
+
+msgid "  · Android：adb shell dumpsys location（只读，取 fused/gps/network 最后已知位置）"
+msgstr ""
+
+msgid "  · Linux：mmcli / geoclue 只读探测（**没有基站经纬度库就拿不到坐标，绝不凭 IP 编造**）"
+msgstr ""
+
+msgid "  · 兜底：手动录入坐标（set_manual_position）"
+msgstr ""
+
+msgid "  距你约 %s（事件未给影响半径，只给距离）"
+msgstr ""
+
+msgid "  （你的位置精度约 %.0f m，距离值同量级误差）"
+msgstr ""
+
+msgid "  距中心约 %s：在影响范围内。%s"
+msgstr ""
+
+msgid "  距中心约 %s，影响半径外 %s%s"
+msgstr ""
+
+msgid "**绝不从非官方渠道替换固件**——错配的固件会让硬件直接不可用。本工具只统计体积与分类，不删不换。"
+msgstr ""
+
+msgid "内核调优只读总览（调度/内存/网络子系统当前值）"
+msgstr ""
+
+msgid "一次读完全部内核调优相关子系统的当前值：CFS 调度、cgroups v2、OOM 防护、PSI 资源压力、THP 规整、vm 脏页/缓存、TCP 协议栈、TCP 拥塞控制、net.core、RPS/RFS。**只读不改**。"
+msgstr ""
+
+msgid "**不在容器/虚拟机里改宿主内核参数**——看到的可能是命名空间内口径；本工具只报告，任何调整请以 kernel.org Documentation 与实测压测为准。"
+msgstr ""
+
+msgid "串联顺序即「先看调度与内存，再看网络」的排障路径：应用响应慢先看 PSI/OOM，网络吞吐上不去先看拥塞控制与 RPS。"
+msgstr ""
+
+msgid "聚合里的每一项都有对应的细项优化任务（linux_sched_cfs 等，见 tasks/linux.py），本任务是总览入口，细项任务是单点深入。"
+msgstr ""
+
+msgid "慢盘/大内存场景常见疑点：vm.dirty_ratio 触发同步写卡顿、THP 规整时延尖刺、拥塞控制仍是 cubic 而内核已支持 BBR——都从这里先看到当前值，再决定要不要动手。"
+msgstr ""
+
+msgid "sysctl 写入是 root 级改动且需持久化（/etc/sysctl.d），本工具一律只读。"
+msgstr ""
+
+msgid "跨设备同一人认定：身份指纹原理与用法（指引）"
+msgstr ""
+
+msgid "讲清 identity_fingerprint 如何确定性派生「同一人」凭证：同样的字段 + 同样网络 + 共享口令 → 同一指纹；缺任何一项都推不出，从而在不交换原始个人信息的前提下跨设备认定同一人。"
+msgstr ""
+
+msgid "共享口令是第一道门：强度不足会把双因子退化成一因子；建议口令熵 ≥ 60 bit（如四个无关词 Diceware）。"
+msgstr ""
+
+msgid "这是指引任务：把「怎么在不泄露个人信息的前提下认定同一人」讲透，而不是替用户按下按钮——native 层的 identity_fingerprint 是带参函数，由 reshare/netlink 流程在运行时按用户输入调用。"
+msgstr ""
+
+msgid "指纹交换只走本地网段 mesh 通道（info/probe 白名单），不外传。"
+msgstr ""
+
+msgid "链接子系统环境总览（IPv4/IPv6 双栈与外网连通，只读）"
+msgstr ""
+
+msgid "读本机网络命名空间的接口/地址概要与 IPv4/IPv6 双栈外网连通性，定位「能发现但不能通信」的层。"
+msgstr ""
+
+msgid "输出含本机 IP/MAC 地址，属本机自检，勿外传。"
+msgstr ""
+
+msgid "mesh 自组网跑在 UDP/TCP 之上，先确认双栈基础连通再排组网故障。"
+msgstr ""
+
+msgid "本机概要与外网连通均只读探测，不发送任何业务数据。"
+msgstr ""
+
+msgid "macOS 用 ifconfig/netstat 等价只读命令，Windows 走 ipconfig，保证跨平台一致口径。"
+msgstr ""
+
+msgid "量子虚拟机就绪自检（态矢量模拟 + 架构基座，纯计算只读）"
+msgstr ""
+
+msgid "对内置量子虚拟机做只读就绪自检：态矢量模拟上限（20 量子比特，纯标准库零依赖）、门集与参数门、内置程序（bell/ghz/teleport/grover2q/bv2/superposition）、Bell 冒烟（P(00)/P(11) 计数相关性验证测量坍缩与 Born 规则），并演示量子架构基座（数字转换门 enc / CPU↔闪存不间断交换至 halt / tan·ctan 返回 / 圆周率数据链路缓冲）。"
+msgstr ""
+
+msgid "本仓库为经典系统工程工具箱：模拟器是可跑的教具而非量子硬件，概率结论按文献现状登记，不夸大为硬件表现。"
+msgstr ""
+
+msgid "纯计算只读：态矢量模拟全在内存，不写任何文件、不联网、不接量子硬件或云量子服务。"
+msgstr ""
+
+msgid "上限 20 比特是纯 Python 内存约束（态矢量 O(2^n)）：virt 子系统识别出的受限 VM/容器环境据此降档可用位宽，跑不动大程序不假装能跑。"
+msgstr ""
+
+msgid "测量按 Born 规则统计解释；同 seed 同程序可复现（确定性种子），冒烟计数两 bucket 都必须非零才算「相关」通过。"
+msgstr ""
+
+msgid "国内 App 隐私合规标准总览（PIPL/国标/四部门规定/TC260）"
+msgstr ""
+
+msgid "国内 App 隐私合规四层标准体系：上位法《个人信息保护法》（告知-同意、最小必要、敏感信息单独同意）→ 国家标准 GB/T 35273-2020 / 41391-2022 / 42574-2023 / 34975-2017 → 四部门《认定方法》《39 类必要个人信息范围规定》→ TC260 自评估与系统权限实践指南。全部经官方源实检，条目含发布/施行日期。"
+msgstr ""
+
+msgid "全部标准编号、名称、日期以 2026-10 官方源实检为准（openstd/cac/miit/gov/tc260）。"
+msgstr ""
+
+msgid "最小必要原则对照（39 类必要个人信息范围）"
+msgstr ""
+
+msgid "对照四部门《常见类型移动互联网应用程序必要个人信息范围规定》：39 类 App 各自该要什么信息明码标价，超出即超范围；12 类 App（直播/短视频/新闻资讯/浏览器等）不给个人信息也能用基本功能。『不同意就不让用』=捆绑授权。"
+msgstr ""
+
+msgid "小程序、快应用同样在本规定适用范围内；必要信息指消费侧个人信息。"
+msgstr ""
+
+msgid "系统权限申请时机审查（TC260 权限指南）"
+msgstr ""
+
+msgid "TC260《App 系统权限申请使用指南》：权限申请要正当、必要、最小；用到的时候再申请、先说目的、拒绝后可降级不闪退、拒绝后不反复弹窗。给开发者的改造清单与给用户的识别法（启动即索取相机/通讯录的 App 多半越线）。"
+msgstr ""
+
+msgid "本端 Kotlin 探针是另一个极端参照：零危险权限读公开 Settings 键。"
+msgstr ""
+
+msgid "未成年人模式建设对照（条例 + 建设指南）"
+msgstr ""
+
+msgid "《未成年人网络保护条例》（国务院令第 766 号）+ 国家网信办《移动互联网未成年人模式建设指南》（2024-11，三方联动、一键启动）：时段、时长、内容、功能四个维度。家长三步：青少年模式、儿童账号收集项核对、支付管理。"
+msgstr ""
+
+msgid "本工具不代管未成年人模式；家长/监护人在系统与 App 内操作。"
+msgstr ""
+
+msgid "违规 App 举报与备案核验路径"
+msgstr ""
+
+msgid "发现 App 违法违规的处置路径：App 内投诉 → 分发平台 → 12321 举报受理中心 → 工信部/网信办监管渠道；同时核验商店内 App 是否展示备案编号（2024-03 后未备案不得提供服务）。判定权始终在用户与监管部门。"
+msgstr ""
+
+msgid "本工具只提供标准认知与清单，不代执法、不代申诉；举报证据由用户自行留存。"
+msgstr ""
+
+msgid "GMS 兼容体系总览（CDD/CTS/VTS/STS 与 GMS 许可）"
+msgstr ""
+
+msgid "Android 兼容性三层递进：CDD 是『规范文本』（声明什么是兼容设备）→ CTS 是『自动体检』（免费商业级测试套件，Trade Federation + CTS-V 手工项）→ VTS 覆盖内核与 HAL（Treble 后 system/vendor 分区契约）。官方原话：SafetyNet Attestation 即『确定设备是否与 CTS 兼容』的 API——CTS 兼容是 GMS 服务栈门槛。"
+msgstr ""
+
+msgid "STS 官方单页在本仓检索环境未实检到，其细节为社区整理并逐条标注 needs_verify（以 Google 官方文档为准）。"
+msgstr ""
+
+msgid "Play Integrity API 接入自查（反滥用三 verdict + 分层执法）"
+msgstr ""
+
+msgid "Play Integrity API 判定用户操作是否来自『Play 安装、正版认证设备、正版应用』：核心 verdict（appLicensingVerdict=LICENSED / appRecognitionVerdict=PLAY_RECOGNIZED / deviceIntegrity 分层）+ 可选风险信号（appAccessRisk/playProtect/recentDeviceActivity/deviceRecall）。默认每应用每日 10,000 次请求；官方建议：适时请求、不缓存、分层执法而非一禁了之。"
+msgstr ""
+
+msgid "端上仅请求令牌、后端解密校验——私钥只放服务端；国内发行版可保留该能力作纵深防御一层。"
+msgstr ""
+
+msgid "Play 应用签名与密钥管理自查（上传密钥/应用签名密钥）"
+msgstr ""
+
+msgid "Play 应用签名：应用签名密钥托管 Google（生成 4096 位 RSA / 自定义≥2048 位，注册后不可取回），上传密钥开发者自管（.jks，RSA≥2048，丢失可重置）。AAB 分发强制接入（条款 2021-08-01 生效）；密钥升级仅 AAB 支持、新旧双发布；符合条件应用自动走 v4 签名；多商店分发要自持密钥（导入而非 Google 生成）。"
+msgstr ""
+
+msgid "本仓库 android 工程构建本地 APK，不入 Play 分发；.gitignore 已防 keystore 误提交。"
+msgstr ""
+
+msgid "Play targetSdk 门槛对照（2026-08-31 起 API 36）"
+msgstr ""
+
+msgid "Google Play 目标 API 级别一年一抬：2026-08-31 起新 App 与更新必须 target Android 16（API level 36）或更高；Wear OS 与 Android Automotive OS 例外，须 target Android 15（API 35）。此前节点 2025-08-31 为 API 34。升级前评估前台服务类型、精确闹钟、通知权限（POST_NOTIFICATIONS）等行为变更。"
+msgstr ""
+
+msgid "本仓库 android 工程当前 targetSdk 34；上架前需评估升 35/36 的行为变更。"
+msgstr ""
+
+msgid "Play 数据安全表单与隐私披露自查"
+msgstr ""
+
+msgid "Play 数据安全（Data safety，2021-05 上线）要求向用户披露应用的数据收集、共享与安全做法；官方明确开发者对表单填写负全责。第三方 SDK 隐式收集（广告 ID、崩溃日志）最易漏填。与国内 PIPL 隐私政策可复用同一张数据清单，一次盘点两处披露，口径一致。"
+msgstr ""
+
+msgid "本工具零采集：若上架，表单如实填『不收集任何数据』并与 manifest 一致。"
+msgstr ""
+
+msgid "免 GMS 分发通道总览（F-Droid 存储库与国内可用性）"
+msgstr ""
+
+msgid "国内拿不到 GMS 授权，Play 通道客观上不可用；F-Droid 提供免账号、免 GMS 的分发网络——只要能下载 APK 即可安装。主仓库只收自由软件（FLOSS），运行其上的服务器也全部是自由软件；任何第三方都可自建仓库。国内可用路径：F-Droid 客户端 + 可达镜像，装完即用，不需要任何谷歌组件。"
+msgstr ""
+
+msgid "F-Droid 由英格兰非营利机构 F-Droid Limited 运营；2010 年创建（Wikipedia 2026-10 实检）。"
+msgstr ""
+
+msgid "F-Droid 收录自查（FLOSS + 反特征 + 配方）"
+msgstr ""
+
+msgid "拟入 F-Droid 主仓库的三道门槛：①许可证为 OSI/FSF 认可的自由软件许可且源码全量公开；②反特征盘点清零或如实标注（Ads/Tracking/NonFreeNet/NonFreeDep/UpstreamNonFree/KnownVuln/DisabledAlgorithm/NoSourceSince）；③fdroiddata .yml 配方过构建服务器验证。不满足主收录也可走第三方仓库分发，但反特征必须透明。"
+msgstr ""
+
+msgid "反特征不阻断主仓库收录，但必须标注；主仓库不收含阻断性问题（如源码不可得）的应用。"
+msgstr ""
+
+msgid "可复现构建与配方治理"
+msgstr ""
+
+msgid "F-Droid 主仓库不收开发者上传的二进制：APK 由服务器从源码构建并签名，官方承诺『与此源代码 Tarball 一致』。含义：构建可复现（同源同环境位级一致）是入库硬前提；配方（.yml）是构建的机器可读声明；任何第三方可重复构建比对。对照 Play：Play 收 AAB 由 Google 重签，F-Droid 收配方由自己构建——二进制来源可审计性更强。"
+msgstr ""
+
+msgid "本仓库 android/ 工程（Gradle Kotlin AGP）即配方输入；锁版本与去不确定性是投稿前最后两公里。"
+msgstr ""
+
+msgid "仓库协议与自建分发（指纹/索引/特权扩展）"
+msgstr ""
+
+msgid "F-Droid 仓库协议：索引文件描述应用/版本/反特征/哈希，索引由仓库维护者密钥签名，客户端添加仓库时核对指纹后才信任内容。自建仓库 = 用户自担信任：指纹是唯一锚点，加错仓库等于交出安装权。F-Droid Privileged Extension（系统特权）可使客户端免逐次确认安装/更新，适合企业内网分发。"
+msgstr ""
+
+msgid "客户端本体 GPL-3.0（GitHub 3222 stars 实检）；第三方客户端（Neo Store/Droid-ify）生态活跃。"
+msgstr ""
+
+msgid "分发通道选择矩阵（F-Droid / Play / 国内商店）"
+msgstr ""
+
+msgid "三条通道并行不悖：①免 GMS/自由软件/内部分发 → F-Droid（能下载就能装）；②全球商业分发 → Google Play（Integrity 校验/AAB 签名/targetSdk 门槛逐年抬）；③国内公开分发 → 国内商店（备案 + 国内标准合规）。工具类零依赖 App 建议 GitHub Releases + F-Droid 双通道占位，国内商店视备案进度推进。"
+msgstr ""
+
+msgid "三通道合规口径不同：Play 看 gmsstd，国内看 androidstd，F-Droid 看 fdroidstd——三个知识库互为参照。"
+msgstr ""
+
+msgid "位宽世代能力矩阵（8/16/32/64 位元只读盘点）"
+msgstr ""
+
+msgid "按位宽世代盘点本机能力：CPU lm/pae 标志、内核与用户态位宽、模拟层（qemu/dosbox/dosemu2/wine/mame）存在性；先定程序年代再选层，不启动任何模拟器。"
+msgstr ""
+
+msgid "本工具只盘点存在性：绝不启动任何模拟器、不下载镜像、不装运行时（装不装由你决定）。"
+msgstr ""
+
+msgid "位宽世代按数据线/地址线宽度 + 运行模式分档：8 位靠专用模拟器，16 位实模式靠 dosbox/dosemu2，32 位保护模式靠 qemu/wine，64 位原生全寻址。"
+msgstr ""
+
+msgid "能力读法：直接运行 = 本机原生；模拟层覆盖 = 翻译层让一步性能与兼容。"
+msgstr ""
+
+msgid "与 pae_report 联动：32 位 + PAE 扩展的是物理寻址，不是进程虚拟地址空间。"
+msgstr ""
+
+msgid "PAE 物理地址扩展（现状检测 + 开启指引，不代改）"
+msgstr ""
+
+msgid "只读检测 PAE 前提（CPU pae 标志、内核位宽、物理内存量），给出官方开启命令文本：Linux 32 位 -pae 内核/HIGHMEM64G；XP boot.ini /PAE；Vista/Win7 32 位 bcdedit /set pae ForceEnable。诚实边界：XP 全版本物理地址空间上限即 4GB，PAE 的意义是硬件 DEP/NX 与热插拔，不是突破 4GB。"
+msgstr ""
+
+msgid "本工具只检测与给命令文本：不代改 boot.ini/bcdedit/内核命令行；引导配置属系统写操作，执行与否与后果由你决定。"
+msgstr ""
+
+msgid "XP/Server 2003：boot.ini 加 /PAE 重启（/NOPAE 禁用）；DEP 启用时 PAE 自动开启。"
+msgstr ""
+
+msgid "Vista/Win7 32 位：bcdedit /set {当前项} pae ForceEnable；DEP 开着则 PAE 禁不掉。"
+msgstr ""
+
+msgid "64 位系统不需要也不支持 PAE（原生全寻址）；进程虚拟地址空间（用户态 2GB）PAE 不改变。"
+msgstr ""
+
+msgid "微软官方口径：Windows XP（所有版本）物理地址空间上限 4GB——开 PAE 不为突破 4GB。"
+msgstr ""
+
+msgid "HarmonyOS/OpenHarmony 生态总览（HAP 工程→侧载→版图→版本→工具链→IoT）"
+msgstr ""
+
+msgid "六段式只读知识总览：①HAP 工程结构与 deviceTypes 三分类判定；②NEXT 侧载工具链（PC 助手 Auto-Installer/HoKit ↔ 端侧 HapInstaller/HapStore）；③NEXT 第三方生态版图（2026-10 快照 110 款：多端 60/手机平板 42/电脑 8，原生为主 Flutter 7 款 + 兼容层 3 类）；④OpenHarmony 开源基座与 HarmonyOS 商业发行关系、NEXT 分水岭；⑤开发工具链（Deveco Studio/方舟编译器/ArkTS/仓颉/ArkUI）；⑥HiSpark 开发板与 HDF 驱动框架。"
+msgstr ""
+
+msgid "来源分社区整理源（needs_verify）与华为官方公开文档两类，逐条标注；生态数据为快照口径。"
+msgstr ""
+
+msgid "鸿蒙版本线判定：AOSP 兼容层（4.x）还是纯血 NEXT"
+msgstr ""
+
+msgid "任何『鸿蒙兼容性』讨论的前置判定：HarmonyOS 4.x 仍含 AOSP 兼容层（可装 GMS 三件套、可跑 APK 侧载）；NEXT（5.x）为纯血鸿蒙，第三方应用均为 HAP/ArkTS 原生，不再有 APK 兼容问题。EMUI 更早期直接原生支持 GMS。误判版本线会导致整套方案（GMS 部署、迁移评估、工具链选择）建立在错误前提上。"
+msgstr ""
+
+msgid "版本边界随 OTA 演进，社区教程口径可能滞后，以设备实际系统版本为准。"
+msgstr ""
+
+msgid "鸿蒙 NEXT 侧载路径：PC 助手与端侧安装器选择"
+msgstr ""
+
+msgid "侧载生态三层：PC 侧——小白调试助手（Auto-Installer，跨平台 HAP 安装/重签名）、HoKit（投屏/性能监控/解析/重签名/文件管理）；端侧——HapInstaller（端侧签名安装，免 PC）、HapStore（未上架 HAP 聚合目录）。共性模式：PC 侧批量调试 + 端侧自服务分发互补。"
+msgstr ""
+
+msgid "第三方工具均为开源社区项目，安全性与可用性由用户自行评估；引用注明来源。"
+msgstr ""
+
+msgid "HarmonyOS 标准与合规总览（PIPL→上架→备案→权限/隐私→安全→测试）"
+msgstr ""
+
+msgid "九段式只读标准总览：①PIPL 上位法（告知-同意、敏感信息单独同意、跨境规则、个人权利）；②AppGallery 上架要件（软著/备案/隐私政策/首启同意链路）；③工信部 App 备案（171 号文，2023-08 起）；④权限模型与 APL 分级（normal/system_basic/system_core，user_grant 敏感权限）；⑤NEXT 隐私指示器（相机/麦克风/位置/剪贴板可见化）；⑥HUKS 密钥库（密钥不出 TEE、Attestation）；⑦加解密框架/证书链/TEE；⑧API 版本兼容（@ohos→@kit 迁移、canIUse 降级）；⑨未成年人保护与后台任务规范、XTS/Acts 兼容性测试。"
+msgstr ""
+
+msgid "法规原文以 npc.gov.cn/beian.miit.gov.cn 为准；官方文档以 developer.huawei.com 最新版为准。"
+msgstr ""
+
+msgid "鸿蒙 App 上架与隐私链路自查（软著/备案/政策/同意时序）"
+msgstr ""
+
+msgid "上架前的隐私合规链路五查：①三件套硬要件——软著、工信部备案号、隐私政策 URL（App 内+市场详情双入口）；②同意时序——用户同意前不得初始化含采集逻辑 SDK（审核机实测点）；③三表对账——requestPermissions 声明清单、隐私政策数据清单、代码实际调用逐条一致；④敏感信息（生物识别/金融账户/行踪轨迹/14 岁以下）单独同意链路；⑤个人权利可执行——撤回同意与删除渠道真实可用（PIPL 第 44-49 条）。"
+msgstr ""
+
+msgid "本工具不代审、不代申诉；清单给对照口径，合规结论由用户与官方判定。"
+msgstr ""
+
+msgid "鸿蒙 App 安全能力基线（HUKS/TEE/证书链/国密）"
+msgstr ""
+
+msgid "鸿蒙侧安全四件基线：①密钥托管——本地令牌/凭据走 HUKS 句柄而非明文，密钥不出 TEE、可绑定用户认证（指纹/人脸/锁屏）、服务端验 Attestation 证书链判真机；②传输——证书链校验开启、不静默降级 HTTP、敏感场景 cert pinning；③密码学——对称/非对称/摘要走 cryptoFramework 统一入口，随机数走 SecureRandom，国密场景（SM2/SM3/SM4）按官方 API 口径；④权限与后台最小化——APL 只申请 normal 级必需项、长时任务必挂可见通知。"
+msgstr ""
+
+msgid "算法支持面随 SDK 版本演进（@ohos→@kit 迁移），具体集合以官方 API 文档为准。"
+msgstr ""
+
+msgid "黑箱只读扫描：PE/ELF 格式 + 节区 + 熵 + UPX 判定"
+msgstr ""
+
+msgid "对指定二进制（自己的/己方/已授权的产物）做黑箱只读分析：格式识别（PE32/PE32+/ELF）→ 节区清单（名字/虚拟尺寸/原始尺寸/偏移）→ 逐节香农熵 → 整体熵 → UPX 三特征判定（UPX! marker / UPX0·1·2 节名 /节熵>7.5）。实测基准：MinGW GCC 13 产 PE32 237KB/17 节、PE32+ 249KB/19 节；UPX 4.2.2 --best 加壳后 win64 48.5%/win32 53.2% 压缩率、整体熵 5.898→7.035。"
+msgstr ""
+
+msgid "只读分析不执行目标；符号/节区/熵结论仅是黑箱观察，不是恶意/安全判定。"
+msgstr ""
+
+msgid "熵判据与符号可见性：黑箱信号的量化读法"
+msgstr ""
+
+msgid "把黑箱信号从『感觉奇怪』变成量化读数：逐节熵 + 整体熵两级读；strip 前后对照（实测 16000→14472B、熵 1.522→1.235，本地符号消失、PLT 动态符号保留）；符号缺失时改用外部面还原（PLT 名 + 导入表倒推）。"
+msgstr ""
+
+msgid "熵是症状不是病名：高熵节也可能是合法压缩资源，须连节名/格式/上下文合判。"
+msgstr ""
+
+msgid "GDB 黑箱四连与 MinGW 造样本（只读观察）"
+msgstr ""
+
+msgid "GDB 黑箱四连模板：info functions（符号面）→ disassemble <fn>（指令面）→ info proc mappings（运行期内存布局，无进程时报错属预期）→ break/run/bt/info registers（动态观察闭环）。样本供给用 MinGW 交叉链自造（i686/x86_64-w64-mingw32-gcc，实测 GCC 13-win32）——要分析 PE 先造可控样本，不下载来路不明二进制。沙箱 wine 实测启动 PE 失败，PE 动态分析需目标环境，本环境以静态路径（objdump/自写扫描器）为主。"
+msgstr ""
+
+msgid "逆向他人受保护软件涉及授权与法律（DMCA 反规避等），先拿授权再动手。"
+msgstr ""
+
+msgid "本机射频与无线接口只读盘点（rfkill/iw/蓝牙/总线）"
+msgstr ""
+
+msgid "只读盘点本机射频面：rfkill 开关态、iw phy 无线物理能力（Wiphy/频段/信道）、regdom 监管域、蓝牙控制器、PCI/USB 总线射频器件；顺带核对中国 ISM 频段与 6GHz IMT 划分口径。不改任何射频参数。"
+msgstr ""
+
+msgid "绝不驱动发射：不改 regdom/信道/txpower、不开 monitor 注入、不扫描不配对；开关射频属用户场景操作，本工具不代切换。"
+msgstr ""
+
+msgid "regdom 决定 2.4/5GHz 信道与发射功率合法上限；6GHz（6425-7125MHz）已划归 IMT（5G/6G）。"
+msgstr ""
+
+msgid "中国 ISM 常规可用：13553-13567kHz/26957-27283kHz/40.66-40.7MHz/2400-2500MHz/5725-5875MHz/24-24.25GHz。"
+msgstr ""
+
+msgid "433.05-434.79MHz 与 902-928MHz 是国外 ISM 频段；第三区（含中国）100MHz-1GHz 无 ISM 专用划分。"
+msgstr ""
+
+msgid "与 link_protocols（ble/802.15.4）同族：链路知识维度见彼库，本任务看本机物理面。"
+msgstr ""
+
+msgid "SDR 与无线工具链存在性盘点（GNU Radio/rtl-sdr/Hamlib 等，不启动）"
+msgstr ""
+
+msgid "只 which 盘点 SDR/无线工具链：GNU Radio、rtl-sdr、SoapySDR、Hamlib/rigctl、gqrx、multimon-ng、direwolf、kismet、aircrack-ng、Wireshark 等；给出组合读法（如『有流图无前端』）。绝不启动任何接收/发射流程。"
+msgstr ""
+
+msgid "只盘点存在性：绝不启动任何 SDR/电台/抓包/破解工具；attack 类工具仅登记存在，破解未授权网络、私设电台违反《无线电管理条例》。"
+msgstr ""
+
+msgid "SDR 把模拟前端数字化后的信号处理搬到 CPU：IQ 样本流经工具链流转（rtl_sdr | 解调器）。"
+msgstr ""
+
+msgid "『能解调就能伪造』边界：本工具只盘点存在性，操作合规性由用户在法规框架内自行负责。"
+msgstr ""
+
+msgid "射频 MCU（AVR/ESP32/STM32WL）是位宽世代里最小几档的算力底座——与 comp 第七轴互参。"
+msgstr ""
+
+msgid "无线电法规与频段合规口径核对（型号核准/微功率/ISM/业余/无线充电）"
+msgstr ""
+
+msgid "核对无线电合规五条线：型号核准（有发射原则要核准）/ 微功率目录（免核准仍受限值）/ ISM 频段（中国口径与 433·915 国外口径之别）/ 业余电台执照·呼号与 A·B·C 类操作验证（功率分档 25W/15W/1000W）/ 无线充电专项频率与功率限值。"
+msgstr ""
+
+msgid "只核对口径，不代办任何许可：频率使用许可/台站执照/型号核准均须向无线电管理机构申请；具体产品合规以当期官方公告与核准目录为准。"
+msgstr ""
+
+msgid "A 类 30-3000MHz ≤25W；B 类 30MHz 以下 <15W / 以上 ≤25W；C 类 30MHz 以下 ≤1000W / 以上 ≤25W。"
+msgstr ""
+
+msgid "业余业务限于相互通信/技术研究/自我训练，不得谋取商业利益；应急处置经批准可超限值并申领临时呼号。"
+msgstr ""
+
+msgid "无线充电器免核准但限频限功率（移动便携 ≤80W）、须标专用标识；含 Wi-Fi/蓝牙的信息传输单元仍走型号核准。"
+msgstr ""
+
+msgid "WCET（IEEE 无线通信认证）续证 PDU 规则见 data/recert_docs.json；认证项目本身 2019 年已停办。"
+msgstr ""
+
+msgid "目标环境与文件系统/目录约定核验（跨平台先认系统与硬件）"
+msgstr ""
+
+msgid "只读判定当前所属的目标环境（Windows 原生 / WSL / Linux / macOS / Android），然后按那一套环境的规矩核验它的文件系统类型与标准目录：Windows 看盘符与System32/SysWOW64 之分，Linux 看 FHS 单根树，macOS 看 APFS 与系统/数据卷分离。不得用一套环境的路径约定去套另一套——这是跨平台只读诊断的第一道门槛。"
+msgstr ""
+
+msgid "只读判定与列目录：不改不建任何目录、不改权限、不挂载卸载；目录命中率低不等于能力缺失（容器与精简镜像本就少），关键看是否遵循该环境的约定。"
+msgstr ""
+
+msgid "Windows 目录名会骗人：System32 放原生位宽映像、SysWOW64 反而放 32 位映像（WOW64 重定向）。"
+msgstr ""
+
+msgid "同一份文件在不同层有不同名字：Win32 层是 C:\\Windows\\System32、NT 层是 \\Device\\HarddiskVolumeN\\Windows、WSL 里变成 /mnt/c/Windows。"
+msgstr ""
+
+msgid "SystemRoot 须读环境变量或按 GetSystemDirectory 语义取，绝不硬编码 C:\\Windows；%APPDATA%/%LOCALAPPDATA% 同理。"
+msgstr ""
+
+msgid "本机 /proc 与 /sys 是内核的只读投影，不是磁盘上的文件——列目录能命中不代表占存储空间。"
+msgstr ""
+
+msgid "运行语言环境与运行时依赖核验（目标 ABI + 工具链语言环境）"
+msgstr ""
+
+msgid "运行语言环境两头都要看：一头是**目标**的映像格式与 ABI（PE/PE32+ 还是 ELF 还是 Mach-O、绑定哪个 CRT、有没有托管 CLR），一头是**工具链自己**的语言环境（Ghidra 要 JVM、Volatility3 要 Python 3、dnSpyEx 要 CLR、生成 PE 目标要交叉编译器）。两头缺一，任何分析结论都不成立。"
+msgstr ""
+
+msgid "只探测路径存在性与版本口径；不安装任何运行时、不改 JAVA_HOME 或 PYTHONPATH、不下载任何运行时组件。"
+msgstr ""
+
+msgid "Windows 上并存多套运行时：原生 Win32（MSVC CRT）、MinGW-w64（msvcrt 系，与 MSVC ABI 不互认）、托管 CLR/CoreCLR、内核侧 NTDLL Native API。"
+msgstr ""
+
+msgid "混合 CRT（MSVC 与 MinGW 混链）与混合架构（x64 宿主载 x86 目标）是两类最高频的踩坑点。"
+msgstr ""
+
+msgid "工具侧同理：Ghidra 装了但没有 JVM、Volatility3 装了但 Python 版本不对，都等于没装。"
+msgstr ""
+
+msgid "开源 Windows 分析工具链存在性盘点（只问在不在，不启动）"
+msgstr ""
+
+msgid "只用路径查询盘点开源 Windows 分析工具链的存在性：Ghidra、radare2、Cutter、Volatility3、System Informer、x64dbg、dnSpyEx，以及 GNU 系（gdb/objdump/upx）、NTFS 元数据只读查询的 ntfsprogs、取证用的 The Sleuth Kit、磁盘映像工具等。给出组合读法（有反编译器无调试器 = 只能做静态；有取证框架缺符号表 = 只能枚举不能还原结构）。"
+msgstr ""
+
+msgid "只登记存在性与许可边界：绝不下载、绝不调用、绝不 attach 进程、绝不做 DMA 读写；PCILeech 一类具备写能力的工具仅回答有没有，不提供任何操作入口。"
+msgstr ""
+
+msgid "许可纯度是本轮的取舍主线：MIT/Apache-2.0 宽松；GPL/AGPL 系（x64dbg、MemProcFS、dnSpyEx、PCILeech）只登记不吸收；AGPL 在网络服务场景传达条款更严。"
+msgstr ""
+
+msgid "PCILeech 经 PCIe DMA 直接读写物理内存，相当于具备了对目标主机的内核级控制能力——其合法性取决于授权而非工具本身。"
+msgstr ""
+
+msgid "本机 native/reverse 已覆盖静态侧主要着力点（PE/ELF 格式、节区解剖、香农熵、UPX 三特征），本任务补的是『开源生态里有谁、什么许可』的坐标。"
+msgstr ""
+
+msgid "Windows 内核原理可对读锚点与许可纯度核对"
+msgstr ""
+
+msgid "核对 Windows 内核原理的三条可对读路径与各自的许可边界：ReactOS 源码树读 NT 内核实现（注意旧基线）、Wine 源码看 Win32 API 如何落到 POSIX、Windows Driver Samples 的 MIT 示例读内核态写法；并给出 Vergilius 与 Geoff Chappell 两个结构体/NT API 参考源作为坐标。"
+msgstr ""
+
+msgid "只登记知识坐标：不下载任何数据集、不生成攻击性载荷；用于理解自己机器的内存或转储正当，用于他人未授权系统则越界；是否构成派生作品或传达因司法辖区而异，本工具不下法律结论。"
+msgstr ""
+
+msgid "ReactOS 目标基线偏旧（大致 Server 2003 层），现代 Windows 的新机制须另行对照微软文档补正。"
+msgstr ""
+
+msgid "许可提醒：读 ReactOS 源码参考可以，把它的代码拷进自己的产物则会触发 GPL-2.0。"
+msgstr ""
+
+msgid "Driver Samples 是 MIT，没有传染性——想学内核态又希望代码能作为基底时，这是最干净的选项。"
+msgstr ""
+
+msgid "结构体数据（Vergilius 按版本与架构给逐字段布局）属公开资料上的协作知识，不含漏洞利用代码。"
+msgstr ""
+
+msgid "GPU/NPU/TPU/CAN 异构端点存在性只读盘点"
+msgstr ""
+
+msgid "只读盘点四类交互端点的存在性：GPU（/sys/class/drm + lspci 显示控制器）、NPU（/dev/accel/* + PCI 处理加速器类别）、TPU（/dev/apex_* + Coral 厂商 ID）、CAN（/sys/class/net/can* SocketCAN 接口）。端点角色互补：GPU/NPU/TPU 承担数据面吞吐与变换，CAN 承担控制面确定性握手。缺失端点按「未检出」降级，不报错。"
+msgstr ""
+
+msgid "绝不加载厂商内核模块、绝不提交计算任务、绝不打开 CAN 套接字发帧；只读 sysfs/dev 节点与 lspci 配置空间。"
+msgstr ""
+
+msgid "类别码是「这是哪类端点」的权威判据：0x03 显示控制器、0x12 处理加速器，来自 PCI 配置空间。"
+msgstr ""
+
+msgid "NPU/TPU 的节点名与 PCI ID 落地节奏随内核版本变化，只记存在性不固化版本。"
+msgstr ""
+
+msgid "端点在量子基座上各占 2 个经典位（req/ack 握手）：4 端点 × 2 位恰好占满 8 位寄存器。"
+msgstr ""
+
+msgid "ext4 / 4K 对齐逐设备核验（sysfs→lsblk→statvfs 降级链）"
+msgstr ""
+
+msgid "三级降级核验每个块设备的 4K 对齐：sysfs 读 logical/physical_block_size 与分区 start（字段缺失按 0 降级）→ lsblk 交叉核对 → statvfs 文件系统视角兜底。判定公式：(start·逻辑扇区)%4096==0 且逻辑扇区≤4096 且 (对齐偏移+起始偏移)%max(物理扇区,4096)==0。未对齐只给文本建议（parted/gdisk 重排起点、mkfs.ext4 -b 4096），绝不代跑。"
+msgstr ""
+
+msgid "只读读取：不改分区表、不格式化、不挂载卸载、不刷写任何扇区。"
+msgstr ""
+
+msgid "对齐只取决于分区起始偏移与底层扇区尺寸，与文件系统自身无关；GPT 1MiB 惯例（2048 扇区）天然满足 4K。"
+msgstr ""
+
+msgid "alignment_offset 在 virtio/容器下常缺失——必须按 0 降级，不能当错误。"
+msgstr ""
+
+msgid "容器内常无块设备节点，tune2fs 系只作可选增强；sysfs 永远可用。"
+msgstr ""
+
+msgid "量子数字逻辑矩阵进制转换（Π_k 编码门保真往返）"
+msgstr ""
+
+msgid "复用量子架构基座做进制转换：每个数字先 load() 复位（enc 是翻转语义，不复位会得到旧值 XOR k）、encode_number 经 Π_k 置换矩阵编码、decode_number 测量解码并逐一校验相等。再演示「硬盘可接受数列」：字节流按 12 位重组为 4096 进制（4K 粒度）数列，每项 0..4095 与 4K 块对齐。"
+msgstr ""
+
+msgid "纯软件仿真：不改 quantum.py 任何语义、不接量子硬件/云量子服务。"
+msgstr ""
+
+msgid "诚实边界：量子层做的是可逆编码与校验，不是提速；进位/取模由经典层完成，中间数字过量子寄存器校验。"
+msgstr ""
+
+msgid "翻转语义陷阱：从 |0…0> 编码 k 得 |k>，但紧接着编码 j 会得到 |k⊕j>——复位契约由 _quantum_roundtrip 内建。"
+msgstr ""
+
+msgid "decode_number() 会真实坍缩态矢量，解码后同样依赖下次 load() 复位。"
+msgstr ""
+
+msgid "储存读取扫描索引管线仿真（分块→端点缓冲→量子转换→4K 打包）"
+msgstr ""
+
+msgid "把「按程序要求进行储存读取扫描索引」跑成量子基座上的完整管线：样本字节流轮流分配给 GPU/NPU/TPU 数据端点（req/ack 针脚握手）→ Π_k 门量子进制转换 → 累计打包成 4096 对齐块（块完成时 CAN 控制面确认）。全量链路历史由本模块自累积（PiLink snapshot 只回最近 7 槽），用 total_writes/overwrites 算链路利用率与覆盖浪费率。"
+msgstr ""
+
+msgid "纯仿真：不写盘、不读真实数据面、不调度任何真实 I/O。"
+msgstr ""
+
+msgid "真实通路对应：CPU 页缓存命中→块层合并→调度器下发；仿真把「缓存」映射为 PiLink、「握手」映射为针脚、「进制转换」映射为 Π_k 门。"
+msgstr ""
+
+msgid "snapshot() 只保留最近 size 条（deque maxlen 丢旧记录）——全量历史必须自己累积 step 级返回值。"
+msgstr ""
+
+msgid "尾部不足整块按一块计，尾部填充不写盘（只读仿真的诚实口径）。"
+msgstr ""
+
+msgid "量子架构内核树与架构覆盖盘点（6.18.57 LTS + arch/quantum 纯新增）"
+msgstr ""
+
+msgid "只读盘点量子架构内核树：Linux 6.18.57 LTS 基线在位、arch/ 目录清单（既有架构全部原封保留 + quantum 纯新增）、arch/quantum 骨架文件、drivers 两处注册点的纯追加核验。架构注册是零修改的：arch/Kconfig 动态 source 与顶层 SRCARCH 默认映射让新目录本身即注册。"
+msgstr ""
+
+msgid "纯只读：不构建、不写树、不动任何既有架构文件。"
+msgstr ""
+
+msgid "既有 21 个架构目录一个不动；x86_64 defconfig 正常生成（4395 项配置）证明无破坏。"
+msgstr ""
+
+msgid "mandatory-y 头自动 fallback 到 asm-generic；架构只补 byteorder/ptrace/sigcontext 三个无 generic 版的 uapi 头。"
+msgstr ""
+
+msgid "git 侧只上传补丁+增量镜像（保持 Linux 目录结构），完整树凭 scripts/fetch_kernel.sh 重建。"
+msgstr ""
+
+msgid "QPU 模拟设备与 Π_k 门语义盘点（4KiB 页纪律贯通）"
+msgstr ""
+
+msgid "只读盘点 QPU 模拟设备的落地与语义一致性：/dev/qpuN 的 UAPI（enc/dec/link_stats/reset）、Π_k 置换矩阵门的翻转语义契约、4KiB 页纪律与存储域 ext4 4K 对齐口径的贯通（/proc/qpuinfo 自报）。内核侧量子能量激发态模型（离散能级/叠加/相位/干涉/测量坍缩/T1T2 退相干）随 quantum-energy.c 一并编译进 vmlinux，/proc/quantum-energy 只读自报；idle=mwait（基态等待）经 GRUB/LILO 双样本固化。构建验收三层如实报告：defconfig 全解析、整树编译并链接出真实 vmlinux（宿主工具链诚实编译）、真实量子硬件运行不可达（无量子处理器与其编译器后端是硬事实）。"
+msgstr ""
+
+msgid "纯只读：不执行内核构建、不加载内核模块、不触碰真实量子硬件。"
+msgstr ""
+
+msgid "内核内新增代码全部 GPL-2.0（内核树纪律）；与本仓 MIT 是分发关系，互不传染。"
+msgstr ""
+
+msgid "构建验收如实记录：vmlinux 已链接（EXIT=0 零警告，15 个 quantum_* 符号在位）——但产出是宿主机器码的模拟架构内核，不虚报「能在量子处理器上运行」。"
+msgstr ""
+
+msgid "后续可延展项：向 arch/um 级完整宿主模拟推进（需 os-Linux 层与 syscall 透传）。"
+msgstr ""
+
+msgid "数字矩阵冗余数据只读观测（周天星斗大阵：缓存/临时/回收站/日志，只读不删）"
+msgstr ""
+
+msgid "只读统计 allowlist 内冗余数据目录的存在性与体积（用户缓存/临时/包管理器缓存/回收站/日志轮转），denylist（个人数据与关键资产）完全不扫描、不统计、不清理。allowlist 与 denylist 展开后无交集由模块加载即校验。清理建议仅以文本交还用户。"
+msgstr ""
+
+msgid "只读观测 ≠ 授权清理：本任务不删除、不移动、不改写任何数据，清理动作由用户沿原路执行。"
+msgstr ""
+
+msgid "denylist（~/.ssh、~/Documents、浏览器 profile 等个人数据与关键资产）完全不触碰——只有生存才能发展，误删关键资产危及生存，宁可不清。"
+msgstr ""
+
+msgid "构建产物目录（node_modules/target 等）误伤风险高，只作文本指引不进扫描面。"
+msgstr ""
+
+msgid "体积统计不跟随符号链接（防软链越界到 denylist），深度/条目超上限即截断，宁少算不拖死。"
+msgstr ""
+
+msgid "冗余数据清理规范指引（仅文本，沿原路返回）"
+msgstr ""
+
+msgid "给出冗余数据清理的规范指引（先用只读报告确认、用包管理器自带接口、回收站先确认、日志交给 logrotate/journalctl），绝不自动执行任何删除。"
+msgstr ""
+
+msgid "清理是写操作，一律只给指引；是否施工由用户确认后自行执行。"
+msgstr ""
+
+msgid "fail2ban 学习应用只读咨询（十二都天神煞大阵：探测/解析/模式学习，只读不写）"
+msgstr ""
+
+msgid "只读探测本机 fail2ban 安装状态、只读解析 jail.local/jail.d 配置、学习其六层架构模式（jail/filter/action/threshold/daemon/client）与分级响应思想，并给出常见 jail 对照。未安装则降级为模式学习，不虚构战果。"
+msgstr ""
+
+msgid "不 vendored fail2ban 源代码（GPL-2.0 强拷贝左）：只引用官方源、只做原创模式总结。"
+msgstr ""
+
+msgid "fail2ban-client 仅调用白名单只读子命令（status/version/get），写操作子命令一律不碰。"
+msgstr ""
+
+msgid "活在当下：本机未安装则降级为模式学习，不虚构战果。"
+msgstr ""
+
+msgid "只有生存才能发展：先设 ignoreip 白名单再启用任何 jail——把自己封在门外是生存事故。"
+msgstr ""
+
+msgid "fail2ban jail 配置规范指引（仅文本，沿原路返回）"
+msgstr ""
+
+msgid "给出 jail 配置建议文本（SSH 基础防护/白名单防误封/累犯分级升级），含 maxretry/findtime/bantime 语义说明；是否写入配置由用户执行。"
+msgstr ""
+
+msgid "配置是写操作，一律只给文本；fail2ban 服务重启与封禁/解封由用户执行。"
+msgstr ""
+
+msgid "道法自然：阈值分级、退避递进，不一刀切、不骤然绝杀。"
+msgstr ""
+
+msgid "声学与音律总报告（只读：设备面 + 换算 + 音律 + 知识库）"
+msgstr ""
+
+msgid "端到端声学报告：本机音频设备只读枚举（ALSA/PulseAudio）、波动几何换算（c=f·λ）、三分损益十二律生成、四轴知识库引用与 EN 50332 听力保护参照。"
+msgstr ""
+
+msgid "本子系统绝不播放任何声音、绝不调音量、绝不采集麦克风内容、无任何射频发射路径。"
+msgstr ""
+
+msgid "本机音频设备只读盘点（ALSA/PulseAudio 能力面）"
+msgstr ""
+
+msgid "枚举本机声卡与音频设备（/proc/asound、aplay/arecord -l、pactl info），只看设备与驱动状态，为喇叭/耳机选型与故障定位提供能力面。"
+msgstr ""
+
+msgid "容器或纯 PipeWire 环境可能无 ALSA 设备清单，优雅降级不伪造。"
+msgstr ""
+
+msgid "设备型号与驱动版本仅用于兼容性判断，绝不采集任何声音内容。"
+msgstr ""
+
+msgid "黄钟大吕·三分损益十二律生成与音分对账"
+msgstr ""
+
+msgid "以黄钟管长 81 为基数，按三分损益（损一 ×2/3、益一 ×4/3，注意蕤宾→大吕连续两次益一）生成十二律，输出各律管长、频率与相对十二平均律的音分偏差，并展示「清黄钟不能还原」（comma）与朱载堉新法密率的解法。"
+msgstr ""
+
+msgid "三分损益与古希腊五度相生律数学同源（2:3 比）；音分偏差自林钟起每律约 +1.96。"
+msgstr ""
+
+msgid "六阳律：黄钟·太簇·姑洗·蕤宾·夷则·无射；六阴吕：大吕·夹钟·中吕·林钟·南吕·应钟。"
+msgstr ""
+
+msgid "ISM 频段与频率-波长-天线尺寸参照（只读，绝不发射）"
+msgstr ""
+
+msgid "ITU 无线电规则 ISM 频段表（RR 5.138/5.150/5.280）与中国微功率设备管理口径（工信部 2019 年第 52 号公告），并给出 433.92 MHz / 2.45 GHz / 5.8 GHz 的波长与 λ/4 天线尺寸换算——喇叭选型与无线天线共通的波动几何底座。"
+msgstr ""
+
+msgid "涉及无线电发射设备的功率/频点合规以工信部公告原文为准；第三方检测机构解读（如 2.4 GHz EIRP≤10 dBm）标 needs_verify。"
+msgstr ""
+
+msgid "本工具无任何射频发射路径：不改网卡功率/信道/监管域，不发任何无线信号。"
+msgstr ""
+
+msgid "2.4 GHz 全球通用故最拥挤；5.8 GHz 带宽宽但绕射弱；433 MHz 绕射强但速率低。"
+msgstr ""
+

@@ -1,0 +1,199 @@
+/* sysweeper uni-app 主题与通用类（深色，跟随 Web 控制台 / 报告查看器） */
+$brand: #4a9eff;
+$ok: #3fb950;
+$warn: #d29922;
+$bad: #f85149;
+$line: #2a323d;
+$bg2: #161b22;
+$bg3: #1c232c;
+$mono: ui-monospace, Menlo, Consolas, monospace;
+
+.topnav {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px;
+  background: $bg2;
+  border-bottom: 1px solid $line;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.topnav .tn {
+  flex: 1;
+  text-align: center;
+  padding: 8px 0;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #8b97a6;
+  border: 1px solid $line;
+  background: $bg3;
+}
+.topnav .tn.on {
+  color: #fff;
+  border-color: $brand;
+  background: #1f6feb;
+}
+
+.wrap {
+  padding: 14px;
+}
+.card {
+  background: $bg2;
+  border: 1px solid $line;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.card-h {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+.pre {
+  margin: 0;
+  padding: 10px 12px;
+  background: $bg3;
+  border-radius: 6px;
+  font-family: $mono;
+  font-size: 12px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 460px;
+  overflow: auto;
+  color: #c3ccd7;
+}
+.row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.btn {
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  background: $bg3;
+  color: #d8dee6;
+  border: 1px solid $line;
+}
+.btn:active {
+  border-color: $brand;
+}
+.btn-primary {
+  background: #1f6feb;
+  border-color: #1f6feb;
+  color: #fff;
+}
+.hint {
+  color: #8b97a6;
+  font-size: 12px;
+}
+.muted {
+  color: #8b97a6;
+  font-size: 12px;
+}
+.cards {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.stat {
+  background: $bg2;
+  border: 1px solid $line;
+  border-radius: 8px;
+  padding: 10px 16px;
+  min-width: 92px;
+}
+.stat-n {
+  font-size: 20px;
+  font-weight: 700;
+}
+.stat-l {
+  font-size: 12px;
+  color: #8b97a6;
+}
+.stat.ok .stat-n {
+  color: $ok;
+}
+.stat.warn .stat-n {
+  color: $warn;
+}
+.stat.bad .stat-n {
+  color: $bad;
+}
+.badge {
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid $line;
+  display: inline-block;
+}
+.badge.ok {
+  color: $ok;
+  border-color: #23532f;
+}
+.badge.warn {
+  color: $warn;
+  border-color: #5c4715;
+}
+.badge.bad {
+  color: $bad;
+  border-color: #5c2220;
+}
+.badge.muted {
+  color: #8b97a6;
+}
+.kv {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  font-size: 13px;
+}
+.kv .k {
+  color: #8b97a6;
+}
+.ta {
+  width: 100%;
+  min-height: 160px;
+  background: $bg3;
+  color: #c3ccd7;
+  border: 1px solid $line;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: $mono;
+  font-size: 12px;
+}
+.chip {
+  display: inline-block;
+  padding: 2px 9px;
+  margin: 2px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid $line;
+}
+.chip.on {
+  color: $ok;
+  border-color: #23532f;
+}
+.chip.off {
+  color: #8b97a6;
+}
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.tbl th,
+.tbl td {
+  padding: 6px 9px;
+  border-bottom: 1px solid $line;
+  text-align: left;
+  vertical-align: top;
+}
+.tbl th {
+  color: #8b97a6;
+  font-weight: 400;
+}

@@ -1,0 +1,198 @@
+{
+  "apt": {
+    "name": "APT / dpkg（Debian / Ubuntu / 衍生）",
+    "org": "Debian Project",
+    "url": "https://www.debian.org/doc/debian-policy/",
+    "install": {
+      "spec": "遵循 Debian Policy 第 5 章控制字段；依赖由 APT 求解；用 apt-get install（非直接 dpkg -i，避免破依赖）；从可信源（带 InRelease 签名）安装",
+      "tier": "安装须走 apt-get install，禁止裸 dpkg -i 绕过依赖求解；GPG 校验失败即停"
+    },
+    "uninstall": {
+      "spec": "apt-get remove（保留配置）/ apt-get purge（连配置清除）；残留由 apt-get autoremove 回收自动依赖；禁止手工删 /var/lib/dpkg/info",
+      "tier": "卸载优先 autoremove 回收孤儿包；purge 才清配置；不手动改 dpkg 数据库"
+    },
+    "configure": {
+      "spec": "源声明在 /etc/apt/sources.list.d/*.list（Drop-in）；优先级由 /etc/apt/preferences.d 钉版；配置走 debconf / conffiles 机制",
+      "tier": "源与钉版走 drop-in 片段，不内联改主文件；conffiles 冲突按 dpkg 提示处理"
+    },
+    "optimize": {
+      "spec": "apt-get clean（清 .deb 缓存）/ apt-get autoclean（清过期）/ apt-get autoremove（孤儿）；索引 apt-get update",
+      "tier": "缓存回收一律走官方 clean/autoremove；不手工删 /var/cache/apt/archives"
+    }
+  },
+  "dnf": {
+    "name": "DNF / RPM（Fedora / RHEL / 衍生）",
+    "org": "Fedora Project / Red Hat",
+    "url": "https://docs.fedoraproject.org/en-US/packaging-guidelines/",
+    "install": {
+      "spec": "遵循 Fedora Packaging Guidelines；用 dnf install（依赖求解走 rpmdb/repomd）；从启用的仓库（带 repomd.xml 签名）安装",
+      "tier": "安装须走 dnf install，禁止裸 rpm -i 绕过依赖；GPG 校验失败即停"
+    },
+    "uninstall": {
+      "spec": "dnf remove（保留数据）/ dnf autoremove（回收无用依赖）；不手工动 /var/lib/rpm",
+      "tier": "卸载优先 autoremove 回收；不手动改 rpmdb"
+    },
+    "configure": {
+      "spec": "仓库在 /etc/yum.repos.d/*.repo（Drop-in）；钉版用 versionlock 插件；模块化流 dnf module",
+      "tier": "源与钉版走 drop-in 片段；module 流切换先评估影响面"
+    },
+    "optimize": {
+      "spec": "dnf clean all（清元数据/缓存）；历史 dnf history 可回滚；索引 dnf makecache",
+      "tier": "缓存回收走 dnf clean；回滚用 dnf history undo，不手工改 rpmdb"
+    }
+  },
+  "pacman": {
+    "name": "pacman（Arch Linux / 衍生）",
+    "org": "Arch Linux",
+    "url": "https://wiki.archlinux.org/title/PKGBUILD",
+    "install": {
+      "spec": "PKGBUILD 经 makepkg 构建为 .pkg.tar.zst；用 pacman -S（依赖走 /var/lib/pacman/local）；从可信镜像（含签名）安装",
+      "tier": "安装走 pacman -S；AUR 用 makepkg 不破系统包；签名校验失败即停"
+    },
+    "uninstall": {
+      "spec": "pacman -R（保留依赖）/ -Rs（连带可选）/ -Rns（连配置）；不手工删 /var/lib/pacman/local",
+      "tier": "卸载优先 -Rns 清配置与孤儿；不手动改本地数据库"
+    },
+    "configure": {
+      "spec": "仓库在 /etc/pacman.conf（含 Include 片段）；镜像在 /etc/pacman.d/mirrorlist",
+      "tier": "源与镜像走配置文件；改完 pacman -Syy 重载"
+    },
+    "optimize": {
+      "spec": "paccache -r（清旧版本包，默认留 3）；缓存目录 /var/cache/pacman/pkg",
+    "tier": "缓存回收走 paccache；不手工删 pkg 缓存目录"
+  },
+  "references": [
+    {
+      "name": "Arch Linux ARM PKGBUILDs（ARM 架构构建脚本仓）",
+      "org": "Arch Linux ARM",
+      "url": "https://github.com/archlinuxarm/PKGBUILDs"
+    }
+  ]
+},
+  "brew": {
+    "name": "Homebrew（macOS / Linux）",
+    "org": "Homebrew",
+    "url": "https://docs.brew.sh/Formula-Cookbook",
+    "install": {
+      "spec": "Formula/Cask 经 Ruby DSL 描述；用 brew install（bottle 二进制优先）；前缀 /opt/homebrew 或 /usr/local，不碰系统目录",
+      "tier": "安装走 brew install；禁止 sudo 装brew（前缀属用户）；bottle 校验失败即停"
+    },
+    "uninstall": {
+      "spec": "brew uninstall（保留依赖）/ brew autoremove（回收）；brew bundle 管理清单",
+      "tier": "卸载优先 autoremove；不手工删 /opt/homebrew 树"
+    },
+    "configure": {
+      "spec": "Tap 在 brew tap；环境变量 HOMEBREW_*；前缀属用户，不写 /usr",
+      "tier": "扩展走 tap；不 sudo，不写系统目录"
+    },
+    "optimize": {
+      "spec": "brew cleanup（清旧版本/下载）；brew doctor 体检；索引 brew update",
+      "tier": "清理走 brew cleanup；doctor 仅报告不自动修"
+    }
+  },
+  "winget": {
+    "name": "WinGet（Windows 包管理器）",
+    "org": "Microsoft",
+    "url": "https://learn.microsoft.com/windows/package-manager/",
+    "install": {
+      "spec": "YAML 清单（schema v1.x）经社区仓库校验；用 winget install（走 REST 源）；以管理员或用户作用域安装",
+      "tier": "安装走 winget install；清单 sha256 校验；作用域按权限选择"
+    },
+    "uninstall": {
+      "spec": "winget uninstall（按 id/名称）；清理 %LOCALAPPDATA%\\Temp\\WinGet 临时文件",
+      "tier": "卸载走 winget uninstall；临时目录走工具清理"
+    },
+    "configure": {
+      "spec": "源用 winget source add/list；导出导入 winget export/import（settings.json）；settings 在 %LOCALAPPDATA%\\Packages",
+      "tier": "源与设置走 winget 命令；settings.json 用户态"
+    },
+    "optimize": {
+      "spec": "winget list 盘点；winget upgrade 升级（需确认）；缓存 %LOCALAPPDATA%\\Temp\\WinGet",
+      "tier": "升级走 winget upgrade（逐包确认）；不自动大版本跨跳"
+    }
+  },
+  "choco": {
+    "name": "Chocolatey（Windows 包管理器）",
+    "org": "Chocolatey Software",
+    "url": "https://docs.chocolatey.org/",
+    "install": {
+      "spec": "nuspec + PowerShell 脚本；用 choco install（走社区/私有源）；以管理员安装",
+      "tier": "安装走 choco install；源校验；管理员作用域"
+    },
+    "uninstall": {
+      "spec": "choco uninstall（按 id）；lib 在 $env:ChocolateyInstall\\lib",
+      "tier": "卸载走 choco uninstall；不手工删 lib"
+    },
+    "configure": {
+      "spec": "源 choco source；配置 choco config；feature 开关 choco feature",
+      "tier": "源与配置走 choco 命令；不手工改 config 文件"
+    },
+    "optimize": {
+      "spec": "choco cache 清旧；choco upgrade all（需确认）",
+      "tier": "升级走 choco upgrade（逐包确认）"
+    }
+  },
+  "apk": {
+    "name": "apk-tools（Alpine Linux）",
+    "org": "Alpine Linux",
+    "url": "https://wiki.alpinelinux.org/wiki/Alpine_package_management",
+    "install": {
+      "spec": ".apk（gzip 分段）经 APKINDEX 解析；用 apk add（依赖走 /lib/apk/db/installed）；从含签名索引的源安装",
+      "tier": "安装走 apk add；APKINDEX 签名校验；不裸解 .apk"
+    },
+    "uninstall": {
+      "spec": "apk del（回收依赖）；不手工删 /lib/apk/db",
+      "tier": "卸载走 apk del；不手动改 installed 库"
+    },
+    "configure": {
+      "spec": "仓库在 /etc/apk/repositories（Drop-in）；钉版 apk add pkg=ver；repo 含 @edge 社区",
+      "tier": "源走 /etc/apk/repositories；钉版显式写版本"
+    },
+    "optimize": {
+      "spec": "apk cache clean（清包缓存）；apk upgrade（需确认）",
+      "tier": "缓存回收走 apk cache clean；升级逐包确认"
+    }
+  },
+  "scoop": {
+    "name": "Scoop（Windows 用户态包管理器）",
+    "org": "Scoop",
+    "url": "https://scoop.sh/",
+    "install": {
+      "spec": "JSON 清单 + PowerShell；用 scoop install（走 bucket）；用户态安装到 ~/scoop，不写 Program Files",
+      "tier": "安装走 scoop install；不 sudo，不写系统目录"
+    },
+    "uninstall": {
+      "spec": "scoop uninstall（按 app）；缓存 ~/scoop/cache",
+      "tier": "卸载走 scoop uninstall；不手工删 ~/scoop"
+    },
+    "configure": {
+      "spec": "bucket 在 scoop bucket add；持久化 scoop persist",
+      "tier": "扩展走 bucket；不写系统目录"
+    },
+    "optimize": {
+      "spec": "scoop cache rm（清缓存）；scoop cleanup（清旧版本）；scoop status 盘点",
+      "tier": "清理走 scoop cleanup/cache；不手工删 cache"
+    }
+  },
+  "zypper": {
+    "name": "Zypper / RPM（openSUSE / SUSE）",
+    "org": "openSUSE / SUSE",
+    "url": "https://en.opensuse.org/SDB:Zypper",
+    "install": {
+      "spec": "用 zypper install（依赖走 rpmdb/repomd）；从启用仓库安装；GPG 校验默认开启",
+      "tier": "安装走 zypper install；GPG 失败即停；禁止裸 rpm -i"
+    },
+    "uninstall": {
+      "spec": "zypper remove（保留依赖）/ zypper rm -u（回收无用）；不手工动 /var/lib/rpm",
+      "tier": "卸载优先 rm -u 回收；不手动改 rpmdb"
+    },
+    "configure": {
+      "spec": "仓库在 /etc/zypp/repos.d/*.repo；服务 zypper service；钉版 zypper lock",
+      "tier": "源与钉版走 drop-in 片段；lock 显式钉版"
+    },
+    "optimize": {
+      "spec": "zypper clean（清元数据/包）；zypper ps 查需重启的服务；zypper dup 升级",
+      "tier": "缓存回收走 zypper clean；dup 升级逐包确认"
+    }
+  }
+}

@@ -1,0 +1,255 @@
+{
+ "sysdev": {
+  "name": "从零造系统学习应用知识库（sysdev）：分配器·编译器·内核·模拟器",
+  "org": "pepsipu（Sammy Hajhamid）开源项目群学习应用——warpalloc / aski / xinOS-old / OSpaint / ramenbox / cx / torus",
+  "url": "https://github.com/pepsipu",
+  "protocols": [
+   "本知识库是「导入分析学习应用」方法论的落地：浅克隆全仓库 → 读 README 与入口文件建立意图模型 → 读最小核心源文件 → 提炼可复用模式与适用边界 → 回灌本仓（知识层 + 只读层 + 任务 + 概念登记）。学习不等于打包：引用不等于拷贝，所有模式总结均为本仓原创表述",
+   "分析对象共 7 个仓库：warpalloc（32 位 x86 汇编内存分配器）、aski（Rust 写的类汇编语法编译器）、xinOS-old（NES 风格玩具操作系统）、OSpaint（24 小时编程马拉松的画笔操作系统）、ramenbox（Python 6502 幻想游戏机）、cx（zsh 写的 Codex 多账户封装）、torus（Caltech 校园服务 API 的 pnpm 工作区",
+   "共同主题：一个人用最小依赖从零构建系统层组件——分配器、编译器、操作系统内核、指令集模拟器——每个仓库都小到可以一次读完，是「系统层思维」的浓缩教材",
+   "适用边界（warpalloc README 原话的精神）：为小而快的程序优化的设计，不等于通用最优；预分配策略在可预估负载时省时间，在不可预估时只是把成本前移——每条模式都连它的反面一起学",
+   "许可证边界：warpalloc 为 MIT（Copyright (c) 2019 Sammy Hajhamid）；xinOS-old 为 BSD 风格声明（Copyright (c) 2020, Sammy Hajhamid，再分发需保留声明）；aski / OSpaint / ramenbox / torus / cx 仓库未见许可证文件，默认保留所有权利——本仓只学习其思想与工程模式，不 vendored 任何源代码、不打包任何二进制"
+  ],
+  "interfaces": [
+   "native/sysdev.py 只读层：reference()/reference_all() 消费本知识库；probe_toolchain() 盘点本机从零构建工具链（nasm/yasm/gcc/clang/python3/node/pnpm/qemu-system-i386/make/cmake，仅跑 --version 类只读命令）",
+   "probe_malloc_env() 只读展示本机 glibc malloc 环境变量（MALLOC_ARENA_MAX / MALLOC_TRIM_THRESHOLD_ / MALLOC_MMAP_THRESHOLD_ / MALLOC_PERTURB_ / MALLOC_CHECK_）与 glibc 版本（os.confstr CS_GNU_LIBC_VERSION）——只读不改，给指引不代设",
+   "probe_memory_footprint() 只读解析 /proc/self/status 的 VmSize/VmRSS/VmPeak/VmHWM（仅 Linux；其他平台返回空）",
+   "sysdev_report() 零参聚合报告（知识库 + 三项只读探测），sysdev_doc_list() 列主题清单"
+  ],
+  "docs": [
+   "warpalloc：https://github.com/pepsipu/warpalloc",
+   "aski：https://github.com/pepsipu/aski",
+   "xinOS-old：https://github.com/pepsipu/xinOS-old",
+   "OSpaint：https://github.com/pepsipu/OSpaint",
+   "ramenbox：https://github.com/pepsipu/ramenbox",
+   "cx：https://github.com/pepsipu/cx",
+   "torus：https://github.com/pepsipu/torus"
+  ],
+  "summary": "pepsipu 项目群是「一个人从零造系统」的学习样本：110 行汇编分配器、1077 行 Rust 编译器、可启动的玩具 OS、6502 模拟器。本仓学习其分配器策略、编译器管线、操作系统引导、指令集模拟四类模式，落为只读知识层与工具链/内存体检能力。",
+  "advice": [
+   "学 warpalloc 先学它的适用边界：README 明说「别用 warpalloc 做游戏」——频繁大量 alloc/free 的场景 ptmalloc 的复杂分箱长期更快；小而少并发分配的场景单空闲链首次适应 + 预分配才快",
+   "学 aski 先学前中后端分离：IStream→Tokenizer→Parser→Program 四段，每段只做一件事，输出按 .text/.data/.bss 分节累积——这是所有编译器的最小骨架",
+   "学 xinOS 先学引导链：bootloader.asm 进保护模式 → kmain → remap_pic + init_idt → VESA 图形 → 应用；「rule 1」（硬件尺寸常减一）提醒你读手册原文而不是凭直觉",
+   "学 ramenbox 先学「表格即代码」：utils/gen_ops.py 从 oplist 文本解析出 opcodes.json，CPU 类按字节分发到指令函数——指令集用数据描述，模拟器用数据驱动",
+   "学 cx 先学隔离三件套：每账户独立 home 目录 + 符号链接农场共享公共文件 + 环境变量（CODEX_HOME）选家——不拷贝状态就能多开",
+   "反面教材同样值钱：OSpaint 是 24 小时黑客马拉松产物（作者自述 archived）——时间盒项目的取舍（砍文档、砍通用性、保最小可运行）本身就是一课"
+  ]
+ },
+
+ "allocator_patterns": {
+  "name": "warpalloc 分配器模式：预分配 + 单空闲链首次适应 + 荒野推进",
+  "org": "pepsipu/warpalloc（MIT，Copyright (c) 2019 Sammy Hajhamid）",
+  "url": "https://github.com/pepsipu/warpalloc",
+  "protocols": [
+   "预分配（preallocation）：prewalloc(size) 在程序启动时用一次 brk（int 0x80，系统调用 45）向操作系统要内存，把「运行时才向内核伸手」的成本前移到启动一次付清；README 原话「YOU MUST PREALLOCATE SOMETHING. IF YOU CANNOT ESTIMATE, PREALLOCATE 0」——预估不了就预分配 0，荒野指针照样兜底",
+   "单空闲链（single free bin）：不分类 fastbins/smallbins/largebins， freed chunk 全部挂一条单向链表（fbin），walloc 时线性扫描找第一个放得下的（first-fit）；省掉分箱的时钟周期，代价是释放多时扫描变长",
+   "荒野推进（wilderness bump）：ptr_wilderness 指向未分配区起点，预分配区内 bump 分配；空间不足时 sbrk 补差额；8 字节头（size 在 [ptr-8]、fd 在 [ptr-4]）——freed 时 fd 复用用户数据前 4 字节，这是经典的内嵌式元数据手法",
+   "热路径零栈变量：walloc/wfree/prewalloc 只用寄存器与全局变量（.bss 里的 ptr_wilderness / ptr_bss_end / fbin），唯一 push 的是被调用者保存的 ebx——作者明说为此不设栈帧",
+   "性能画像（README 自述）：25 次分配时约比 ptmalloc 快 300 倍；但「ptmalloc will perform better for programs that do thousands of allocations and frees」——单空闲链无合并无分箱，高频 churn 下劣于 ptmalloc 是设计使然，不是 bug",
+   "链接方式：gcc -m32 walloc.o main.c -no-pie，或 C/C++ 里 extern 三个声明（void* walloc(int) / void prewalloc(int) / void wfree(void*)）；walloc.o 由 NASM 汇编 walloc.asm 得到",
+   "xinOS-old 的同题异构解：内核里另有一个 C 版链表分配器（HEAP_START 0x500 起，chunk{fd,size}，_find_free 找到大块就「 shrinking 」切走尾部），与 warpalloc 同为「一条空闲链 + 元数据头」，印证这是玩具/嵌入式分配器的最大公约数写法"
+  ],
+  "interfaces": [
+   "native/sysdev.py probe_malloc_env()：只读展示 MALLOC_ARENA_MAX / MALLOC_TRIM_THRESHOLD_ / MALLOC_MMAP_THRESHOLD_ / MALLOC_PERTURB_ / MALLOC_CHECK_ 与 glibc 版本——对照 warpalloc 的预分配思想，glibc 侧对应的旋钮是 trim/mmap 阈值与 arena 数",
+   "probe_memory_footprint()：只读 /proc/self/status 的 VmSize/VmRSS/VmPeak/VmHWM——「本进程内存足迹」是评估分配策略的观测量"
+  ],
+  "docs": [
+   "https://github.com/pepsipu/warpalloc/blob/master/walloc.asm（110 行分配器本体）",
+   "https://github.com/pepsipu/warpalloc/blob/master/README.md（适用边界与性能自述）",
+   "https://github.com/pepsipu/warpalloc/blob/master/benchmark.py（matplotlib 对比 ptmalloc）",
+   "https://github.com/pepsipu/xinOS-old/blob/master/src/kernel/allocator.c（C 版同构解）"
+  ],
+  "summary": "warpalloc 用 110 行 NASM 证明：可预估负载下，「启动时一次 brk + 一条空闲链首次适应 + 荒野 bump」比通用分配器快几个数量级；代价是高频 churn 与不可预估负载下劣化。模式可学，边界更要学。",
+  "advice": [
+   "可预估峰值的短生命周期工具（CLI 批处理、启动器）适合预分配思想：启动时一次到位，热路径零系统调用",
+   "长驻留/高频 churn 的服务不要照搬单空闲链：无合并、无分箱，空闲链会劣化；这类场景 ptmalloc/tcmalloc/jemalloc 的分箱与合并是刚需",
+   "本工具对 malloc 参数只读体检、只给指引：MALLOC_ARENA_MAX 控线程 arena 数、MALLOC_TRIM_THRESHOLD_ 控归还内核的时机——设不设由用户在官方文档知情下决定，本仓绝不代改环境变量",
+   "元数据头内嵌（size 在用户指针前、free 时复用前 4 字节存 fd）是经典手法，但意味着「用户指针前后各 4 字节不可挪用」——自研分配器必须把这条写进接口契约"
+  ]
+ },
+
+ "compiler_pipeline": {
+  "name": "aski 编译器管线模式：字符流→token→作用域栈→分节汇编输出",
+  "org": "pepsipu/aski（Rust，约 1077 行；仓库未见许可证文件，默认保留所有权利，只学模式）",
+  "url": "https://github.com/pepsipu/aski",
+  "protocols": [
+   "四段管线（main.rs 串起全链）：读源文件 → IStream（stream.rs，带文件名与位置的字符流）→ Tokenizer（tokenizer.rs，find_tokens 循环吃到 EOF）→ Parser（parser.rs，产出 scope_stack: Vec<ScopeImpl>）→ Program::compile（compiler.rs）→ 打印 NASM 分节输出",
+   "组合子式字符判定（combinator.rs）：is_ws / is_int / is_quote / is_kw_or_var / is_op / is_register_name 六个纯谓词，分词器按它们切 token——前端的「字符类别」独立成表，加一种 token 只改一处",
+   "语法树即作用域栈：Statement 枚举（NewConst / NewLet / RegisterAssign / RegisterDerefAssign / InlineAssembly / Call / Scoped），ScopeImplType 分 Global / Fn{name,external} / If{left,right,condition}——if 是当时唯一控制流（README 明说 while/for 待 modular compiler 扩展），诚实标注未完成面",
+   "代码生成按节累积：Program 持 header / text / ro_data / bss 四个 Vec<u8>，extern 函数名进 header 的 global 指令，函数体进 .text，const 进只读数据，未初始化 let 按类型发射 resb/resq（uint8→resb、uint64→resq）并附 _LEN equ 常量——「汇编器分节模型」直接对应编译器输出结构",
+   "寄存器优先的类 C 语法：$rax = 2 即 mov rax,2；$rax = $rax + $rsi*4*2 + $rdi 会展开成 lea/add 序列；解引用赋值 $*rsi = 0；call(foo)；extern fn 供链接器可见；# 前缀内联汇编（#syscall）；函数结尾自动补 ret；注释沿用汇编的 ;——把「汇编的线性执行流」包装成「结构化的意图」",
+   "类型系统只管尺寸：let buf: [byte, 32] 是 32 字节，[qword, 32] 是 256 字节；sizeof() 返回字节数——类型即布局，不含语义检查，与「汇编执行、现代语法」的定位一致",
+   "自动 ret 与 extern：fn 定义结尾编译器补 ret；extern fn _start 把符号暴露给链接器——引导层与用户层的接缝只用两个关键字"
+  ],
+  "interfaces": [
+   "概念系统 comp 已登记 aski-pipeline 概念（research/comp/build_comp.py，pipeline 域）：本知识库是其事实源之一",
+   "native/sysdev.py probe_toolchain()：盘点本机是否有 gcc/clang（可对照 -S 输出观察编译器分节）与 make/cmake——aski 这类小编译器用 cargo 即可驱动，无需构建系统"
+  ],
+  "docs": [
+   "https://github.com/pepsipu/aski/blob/master/src/main.rs（25 行管线入口）",
+   "https://github.com/pepsipu/aski/blob/master/src/compiler.rs（306 行代码生成）",
+   "https://github.com/pepsipu/aski/blob/master/src/parser.rs（346 行语法分析）",
+   "https://github.com/pepsipu/aski/blob/master/src/tokenizer.rs（269 行词法分析）",
+   "https://github.com/pepsipu/aski/blob/master/README.md（语法语义全介）"
+  ],
+  "summary": "aski 用约 1077 行 Rust 写出一个「汇编执行、C 的样貌」的编译器：四段管线各自单职责，输出直接映射 NASM 分节，寄存器显式暴露。它是「编译器最小骨架」的活教材——也是「诚实标注只实现了 if」的工程范本。",
+  "advice": [
+   "写小编译器的顺序就照 aski：先 IStream+Tokenizer（字符→token），再 Parser（token→作用域树），最后 Program（树→分节文本）；每段可独立单测",
+   "把「字符类别判定」提成纯谓词表（combinator.rs 模式），新增 token 类型不改分词主循环",
+   "分节输出（.text/.data/.bss + global 头）应在一开始就进数据结构，不要最后拼字符串——节序与符号可见性是链接契约",
+   "未实现的控制流要像 README 那样明示（only if implemented），而不是留暗坑；移植 aski 模式时 while/for/函数调用约定需自建",
+   "aski 仓库无许可证文件：学习其管线思想可以，拷贝代码前必须另行取得授权——本仓纪律同样适用于任何无许可证仓库"
+  ]
+ },
+
+ "hobby_os_bringup": {
+  "name": "玩具操作系统引导模式：bootloader→保护模式→IDT/PIC→VESA→应用",
+  "org": "pepsipu/xinOS-old（BSD 风格声明，Copyright (c) 2020）/ pepsipu/OSpaint（未见许可证）",
+  "url": "https://github.com/pepsipu/xinOS-old",
+  "protocols": [
+   "xinOS-old 引导链：bootloader.asm（16 位实模式）→ 32 位保护模式 → kernel_entry 段的 kmain() → remap_pic() + init_idt() → load_main_menu()（VESA 场景）——中断与 PIC 重映射先于一切应用，这是 x86 玩具 OS 的标准起手",
+   "最小内核子系统集（xinOS-old/src/kernel 实测清单）：IDT（idt/idt.c + double_fault.c 双故障处理）、PIC（pic/pic.c + handlers/clock.c + handlers/keyboard.c）、VESA 图形（vesa/vesa.c + graphics.c + font_bitmap.h + scenes/main_menu.c）、PC 喇叭音频（sound/pc_speaker.c + wav_parser.c + beep_structure.c）、BMP 加载（utils/bmp_loader.c）、工具库（io/math/mem/rand/strings/text_mode/time）",
+   "rule 1（作者记在 kernel.c 顶部的硬件冷知识）：很多 CPU 相关尺寸要减一才是编程值——「BIOS designers wanted people scratching their heads 35 years later」，实因省比较器硬件成本；学硬件手册必须读原文口径，不能凭直觉 +1",
+   "自持 libc 切片（mem.c）：memset/memcpy/memmove 手写，并逐个标注 __attribute__((optimize(\"O2\")))——玩具 OS 没有 libc，热点内存函数显式要 O2，其余按需；指针先转 char* 再偏移，绕开 sizeof 放大规则（allocator.c 顶部注释同款说明）",
+   "可运行验收闭环：qemu-system-i386 -fda xinos.img -s -machine q35 -soundhw pcspk（或 Bochs，仓库预置 bochsrc）；镜像可烧 USB/软盘启动，作者称「works on ancient hardware, including the Commodore 64」——交付物是「可启动镜像」而非源码树",
+   "OSpaint 的同题异构解（24 小时 CodeDay LA）：GRUB multiboot 入口（multiboot/modules.c + grub.cfg）代替手写 bootloader，bochsrc 验收，lib 只留 mem/memcpy、mem/memset、str——时间盒项目的标准取舍：砍文档砍通用性，保最小可运行",
+   "双仓库共同启示：玩具 OS 的真实成本不在内核而在「驱动最小外设集」——xinOS 用 VESA+PCSPK 给出图形与音频，OSpaint 用 multiboot 跳过引导器；选哪条路取决于时间盒多长"
+  ],
+  "interfaces": [
+   "native/sysdev.py probe_toolchain()：检测 qemu-system-i386 存在性与版本——本机可复现「可启动镜像」验收闭环的唯一外部依赖",
+   "概念系统 comp 的 bitwidth 域与 bringup 域已覆盖位宽分档与引导纪律；本知识库是其实例源之一"
+  ],
+  "docs": [
+   "https://github.com/pepsipu/xinOS-old/blob/master/src/kernel/kernel.c（引导入口与 rule 1）",
+   "https://github.com/pepsipu/xinOS-old/blob/master/src/kernel/allocator.c（C 版链表分配器）",
+   "https://github.com/pepsipu/xinOS-old/blob/master/README.md（QEMU/Bochs 运行实录）",
+   "https://github.com/pepsipu/OSpaint（24 小时取舍样本）"
+  ],
+  "summary": "xinOS-old 与 OSpaint 是同一道题的两种解法：一个手写 bootloader 全栈自持，一个用 GRUB multiboot 抢时间。共同的最小内核集（IDT/PIC/最小 libc/一个输出外设）与「可启动镜像」验收闭环，是引导层学习的最短路径。",
+  "advice": [
+   "复现顺序：bootloader 进保护模式 → remap_pic+init_idt（先让中断可控）→ 一个输出外设（VESA 或串口）→ 才谈应用；xinOS 的顺序就是这条",
+   "手写 memcpy/memset 时标注 optimize(\"O2\") 并先转 char* 再偏移——玩具 OS 的两条保命习惯",
+   "硬件尺寸先查手册再写代码：rule 1（尺寸减一）是「比较器省钱」的历史设计，不是笔误",
+   "验收用 QEMU/Bochs 跑可启动镜像并留配置文件（bochsrc/qemu-run.sh），「能启动」是玩具 OS 的唯一验收标准",
+   "OSpaint 的 24 小时取舍可借鉴到本仓：被中断时先保最小可运行（镜像能启、报告能出），文档与通用性随后"
+  ]
+ },
+
+ "emulator_tables": {
+  "name": "ramenbox 指令集模拟模式：表格驱动的 6502 + 外设模型",
+  "org": "pepsipu/ramenbox（Python；仓库未见许可证文件，默认保留所有权利，只学模式）",
+  "url": "https://github.com/pepsipu/ramenbox",
+  "protocols": [
+   "表格即代码（utils/gen_ops.py）：从 ./oplist 文本（从 6502 文档整理的操作码表）按分隔符切出每个寻址模式行，解析 opcode 字节（hex）、字节长度、寻址模式（accumulator/immediate/implied/relative/zeropage/zeropage,X/absolute/indirect/absolute,X/absolute,Y/(indirect,X)/(indirect),Y），生成 ../src/ramencore/opcodes.json——指令集用数据描述，模拟器用数据驱动",
+   "CPU 类按字节分发（ramencore/cpu.py）：pc/ac/x/y/sr/sp 六个寄存器字段；__init__ 把 opcodes.json 读进 self.ops[byte] = {func, addressing, bytes, name}，func 用 getattr(instructions, \"_<name>\".lower()) 按名字反射绑定；opcode 0 特判为 quit——「一条指令一个函数，一张表管分发」",
+   "自定义指令集扩展：custom_opcodes.json 与 opcodes.json 同构，另挂 self.custom_ops——6502 ISA + 自有指令的幻想主机架构，证明「加指令=加表项+加函数」，不必改 CPU 主循环",
+   "寻址模式独立成类（ramencore/addressing.py）：accumulator/immediate/relative 各一个方法返回操作数地址——寻址计算与指令执行解耦，新指令只写语义不写寻址",
+   "外设即 GPIO/SPI（src/main.py + ST7789.py）：RPi.GPIO 八键输入按位掩码映射（GPIO21→128、GPIO20→64…GPIO13→1），ST7789 SPI 显示屏 init/clear——树莓派幻想主机：输入是位掩码、输出是 SPI 帧，与模拟器核心零耦合",
+   "内存模型独立（ramencore/memory.py）：Memory 类供 CPU 读写——指令、数据、显存同一地址空间的分辨由 Memory 层决定，与 6502 的真实内存映射哲学一致"
+  ],
+  "interfaces": [
+   "概念系统 lowcode/plang 的机器码与字节码层可参照本模式：opcode 表 JSON 化 + getattr 分发——「指令集即数据」",
+   "native/sysdev.py probe_toolchain() 检测 python3 与 RPi.GPIO 依赖面相（只读 which，不 import 硬件库）"
+  ],
+  "docs": [
+   "https://github.com/pepsipu/ramenbox/blob/master/utils/gen_ops.py（oplist 文本→opcodes.json 生成器）",
+   "https://github.com/pepsipu/ramenbox/blob/master/src/ramencore/cpu.py（寄存器与分发）",
+   "https://github.com/pepsipu/ramenbox/blob/master/src/ramencore/addressing.py（寻址模式类）",
+   "https://github.com/pepsipu/ramenbox/blob/master/src/main.py（GPIO 位掩码输入 + ST7789 输出）"
+  ],
+  "summary": "ramenbox 把 6502 模拟器写成「一张 opcode 表 + 每指令一函数 + 寻址模式独立类 + 外设即 GPIO/SPI」：gen_ops.py 从文档文本生成指令表，CPU 按字节反射分发。指令集模拟的最小可扩展骨架，外加幻想主机自定义指令的扩展位。",
+  "advice": [
+   "自建模拟器先建表：opcode→(func, addressing, length) 一张 JSON，指令函数用 _<name> 命名约定反射绑定——加指令不动主循环",
+   "寻址模式与指令语义解耦：addressing.py 出地址、instructions.py 出效果，两类正交增长",
+   "外设用位掩码与帧抽象（GPIO 八键→一字节、ST7789→SPI 帧），模拟器核心不 import 硬件库——可测性由此而来",
+   "指令表从权威文档文本生成（gen_ops.py 解析 oplist）比手抄表可靠；生成脚本要随仓库保留，表可重新生成",
+   "ramenbox 仓库无许可证：学习「表格驱动」思想可以，拷代码前须另行授权"
+  ]
+ },
+
+ "env_isolation": {
+  "name": "cx 多账户隔离模式：符号链接农场 + 环境变量选家",
+  "org": "pepsipu/cx（zsh；仓库未见许可证文件，默认保留所有权利，只学模式）",
+  "url": "https://github.com/pepsipu/cx",
+  "protocols": [
+   "每账户一个家（_cx_home）：$CX_HOMES/<name> 下 mkdir -p 建目录，把 $CX_HOME（~/.codex）下的每个条目 ln -sfn 软链进去——公共状态一份存储、多账户共享，不拷贝",
+   "凭据按账户分文件：$CX_AUTH/<name>.auth.json 链成该家的 auth.json——密钥按家隔离，家与家之间不串",
+   "选家即设环境变量：_cx_run <name> 先 _cx_home 备好家，再 CODEX_HOME=\"$CX_HOMES/<name>\" command codex \"$@\"——同一二进制多开，差异全在环境",
+   "枚举账户只读凭证结构（_cx_rows）：遍历 $CX_AUTH/*.auth.json，用 jq -er '.tokens.access_token' 判有效性并取名字——列账户不打印令牌本体",
+   "约 40 行 zsh 实现完整多账户管理——隔离三件套（独立 home + 链接农场共享 + env 选家）是 shell 层多实例的最小充分集"
+  ],
+  "interfaces": [
+   "本仓 GUI/CLI 的多配置档位（profiles.py 大而全/小而全）与设置注册表可参照「env 选家」思路做配置隔离；本知识库只供模式参照，不导入 cx 脚本",
+   "native/sysdev.py 不执行任何账户操作——cx 是学习样本，本仓红线同样是不经手任何凭据"
+  ],
+  "docs": [
+   "https://github.com/pepsipu/cx/blob/master/cx.zsh（约 40 行完整实现）",
+   "https://github.com/pepsipu/cx/blob/master/README.md"
+  ],
+  "summary": "cx 用约 40 行 zsh 实现 Codex CLI 多账户：每账户独立 home 目录、符号链接农场共享公共状态、CODEX_HOME 环境变量选家、jq 枚举账户不泄令牌。「不拷贝状态的多开」最小模式。",
+  "advice": [
+   "多开同类 CLI 的通用手法：独立 state 目录 + 软链共享只读部分 + 环境变量指定 state 根——比「复制整个配置目录」省空间且改一处生效多处",
+   "枚举账户/会话时只读结构不打印凭据本体（jq 取名字与有效性，不 echo access_token）——与全仓「不存/不打印原始 PII」同构",
+   "软链农场的隐患是「改共享文件影响所有家」——共享项要显式列清单，别整目录盲链",
+   "cx 仓库无许可证：模式可学，脚本勿拷"
+  ]
+ },
+
+ "service_api_workspace": {
+  "name": "torus 工作区模式：pnpm workspace + 边缘函数聚合校园服务",
+  "org": "pepsipu/torus（pnpm workspace / Cloudflare Workers；仓库未见许可证文件，默认保留所有权利，只学模式）",
+  "url": "https://github.com/pepsipu/torus",
+  "protocols": [
+   "pnpm 工作区三件套（pnpm-workspace.yaml + api/ + lib/ + web/）：lib/ 下三个可发布库（caltech-dining-api 取 Open Kitchen 菜单、whatsopen 查楼宇开放时间、caltech-course-data 课程数据），api/ 是 Cloudflare Worker（wrangler.jsonc + worker-configuration.d.ts），web/ 前端",
+   "一库一职责：每个 lib 只包一个上游数据源（ dining 的 Google Sheet、楼宇开放时间、课程数据）——聚合层（Worker）与数据源层（lib）分离，换源只换一个 lib",
+   "边缘函数做聚合与缓存：Worker 侧对外提供统一查询，lib 侧各自处理上游格式——「多源异构 → 单出口」的校园服务最小架构",
+   "致谢与数据伦理写在 README：菜单数据感谢 Eduardo 提供的 Google Sheet——数据来源可追溯，与全仓「引用必有出处」同构"
+  ],
+  "interfaces": [
+   "本仓 webapi.py / Deno 控制台 / report_viewer 的多层呈现可参照「lib 取数 → Worker/CLI 聚合 → web 呈现」三段；本知识库只供模式参照",
+   "native/sysdev.py probe_toolchain() 检测 node/pnpm 存在性（只读 which），不执行任何安装"
+  ],
+  "docs": [
+   "https://github.com/pepsipu/torus/blob/master/README.md",
+   "https://github.com/pepsipu/torus/tree/master/lib（三个数据源库）",
+   "https://github.com/pepsipu/torus/tree/master/api（Cloudflare Worker）"
+  ],
+  "summary": "torus 用 pnpm 工作区组织三个校园服务数据源库（食堂菜单/楼宇时间/课程数据）+ Cloudflare Worker 聚合 API + web 前端：一库一源、聚合层与取数层分离。小型数据聚合产品的标准工作区布局。",
+  "advice": [
+   "多源聚合先分库：每个上游一个 lib（含各自格式处理），聚合层只做统一出口与缓存——换源不伤聚合层",
+   "monorepo 用 pnpm workspace 而非复制粘贴：lib/api/web 一套 lockfile，版本对齐",
+   "README 致谢数据提供者并写明来源——数据伦理与可追溯性从第一行做起",
+   "torus 仓库无许可证：布局思想可学，代码勿拷"
+  ]
+ },
+
+ "learning_method": {
+  "name": "导入分析学习应用五步法（本仓「导入」指令的标准作业）",
+  "org": "本仓方法论（历次导入的沉淀：Linux 内核新特性 / docker-easyconnect / apcontroller / fail2ban / openkylin-skills / 鸿蒙仓库 / pepsipu 项目群）",
+  "url": "https://github.com/pepsipu",
+  "protocols": [
+   "第一步 浅克隆：git clone --depth 1 全仓库（含历史外的全部置顶项目），先建立「这个账号在做什么」的全景——pepsipu 的 7 个仓库一次克隆完再分析",
+   "第二步 读意图：每个仓库先读 README 与入口文件（main.rs / kernel.c / cpu.py / cx.zsh），用作者自己的话建立意图模型，不先看实现细节",
+   "第三步 读最小核心源：找「一个文件讲清核心」的那种——warpalloc 的 walloc.asm（110 行）、aski 的 compiler.rs+parser.rs+tokenizer.rs（约 900 行）、xinOS 的 allocator.c——小到能一次读完的实现最藏思想",
+   "第四步 提炼模式与边界：每个仓库产出「可复用模式 + 适用边界 + 反面教材」三件——warpalloc 的模式是预分配+单空闲链，边界是「别用来做游戏」，反面是 OSpaint 的 24 小时取舍",
+   "第五步 回灌本仓：知识层 JSON（data/sysdev_docs.json）→ native 只读层（native/sysdev.py）→ 任务（tasks/sysdev.py）→ 四入口接线（registry/models/cli/gui/subsystems）→ 概念系统登记（netsys/comp）→ 测试 → 文档 → 版本 → 提交推送",
+   "贯穿纪律：学习不等于打包。有许可证的（warpalloc MIT / xinOS-old BSD）可学可引用模式；无许可证的默认保留所有权利，只学思想不拷代码；所有模式总结必须是本仓原创表述",
+   "证据留痕：每个结论回链到具体文件与行（如 walloc.asm 的 sbrk 宏、cpu.py 的 ops 分发、gen_ops.py 的 oplist 解析）——「建议有出处」是全仓铁律"
+  ],
+  "interfaces": [
+   "本知识库即第五步的产物之一；native/sysdev.py 的 sysdev_report() 可零参复现全部学习结论",
+   "概念系统 netsys 的「导入学习应用」系列模块（Linux 7.3 内核 / ios-sweet / openKylin skills 等）与本仓的导入任务列表是同一条方法论的流水账"
+  ],
+  "docs": [
+   "本仓 tasks/ 目录历次导入子系统（asm / reverse / f2b / sysbase / apctrl / qarch…）",
+   "research/ 各概念系统构建脚本中的「导入学习应用」注释段"
+  ],
+  "summary": "导入分析学习应用五步法：浅克隆全景 → README 建意图 → 最小核心源 → 模式+边界+反面三件 → 回灌六层（知识/只读/任务/接线/概念/测试）。学习不等于打包，引用必有出处。",
+  "advice": [
+   "拿到导入指令先克隆再说话：没有源码就没有发言权，禁止凭仓库名猜内容",
+   "每个仓库必须产出至少一条「适用边界」——只学优点的导入是半成品",
+   "回灌必须过测试门禁与 omni 四件套（task/data/cli/gui）——接不完的线比不接更糟",
+   "许可证不明的仓库， README 里吹得再好也只学思想；本仓自身许可证边界（licenses/）同样接受这条检验"
+  ]
+ }
+}

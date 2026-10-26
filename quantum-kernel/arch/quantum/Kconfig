@@ -1,0 +1,182 @@
+# SPDX-License-Identifier: GPL-2.0
+#
+# Quantum architecture (arch/quantum) — Linux/quantum kernel configuration.
+#
+# 量子架构：把量子处理单元（QPU）作为「宿主模拟」架构接入 Linux 内核树。
+# 形态对齐 arch/um（User Mode Linux）：量子核在宿主上软件模拟（态矢量 +
+# 置换矩阵 Π_k 编码门 + π 环形链路缓冲），内核其余部分按架构无关语义运行。
+# 页粒度固定 4KiB（HAVE_PAGE_SIZE_4KB），与存储域 ext4 4K 对齐口径一致。
+#
+# 纯新增架构：不修改、不删除任何其他架构（arch/Kconfig 以
+# source "arch/$(SRCARCH)/Kconfig" 动态接入本文件）。
+
+menu "Quantum architecture options"
+
+# 模拟核运行在宿主 64 位工具链上（64BIT 通常由各架构自定义，此处独立定义）。
+config 64BIT
+	bool
+	default y
+
+config QUANTUM
+	bool
+	default y
+
+# 软件汉明权重：复用通用 lib/hweight.c 实现（宿主模拟无原生指令）。
+config GENERIC_HWEIGHT
+	def_bool y
+
+# 软件 checksum：复用通用 lib/checksum.c 可移植实现。宿主模拟架构没有
+# 硬件 checksum 外设，asm/checksum.h 不提供 bespoke 实现（asm-generic
+# 仅声明 csum_partial 等 extern，不定义）；选中后由 lib/checksum.c 提供
+# csum_partial/ip_compute_csum/ip_fast_csum/csum_tcpudp_nofold 定义，
+# 满足 lib/iov_iter.c（≤6.11 分支的 csum_and_copy_to_iter）等调用方。
+config GENERIC_CSUM
+	def_bool y
+
+# 支持 MMU：vmalloc/缺页等路径依赖（宿主模拟的页表由宿主进程承载）。
+config MMU
+	def_bool y
+	# ── 通用化借用（generic-y 头文件与通用实现）──────────────
+	select ARCH_DISABLE_KASAN_INLINE
+	select ARCH_HAS_CACHE_LINE_SIZE
+	select ARCH_HAS_CPU_FINALIZE_INIT
+	select ARCH_HAS_FORTIFY_SOURCE
+	select ARCH_HAS_GCOV_PROFILE_ALL
+	select ARCH_HAS_KCOV
+	select ARCH_HAS_STRNCPY_FROM_USER
+	select ARCH_HAS_STRNLEN_USER
+	select ARCH_HAS_STRICT_KERNEL_RWX
+	select ARCH_SUPPORTS_LTO_CLANG
+	select ARCH_SUPPORTS_LTO_CLANG_THIN
+	select ARCH_WANTS_DYNAMIC_TASK_STRUCT
+	select HAVE_ARCH_AUDITSYSCALL
+	select HAVE_ARCH_KASAN
+	select HAVE_ARCH_SECCOMP_FILTER
+	select HAVE_ASM_MODVERSIONS
+	select HAVE_DEBUG_KMEMLEAK
+	select HAVE_DEBUG_BUGVERBOSE
+	select HAVE_GCC_PLUGINS
+	select HAVE_PAGE_SIZE_4KB
+	select HAVE_UID16
+	select GENERIC_ATOMIC64 if !64BIT
+	select GENERIC_CLOCKEVENTS
+	select GENERIC_CPU_DEVICES
+	select GENERIC_IDLE_POLL_SETUP
+	select GENERIC_IRQ_SHOW
+	select GENERIC_PCI_IOMAP
+	select GENERIC_SMP_IDLE_THREAD
+	select GENERIC_STRNCPY_FROM_USER
+	select GENERIC_STRNLEN_USER
+	select GENERIC_TIME_VSYSCALL
+	select HAVE_ARCH_VMAP_STACK
+	select HAVE_ARCH_TRACEHOOK
+	select HAVE_RUST
+	select NO_DMA
+	select UACCESS_MEMCPY
+	select OF_EARLY_FLATTREE if OF
+	select TRACE_IRQFLAGS_SUPPORT
+	select TTY
+	help
+	  Quantum processing architecture: the QPU is emulated on the host
+	  (state-vector simulation, permutation-matrix number gates, pi-ring
+	  link buffer).  Page size is fixed at 4KiB to match the ext4/4K
+	  alignment discipline of the storage domain.
+
+config QUANTUM_QUBITS
+	int "Number of emulated qubits per QPU register"
+	range 1 20
+	default 8
+	help
+	  Width of the emulated quantum register (byte-wide by default,
+	  8 qubits = 256 basis states).  Keep in sync with the userspace
+	  quantum base (sysweeper native/quantum.py, MAX_QUBITS=20).
+
+config QUANTUM_LINK_SLOTS
+	int "Pi-ring link buffer slots (ceil(ratio * pi) by default)"
+	range 2 1024
+	default 7
+	help
+	  Depth of the CPU<->QPU exchange ring buffer.  Every instruction
+	  exchange is pushed into this link; overflow overwrites the oldest
+	  record and is counted (total_writes / overwrites).
+
+config QUANTUM_QPU
+	tristate "Quantum processing unit character device"
+	default m
+	depends on QUANTUM
+	help
+	  Expose the emulated QPU as /dev/qpu0 (misc character device).
+	  Userspace can encode/decode integers through the permutation
+	  matrix gates (ioctl QPU_ENC / QPU_DEC) and observe link stats.
+
+config QUANTUM_QPU_NR
+	int "Number of emulated QPU devices"
+	range 1 64
+	default 1
+	depends on QUANTUM_QPU
+	help
+	  Number of /dev/qpuN device instances to register.
+
+# ── 量子组网子系统（drivers/quantum/net，架构侧 kernel/quantum-net.c）──
+config QUANTUM_NET
+	tristate "Quantum networking subsystem (qnet)"
+	default y
+	depends on QUANTUM
+	help
+	  Quantum networking subsystem: register QPU-to-QPU links, maintain a
+	  Bell-pair distribution table, and account entanglement swapping and
+	  quantum teleportation.  Exposed as /dev/qnet0 (misc character device)
+	  and /proc/quantum-net.  This is a quantum-inspired accounting model
+	  over real kernel counters — not real quantum hardware.
+
+config QUANTUM_NET_NR
+	int "Number of emulated QNET links (Bell-pair routing slots)"
+	range 1 64
+	default 16
+	depends on QUANTUM_NET
+	help
+	  Size of the in-kernel Bell-pair routing table (max simultaneous
+	  QPU-to-QPU links).  Each slot tracks a peer node id, an active flag
+	  and a Bell-pair buffer count.
+
+# ── 能量激发态模型（kernel/quantum-energy.c，/proc/quantum-energy）───
+
+config QUANTUM_EXCITED_LEVELS
+	int "QPU discrete energy levels (ground + excited states)"
+	range 2 16
+	default 4
+	help
+	  Number of discrete energy levels E_0..E_{N-1}.  E_0 is the
+	  ground state; n >= 1 are excited states.  The idle CPU evolves
+	  over these levels with superposition/phase/collapse accounting
+	  (see Documentation/arch/quantum/energy-model.rst).
+
+config QUANTUM_ENERGY_STEP
+	int "Energy quantum between adjacent levels (accounting units)"
+	range 1 4096
+	default 16
+	help
+	  Energy gap dE = E_n - E_{n-1} in fictitious Planck units
+	  (accounting only, not a physical measurement).
+
+config QUANTUM_COHERENCE_TICKS
+	int "Observations per coherence (T2) halving"
+	range 1 1000
+	default 8
+	help
+	  After this many decoherence ticks the interference coherence
+	  of the model is halved (T2-like decay of cross terms).
+
+config QUANTUM_DECOHERE_STEPS
+	int "Idle iterations per T1/T2 decoherence tick"
+	range 1 4096
+	default 64
+	help
+	  Throttle for T1 (population relaxation toward ground) and T2
+	  (coherence halving) accounting inside arch_cpu_idle().
+
+endmenu
+
+# 各架构自行 source 的公共 Kconfig（HZ 频率选择等）——
+# 漏 source 会导致 CONFIG_HZ 未定义、timeconst.h 生成卡死。
+source "kernel/Kconfig.hz"

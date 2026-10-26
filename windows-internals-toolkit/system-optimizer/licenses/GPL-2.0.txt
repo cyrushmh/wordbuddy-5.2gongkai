@@ -1,0 +1,18 @@
+SPDX-License-Identifier: GPL-2.0-or-later
+官方全文: https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+
+GNU GENERAL PUBLIC LICENSE
+Version 2, June 1991
+Copyright (C) 1989, 1991 Free Software Foundation, Inc.
+https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+
+核心条款摘要（GPL v2 / "or later"）:
+1. 允许运行、研究、再发布、修改；**再发布（含二进制）必须同时提供对应源代码**。
+2. 整体派生作品（动态/静态链接到 GPL 代码）须以 GPL v2 整体授权（copyleft 传染性）。
+3. 不提供任何担保；修改须标注。
+
+------------------------------------------------------------------------------
+本文档引用该许可证的项目: aria2/aria2（GPL-2.0）
+用途: 开源下载软件——多协议多源命令行下载器，支持 HTTP/HTTPS/FTP/SFTP/BitTorrent/Metalink，
+      即「CDN（HTTP/FTP 镜像源）开关 + P2P（BitTorrent/Metalink）开关」的落地实现。
+本工具不打包其二进制，用户需自行按 GPL-2.0 条款安装使用；若将其与专有代码静态链接须注意传染性。

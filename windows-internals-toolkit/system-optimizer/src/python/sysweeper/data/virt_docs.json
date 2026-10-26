@@ -1,0 +1,168 @@
+{
+  "virt_overview": {
+    "name": "虚拟化层识别与优雅降级总览（virt）",
+    "org": "DMTF / libvirt / 各 Hypervisor 厂商",
+    "url": "https://www.dmtf.org/standards/redfish",
+    "protocols": [
+      "systemd-detect-virt（用户态虚拟化检测，跨 KVM/QEMU/VMware/VirtualBox/Hyper-V/Xen/container 统一接口）",
+      "CPUID 超管标志（/proc/cpuinfo 的 hypervisor 字段；VMware 字符串、Xen、KVM 等）",
+      "DMI/SMBIOS product_name（/sys/class/dmi/id/product_name 暴露 VMware/VirtualBox/QEMU/Hyper-V 等）",
+      "virtio 设备总线（/sys/bus/virtio/devices：guest 内 virtio 后端即虚拟化层信号）"
+    ],
+    "interfaces": [
+      "systemd-detect-virt(1)（detect-virt 子命令，返回 kvm/qemu/vmware/oracle/xen/microsoft/wsl/container-other 等）",
+      "/proc/cpuinfo（hypervisor 标志位 + 厂商字符串）",
+      "/sys/class/dmi/id/product_name、/sys/class/dmi/id/sys_vendor（SMBIOS 产品名/厂商）",
+      "/proc/1/environ 或 /.dockerenv（容器检测）"
+    ],
+    "summary": "virt 子系统只读识别本工具自身运行在哪一层虚拟化环境，据此把各只读探针标记为「可用」或「退化为概念观测」，确保整体在裸金属/各主流 Hypervisor/容器/WSL 内都不崩、只降级。",
+    "advice": "检测一律走只读接口；裸金属全开，受限 VM 退化为概念观测（只给指引不读敏感信号）；任何装增强工具/改 QEMU/crosvm 配置/加载内核模块只给规范指引，不代执行。"
+  },
+  "kvm_qemu": {
+    "name": "KVM/QEMU 虚拟化",
+    "org": "QEMU Project / KVM (Linux)",
+    "url": "https://www.qemu.org/docs/",
+    "protocols": [
+      "KVM（基于 Linux 内核的硬件加速虚拟化，/dev/kvm 设备）",
+      "QEMU 机器模型（qemu-system-*，ACPI/PCI/磁盘/网卡以软件模拟或半虚拟化呈现）",
+      "virtio 半虚拟化设备（virtio-blk / virtio-net / virtio-gpu）"
+    ],
+    "interfaces": [
+      "systemd-detect-virt → kvm 或 qemu",
+      "/proc/cpuinfo hypervisor 标志 + 'kvm'/'qemu' 厂商串",
+      "QEMU guest agent（qemu-ga，可选；只读不强制）"
+    ],
+    "summary": "KVM/QEMU 内 guest 拿到的是虚拟化硬件：vCPU 拓扑、virtio 磁盘/网卡、可选 virtio-gpu。SMART 经虚拟磁盘通常拿不到真实介质状态，DMI 可能暴露 QEMU。",
+    "advice": "guest 内退化项：设备长期保障的 SMART 读数按虚拟磁盘处理；电气传感器（IPMI/ACPI 温湿度）多数不可用；其余 OS 级探针正常。"
+  },
+  "vmware": {
+    "name": "VMware 虚拟化（ESXi / Workstation / Fusion）",
+    "org": "Broadcom / VMware",
+    "url": "https://docs.vmware.com/",
+    "protocols": [
+      "VMware 虚拟硬件版本（vmx-xx，vSphere 兼容性）",
+      "VMware Tools / open-vm-tools（guest 内增强，可选）",
+      "pvscsi / vmxnet3 半虚拟化设备"
+    ],
+    "interfaces": [
+      "systemd-detect-virt → vmware",
+      "/sys/class/dmi/id/product_name 含 'VMware'",
+      "/proc/cpuinfo 含 'VMware' 厂商串"
+    ],
+    "summary": "VMware guest 以 vmxnet3/pvscsi 等半虚拟化设备呈现；open-vm-tools 提供 guest 信息回传，但不强制。",
+    "advice": "guest 内退化项同 KVM/QEMU：SMART/传感器按虚拟化硬件处理；装 open-vm-tools 只给指引不代执行。"
+  },
+  "virtualbox": {
+    "name": "VirtualBox 虚拟化（Oracle）",
+    "org": "Oracle",
+    "url": "https://www.virtualbox.org/manual/",
+    "protocols": [
+      "VirtualBox 虚拟硬件（AHCI/Intel PRO/1000 网卡以模拟呈现）",
+      "Guest Additions（guest 内增强，可选）"
+    ],
+    "interfaces": [
+      "systemd-detect-virt → oracle",
+      "/sys/class/dmi/id/product_name 含 'VirtualBox'"
+    ],
+    "summary": "VirtualBox guest 默认以全模拟设备呈现（性能低于半虚拟化），Guest Additions 提供共享剪贴板/目录等，但不强制。",
+    "advice": "guest 内退化项同 VMware；装 Guest Additions 只给指引不代执行。"
+  },
+  "hyperv": {
+    "name": "Hyper-V / WSL（Microsoft）",
+    "org": "Microsoft",
+    "url": "https://learn.microsoft.com/virtualization/",
+    "protocols": [
+      "Hyper-V 虚拟化（根分区/子分区，VMBus 半虚拟化总线）",
+      "WSL2（轻量 Hyper-V 虚拟机跑 Linux 内核）",
+      "Hyper-V 集成服务（hv_utils，可选）"
+    ],
+    "interfaces": [
+      "systemd-detect-virt → microsoft（Hyper-V）",
+      "WSL：/proc/version 含 'Microsoft' / /proc/sys/kernel/osrelease 含 WSL",
+      "/proc/cpuinfo 含 'hypervisor' + Microsoft 标志"
+    ],
+    "summary": "Hyper-V guest 走 VMBus 半虚拟化；WSL2 是跑 Linux 内核的轻量 VM，无 systemd 默认、无完整 init。",
+    "advice": "WSL 内退化项：多数 Linux 探针可跑但无 init 系统（服务状态类探针退化）；Hyper-V guest 同 VMware 处理。"
+  },
+  "xen": {
+    "name": "Xen 虚拟化",
+    "org": "Xen Project",
+    "url": "https://xenproject.org/",
+    "protocols": [
+      "Xen PV（准虚拟化）/ HVM（全虚拟化）域",
+      "xenstore（域间通信，/proc/xen 或 xenfs）"
+    ],
+    "interfaces": [
+      "systemd-detect-virt → xen",
+      "/sys/hypervisor/type 为 'xen'",
+      "/proc/cpuinfo 含 'Xen' 厂商串"
+    ],
+    "summary": "Xen PV 域直接感知 hypervisor；HVM 域接近全虚拟化。xenstore 提供域元数据。",
+    "advice": "guest 内退化项同 KVM/QEMU；设备长期保障按虚拟磁盘处理。"
+  },
+  "container": {
+    "name": "容器（Docker / Podman / LXC / containerd）",
+    "org": "OCI / Docker / Podman",
+    "url": "https://opencontainers.org/",
+    "protocols": [
+      "OCI 运行时规范（runc/crun 实现）",
+      "cgroup / namespace 隔离（PID/network/mount 独立）",
+      "镜像层（overlayfs / aufs）"
+    ],
+    "interfaces": [
+      "/.dockerenv 存在、/proc/1/cgroup 含 docker/kubepods",
+      "systemd-detect-virt → podman / docker / container-other",
+      "/proc/self/cgroup 含 container runtime 标识"
+    ],
+    "summary": "容器共享宿主内核、隔离用户态；/proc / /sys 大量被屏蔽或视角受限，DMI/硬件传感器通常不可见。",
+    "advice": "容器内退化项最多：硬件本征/电气传感器/时空空间维（NUMA、真实挂载）多数读不到；只读探测退化为概念观测，给出宿主侧指引。"
+  },
+  "wsl": {
+    "name": "WSL（Windows Subsystem for Linux）",
+    "org": "Microsoft",
+    "url": "https://learn.microsoft.com/windows/wsl/",
+    "protocols": [
+      "WSL1（ syscall 翻译）/ WSL2（轻量 Hyper-V VM + 真实 Linux 内核）",
+      "9P 文件共享（drvfs，跨 Windows/Linux 文件系统桥）"
+    ],
+    "interfaces": [
+      "/proc/version 含 'Microsoft'",
+      "/proc/sys/kernel/osrelease 含 'WSL'/'microsoft-standard'",
+      "默认无 systemd（WSL2 可启用但没有完整 init 树）"
+    ],
+    "summary": "WSL 内是 Linux 用户态但跑在 Windows 上；WSL2 为轻量 VM，文件系统跨 drvfs 桥，init 体系不完整。",
+    "advice": "WSL 内退化项：服务状态/系统守护类探针退化（无完整 init）；其余 OS 级探针以 Linux 口径跑。"
+  },
+  "virt_full_run": {
+    "name": "虚拟机完整运行支持（只读探测 + 模板生成）",
+    "org": "KVM / libvirt / 各 Hypervisor 厂商 / Linux 内核",
+    "url": "https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html",
+    "protocols": [
+      "/dev/kvm 设备（KVM 硬件加速入口；存在且可读写即硬件加速可用）",
+      "CPU 虚拟化标志 vmx（Intel VT-x）/ svm（AMD-V）（/proc/cpuinfo）",
+      "嵌套虚拟化开关 kvm_intel.nested / kvm_amd.nested（/sys/module/.../parameters/nested）",
+      "virtio 半虚拟化设备总线（virtio-blk/net/scsi/gpu/9p/vhost）",
+      "Hyper-V VMBus 前端（hv_vmbus/hv_netvsc/hv_storvsc）、Xen 前端（xen-blkfront/xen-netfront）"
+    ],
+    "interfaces": [
+      "/dev/kvm 存在性与 os.access 可读性（只读，不创建）",
+      "/sys/module/kvm_intel/parameters/nested、/sys/module/kvm_amd/parameters/nested（只读）",
+      "libvirt 域 XML（type='kvm'）/ QEMU 命令行（-machine q35,accel=kvm|tcg）",
+      "VirtualBox VBoxManage（--nestedpaging on）/ VMware .vmx（vhv.enable=\"TRUE\"）",
+      "WSL .wslconfig（nestedVirtualization=true）"
+    ],
+    "summary": "完整运行支持在「识别+降级」之上，进一步只读探测本机能否完整跑起一层虚拟化（/dev/kvm、CPU 虚拟化标志、嵌套开关），并生成各 Hypervisor 运行配置只读模板与可嵌入 initramfs 的半虚拟化驱动模块清单，让整体在 KVM/QEMU/VMware/VirtualBox/Hyper-V/Xen/WSL/容器都能给出「怎么跑起来」的规范路径。",
+    "advice": "只探测、只生成模板、只给指引：不加载内核模块、不启动 VM、不装驱动、不改配置。无 /dev/kvm 时一律给 qemu -accel tcg 纯软件退路；嵌套需宿主开启对应开关（kvm_intel.nested=1 或 .wslconfig/VirtualBox/VMware 设置），由用户在宿主/guest 内确认。",
+    "embeddable_modules": [
+      "virtio-blk", "virtio-net", "virtio-scsi", "virtio-gpu", "virtio-balloon",
+      "virtio-9p", "vhost-net", "vhost-vsock", "bochs_drm", "qxl",
+      "hv_vmbus", "hv_netvsc", "hv_storvsc", "xen-blkfront", "xen-netfront"
+    ],
+    "initramfs_embed": {
+      "dracut": "dracut --add-drivers 'virtio-blk virtio-net vhost-net' -f",
+      "mkinitcpio": "在 /etc/mkinitcpio.conf 的 MODULES=(...) 加模块后 mkinitcpio -P",
+      "debian": "在 /etc/initramfs-tools/modules 加模块后 update-initramfs -u"
+    },
+    "run_templates": ["kvm(libvirt)", "qemu_cmd", "virtualbox", "vmware", "wsl", "container"]
+  }
+}

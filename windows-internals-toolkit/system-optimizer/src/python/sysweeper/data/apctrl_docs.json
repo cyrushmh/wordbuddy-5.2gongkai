@@ -1,0 +1,14 @@
+{
+  "title": "AP 集中控制器审计知识库（apctrl）",
+  "sources": [
+    "obsy/apcontroller（README 解析）：cron 轮询 + scp/ssh 取数 + 按 AP Group 下发 WiFi 配置",
+    "apcontroller 原则：不读不改现有配置；known_hosts 固定指纹防 MITM；key-based（dropbear）免密",
+    "用户脚本 /usr/share/apcontroller/scripts：#desc: 写说明、#warn: 写风险提示"
+  ],
+  "ap_stacks": {
+    "hostapd": "IEEE 802.11 AP 守护进程；配置在 /etc/hostapd/*.conf（ssid/interface/hw_mode/channel/country_code）",
+    "NetworkManager": "nmcli connection 可把连接设为 802-11-wireless ap 模式作共享热点",
+    "dnsmasq": "轻量 DHCP+DNS；dhcp-range 给网段、server 指上游 DNS；AP 场景常用"
+  },
+  "compliance": "本子系统只读审计：绝不读解密口令/密钥、绝不改任何 AP 配置、绝不新增/下发配置"
+}

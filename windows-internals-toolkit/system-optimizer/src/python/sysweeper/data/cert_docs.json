@@ -1,0 +1,144 @@
+{
+  "openssl": {
+    "name": "OpenSSL",
+    "org": "OpenSSL Software Foundation / 社区",
+    "url": "https://www.openssl.org/",
+    "protocols": ["TLS 1.2", "TLS 1.3", "DTLS", "X.509", "PKCS#7/12"],
+    "interfaces": ["openssl 命令行（openssl x509 / req / s_client / s_server / ciphers）", "libcrypto C API（EVP_* 抽象层）", "libssl C API（SSL_CTX / SSL 连接）", "ENGINE 插件接口（硬件加速/密钥卸载）"],
+    "docs": [
+      "https://www.openssl.org/docs/manmaster/",
+      "https://github.com/openssl/openssl/blob/master/README.md",
+      "https://www.openssl.org/source/"
+    ],
+    "summary": "事实标准的开源 TLS/密码学工具箱：cli 可签发/校验/转换证书，libcrypto/libssl 被大量服务与语言运行时调用。1.1.1 起默认 TLS1.3；1.0.2/1.0.1/0.9.8 已 EOL 不再收安全补丁。",
+    "advice": "只用受支持版本（3.x / 1.1.1 已 EOL 于 2023-09）；优先 libcrypto EVP 抽象层而非裸算法；证书校验务必走完整链+OCSP/CRL，不跳过。"
+  },
+  "libressl": {
+    "name": "LibreSSL",
+    "org": "OpenBSD 项目",
+    "url": "https://www.libressl.org/",
+    "protocols": ["TLS 1.2", "TLS 1.3", "X.509"],
+    "interfaces": ["与 OpenSSL 源码/ABI 兼容的 drop-in 替换（libcrypto/libssl/openssl 命令同名）", "portable 分支（非 OpenBSD 平台）"],
+    "docs": [
+      "https://www.libressl.org/",
+      "https://github.com/libressl-portable/portable"
+    ],
+    "summary": "OpenBSD 在 Heartbleed 后从 OpenSSL 派生的清理版，API 兼容、默认更安全（去除老旧协议/危险默认），常作 OpenSSL 的 drop-in 替换。",
+    "advice": "需要「开源、可替换 OpenSSL」时优先评估 LibreSSL/BoringSSL；ABI 兼容前提下替换要看发行版打包与符号版本。"
+  },
+  "boringssl": {
+    "name": "BoringSSL",
+    "org": "Google",
+    "url": "https://boringssl.googlesource.com/boringssl/",
+    "protocols": ["TLS 1.2", "TLS 1.3", "QUIC(TLS1.3)"],
+    "interfaces": ["libcrypto/libssl C API（刻意不保证稳定 ABI，随 Chrome/Android 演进）", "被 Chromium / Android / grpc 使用"],
+    "docs": [
+      "https://boringssl.googlesource.com/boringssl/",
+      "https://github.com/google/boringssl"
+    ],
+    "summary": "Google 维护的 OpenSSL 派生，专注 Chromium/Android 的 TLS 栈，默认去除了大量过时/危险特性，强调稳定与可审计。",
+    "advice": "不要把它当通用 OpenSSL 替代品（ABI 不稳定）；移动端/Chromium 生态已内置即用。"
+  },
+  "gnutls": {
+    "name": "GnuTLS",
+    "org": "GnuTLS 项目（红帽主导）",
+    "url": "https://www.gnutls.org/",
+    "protocols": ["TLS 1.2", "TLS 1.3", "DTLS", "X.509", "PKCS#12", "OpenPGP(已弃)"],
+    "interfaces": ["gnutls 库（C API）", "certtool（证书与密钥生成/查看）", "gnutls-cli / gnutls-serv（调试连接）", "gnutls-serv 测试服务"],
+    "docs": [
+      "https://www.gnutls.org/documentation.html",
+      "https://gnutls.org/manual/"
+    ],
+    "summary": "Linux 上另一主流开源 TLS 库，配套 certtool 可生成/查看 X.509 与 PKCS#12，gnutls-cli 可做 TLS 连通性调试。",
+    "advice": "在 GNU 生态（GNOME/NetworkManager/wget）中常见；与 OpenSSL 并存时按各应用所用库分别核对版本与协议。"
+  },
+  "x509": {
+    "name": "X.509 公钥证书 (RFC 5280)",
+    "org": "IETF",
+    "url": "https://datatracker.ietf.org/doc/html/rfc5280",
+    "protocols": ["X.509 v3", "证书链/信任锚", "CRL", "OCSP"],
+    "interfaces": ["证书字段：Subject/Issuer/SAN/有效期/公钥/扩展密钥用法(EKU)", "信任锚（根 CA 内置）/中间 CA 链", "CRL(OCSP) 吊销检查"],
+    "docs": [
+      "https://datatracker.ietf.org/doc/html/rfc5280",
+      "https://datatracker.ietf.org/doc/html/rfc6962 (证书透明度 CT)"
+    ],
+    "summary": "TLS/代码签名/设备身份普遍采用的证书格式。关键：完整链校验、SAN 匹配、有效期、EKU 约束、吊销状态。自签名与过期证书是常见风险点。",
+    "advice": "只读审计只看公开元数据（有效期/SAN/签发者/链），绝不读取或解密私钥；临近过期（<30 天）提醒续期，走 ACME 自动化最稳。"
+  },
+  "acme": {
+    "name": "ACME 自动证书管理 (RFC 8555) / Let's Encrypt",
+    "org": "IETF / Let's Encrypt (ISRG)",
+    "url": "https://datatracker.ietf.org/doc/html/rfc8555",
+    "protocols": ["ACME", "HTTP-01", "DNS-01", "TLS-ALPN-01"],
+    "interfaces": ["ACME 目录/账户/订单/挑战/最终实体证书", "certbot / acme.sh 等客户端", "90 天短生命周期 + 自动续期"],
+    "docs": [
+      "https://datatracker.ietf.org/doc/html/rfc8555",
+      "https://letsencrypt.org/docs/"
+    ],
+    "summary": "标准化自动签发/续期证书的协议，Let's Encrypt 免费实现。把「人工换证」变成自动循环，大幅降低证书过期导致的通信中断。",
+    "advice": "服务端证书优先用 ACME 自动续期（监控到期日）；客户端设备证书不用公网 CA，走私有 CA/设备身份证书。"
+  },
+  "pkcs12": {
+    "name": "PKCS#12 密钥+证书打包 (RFC 7292)",
+    "org": "IETF / RSA 实验室",
+    "url": "https://datatracker.ietf.org/doc/html/rfc7292",
+    "protocols": ["PKCS#12 (.p12/.pfx)", "对称加密保护私钥"],
+    "interfaces": ["openssl pkcs12 -export/-in/-info", "把私钥+证书+链打入单文件并用口令保护"],
+    "docs": ["https://datatracker.ietf.org/doc/html/rfc7292"],
+    "summary": "把私钥与证书（含链）打包成单文件、用口令对称加密。迁移备份方便，但口令弱=私钥裸奔。",
+    "advice": "p12 只在本机/私密介质备份，口令强且不一处存放；整理清单时只列是否存在与到期，不读取内部私钥。"
+  },
+  "tpm": {
+    "name": "TPM 2.0 可信平台模块（硬件信任根）",
+    "org": "Trusted Computing Group (TCG) / 国际",
+    "url": "https://trustedcomputinggroup.org/work-groups/trusted-platform-module/",
+    "protocols": ["TPM 2.0", "PCR(平台配置寄存器)", "EK(背书密钥)", "AK/AIK(证明密钥)", "持久化句柄"],
+    "interfaces": ["/sys/class/tpm* (Linux 内核 tpm 子系统)", "tpm2_tools（tpm2_getcap/tpm2_create/tpm2_evictcontrol）", "Windows TPM 管理（Get-Tpm / tpm.msc）", "UEFI/固件中的 fTPM/dTPM"],
+    "docs": [
+      "https://trustedcomputinggroup.org/resource/trusted-platform-module-2-0-a-brief-introduction/",
+      "https://tpm2-software.github.io/"
+    ],
+    "summary": "设备内置的硬件信任根：私钥在芯片内生成且不可导出，用于磁盘加密密钥封装（BitLocker/LUKS）、安全启动度量、远程证明。是「最低内置硬件证书/密钥保护」的物理基座。",
+    "advice": "只读审计只判定 TPM 是否存在/已启用/已拥有（不导出任何密钥）；引导用户开启 fTPM + 固件新安（Secure Boot）保护密钥与启动链。"
+  },
+  "fido": {
+    "name": "FIDO2 / U2F / WebAuthn（硬件认证器）",
+    "org": "FIDO 联盟 / W3C",
+    "url": "https://fidoalliance.org/specifications/",
+    "protocols": ["WebAuthn", "CTAP2", "U2F"],
+    "interfaces": ["安全密钥（USB/NFC/蓝牙）", "平台认证器（指纹/面容，Android Keystore/iOS Secure Enclave）", "浏览器 navigator.credentials / 系统通行密钥"],
+    "docs": [
+      "https://www.w3.org/TR/webauthn-2/",
+      "https://fidoalliance.org/specifications/download/"
+    ],
+    "summary": "抗钓鱼的硬件/平台认证：私钥锁在认证器内、每次登录用挑战签名，口令不再裸传。通行密钥（passkey）是其跨设备形态。",
+    "advice": "优先用平台/安全密钥做高价值账户第二因素或通行密钥；私钥永不离开认证器，整理审计时不要尝试读取。"
+  },
+  "keystore": {
+    "name": "平台密钥库（密钥与证书存储）",
+    "org": "各 OS 厂商",
+    "url": "https://developer.android.com/training/articles/keystore",
+    "protocols": ["Keychain(Secure Enclave)", "CNG/证书存储(Windows)", "NSS/gnome-keyring(Linux)", "Android Keystore"],
+    "interfaces": ["macOS security (login.keychain / 系统钥匙串)", "Windows certutil -store / CNG KSP", "Linux certutil -d (NSS) / gnome-keyring", "Android Keystore（密钥在 TEE/StrongBox 内）"],
+    "docs": [
+      "https://developer.apple.com/documentation/security/keychain_services",
+      "https://learn.microsoft.com/windows/win32/seccng/cng-portal",
+      "https://developer.android.com/training/articles/keystore"
+    ],
+    "summary": "各 OS 把私钥与证书锁在受保护存储：macOS Keychain 后端常是 Secure Enclave，Windows 是 CNG/TPM，Android 是 Keystore(TEE)。移动端优先用硬件支持密钥。",
+    "advice": "只读审计只列存储名称/位置（不读口令）；移动端引导用 Android Keystore（硬件支持），桌面引导密钥后端绑定 TPM/Secure Enclave。"
+  },
+  "device_cert": {
+    "name": "设备身份证书 (IEEE 802.1AR IDevID/LEDevID)",
+    "org": "IEEE / 国际",
+    "url": "https://ieeexplore.ieee.org/document/8938301",
+    "protocols": ["802.1AR IDevID（出厂不可变身份）", "LEDevID（本地生成可证明身份）", "制造商背书链"],
+    "interfaces": ["出厂烧录的 IDevID（私钥在硬件/TPM 内，不可导出）", "LEDevID 由 IDevID 证明后在本地生成", "用于零接触配网/设备证明/相互 TLS"],
+    "docs": [
+      "https://1.ieee802.org/security/802-1ar/",
+      "https://datatracker.ietf.org/doc/html/rfc8995 (BRSKI 零接触配网)"
+    ],
+    "summary": "设备出厂即带「不可变身份证书」（IDevID，私钥锁在硬件/TPM）与制造商背书链；LEDevID 在其证明下本地生成。是设备级「最低内置硬件证书」——证明「这台设备确实是它声称的那台」。",
+    "advice": "只读审计只判定是否存在硬件背书身份（如 TPM EK 证书）；用于证明设备可信、做相互 TLS，私钥不可导出，绝不尝试读取。"
+  }
+}

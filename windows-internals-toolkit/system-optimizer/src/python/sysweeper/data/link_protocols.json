@@ -1,0 +1,130 @@
+{
+  "tcp": {
+    "name": "TCP（传输控制协议，面向连接、可靠字节流）",
+    "org": "IETF（RFC 793 / RFC 9293）",
+    "url": "https://www.rfc-editor.org/rfc/rfc9293",
+    "protocols": [
+      "OSI 第 4 层（传输层）；与 IP（网络层）配合构成 TCP/IP 栈",
+      "RFC 9293（TCP 现行规范，取代 RFC 793）：三次握手、可靠交付、流量控制、拥塞控制",
+      "RFC 7323（TCP 高性能扩展：窗口缩放 + 时间戳 + PAWS）",
+      "RFC 9002（BBR 拥塞控制思路，IETF CCRG）"
+    ],
+    "interfaces": [
+      "socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)（BSD socket API）",
+      "sysctl net.ipv4.tcp_*（Linux 内核 TCP 栈可调参数，如 tcp_congestion_control）",
+      "ss -tinp（逐连接 TCP 内部指标：rtt / cwnd / retrans；sock_diag）"
+    ],
+    "docs": [
+      "RFC 9293（TCP 规范，rfc-editor.org）",
+      "Linux kernel Documentation/networking/ip-sysctl.rst（TCP 栈参数）"
+    ],
+    "summary": "TCP 在不可靠的 IP 之上提供面向连接、可靠、有序、字节流的传输：三次握手建连、序列号/确认/重传保证可靠、滑动窗口做流控、拥塞控制（Reno/Cubic/BBR）避免压垮网络。是 Web/SSH/数据库等绝大多数应用层协议的承载。",
+    "advice": "TCP 是「传输层」而非链接层；深度调优走各自的官方接口（sysctl / ethtool / tc），绝不套用协议层 sysctl 写法。调优项见 TASKS（net_*，全 opt_in）。"
+  },
+  "udp": {
+    "name": "UDP（用户数据报协议，无连接、尽力交付）",
+    "org": "IETF（RFC 768）",
+    "url": "https://www.rfc-editor.org/rfc/rfc768",
+    "protocols": [
+      "OSI 第 4 层（传输层）；无连接、无重传、低开销",
+      "RFC 768（UDP 规范）：仅 8 字节首部（源/目的端口 + 长度 + 校验和）",
+      "常承载 DNS（RFC 1035）/ SNMP / DHCP / QUIC（RFC 9000）/ VoIP 等"
+    ],
+    "interfaces": [
+      "socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)（BSD socket API）",
+      "ss -unlp（UDP 监听套接字检视，sock_diag）"
+    ],
+    "docs": [
+      "RFC 768（UDP 规范，rfc-editor.org）",
+      "Linux kernel Documentation/networking/ip-sysctl.rst（UDP 栈参数）"
+    ],
+    "summary": "UDP 提供无连接、尽力而为的数据报传输：无握手、无重传、无拥塞控制，首部仅 8 字节，延迟与开销极低。适合对时延敏感或自带可靠性的应用（DNS 查询、媒体流、游戏、QUIC）。无连接特性也使其适合做发现/广播类通信（见 mesh 的 UDP 发现）。",
+    "advice": "UDP 无连接、无内置可靠，故「发现/广播」用 UDP（mesh 节点发现），「可靠命令通道」用 TCP（mesh 节点互联）。二者按各自职责分工，不混用。"
+  },
+  "rfcomm": {
+    "name": "RFCOMM（蓝牙串口仿真协议）",
+    "org": "Bluetooth SIG（基于 ETSI TS 07.10）",
+    "url": "https://www.bluetooth.com/specifications/specs/rfcomm-1-2/",
+    "protocols": [
+      "OSI 第 2 层之上的电缆替代（serial-port emulation），承载于 L2CAP 之上",
+      "ETSI TS 101 369 / GSM 07.10（多路复用协议 TS 07.10）的蓝牙适配",
+      "提供最多 60 个仿真串口（DLCI），透明的 RS-232 控制信号（RTS/CTS/DTR/DSR）"
+    ],
+    "interfaces": [
+      "BlueZ：org.bluez.SerialProxyManager1 / rfcomm bind（D-Bus 与 rfcomm 工具）",
+      "bluetoothctl（配对与信任设备，rfcomm 通道建立在已配对链路之上）",
+      "POSIX pty/tty：rfcomm 绑定后表现为 /dev/rfcommN 串口设备"
+    ],
+    "docs": [
+      "Bluetooth RFCOMM Specification v1.2（bluetooth.com）",
+      "BlueZ rfcomm(1) / org.bluez D-Bus API"
+    ],
+    "summary": "RFCOMM 在蓝牙 L2CAP 之上仿真经典串口（RS-232），让老式串口应用无需改动即可跑在蓝牙上（如 SP（Serial Port Profile）、DUN、PPPoE 拨号）。它是经典蓝牙（BR/EDR）的链路/会话层协议，对应蓝牙 Profiles 的「串口替代」场景。",
+    "advice": "RFCOMM 需先经 bluetoothctl 配对并建立受信任链路；用 rfcomm bind 把通道映射为 /dev/rfcommN。只读探测：检查 bluetoothd 是否运行、设备是否已配对；写操作（bind/unbind）需 opt-in 且只在已配对设备上进行。"
+  },
+  "serial": {
+    "name": "串口 / RS-232（异步串行通信，物理层）",
+    "org": "TIA-232 / ITU-T V.24 / ISO/IEC 8482",
+    "url": "https://www.itu.int/rec/T-REC-V.24-2000-I",
+    "protocols": [
+      "OSI 第 1 层（物理层）+ 简单的链路层（起止位帧）；TIA-232（原 EIA RS-232）",
+      "ITU-T V.24（电路定义）/ V.28（电气特性）；ISO/IEC 8482（平衡交换电路）",
+      "8N1（8 数据位/无校验/1 停止位）等帧格式；波特率 9600/115200 等"
+    ],
+    "interfaces": [
+      "POSIX termios：open(/dev/ttyS0 或 /dev/ttyUSBx) + tcsetattr（波特率/校验/流控）",
+      "Python 标准库 serial（pyserial，第三方）或 termios/tty 标准库访问",
+      "stty（GNU coreutils：stty -F /dev/ttyUSB0 9600）"
+    ],
+    "docs": [
+      "ITU-T V.24 / V.28 建议书",
+      "TIA-232-F（TIA 标准）"
+    ],
+    "summary": "串口是点到点的异步串行链路，历史最久、最稳的「链接协议」之一：两根数据线 + 流控线，按波特率逐字节收发。无寻址、无重传，靠链路两端约定波特率/帧格式保证互通。今天多用于嵌入式调试（UART）、工业设备、GPS 模块、调试控制台（console）。",
+    "advice": "串口是物理层链接协议；只读探测看 /dev/tty* 与内核 tty 驱动；配置用 termios/stty 设波特率与校验。注意流控（RTS/CTS/无流控）两端必须一致，否则乱码。"
+  },
+  "ble": {
+    "name": "BLE（Bluetooth Low Energy，低功耗蓝牙链路层）",
+    "org": "Bluetooth SIG（Bluetooth Core Specification 4.0+）",
+    "url": "https://www.bluetooth.com/learn-about-bluetooth/tech/le/",
+    "protocols": [
+      "OSI 第 1/2 层（物理层 + 链路层）；Bluetooth Core Spec 的 LE 部分",
+      "IEEE 802.15.1 同源的 2.4GHz ISM 跳频；LE 用 40 个信道（3 广播 + 37 数据）",
+      "GATT（Generic Attribute Profile）在 L2CAP/ATT 之上做服务/特征发现",
+      "广播（advertising）/ 扫描（scanning）/ 连接（connection）状态机"
+    ],
+    "interfaces": [
+      "BlueZ：org.bluez.Device1 / org.bluez.GattService1 / org.bluez.Adapter1（D-Bus）",
+      "bluetoothctl（scan on / devices / connect，LE 设备发现与连接）",
+      "hcitool lescan（只读扫描 LE 广播；部分发行版已弃用，改用 bluetoothctl）"
+    ],
+    "docs": [
+      "Bluetooth Core Specification（bluetooth.com，LE 部分）",
+      "BlueZ D-Bus API（org.bluez.Adapter1 / Device1 / GattService1）"
+    ],
+    "summary": "BLE 是蓝牙的低功耗分支：链路层用 40 信道跳频、极短报文、连接事件稀疏，功耗比经典蓝牙低一到两个数量级。应用层走 GATT（属性协议 ATT），把能力建模成「服务/特征」可被读/写/订阅。手机外设、信标、传感器、可穿戴多用 BLE。",
+    "advice": "BLE 设备发现用 bluetoothctl scan on（只读）；连接与 GATT 访问需先配对。只读探测：列已配对 LE 设备、看 adapter 是否支持 LE（bluetoothctl show 的 UUID 含 fe9a...）。写操作（配对/连接）需 opt-in。"
+  },
+  "ieee802154": {
+    "name": "IEEE 802.15.4（低速无线个域网物理/链路层）",
+    "org": "IEEE（IEEE 802.15.4-2020）",
+    "url": "https://standards.ieee.org/ieee/802.15.4/7073/",
+    "protocols": [
+      "OSI 第 1/2 层（PHY + MAC）；2.4GHz O-QPSK（16 信道）/ Sub-GHz（915/868/780MHz）",
+      "CSMA-CA 信道接入；帧含 PAN ID / 短地址 / 64 位 EUI-64；ACK 可选",
+      "IEEE 802.15.4（Zigbee / Thread / 6LoWPAN 的物理与 MAC 基座）",
+      "6LoWPAN（RFC 4944）：把 IPv6 压缩适配到 128 字节小帧，形成无线个域网 IP"
+    ],
+    "interfaces": [
+      "Linux ieee802154 子系统：lowpan 接口 + iwpan 工具（CONFIG_IEEE802154）",
+      "wpan-tools：iwpan phy / dev（配置 phy 与低功耗 PAN 设备，只读 list）",
+      "serial (AT 指令，如 XBee)：部分 802.15.4 模块暴露 AT 命令串口接口"
+    ],
+    "docs": [
+      "IEEE 802.15.4-2020（IEEE 标准）",
+      "RFC 4944（6LoWPAN 适配）/ Zigbee Alliance / Thread Group 规范"
+    ],
+    "summary": "IEEE 802.15.4 定义低速无线个域网（LR-WPAN）的物理与 MAC 层：极低成本、极低功耗、小帧（127 字节），是 Zigbee、Thread、6LoWPAN、WirelessHART 的共同底座。它的 MAC 层 CSMA-CA + ACK 与 mesh 路由（Zigbee/6LoWPAN RPL）天然契合「多设备自通信」场景——正是本地 mesh 的链路层候选之一。",
+    "advice": "802.15.4 是链路层；Linux 上经 ieee802154/6LoWPAN 子系统与 iwpan 工具访问。只读探测看内核是否编入 CONFIG_IEEE802154 与 lowpan 接口；写操作（组 PAN、建 6LoWPAN 链路）需 opt-in。桌面多数无 802.15.4 收发器，探测不到则降级为指引。"
+  }
+}

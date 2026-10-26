@@ -1,0 +1,338 @@
+{
+  "files": [
+    {
+      "account": "道医课堂",
+      "file": "2022-06-01_这个地方如有不通，你的整个身体，就会紊乱了！.md",
+      "bom": false,
+      "utf8_ok": true,
+      "chars_total": 3791,
+      "chars_cjk": 2844,
+      "trad_ratio": 0.0,
+      "has_halfwidth_punct": true,
+      "classics": {
+        "黄帝内经": 1,
+        "素问": 5,
+        "灵枢": 2,
+        "类经": 1,
+        "难经": 4
+      },
+      "topics": [
+        [
+          "脏腑辨证",
+          65
+        ],
+        [
+          "穴位经络",
+          12
+        ]
+      ]
+    },
+    {
+      "account": "道医课堂",
+      "file": "2022-07-03_伸筋一寸，寿涨十年！每晚花上十分钟，三招通经拔病根！(中医专家示范）.md",
+      "bom": false,
+      "utf8_ok": true,
+      "chars_total": 3780,
+      "chars_cjk": 2856,
+      "trad_ratio": 0.0,
+      "has_halfwidth_punct": true,
+      "classics": {},
+      "topics": [
+        [
+          "穴位经络",
+          47
+        ],
+        [
+          "脏腑辨证",
+          38
+        ]
+      ]
+    },
+    {
+      "account": "道医课堂",
+      "file": "2024-11-13_肝连阴器，肝伤则性伤？.md",
+      "bom": false,
+      "utf8_ok": true,
+      "chars_total": 1599,
+      "chars_cjk": 1059,
+      "trad_ratio": 0.0019,
+      "has_halfwidth_punct": false,
+      "classics": {},
+      "topics": [
+        [
+          "脏腑辨证",
+          39
+        ],
+        [
+          "情志疗愈",
+          2
+        ]
+      ]
+    },
+    {
+      "account": "道医课堂",
+      "file": "2025-01-22_防治低血压老偏方.md",
+      "bom": false,
+      "utf8_ok": true,
+      "chars_total": 2002,
+      "chars_cjk": 1394,
+      "trad_ratio": 0.0,
+      "has_halfwidth_punct": false,
+      "classics": {},
+      "topics": [
+        [
+          "脏腑辨证",
+          19
+        ],
+        [
+          "方药食疗",
+          9
+        ]
+      ]
+    },
+    {
+      "account": "道教医学",
+      "file": "2019-04-07_為何不能免費算命？.md",
+      "bom": false,
+      "utf8_ok": true,
+      "chars_total": 1970,
+      "chars_cjk": 1417,
+      "trad_ratio": 0.012,
+      "has_halfwidth_punct": true,
+      "classics": {},
+      "topics": [
+        [
+          "民俗命理",
+          20
+        ],
+        [
+          "方药食疗",
+          3
+        ]
+      ]
+    },
+    {
+      "account": "道教医学",
+      "file": "2021-07-19_每天学一味中药，蛤蚧！.md",
+      "bom": false,
+      "utf8_ok": true,
+      "chars_total": 2474,
+      "chars_cjk": 1596,
+      "trad_ratio": 0.0,
+      "has_halfwidth_punct": true,
+      "classics": {
+        "本草纲目": 1
+      },
+      "topics": [
+        [
+          "脏腑辨证",
+          16
+        ],
+        [
+          "方药食疗",
+          12
+        ]
+      ]
+    },
+    {
+      "account": "道教医学",
+      "file": "2021-11-29_刺激手上两穴，可清心火、缓解焦虑、摆脱心烦！.md",
+      "bom": false,
+      "utf8_ok": true,
+      "chars_total": 1295,
+      "chars_cjk": 764,
+      "trad_ratio": 0.0,
+      "has_halfwidth_punct": false,
+      "classics": {},
+      "topics": [
+        [
+          "脏腑辨证",
+          20
+        ],
+        [
+          "情志疗愈",
+          14
+        ]
+      ]
+    },
+    {
+      "account": "道教医学",
+      "file": "2022-02-08_孩子感冒发烧只需一个穴位，可惜知道的人太少了！（转给家长）.md",
+      "bom": false,
+      "utf8_ok": true,
+      "chars_total": 1559,
+      "chars_cjk": 970,
+      "trad_ratio": 0.001,
+      "has_halfwidth_punct": false,
+      "classics": {},
+      "topics": [
+        [
+          "穴位经络",
+          21
+        ],
+        [
+          "方药食疗",
+          4
+        ]
+      ]
+    },
+    {
+      "account": "道教医学",
+      "file": "2025-05-13_这八个穴位，可调全身！一定要记好！.md",
+      "bom": false,
+      "utf8_ok": true,
+      "chars_total": 2758,
+      "chars_cjk": 1913,
+      "trad_ratio": 0.0005,
+      "has_halfwidth_punct": true,
+      "classics": {
+        "难经": 3
+      },
+      "topics": [
+        [
+          "脏腑辨证",
+          48
+        ],
+        [
+          "穴位经络",
+          19
+        ]
+      ]
+    },
+    {
+      "account": "道教医学",
+      "file": "2025-06-09_教你一个神奇的穴位，每天按一按，赶走头痛、失眠、记忆力减退！.md",
+      "bom": false,
+      "utf8_ok": true,
+      "chars_total": 2406,
+      "chars_cjk": 1689,
+      "trad_ratio": 0.0,
+      "has_halfwidth_punct": true,
+      "classics": {},
+      "topics": [
+        [
+          "脏腑辨证",
+          31
+        ],
+        [
+          "穴位经络",
+          21
+        ]
+      ]
+    },
+    {
+      "account": "道教医学",
+      "file": "2025-07-27_这几式道家睡仙功，每天几分钟养全身气血.md",
+      "bom": false,
+      "utf8_ok": true,
+      "chars_total": 2441,
+      "chars_cjk": 1748,
+      "trad_ratio": 0.0,
+      "has_halfwidth_punct": true,
+      "classics": {},
+      "topics": [
+        [
+          "脏腑辨证",
+          10
+        ],
+        [
+          "穴位经络",
+          6
+        ]
+      ]
+    },
+    {
+      "account": "道教医学",
+      "file": "2025-08-02_国学经典《古文观止》，教你八种人生智慧.md",
+      "bom": false,
+      "utf8_ok": true,
+      "chars_total": 2640,
+      "chars_cjk": 1914,
+      "trad_ratio": 0.0005,
+      "has_halfwidth_punct": false,
+      "classics": {
+        "周易": 2
+      },
+      "topics": [
+        [
+          "脏腑辨证",
+          22
+        ],
+        [
+          "国学修身",
+          22
+        ]
+      ]
+    },
+    {
+      "account": "道教医学",
+      "file": "2025-11-02_脾好不好看大便，肾强不强看小便，身体的“诚实报告”一查便知.md",
+      "bom": false,
+      "utf8_ok": true,
+      "chars_total": 4545,
+      "chars_cjk": 3298,
+      "trad_ratio": 0.003,
+      "has_halfwidth_punct": false,
+      "classics": {
+        "黄帝内经": 1
+      },
+      "topics": [
+        [
+          "脏腑辨证",
+          135
+        ],
+        [
+          "方药食疗",
+          7
+        ]
+      ]
+    },
+    {
+      "account": "道教医学",
+      "file": "2025-12-21_当“知”的智慧照亮身心的每一个角落，疗愈，便自然而然地发生了。.md",
+      "bom": false,
+      "utf8_ok": true,
+      "chars_total": 2449,
+      "chars_cjk": 1860,
+      "trad_ratio": 0.0,
+      "has_halfwidth_punct": false,
+      "classics": {
+        "黄帝内经": 2,
+        "道德经": 1,
+        "老子": 3,
+        "庄子": 1
+      },
+      "topics": [
+        [
+          "脏腑辨证",
+          30
+        ],
+        [
+          "情志疗愈",
+          28
+        ]
+      ]
+    }
+  ],
+  "classic_hits": {
+    "黄帝内经": 4,
+    "素问": 5,
+    "灵枢": 2,
+    "类经": 1,
+    "难经": 7,
+    "本草纲目": 1,
+    "周易": 2,
+    "道德经": 1,
+    "老子": 3,
+    "庄子": 1
+  },
+  "topic_hits": {
+    "穴位经络": 139,
+    "方药食疗": 114,
+    "脏腑辨证": 480,
+    "情志疗愈": 62,
+    "功法导引": 11,
+    "民俗命理": 20,
+    "国学修身": 24
+  }
+}

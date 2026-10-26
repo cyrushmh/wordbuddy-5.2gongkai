@@ -1,0 +1,23 @@
+# 构建上下文排除：Dockerfile 只需要 pyproject.toml / README.md / MANIFEST.in / src/，
+# 其余（测试、文档、研究材料、前端与自动化目录、版本库与 CI）一概不进上下文。
+# 缩小上下文 = 构建更快、缓存失效更精准、源码树不外泄进镜像层。
+__pycache__/
+*.py[cod]
+*.egg-info/
+.git/
+.github/
+.venv/
+venv/
+tests/
+docs/
+research/
+build/
+dist/
+uniapp-cleaner/
+windows-automation/
+tools/
+report_viewer.html
+AGENTS.md
+*.md
+!README.md
+licenses/

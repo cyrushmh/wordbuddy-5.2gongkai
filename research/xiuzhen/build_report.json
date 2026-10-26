@@ -1,0 +1,30 @@
+{
+  "built_utc": "2026-10-17T14:16:20Z",
+  "node_count": 67,
+  "edge_count": 66,
+  "node_type_distribution": {
+    "book": 12,
+    "daozang_category": 23,
+    "topic": 7,
+    "classic_mention": 10,
+    "article": 14,
+    "corpus": 1
+  },
+  "edge_type_distribution": {
+    "belongs_to": 11,
+    "has_topic": 28,
+    "mentions": 13,
+    "same_tradition": 4,
+    "corpus_covered_by": 2,
+    "intro_mentions": 8
+  },
+  "books_without_daozang_ref": [
+    "book:qingjing"
+  ],
+  "honesty": "全部节点/边带 source；无出处不建（详见 meta.discipline）",
+  "outputs": [
+    "/workspace/windows-internals-toolkit/research/xiuzhen/map_canonical.json",
+    "/workspace/windows-internals-toolkit/windows-internals-toolkit/system-optimizer/src/python/sysweeper/data/xiuzhen_map.json",
+    "/workspace/windows-internals-toolkit/classics-harmony-app/entry/src/main/ets/model/XiuzhenMap.generated.ts"
+  ]
+}

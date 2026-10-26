@@ -1,0 +1,177 @@
+{
+  "harvested_at": "2026-10-17 17:10",
+  "pipeline": "mp.weixin.qq.com 直抓 -> js_content 清洗 -> UTF-8 无 BOM 落盘（wechat_harvest.py）",
+  "accounts": {
+    "道医课堂": {
+      "biz": [
+        "MzA3MjY5MTgyMw==",
+        "MzA3NDQ0NTEwMQ=="
+      ],
+      "official_intro": "中国道医研究院创办,道医课堂秉承太上仙道贵生,济世度人之教义,以传承道医精髓、弘扬道医文化及道家养生文化为己任",
+      "evidence": "MzA3MjY5MTgyMw== 文章页 var nickname=道医课堂（4 篇）；MzA3NDQ0NTEwMQ== 文末简介栏命中（3 篇，均已删除）"
+    },
+    "道教医学": {
+      "biz": [
+        "MzA4ODc4NjM0Nw==",
+        "MzIwMTcwNTM5OQ=="
+      ],
+      "official_intro": "道教医学微信平台由中国道医研究院、武当山道医会联合创办,秉承太上仙道贵生,济世度人之教义",
+      "evidence": "MzA4ODc4NjM0Nw== 文末简介栏铁证（6 篇成功）；MzIwMTcwNTM5OQ== 疗愈栏目（nickname 判定混杂：3 篇道教医学+1 篇道医课堂，均道医养生主题）"
+    }
+  },
+  "channels": {
+    "可行": [
+      "mp 文章页直抓（curl+Chrome UA）",
+      "搜索引擎 site:mp.weixin.qq.com + 简介唯一片段（高命中）",
+      "搜狗微信标题翻页（列表页可抓，link 解不出）"
+    ],
+    "不可行": [
+      "profile_ext 历史消息接口（需登录态）",
+      "搜狗 /link?url= 跳转（JS 反爬 anti-box）",
+      "百度/360/Bing（拒绝页或空结果）",
+      "DDG html（每查询 75s 超时）"
+    ]
+  },
+  "stats": {
+    "有效收录": 14,
+    "道医课堂": 4,
+    "道教医学": 10,
+    "已删不可抓": 4
+  },
+  "deleted_unrecoverable": [
+    [
+      "MzA3NDQ0NTEwMQ== mid=2653822910",
+      "从《黄帝内经》看,中医理解天人合一的四个维度",
+      "2024-08-31"
+    ],
+    [
+      "MzA3NDQ0NTEwMQ== mid=2653759476",
+      "为什么古代会有那么多的大医,与我们最根本的差异在哪?",
+      "2023-02-24"
+    ],
+    [
+      "MzA3NDQ0NTEwMQ== mid=2653784676",
+      "中医:气机的概念,关于人体之气运动的理解与分析",
+      "2023-08-25"
+    ],
+    [
+      "MzA4ODc4NjM0Nw== mid=2649270551",
+      "中国近700年灵异事件大汇总",
+      "2019-12-19"
+    ]
+  ],
+  "items": [
+    {
+      "account": "道医课堂",
+      "file": "research/daoyi-ketang/2022-06-01_这个地方如有不通，你的整个身体，就会紊乱了！.md",
+      "title": "这个地方如有不通，你的整个身体，就会紊乱了！",
+      "publish_date": "2022-06-01",
+      "source": "https://mp.weixin.qq.com/s?__biz=MzA3MjY5MTgyMw==&mid=2652397024&idx=3&sn=e87e52b6a0def76fcbe79537508db541&chksm=84f684e0b3810df65b00250a6108a1620ca0fa0b08410340453ccda941defdc05644aae0805d&scene=27",
+      "chars": 3791
+    },
+    {
+      "account": "道医课堂",
+      "file": "research/daoyi-ketang/2022-07-03_伸筋一寸，寿涨十年！每晚花上十分钟，三招通经拔病根！(中医专家示范）.md",
+      "title": "伸筋一寸，寿涨十年！每晚花上十分钟，三招通经拔病根！(中医专家示范）",
+      "publish_date": "2022-07-03",
+      "source": "https://mp.weixin.qq.com/s?__biz=MzA3MjY5MTgyMw==&mid=2652397028&idx=2&sn=01f4de97b275d253dd8b08a9617e4fe4&chksm=84f684e4b3810df2a9cb6c679a5c6a72e0b6b264d679e060e1b146d48cc3bcde0298350c3c18&scene=27",
+      "chars": 3780
+    },
+    {
+      "account": "道医课堂",
+      "file": "research/daoyi-ketang/2024-11-13_肝连阴器，肝伤则性伤？.md",
+      "title": "肝连阴器，肝伤则性伤？",
+      "publish_date": "2024-11-13",
+      "source": "https://mp.weixin.qq.com/s?__biz=MzA3MjY5MTgyMw==&mid=2652398761&idx=1&sn=952281630f97dfc0e72fc3d3d960d223&chksm=85183a40c094a5069d472e67ac19124f853c2b02a80d7e7fe54ef1d6e39abd2ac24177e28a1a&scene=27",
+      "chars": 1599
+    },
+    {
+      "account": "道医课堂",
+      "file": "research/daoyi-ketang/2025-01-22_防治低血压老偏方.md",
+      "title": "防治低血压老偏方",
+      "publish_date": "2025-01-22",
+      "source": "https://mp.weixin.qq.com/s?__biz=MzA3MjY5MTgyMw==&mid=2652399232&idx=1&sn=b60e54396008e9faa6520a967215e81c&chksm=854cd17e29b07dac793fa5f5b7bd246639f103585f43c6b410f0b4f48eaab0cc1330f3c7b3dc&scene=27",
+      "chars": 2002
+    },
+    {
+      "account": "道教医学",
+      "file": "research/daojiao-yixue/2019-04-07_為何不能免費算命？.md",
+      "title": "為何不能免費算命？",
+      "publish_date": "2019-04-07",
+      "source": "https://mp.weixin.qq.com/s?__biz=MzA4ODc4NjM0Nw==&mid=2649264633&idx=3&sn=87060053cc64e0774d9e04701e4c0d2c&chksm=8838e53dbf4f6c2b4cae6bf2775315d1b006498cba0c49d84a25a79af41be2736ac51eb968da&scene=27",
+      "chars": 1970
+    },
+    {
+      "account": "道教医学",
+      "file": "research/daojiao-yixue/2021-07-19_每天学一味中药，蛤蚧！.md",
+      "title": "每天学一味中药，蛤蚧！",
+      "publish_date": "2021-07-19",
+      "source": "https://mp.weixin.qq.com/s?__biz=MzA4ODc4NjM0Nw==&mid=2649291934&idx=3&sn=c57cd39b6554bfe489addec6f782d45d&chksm=8838885abf4f014c25692191697a6e5d7110a8f4be767e16a2d851832c564e554983fc9ebc42&scene=27",
+      "chars": 2474
+    },
+    {
+      "account": "道教医学",
+      "file": "research/daojiao-yixue/2021-11-29_刺激手上两穴，可清心火、缓解焦虑、摆脱心烦！.md",
+      "title": "刺激手上两穴，可清心火、缓解焦虑、摆脱心烦！",
+      "publish_date": "2021-11-29",
+      "source": "https://mp.weixin.qq.com/s?__biz=MzA4ODc4NjM0Nw==&mid=2649297820&idx=2&sn=a2d2d414375fbc5443f66ca5ecded0d9&chksm=88396758bf4eee4e36ca0f56c40cea3d6a6e1174da30df2676c4638fefede11fded1deb7b77c&scene=27",
+      "chars": 1295
+    },
+    {
+      "account": "道教医学",
+      "file": "research/daojiao-yixue/2022-02-08_孩子感冒发烧只需一个穴位，可惜知道的人太少了！（转给家长）.md",
+      "title": "孩子感冒发烧只需一个穴位，可惜知道的人太少了！（转给家长）",
+      "publish_date": "2022-02-08",
+      "source": "https://mp.weixin.qq.com/s?__biz=MzA4ODc4NjM0Nw==&mid=2649300852&idx=2&sn=664431c2d059e8c8c6ef64dd73704c34&chksm=88396bb0bf4ee2a66a895a4f4f8d206ff261cc5ea17cf397e6b83338b1cb85756714f20c8cd2&scene=27",
+      "chars": 1559
+    },
+    {
+      "account": "道教医学",
+      "file": "research/daojiao-yixue/2025-05-13_这八个穴位，可调全身！一定要记好！.md",
+      "title": "这八个穴位，可调全身！一定要记好！",
+      "publish_date": "2025-05-13",
+      "source": "https://mp.weixin.qq.com/s?__biz=MzA4ODc4NjM0Nw==&mid=2649506663&idx=4&sn=6eebd80695fcf03c93d09fd07d1cb2ac&chksm=894436ede8871ffe0facbcc318a496b56bc863b53b23b3a67668064004267d7464e1be33115a&scene=27",
+      "chars": 2758
+    },
+    {
+      "account": "道教医学",
+      "file": "research/daojiao-yixue/2025-06-09_教你一个神奇的穴位，每天按一按，赶走头痛、失眠、记忆力减退！.md",
+      "title": "教你一个神奇的穴位，每天按一按，赶走头痛、失眠、记忆力减退！",
+      "publish_date": "2025-06-09",
+      "source": "https://mp.weixin.qq.com/s?__biz=MzA4ODc4NjM0Nw==&mid=2649507268&idx=4&sn=a1d65a442629f03dcda9a5474a9292c6&chksm=89e6a848f8516ad040210bc35431879cd4b4e1f574e4c03948ffc5ee91d722fda9fac9bc9a82&scene=27",
+      "chars": 2406
+    },
+    {
+      "account": "道教医学",
+      "file": "research/daojiao-yixue/2025-07-27_这几式道家睡仙功，每天几分钟养全身气血.md",
+      "title": "这几式道家睡仙功，每天几分钟养全身气血",
+      "publish_date": "2025-07-27",
+      "source": "https://mp.weixin.qq.com/s?__biz=MzIwMTcwNTM5OQ==&mid=2247568659&idx=2&sn=694d4c0c6ae2bcbd88aed677101a6c48&chksm=97a94130579e5bda4eaba39168be72bfe5928f9800213cb229cf0d5e895d47ff4540f58eeab8&scene=27",
+      "chars": 2441
+    },
+    {
+      "account": "道教医学",
+      "file": "research/daojiao-yixue/2025-08-02_国学经典《古文观止》，教你八种人生智慧.md",
+      "title": "国学经典《古文观止》，教你八种人生智慧",
+      "publish_date": "2025-08-02",
+      "source": "https://mp.weixin.qq.com/s?__biz=MzIwMTcwNTM5OQ==&mid=2247568896&idx=5&sn=da70b8a48d8b8e4f5b024cc4cfa4cfad&chksm=96ea5cd8a19dd5ce5db92fa48b61facb2733f0b59dd2f33262d0229bc9eeaabd5fc89946c33c&scene=27",
+      "chars": 2640
+    },
+    {
+      "account": "道教医学",
+      "file": "research/daojiao-yixue/2025-11-02_脾好不好看大便，肾强不强看小便，身体的“诚实报告”一查便知.md",
+      "title": "脾好不好看大便，肾强不强看小便，身体的“诚实报告”一查便知",
+      "publish_date": "2025-11-02",
+      "source": "https://mp.weixin.qq.com/s?__biz=MzIwMTcwNTM5OQ==&mid=2247571558&idx=3&sn=89481bcf9c74022de491e9e0ba7286f8&chksm=97badb30fa05ef64b4b2e8a8ab2f207688b7ebd4a2b7be9de575c40073196b872a0e02192054&scene=27",
+      "chars": 4545
+    },
+    {
+      "account": "道教医学",
+      "file": "research/daojiao-yixue/2025-12-21_当“知”的智慧照亮身心的每一个角落，疗愈，便自然而然地发生了。.md",
+      "title": "当“知”的智慧照亮身心的每一个角落，疗愈，便自然而然地发生了。",
+      "publish_date": "2025-12-21",
+      "source": "https://mp.weixin.qq.com/s?__biz=MzIwMTcwNTM5OQ==&mid=2247573097&idx=1&sn=93a2c2ac4bf0167d797ae56da9e37f3b&chksm=97c6b348dcd98304a42d3f943237b8772d3cc991f0e702a73751541b5311a4eae66871c074ad&scene=27",
+      "chars": 2449
+    }
+  ]
+}

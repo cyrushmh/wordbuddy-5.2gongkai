@@ -1,0 +1,98 @@
+{
+  "_note": "知识库占位（v0.6.36 gen-stub 生成）：Linux 本机发行面。待你补全权威参考来源与条目。本工具只读引用，不自动填充正文。",
+  "key": "linux",
+  "label": "Linux 本机发行面",
+  "domain": "系统",
+  "references": [
+    {
+      "name": "LFS Book 12.4（Linux From Scratch：从源码手工构建一套完整 Linux 系统；Gerard Beekmans 著，2025-09-01）",
+      "org": "Linux From Scratch Project / linuxfromscratch.org",
+      "url": "https://www.linuxfromscratch.org/lfs/view/stable/"
+    },
+    {
+      "name": "BLFS Book 12.4（Beyond LFS：在已建好的 LFS 之上叠加网络、图形界面、声音、打印/扫描支持；第 32 版，2025-09-01）",
+      "org": "BLFS Development Team / linuxfromscratch.org",
+      "url": "https://www.linuxfromscratch.org/blfs/view/stable/"
+    },
+    {
+      "name": "CLFS（Cross-Compiled LFS：面向多架构/交叉编译的 LFS 变体）— 项目主页（渲染版 book/view 路径实测全部 404；书源与 wiki 在 trac.clfs.org，needs_verify）",
+      "org": "Cross Linux From Scratch Project / linuxfromscratch.org + trac.clfs.org",
+      "url": "https://www.linuxfromscratch.org/clfs/"
+    },
+    {
+      "name": "ALFS（Automated LFS：用 jhalfs 从 LFS/BLFS 书 XML 源自动抽取命令生成 Makefile 自动化构建）",
+      "org": "Automated Linux From Scratch Project / linuxfromscratch.org",
+      "url": "https://www.linuxfromscratch.org/alfs/index.html"
+    },
+    {
+      "name": "HLFS（Hardened LFS：基于 LFS+B LFS，强化安全配置并给工具链打补丁防缓冲区溢出，面向服务器/路由器/防火墙）",
+      "org": "Hardened Linux From Scratch Project / linuxfromscratch.org",
+      "url": "https://www.linuxfromscratch.org/hlfs/"
+    },
+    {
+      "name": "LFS Hints（社区贡献的补充指引合集，超出五本书的进阶/旁支主题；目录见 downloads/files）",
+      "org": "Linux From Scratch Community / linuxfromscratch.org",
+      "url": "https://www.linuxfromscratch.org/hints/list.html"
+    },
+    {
+      "name": "LFS 下载页（源码包、补丁与工具链版本的权威获取入口）",
+      "org": "Linux From Scratch Project / linuxfromscratch.org",
+      "url": "https://www.linuxfromscratch.org/lfs/download.html"
+    }
+  ],
+  "items": [
+    {
+      "key": "lfs-build-architecture",
+      "name": "LFS 构建架构：从源码把一套 Linux 分层拼装（工具链→chroot→系统→引导）",
+      "org": "Linux From Scratch Project（Gerard Beekmans）/ linuxfromscratch.org",
+      "url": "https://www.linuxfromscratch.org/lfs/view/stable/",
+      "protocols": [
+        "LFS 把「从源码构建一套 Linux」拆成五阶段：Ch4 宿主准备 → Ch5 临时工具链（交叉编译出一套属于目标系统的工具）→ Ch6 chroot 进目标系统 → Ch7 系统关键组件完善（用新工具链重编 glibc/binutils/gcc + 核心工具集）→ Ch8 内核 + 引导（GRUB/fstab）收尾",
+        "自举（self-hosting）核心：先用「宿主」上的编译器造出「目标系统」的临时工具链（binutils→gcc→glibc→linux-api-headers），chroot 后再用这套工具把工具链为「目标」重编一遍，脱离宿主依赖——「工具造工具、再造系统」的两段式",
+        "分层构成论：一个系统 = 基础工具链（as/ld/gcc/glibc/内核头文件）+ 系统关键组件（init/shell/coreutils/udev）+ 引导（GRUB/fstab）；缺任一不可启动"
+      ],
+      "interfaces": [
+        "宿主构建机（装好 gcc/make/binutils 的现有发行版）",
+        "chroot（切根进目标系统，隔离宿主）",
+        "make / configure（源码构建三件：./configure && make && make install）",
+        "源码包 + 补丁（来自 LFS 下载页）"
+      ],
+      "docs": [
+        {"title": "LFS Book 12.4（构建架构五阶段权威叙述）", "url": "https://www.linuxfromscratch.org/lfs/view/stable/"},
+        {"title": "LFS 下载页（源码包与补丁）", "url": "https://www.linuxfromscratch.org/lfs/download.html"},
+        {"title": "FHS 3.0（构成契约的目录视角；本仓 sysbase_docs.system_layout 同源）", "url": "https://refspecs.linuxfoundation.org/FHS_3.0/"}
+      ],
+      "summary": "LFS 是把「一套 Linux 系统怎么来的」拆到最细的教科书：Ch4 备宿主 → Ch5 交叉编译出目标系统的临时工具链 → Ch6 chroot → Ch7 用新工具链重编工具链与核心组件 → Ch8 装内核与引导。核心是自举——先用宿主编译器造目标的工具，再让目标的工具自食其力。这是「系统构成」最硬核的架构视角。",
+      "advice": "把 LFS 当「系统构成解剖」读而非真要手搓：它教的是「一个可启动系统 = 引导器 + 内核 + init + shell + 核心工具集 + C 库」的最小集合与它们如何被一层层拼出来。二进制发行版（如 Slackware 的包集）只是把这套流程的结果预先打包好。",
+      "evidence_status": "official_verified"
+    },
+    {
+      "key": "lfs-family-spectrum",
+      "name": "LFS 家族光谱：LFS/BLFS/CLFS/ALFS/HLFS 五书各管一个维度",
+      "org": "Linux From Scratch Project + BLFS/CLFS/ALFS/HLFS 子项目 / linuxfromscratch.org",
+      "url": "https://www.linuxfromscratch.org/lfs/view/stable/",
+      "protocols": [
+        "LFS（基座）：从源码构建最小可启动 Linux 系统",
+        "BLFS（应用层）：在已建 LFS 上叠加网络、图形、声音、打印/扫描——系统构成可分「基础」与「应用」两层",
+        "CLFS（跨架构）：面向多架构/交叉编译的 LFS 变体（工具链 build/host/target 三概念）",
+        "ALFS（自动化）：官方实现 jhalfs 用 Bash+Git+xsltproc 从书 XML 源抽取命令生成 Makefile，把 LFS/BLFS 构建自动化（亦作书质量的回归测试）",
+        "HLFS（加固）：基于 LFS+BLFS，强化安全配置并给工具链打补丁防缓冲区溢出，面向服务器/路由器/防火墙——安全是「构成的一个可叠加维度」"
+      ],
+      "interfaces": [
+        "jhalfs（ALFS 官方实现：git clone https://git.linuxfromscratch.org/jhalfs.git）",
+        "LFS/BLFS 书 XML 源（ALFS 抽取命令的对象）",
+        "补丁与加固脚本（HLFS）"
+      ],
+      "docs": [
+        {"title": "LFS Book 12.4（基座）", "url": "https://www.linuxfromscratch.org/lfs/view/stable/"},
+        {"title": "BLFS Book 12.4（应用层）", "url": "https://www.linuxfromscratch.org/blfs/view/stable/"},
+        {"title": "ALFS（jhalfs 自动化）", "url": "https://www.linuxfromscratch.org/alfs/index.html"},
+        {"title": "HLFS（安全加固）", "url": "https://www.linuxfromscratch.org/hlfs/"},
+        {"title": "CLFS（跨架构；渲染版书 needs_verify）", "url": "https://www.linuxfromscratch.org/clfs/"}
+      ],
+      "summary": "LFS 五书是一条「从手搓到加固」的光谱：LFS 造最小基座，BLFS 加应用层，CLFS 换架构（交叉编译），ALFS 把过程自动化（jhalfs），HLFS 叠加安全加固。它们共享同一套「系统如何从源码拼出」的构成论，只是在「加什么 / 换架构 / 自动化 / 加固」四个维度上各自延伸。",
+      "advice": "理解二进制发行版之前先懂这条光谱：一个发行版 = 某个 LFS 式基座 + 一套 BLFS 式应用层，经包管理器（ALFS 的「产品化」）固化。想裁剪到最小用 LFS 口径，想加固用 HLFS 口径，想换 CPU 架构用 CLFS 口径。",
+      "evidence_status": "official_verified"
+    }
+  ]
+}

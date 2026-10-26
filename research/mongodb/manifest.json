@@ -1,0 +1,50 @@
+{
+  "source": "用户投递附件（非网络抓取）",
+  "source_kind": "commercial-book",
+  "title": "MongoDB权威指南（第2版）",
+  "subtitle": "MongoDB: The Definitive Guide, 2nd Edition（O'Reilly，图灵程序设计丛书）",
+  "author": "Kristina Chodorow（霍多罗夫）",
+  "translators": ["邓强", "王明辉"],
+  "isbn": "978-7-115-34108-2",
+  "publisher": "人民邮电出版社 · 图灵文化（O'Reilly Media, Inc. 授权简体中文版，2014）",
+  "pages": 802,
+  "pdf_bytes": 5800520,
+  "pdf_sha256": "438dfdc46ae96f0a5ef2cc0fa48664b6e332b910572affa6c05d90eddf6e7cbf",
+  "pdf_metadata": {
+    "creator": "calibre 2.52.0",
+    "created": "2016-08-14T15:04:56Z",
+    "encrypted": false,
+    "text_layer": "可提取（pdftotext -layout 得 18,718 行 / 688,016 字节）"
+  },
+  "fetched_utc": "2026-10-17T17:09:00Z",
+
+  "copyright_note": "本 PDF 版权页明确声明：「您购买的图灵电子书仅供您个人使用，未经授权，不得以任何方式复制和传播本书内容」。",
+  "archiving_decision": {
+    "pdf_file": "不入库（整本 5.8MB PDF 进公开仓库即构成复制传播）",
+    "extracted_fulltext": "不入库（688KB 全文同理）",
+    "local_working_copy": "/tmp/mongobook/（沙箱内本地分析用，随会话结束失效，不进 git）",
+    "what_we_keep": [
+      "本 manifest：书目元数据 + SHA256 留档（便于后续核验同一文件）",
+      "mongo_book_facts.json：章节体系（结构性索引，类同 RFC 目录）与读书笔记级知识条目",
+      "由事实底稿生成的结构化知识库 data/mongo_docs.json（概念/操作/调优条目，均为通用技术知识的自行概括，不复制原文段落）"
+    ],
+    "precedent_note": "与 docs/16 的 WebTrust 报告（第三方审计事实文件，可存档原件）区分处理：本件为明确受限的商业出版物，故原件不入库。"
+  },
+  "structure": {
+    "parts": 6,
+    "chapters": 23,
+    "appendixes": ["附录A 安装MongoDB", "附录B 深入MongoDB"],
+    "front_matter": ["版权声明", "O'Reilly Media, Inc.介绍", "序", "前言"],
+    "back_matter": ["术语"],
+    "part_names": [
+      "第一部分 MongoDB介绍（1-4）",
+      "第二部分 设计应用（5-8）",
+      "第三部分 复制（9-12）",
+      "第四部分 分片（13-16）",
+      "第五部分 应用管理（17-19）",
+      "第六部分 服务器管理（20-23）"
+    ]
+  },
+  "extraction_note": "目录取自 PDF 第 1-6 页（pdftotext -layout），节标题按原文整理（原文本有折行断字，如「6.5.2 在MongoDB驱动程序中使用\\nGridFS」已合并为完整标题）。",
+  "discipline": "只录结构性目录与自行概括的知识条目；不复制正文段落；每条知识条目标注所属章节编号以便回溯核对。"
+}

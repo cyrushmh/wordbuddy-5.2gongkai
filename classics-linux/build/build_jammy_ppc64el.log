@@ -1,0 +1,101 @@
+dpkg-buildpackage: info: source package classics
+dpkg-buildpackage: info: source version 1.0.0~jammy1
+dpkg-buildpackage: info: source distribution jammy
+dpkg-buildpackage: info: source changed by WordBuddy Authors <noreply@example.com>
+dpkg-architecture: warning: specified GNU system type powerpc64le-linux-gnu does not match CC system type x86_64-linux-gnu, try setting a correct CC environment variable
+ dpkg-source --before-build .
+dpkg-buildpackage: info: host architecture ppc64el
+ debian/rules clean
+dh clean
+dh: warning: Running tests during cross-builds is not supported in the general case (except for special cases or by
+dh: warning: using emulation)
+dh: warning: If the build fails, please consider rebuilding with DEB_BUILD_OPTIONS=nocheck.
+dh: warning: Additionally, you might have to set the "cross" profile.  For dpkg-buildpackage, you do this by
+dh: warning: passing the -Pcross option. Check the documentation of your build tool for how to set
+dh: warning: DEB_BUILD_PROFILES if you use another build tool that does not auto-configure cross-building for you
+dh: warning: If you have setup the relevant support for running cross-compiled binaries and want to silence this
+dh: warning: warning, please use DEB_BUILD_OPTIONS=crossbuildcanrunhostbinaries
+   dh_auto_clean
+	make -j32 clean
+make[1]: Entering directory '/workspace/windows-internals-toolkit/classics-linux'
+rm -f classics
+make[1]: Leaving directory '/workspace/windows-internals-toolkit/classics-linux'
+   dh_clean
+ debian/rules binary
+dh binary
+dh: warning: Running tests during cross-builds is not supported in the general case (except for special cases or by
+dh: warning: using emulation)
+dh: warning: If the build fails, please consider rebuilding with DEB_BUILD_OPTIONS=nocheck.
+dh: warning: Additionally, you might have to set the "cross" profile.  For dpkg-buildpackage, you do this by
+dh: warning: passing the -Pcross option. Check the documentation of your build tool for how to set
+dh: warning: DEB_BUILD_PROFILES if you use another build tool that does not auto-configure cross-building for you
+dh: warning: If you have setup the relevant support for running cross-compiled binaries and want to silence this
+dh: warning: warning, please use DEB_BUILD_OPTIONS=crossbuildcanrunhostbinaries
+   dh_update_autotools_config
+   dh_autoreconf
+   dh_auto_configure
+   dh_auto_build
+	make -j32 "INSTALL=install --strip-program=true" PKG_CONFIG=powerpc64le-linux-gnu-pkg-config CXX=powerpc64le-linux-gnu-g\+\+ CC=powerpc64le-linux-gnu-gcc
+make[1]: Entering directory '/workspace/windows-internals-toolkit/classics-linux'
+powerpc64le-linux-gnu-gcc -Wdate-time -D_FORTIFY_SOURCE=3 -g -O3 -ffile-prefix-map=/workspace/windows-internals-toolkit/classics-linux=. -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -fno-stack-clash-protection -fdebug-prefix-map=/workspace/windows-internals-toolkit/classics-linux=/usr/src/classics-1.0.0~jammy1 -DDATADIR=\"/usr/share/classics\" -o classics src/classics.c -Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -Wl,-z,relro -Wl,-z,now
+make[1]: Leaving directory '/workspace/windows-internals-toolkit/classics-linux'
+   dh_auto_test
+   create-stamp debian/debhelper-build-stamp
+   dh_prep
+   debian/rules override_dh_auto_install
+make[1]: Entering directory '/workspace/windows-internals-toolkit/classics-linux'
+/usr/bin/make install-bin DESTDIR=/workspace/windows-internals-toolkit/classics-linux/debian/classics
+make[2]: Entering directory '/workspace/windows-internals-toolkit/classics-linux'
+install -d /workspace/windows-internals-toolkit/classics-linux/debian/classics/usr/bin
+install -m 0755 classics /workspace/windows-internals-toolkit/classics-linux/debian/classics/usr/bin/classics
+make[2]: Leaving directory '/workspace/windows-internals-toolkit/classics-linux'
+/usr/bin/make install-data DESTDIR=/workspace/windows-internals-toolkit/classics-linux/debian/classics-data
+make[2]: Entering directory '/workspace/windows-internals-toolkit/classics-linux'
+install -d /workspace/windows-internals-toolkit/classics-linux/debian/classics-data/usr/share/classics
+install -m 0644 data/*.txt /workspace/windows-internals-toolkit/classics-linux/debian/classics-data/usr/share/classics/
+make[2]: Leaving directory '/workspace/windows-internals-toolkit/classics-linux'
+make[1]: Leaving directory '/workspace/windows-internals-toolkit/classics-linux'
+   dh_installdocs
+   dh_installchangelogs
+   dh_installman
+   dh_perl
+   dh_link
+   dh_strip_nondeterminism
+   dh_compress
+   dh_fixperms
+   dh_missing
+   dh_dwz -a
+   dh_strip -a
+47d7e20ec19f731237ea60752ea916ddfdf065c8
+   dh_makeshlibs -a
+   debian/rules override_dh_shlibdeps
+make[1]: Entering directory '/workspace/windows-internals-toolkit/classics-linux'
+dirs=""; \
+for d in /usr/powerpc64le-linux-gnu/lib /usr/powerpc64le-linux-gnu/lib64; do \
+	[ -d "$d" ] && dirs="$dirs -l$d"; \
+done; \
+dh_shlibdeps -- $dirs
+make[1]: Leaving directory '/workspace/windows-internals-toolkit/classics-linux'
+   dh_installdeb
+   debian/rules override_dh_gencontrol
+make[1]: Entering directory '/workspace/windows-internals-toolkit/classics-linux'
+MAXVER=$(objdump -T debian/classics/usr/bin/classics 2>/dev/null | grep -oE 'GLIBC_[0-9.]+' | sort -uV | tail -1 | sed 's/^GLIBC_//'); \
+if [ -n "$MAXVER" ]; then \
+	sed -i -E "s|(shlibs:Depends=.*libc6:ppc64el \(>= )[0-9.]+|\1$MAXVER|" \
+		debian/classics.substvars; \
+	echo "classics: libc6 依赖下限按 objdump 实测改写为 $MAXVER"; \
+fi
+classics: libc6 依赖下限按 objdump 实测改写为 2.34
+dh_gencontrol
+make[1]: Leaving directory '/workspace/windows-internals-toolkit/classics-linux'
+   dh_md5sums
+   dh_builddeb
+dpkg-deb: building package 'classics' in '../classics_1.0.0~jammy1_ppc64el.deb'.
+dpkg-deb: building package 'classics-data' in '../classics-data_1.0.0~jammy1_all.deb'.
+dpkg-deb: building package 'classics-dbgsym' in 'debian/.debhelper/scratch-space/build-classics/classics-dbgsym_1.0.0~jammy1_ppc64el.deb'.
+	Renaming classics-dbgsym_1.0.0~jammy1_ppc64el.deb to classics-dbgsym_1.0.0~jammy1_ppc64el.ddeb
+ dpkg-genbuildinfo --build=binary -O../classics_1.0.0~jammy1_ppc64el.buildinfo
+ dpkg-genchanges --build=binary -O../classics_1.0.0~jammy1_ppc64el.changes
+dpkg-genchanges: info: binary-only upload (no source code included)
+ dpkg-source --after-build .
+dpkg-buildpackage: info: binary-only upload (no source included)

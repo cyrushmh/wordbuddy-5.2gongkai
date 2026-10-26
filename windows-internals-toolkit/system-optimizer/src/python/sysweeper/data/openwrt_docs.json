@@ -1,0 +1,356 @@
+{
+  "_meta": {
+    "title": "OpenWrt 子系统权威文档层",
+    "note": "本工具对 OpenWrt 只做只读探测与文档引用，不打包/不运行其二进制；所有写操作（opkg install、uci set、sysupgrade）均只给指引，绝不自动执行。",
+    "releases": [
+      "23.05",
+      "24.10",
+      "SNAPSHOT"
+    ],
+    "home": "https://openwrt.org",
+    "docs": "https://openwrt.org/docs/start",
+    "license": "GPL-2.0（OpenWrt 自身；本工具仅引用，不复制其代码）"
+  },
+  "uci": {
+    "name": "UCI（Unified Configuration Interface，统一配置接口）",
+    "org": "OpenWrt",
+    "url": "https://openwrt.org/docs/guide-user/base-system/uci",
+    "techref": "https://openwrt.org/docs/techref/uci",
+    "protocols": [
+      "UCI 文件格式（config/option/list 块，位于 /etc/config/*）",
+      "uci(1) 命令行"
+    ],
+    "interfaces": [
+      "/etc/config/*（network/system/wireless/firewall/dhcp…）",
+      "uci show / uci get / uci changes（只读检视）"
+    ],
+    "summary": "OpenWrt 的中心化配置抽象：所有服务配置收敛到 /etc/config 下的 UCI 文件，由 uci 命令读写并交由各服务翻译为自身格式。",
+    "advice": "只读审计用 `uci show`；写配置用 `uci set` + `uci commit`，本工具只引用，绝不自动 uci set。",
+    "standards": [
+      "[官方] OpenWrt UCI 文档（guide-user/base-system/uci + techref/uci）"
+    ]
+  },
+  "opkg": {
+    "name": "opkg（OpenWrt 包管理器，23.05 及更早）",
+    "org": "OpenWrt / Yocto opkg",
+    "url": "https://openwrt.org/docs/guide-user/additional-software/opkg",
+    "techref": "https://openwrt.org/docs/techref/opkg",
+    "protocols": [
+      "opkg(1) 命令行",
+      "/usr/lib/opkg/status（已装清单）",
+      "feeds 索引"
+    ],
+    "interfaces": [
+      "opkg list-installed（只读）",
+      "opkg update / opkg install（写，仅指引）",
+      "/etc/opkg/distfeeds.conf"
+    ],
+    "summary": "轻量包管理器，23.05 及更早版本的软件安装入口；已装包清单在 /usr/lib/opkg/status。",
+    "advice": "只读盘点用 `opkg list-installed`；安装/升级为写操作，仅给指引。",
+    "standards": [
+      "[官方] OpenWrt opkg 文档（guide-user/additional-software/opkg）"
+    ]
+  },
+  "apk": {
+    "name": "apk（OpenWrt 新包管理器，24.10 起默认）",
+    "org": "OpenWrt（基于 Alpine apk-tools）",
+    "url": "https://openwrt.org/docs/guide-user/additional-software/opkg-to-apk-migration",
+    "techref": "https://openwrt.org/docs/guide-developer/toolchain/using_the_sdk",
+    "protocols": [
+      "apk(8) 命令行",
+      "/usr/lib/apk/db/installed（已装清单）",
+      "adbd 仓库"
+    ],
+    "interfaces": [
+      "apk info -e <pkg>（只读）",
+      "apk update / apk add（写，仅指引）",
+      "/etc/apk/repositories"
+    ],
+    "summary": "24.10 起 OpenWrt 默认包管理器，取代 opkg；已装包清单在 /usr/lib/apk/db/installed。",
+    "advice": "只读盘点用 `apk info`；安装/升级为写操作，仅给指引。",
+    "standards": [
+      "[官方] OpenWrt opkg→apk 迁移文档（guide-user/additional-software/opkg-to-apk-migration）"
+    ]
+  },
+  "procd": {
+    "name": "procd（OpenWrt 初始化与进程管理守护）",
+    "org": "OpenWrt",
+    "url": "https://openwrt.org/docs/techref/procd",
+    "techref": "https://openwrt.org/docs/techref/procd",
+    "protocols": [
+      "procd init 脚本（/etc/init.d/*）",
+      "ubus service 命名空间"
+    ],
+    "interfaces": [
+      "/etc/init.d/<svc> status（只读）",
+      "ubus call service list（只读）",
+      "/etc/rc.d/ 符号链接"
+    ],
+    "summary": "OpenWrt 的 init 系统与进程管理器，负责服务生命周期、热插拔（hotplug）、系统关闭；服务脚本位于 /etc/init.d。",
+    "advice": "只读查看服务状态用 `procd` 友好的 `/etc/init.d/<svc> status` 或 ubus；启停为写操作，仅指引。",
+    "standards": [
+      "[官方] OpenWrt procd 文档（techref/procd）"
+    ]
+  },
+  "netifd": {
+    "name": "netifd（Network Interface Daemon，网络接口守护）",
+    "org": "OpenWrt",
+    "url": "https://openwrt.org/docs/techref/netifd",
+    "techref": "https://openwrt.org/docs/techref/netifd",
+    "protocols": [
+      "UCI network 配置（/etc/config/network）",
+      "netifd + ubus netifd 命名空间"
+    ],
+    "interfaces": [
+      "ubus call network.interface dump（只读）",
+      "ubus call network.device status（只读）",
+      "/etc/config/network"
+    ],
+    "summary": "管理网络接口、桥接、VLAN 与路由的核心守护；配置来自 UCI /etc/config/network，运行时状态经 ubus 暴露。",
+    "advice": "只读探测网络状态用 `ubus call network.interface dump`；改接口为写操作，仅指引。",
+    "standards": [
+      "[官方] OpenWrt netifd 文档（techref/netifd）"
+    ]
+  },
+  "ubus": {
+    "name": "ubus（OpenWrt 微总线）",
+    "org": "OpenWrt",
+    "url": "https://openwrt.org/docs/techref/ubus",
+    "techref": "https://openwrt.org/docs/techref/ubus",
+    "protocols": [
+      "ubus(1) 命令行",
+      "JSON 消息（libubus）"
+    ],
+    "interfaces": [
+      "ubus list（只读）",
+      "ubus call <ns> <method>（只读方法可调用）",
+      "ubus monitor（调试）"
+    ],
+    "summary": "OpenWrt 各守护（procd/netifd/rpcd）之间通信的微总线，类似于桌面端的 D-Bus，是读取系统运行态的主要入口。",
+    "advice": "只读用 `ubus list` / `ubus call ...` 的只读方法；写方法（如 network.interface.<if>.up）仅指引。",
+    "standards": [
+      "[官方] OpenWrt ubus 文档（techref/ubus）"
+    ]
+  },
+  "rpcd": {
+    "name": "rpcd（OpenWrt RPC 守护，LuCI/uhttpd 后端）",
+    "org": "OpenWrt",
+    "url": "https://openwrt.org/docs/techref/rpcd",
+    "techref": "https://openwrt.org/docs/techref/rpcd",
+    "protocols": [
+      "rpcd(8) + ubus RPC 转发",
+      "uhttpd + ubus over HTTP/HTTPS"
+    ],
+    "interfaces": [
+      "/usr/share/rpcd/acl.d/*.json（ACL 定义，只读）",
+      "ubus call rpc-sys ..."
+    ],
+    "summary": "提供基于 ubus 的 RPC 服务，是 LuCI Web 界面与 uhttpd 的后端；ACL 在 /usr/share/rpcd/acl.d 定义。",
+    "advice": "只读查看后端能力用 ACL 文件与 `ubus call`；修改 ACL 为写操作，仅指引。",
+    "standards": [
+      "[官方] OpenWrt rpcd 文档（techref/rpcd）"
+    ]
+  },
+  "luci": {
+    "name": "LuCI（OpenWrt Web 管理界面）",
+    "org": "OpenWrt",
+    "url": "https://openwrt.org/docs/guide-user/luci/start",
+    "techref": "https://openwrt.org/docs/techref/luci",
+    "protocols": [
+      "LuCI2（JavaScript）/ 传统 LuCI（Lua）",
+      "uhttpd + rpcd 后端"
+    ],
+    "interfaces": [
+      "http(s)://<router>/（Web UI）",
+      "uhttpd 配置（/etc/config/uhttpd，只读可查）"
+    ],
+    "summary": "OpenWrt 的 Web 管理界面，运行在 uhttpd 上，经 rpcd 调用 ubus 读写系统；是路由器最常用的管理入口。",
+    "advice": "Web 界面操作属交互式写操作，本工具只引用其后台接口与文档；改 uhttpd 监听为写操作，仅指引。",
+    "standards": [
+      "[官方] OpenWrt LuCI 文档（guide-user/luci/start + techref/luci）"
+    ]
+  },
+  "imagebuilder": {
+    "name": "ImageBuilder（官方固件构建器）",
+    "org": "OpenWrt",
+    "url": "https://openwrt.org/docs/guide-user/additional-software/imagebuilder",
+    "techref": "https://openwrt.org/docs/guide-user/additional-software/imagebuilder",
+    "protocols": [
+      "make image PROFILE=... PACKAGES=...（本地构建）",
+      "含预编译二进制，无需完整工具链"
+    ],
+    "interfaces": [
+      "make image（写：生成固件）",
+      "repos.conf / .config（只读检视）"
+    ],
+    "summary": "官方提供的固件构建器：在预编译好的根文件基础上挑选软件包，快速产出定制固件镜像，比完整编译快得多。",
+    "advice": "构建固件为写操作，仅给文档指引；本工具不调用 make image。",
+    "standards": [
+      "[官方] OpenWrt ImageBuilder 文档（guide-user/additional-software/imagebuilder）"
+    ]
+  },
+  "sdk": {
+    "name": "SDK（软件开发工具包）",
+    "org": "OpenWrt",
+    "url": "https://openwrt.org/docs/guide-developer/toolchain/using_the_sdk",
+    "techref": "https://openwrt.org/docs/guide-developer/toolchain/using_the_sdk",
+    "protocols": [
+      "SDK 内 make（交叉编译软件包）",
+      "feeds + opkg 元数据"
+    ],
+    "interfaces": [
+      "make package/<pkg>/compile（写：编译）",
+      "feeds.conf（只读）"
+    ],
+    "summary": "面向特定目标编译软件包的交叉编译工具链；用于在已有 OpenWrt 版本上新增/重编译软件包。",
+    "advice": "编译为写操作，仅给文档指引；本工具不调用 SDK。",
+    "standards": [
+      "[官方] OpenWrt SDK 文档（guide-developer/toolchain/using_the_sdk）"
+    ]
+  },
+  "feeds": {
+    "name": "feeds（软件源）",
+    "org": "OpenWrt",
+    "url": "https://openwrt.org/docs/guide-developer/feeds",
+    "techref": "https://openwrt.org/docs/guide-developer/feeds",
+    "protocols": [
+      "./scripts/feeds update / install（写：拉取/登记源码）",
+      "feeds.conf 清单"
+    ],
+    "interfaces": [
+      "feeds.conf（只读）",
+      "./scripts/feeds list（只读）"
+    ],
+    "summary": "OpenWrt 构建系统的软件源机制：把外部仓库（packages/routing/telephony…）登记进构建环境。",
+    "advice": "更新/安装 feeds 为写操作，仅给文档指引。",
+    "standards": [
+      "[官方] OpenWrt feeds 文档（guide-developer/feeds）"
+    ]
+  },
+  "buildroot": {
+    "name": "Buildroot / 官方构建系统（从源码编译）",
+    "org": "OpenWrt",
+    "url": "https://openwrt.org/docs/guide-developer/build-system",
+    "techref": "https://openwrt.org/docs/guide-developer/build-system",
+    "protocols": [
+      "make menuconfig / make（完整源码编译）",
+      "toolchain + feeds + packages"
+    ],
+    "interfaces": [
+      ".config（只读）",
+      "make（写：完整编译）"
+    ],
+    "summary": "从头编译 OpenWrt 的完整构建系统：menuconfig 选型号与软件包，make 编译出固件；最灵活也最慢。",
+    "advice": "完整编译为写操作，仅给文档指引；本工具不调用构建系统。",
+    "standards": [
+      "[官方] OpenWrt 构建系统文档（guide-developer/build-system）"
+    ]
+  },
+  "board": {
+    "name": "板型与固件信息（sysinfo / openwrt_release）",
+    "org": "OpenWrt",
+    "url": "https://openwrt.org/docs/guide-user/hardware",
+    "techref": "https://openwrt.org/docs/techref/sysupgrade",
+    "protocols": [
+      "/tmp/sysinfo/*（运行时板型）",
+      "/etc/openwrt_release（DISTRIB_* 固件标识）"
+    ],
+    "interfaces": [
+      "/tmp/sysinfo/board_name / model（只读）",
+      "/etc/openwrt_release（只读）",
+      "/etc/os-release（ID=openwrt，只读）"
+    ],
+    "summary": "识别当前设备与目标的关键只读文件：board_name/model 给出硬件型号，openwrt_release 给出版本/目标/架构。",
+    "advice": "纯只读文件，安全读取；sysupgrade 刷机为写操作，仅指引。",
+    "standards": [
+      "[官方] OpenWrt 硬件与 sysupgrade 文档（guide-user/hardware + techref/sysupgrade）"
+    ]
+  },
+  "firewall": {
+    "name": "防火墙（firewall4/nftables，旧版 firewall3/iptables）",
+    "org": "OpenWrt",
+    "url": "https://openwrt.org/docs/guide-user/security/firewall",
+    "techref": "https://openwrt.org/docs/guide-user/security/firewall",
+    "protocols": [
+      "UCI firewall 配置（/etc/config/firewall）",
+      "fw4 → nftables（旧版 fw3 → iptables）"
+    ],
+    "interfaces": [
+      "/etc/config/firewall（zone/forwarding/rule/redirect，只读解析）",
+      "fw4 print（只读检视）"
+    ],
+    "summary": "基于 UCI firewall 配置生成 nftables（旧版 iptables）规则；zone 定义区域与转发策略，rule/redirect 做访问控制与端口映射。",
+    "advice": "只读审计用 `fw4 print` 或解析 /etc/config/firewall；改规则为写操作（uci set+commit+reload），仅指引。",
+    "standards": [
+      "[官方] OpenWrt 防火墙文档（guide-user/security/firewall）",
+      "[国际] IETF RFC 3022 / RFC 4787（NAT 行为）"
+    ]
+  },
+  "wireless": {
+    "name": "无线（hostapd / netifd 无线配置）",
+    "org": "OpenWrt",
+    "url": "https://openwrt.org/docs/guide-user/smart-wifi/start",
+    "techref": "https://openwrt.org/docs/guide-user/smart-wifi/start",
+    "protocols": [
+      "UCI wireless 配置（/etc/config/wireless）",
+      "IEEE 802.11（Wi-Fi 频段/信道/加密）",
+      "hostapd"
+    ],
+    "interfaces": [
+      "/etc/config/wireless（wifi-device/wifi-iface，只读解析）",
+      "iw dev（只读检视）",
+      "ubus call ... wireless status（只读）"
+    ],
+    "summary": "无线电(wifi-device)定义频段/信道/功率，无线接口(wifi-iface)绑定 SSID/模式/加密；加密密钥(encryption key)为敏感项。",
+    "advice": "只读审计仅展示配置项存在性，绝不回显无线密码明文；改无线为写操作（uci set+commit+wifi reload），仅指引。",
+    "standards": [
+      "[官方] OpenWrt 无线文档（guide-user/smart-wifi/start）",
+      "[国际] IEEE 802.11（Wi-Fi 频段/信道/加密）"
+    ]
+  },
+  "dhcp": {
+    "name": "DHCP/DNS（dnsmasq / odhcpd）",
+    "org": "OpenWrt",
+    "url": "https://openwrt.org/docs/guide-user/network/dhcp",
+    "techref": "https://openwrt.org/docs/guide-user/network/dhcp",
+    "protocols": [
+      "UCI dhcp 配置（/etc/config/dhcp）",
+      "RFC 2131/2132（DHCP）",
+      "dnsmasq（DNS 转发+DHCP）",
+      "odhcpd（DHCPv6/SLAAC）"
+    ],
+    "interfaces": [
+      "/etc/config/dhcp（dnsmasq/dhcp/host，只读解析）",
+      "ubus call dhcp ipv4leases（只读）"
+    ],
+    "summary": "dnsmasq 同时提供 DNS 转发与 DHCP 地址分配；host 段为静态租约；odhcpd 处理 IPv6 RA/DHCPv6。",
+    "advice": "只读查看地址池与租约；改 DHCP/DNS 为写操作（uci set+commit+dnsmasq restart），仅指引。",
+    "standards": [
+      "[官方] OpenWrt DHCP/DNS 文档（guide-user/network/dhcp）",
+      "[国际] IETF RFC 2131 / RFC 2132（DHCP）",
+      "[国际] IETF RFC 1035（DNS）"
+    ]
+  },
+  "fstab": {
+    "name": "存储与挂载（fstab / block-mount / overlay）",
+    "org": "OpenWrt",
+    "url": "https://openwrt.org/docs/guide-user/storage",
+    "techref": "https://openwrt.org/docs/guide-user/storage",
+    "protocols": [
+      "UCI fstab 配置（/etc/config/fstab）",
+      "block-mount（块设备挂载）",
+      "overlay（固件叠加根，squashfs+jffs2）"
+    ],
+    "interfaces": [
+      "/etc/config/fstab（mount 段，只读解析）",
+      "df -h（只读）",
+      "block info（只读）"
+    ],
+    "summary": "以 UCI fstab 定义挂载点；根文件系统为只读 squashfs 叠加可写 overlay(jffs2)，扩容/清理需专门工具。",
+    "advice": "只读查看容量与挂载；resize/格式化/清理 overlay 为写操作，仅指引。",
+    "standards": [
+      "[官方] OpenWrt 存储文档（guide-user/storage）",
+      "[国际] Linux kernel Documentation/filesystems（文件系统）"
+    ]
+  }
+}

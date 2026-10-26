@@ -1,0 +1,103 @@
+name: Build Android APK
+
+# 在打 v* tag 时构建 Sysweeper Android 诊断 App 的发布 APK（按 ABI 拆分 + 通用包），
+# 并上传到 Release。本地无需 Android SDK：真 APK 由本工作流在 GitHub 托管机器上产出。
+# 适配目标：compileSdk/targetSdk = 34（Android 14），minSdk = 26（Android 8）。
+on:
+  push:
+    tags:
+      - "v*"
+    paths:
+      - "windows-internals-toolkit/android/**"
+      - ".github/workflows/build-android.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write   # 发布 Release 并上传 APK 所需
+
+env:
+  # cmdline-tools 固定官方归档版本（Google 长期留存历史版本，不再依赖镜像预装 SDK）。
+  # 需要升级时仅改这一处。
+  ANDROID_CMDLINE_TOOLS_URL: https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: windows-internals-toolkit/android
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # 不再使用 android-actions/setup-android@v3：该 action 内部调用镜像里的
+      # sdkmanager 安装已被 Google 移除的旧 "tools" 包（Failed to find package
+      # 'tools' → exit 1），导致整个构建失败。改为手动安装官方 cmdline-tools。
+      - name: Set up Android SDK (manual cmdline-tools)
+        run: |
+          set -euo pipefail
+          SDK_DIR="$HOME/android-sdk"
+          mkdir -p "$SDK_DIR/cmdline-tools"
+          curl -fsSL --retry 3 -o /tmp/cmdline-tools.zip "$ANDROID_CMDLINE_TOOLS_URL"
+          rm -rf "$SDK_DIR/cmdline-tools/latest" /tmp/cmdline-tools-extract
+          mkdir -p /tmp/cmdline-tools-extract
+          unzip -q /tmp/cmdline-tools.zip -d /tmp/cmdline-tools-extract
+          mv /tmp/cmdline-tools-extract/cmdline-tools "$SDK_DIR/cmdline-tools/latest"
+          echo "ANDROID_HOME=$SDK_DIR" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK_DIR" >> "$GITHUB_ENV"
+          echo "$SDK_DIR/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
+          echo "$SDK_DIR/platform-tools" >> "$GITHUB_PATH"
+          "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" --version
+
+      - name: Install SDK packages (platform-34 + build-tools 34)
+        run: |
+          set -euo pipefail
+          SDKM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKM" --licenses >/dev/null 2>&1 || true
+          # 网络偶发抖动时重试，避免一次性失败淹没真实错误
+          for i in 1 2 3; do
+            echo "::group::sdkmanager install (attempt $i)"
+            if "$SDKM" "platform-tools" "platforms;android-34" "build-tools;34.0.0"; then
+              echo "::endgroup::"; break
+            fi
+            echo "::endgroup::sdkmanager attempt $i 失败，5s 后重试"; sleep 5
+          done
+
+      - name: Generate signing keystore (debug-style, 用于侧载分发)
+        run: |
+          keytool -genkeypair -v \
+            -keystore release.keystore -alias sysweeper \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass android -keypass android \
+            -dname "CN=Sysweeper, OU=Android, O=Sysweeper, L=Unknown, S=Unknown, C=CN"
+
+      - name: Build release APKs (arm64-v8a / armeabi-v7a / x86_64 + universal)
+        run: |
+          chmod +x ./gradlew || true
+          ./gradlew assembleRelease --no-daemon --stacktrace \
+            -PRELEASE_STORE_FILE=release.keystore \
+            -PRELEASE_STORE_PASSWORD=android \
+            -PRELEASE_KEY_ALIAS=sysweeper \
+            -PRELEASE_KEY_PASSWORD=android
+
+      - name: List produced APKs
+        run: ls -lh app/build/outputs/apk/release/
+
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v5
+        with:
+          name: android-apks
+          path: windows-internals-toolkit/android/app/build/outputs/apk/release/*.apk
+
+      - name: Publish APKs to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: windows-internals-toolkit/android/app/build/outputs/apk/release/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

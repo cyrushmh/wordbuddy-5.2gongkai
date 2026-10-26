@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="qbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"  stop-color="#0e1726"/>
+      <stop offset="55%" stop-color="#14233a"/>
+      <stop offset="100%" stop-color="#1a1340"/>
+    </linearGradient>
+    <radialGradient id="qcoh" cx="28%" cy="30%" r="40%">
+      <stop offset="0%"  stop-color="#3fe0a8" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#3fe0a8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="qsup" cx="72%" cy="68%" r="45%">
+      <stop offset="0%"  stop-color="#9b6cff" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#9b6cff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#qbg)"/>
+  <rect width="1920" height="1080" fill="url(#qcoh)"/>
+  <rect width="1920" height="1080" fill="url(#qsup)"/>
+  <g fill="none" stroke="#4fd1ff" stroke-opacity="0.25" stroke-width="2">
+    <circle cx="960" cy="540" r="120"/>
+    <circle cx="960" cy="540" r="220"/>
+    <circle cx="960" cy="540" r="340"/>
+    <ellipse cx="960" cy="540" rx="420" ry="180"/>
+    <ellipse cx="960" cy="540" rx="180" ry="420"/>
+  </g>
+  <text x="960" y="560" font-family="monospace" font-size="64"
+        fill="#3fe0a8" text-anchor="middle" opacity="0.85">ARCH=quantum</text>
+  <text x="960" y="620" font-family="monospace" font-size="28"
+        fill="#9b6cff" text-anchor="middle" opacity="0.8">emulated accounting model · not real quantum hardware</text>
+</svg>

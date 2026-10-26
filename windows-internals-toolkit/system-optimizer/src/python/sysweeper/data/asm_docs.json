@@ -1,0 +1,40 @@
+{
+  "title": "汇编语言优化知识库（asm）",
+  "sources": [
+    "NASM / YASM（x86/x86_64 汇编器）",
+    "GNU Assembler（GAS，随 binutils）",
+    "LLVM MachineCoder（llvm-mc）",
+    "SIMD 指令集规范（Intel SSE/AVX、ARM NEON/SVE、RISC-V Vector RVV、龙芯 LSX/LASX）"
+  ],
+  "assemblers": {
+    "nasm": "Netwide Assembler（x86/x86_64 主流汇编器，which 探测）",
+    "yasm": "Yasm Modular Assembler（NASM 语法超集）",
+    "gas": "GNU Assembler（AT&T/Intel 语法，随 binutils 的 as / 经 gcc 驱动）",
+    "llvm-mc": "LLVM MachineCoder（llvm-mc --version 探测）",
+    "gcc -S": "gcc -S <src> -o <src>.s 生成汇编，只读观察编译器产出"
+  },
+  "simd_matrix": [
+    {"arch": "x86_64", "ext": "SSE2/SSE3/SSSE3/SSE4.1/SSE4.2", "note": "128 位基础 SIMD，标量循环天然替代", "flag": "gcc/clang 默认开启 SSE2；更高档 -msse4.2"},
+    {"arch": "x86_64", "ext": "AVX/AVX2", "note": "256 位整数/浮点 SIMD，吞吐量翻倍", "flag": "-mavx2 或 -march=haswell"},
+    {"arch": "x86_64", "ext": "AVX-512（F/CD/BW/VL/DQ）", "note": "512 位 SIMD，密度最高（留意降频/功耗权衡）", "flag": "-mavx512f 或 -march=skylake-avx512 / cascadelake"},
+    {"arch": "aarch64", "ext": "NEON（Advanced SIMD）", "note": "128 位 SIMD，AArch64 基线标配", "flag": "默认开启（AArch64 自带）"},
+    {"arch": "aarch64", "ext": "SVE / SVE2", "note": "可伸缩向量（128–2048 位按硬件长度自适应）", "flag": "-march=armv9-a+sve2 / -mcpu=neoverse-v2"},
+    {"arch": "arm (32)", "ext": "NEON", "note": "32 位 ARM 的 SIMD 扩展", "flag": "-mfpu=neon -march=armv7-a"},
+    {"arch": "riscv64", "ext": "RVV（RISC-V Vector v1.0）", "note": "可伸缩向量，与 SVE 思路一致", "flag": "-march=rv64gcv / -march=rv64imafdcv_zvl256b"},
+    {"arch": "loongarch64", "ext": "LSX / LASX", "note": "128 位 / 256 位 SIMD（龙芯自主向量扩展）", "flag": "-march=la664 / -mloongson-ext"}
+  ],
+  "optimization_points": [
+    {"key": "simd", "title": "向量化（SIMD）", "body": "优先让编译器自动向量化（-O3 -ftree-vectorize -fopt-info-vec），再用手写 intrinsics 兜底；热点循环避免数据依赖链过长、避免循环内有函数调用打断。"},
+    {"key": "alignment", "title": "内存对齐", "body": "数据按 16/32/64 字节对齐，避免跨 cache line 与非对齐装载惩罚；汇编用 .balign 16、C 用 alignas()/__attribute__((aligned(64)))；结构体 packed 谨慎使用。"},
+    {"key": "register", "title": "寄存器分配", "body": "减少栈溢出（spill）：把关键循环变量留在寄存器，控制同时 live 的变量数；分清 caller-saved / callee-saved，减少保存恢复开销。"},
+    {"key": "cache", "title": "缓存友好", "body": "提升空间局部性（循环分块/tiling 让工作集落在 L1/L2）；用 prefetch 预取远数据；多线程避免 false sharing（每线程独立 cache line）。"},
+    {"key": "branch", "title": "分支优化", "body": "热点分支用 __builtin_expect / likely-unlikely 或 cmov 改无分支；减少预测失败；用位运算与条件传送替代条件跳转。"},
+    {"key": "instruction", "title": "指令选择", "body": "优先单周期/少微码指令；用 LEA 做地址与简单算术；善用 BMI/ADCX/PCLMUL 等扩展指令。"},
+    {"key": "inline_asm", "title": "内联汇编约束", "body": "asm volatile 必须正确声明输入/输出操作数与改动的寄存器与内存（\"memory\" clobber），否则编译器可能误移指令导致错乱；能用 intrinsics 就不手写 asm。"}
+  ],
+  "cross_asm": "clang -target=<triple> -march=<arch> -O3 -S <src>.c -o <src>.s（只读生成汇编，不汇编不链接）",
+  "changelog": [
+    {"v0.6.43": "首次引入 asm 子系统：探针 nasm/yasm/gas/llvm-mc/gcc -S；优化要点覆盖 SIMD(SSE/AVX/NEON/SVE/RVV)/对齐/寄存器/缓存/分支/指令/内联约束；附 LLVM 交叉编译汇编指引"}
+  ],
+  "compliance": "本子系统只读探测：绝不编译、绝不改源码、绝不写汇编文件"
+}

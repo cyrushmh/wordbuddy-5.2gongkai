@@ -1,0 +1,87 @@
+{
+  "_note": "量子架构内核（qarch）知识层 v0.6.78。记录 Linux 6.18.57 LTS + arch/quantum 新架构的坐标：内核注册机制（arch/Kconfig 动态 source 与 SRCARCH 默认映射）、QPU 模拟设备、Π_k 门语义、4K 页纪律、补丁与重建路径。全部为仓内锚点 + 官方源，只读盘点，绝不构建真实量子硬件。",
+  "_position": "本库定位：把「构建量子架构内核」落成可核验的知识坐标——文件夹 quantum-kernel/ 即 Linux 内核树（Linux 目录结构 discipline），arch/quantum 为纯新增架构（不删不改任何其他架构），git 侧以补丁+增量镜像上传。",
+  "key": "qarch",
+  "label": "量子架构内核（Linux LTS + arch/quantum）",
+  "domain": "系统/内核",
+  "references": [
+    {"name": "kernel.org 发布索引（6.18.57 longterm，2026-10-15）", "org": "kernel.org", "url": "https://www.kernel.org/"},
+    {"name": "Kconfig 语言参考（kernel.org 文档）", "org": "kernel.org", "url": "https://docs.kernel.org/kbuild/kconfig-language.html"},
+    {"name": "User Mode Linux（arch/um，宿主模拟架构先例）", "org": "kernel.org", "url": "https://docs.kernel.org/virt/uml/user_mode_linux_howto_v2.html"},
+    {"name": "asm-generic 复用机制（Kbuild generic-y/mandatory-y）", "org": "kernel.org", "url": "https://docs.kernel.org/kbuild/headers.html"}
+  ],
+  "items": [
+    {
+      "key": "qarch-lts-618",
+      "name": "Linux 6.18.57 LTS 基线",
+      "org": "kernel.org",
+      "url": "https://www.kernel.org/",
+      "protocols": ["6.18 是当期最新 longterm 分支（2026-10-15 发布 6.18.57）", "6 个长期分支并存：6.18/6.12/6.6/6.1/5.15/5.10——全部保留，不删任何分支", "上游 tarball 约 148MiB（155MB，xz；本地实测 sha256 记账），解压约 1.7GiB"],
+      "interfaces": ["cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.57.tar.xz", "镜像 mirrors.tuna.tsinghua.edu.cn/kernel/v6.x/"],
+      "docs": [{"title": "kernel.org 发布页", "url": "https://www.kernel.org/"}],
+      "summary": "量子架构内核以 6.18.57 为基线：当期最新 LTS。树完整保留在 quantum-kernel/linux-6.18.57/（本地不入 git），git 侧上传补丁+增量镜像+重建脚本，任何人可凭脚本重建整棵树。",
+      "advice": "重建路径：scripts/fetch_kernel.sh（下载校验）→ 打补丁 → scripts/build.sh（defconfig 验收 + 整树编译链接 vmlinux）。镜像源在 cdn.kernel.org 慢时切 TUNA（实测 2MB/s 对 12KB/s）。",
+      "evidence_status": "official_verified"
+    },
+    {
+      "key": "qarch-kconfig-registration",
+      "name": "架构注册机制（零修改接入）",
+      "org": "kernel.org Kbuild 文档 / 本仓核验",
+      "url": "https://docs.kernel.org/kbuild/kconfig-language.html",
+      "protocols": ["arch/Kconfig 以 source \"arch/$(SRCARCH)/Kconfig\" 动态接入新架构", "顶层 Makefile 默认 SRCARCH := $(ARCH)——ARCH=quantum 自动映射，无需改顶层", "mandatory-y 头自动 fallback 到 asm-generic；架构只补三个无 generic 版的 uapi 头（byteorder/ptrace/sigcontext）"],
+      "interfaces": ["arch/quantum/Kconfig（config QUANTUM + select 集合）", "arch/quantum/include/asm/Kbuild（generic-y 转发）", "drivers/Kconfig、drivers/Makefile（仅两处纯追加注册）"],
+      "docs": [{"title": "Kconfig 语言参考", "url": "https://docs.kernel.org/kbuild/kconfig-language.html"}],
+      "summary": "新架构注册是「零修改」的：Kconfig 动态 source 与 SRCARCH 默认映射让 arch/quantum/ 目录本身即注册。既有 21 个架构目录原封未动（实测 x86_64 defconfig 正常生成 4395 项配置）。",
+      "advice": "只读核验：比对 arch/ 目录清单（22=21 既有 + quantum）；diff 证明除两处纯追加（drivers 注册）与 Documentation 索引一行外零改动。",
+      "evidence_status": "repo_verified"
+    },
+    {
+      "key": "qarch-qpu-device",
+      "name": "QPU 模拟设备（/dev/qpuN）",
+      "org": "本仓 drivers/quantum",
+      "url": "https://docs.kernel.org/driver-api/misc_devices.html",
+      "protocols": ["misc 字符设备 /dev/qpuN，计数由 CONFIG_QUANTUM_QPU_NR 控制", "ioctl：QPU_ENC（Π_k 门编码）/ QPU_DEC（测量解码，真实坍缩模拟）/ QPU_LINK_STATS（链路统计）/ QPU_RESET（归零）", "Π_k 门 = 对 k 置 1 位复合 X 门——翻转语义：不复位连编得 XOR 干扰"],
+      "interfaces": ["include/uapi/linux/quantum.h（UAPI）", "drivers/quantum/qpu-dev.c、qpu-gates.c", "arch/quantum/kernel/qpu-core.c（链路审计量）"],
+      "docs": [{"title": "misc 设备接口", "url": "https://docs.kernel.org/driver-api/misc_devices.html"}],
+      "summary": "QPU 以 misc 设备呈现，语义与本仓用户态量子基座一一对应：8 qubit 字节宽寄存器（上限 20 对齐 MAX_QUBITS）、ceil(2π)=7 槽链路、enc/dec 保真往返与翻转语义契约。",
+      "advice": "内核内新增代码全部 GPL-2.0 标注（内核树纪律）；本仓 MIT 代码与内核补丁是「分发与被分发」关系，互不传染。",
+      "evidence_status": "repo_verified"
+    },
+    {
+      "key": "qarch-4k-page-discipline",
+      "name": "4KiB 页纪律（存储域对齐口径贯通）",
+      "org": "本仓 arch/quantum + kernel.org",
+      "url": "https://docs.kernel.org/kbuild/headers.html",
+      "protocols": ["select HAVE_PAGE_SIZE_4KB + arch/quantum/include/asm/page.h 定 4KiB", "页粒度与 ext4 默认块/4K 对齐纪律同源——qstore 的「硬盘可接受数列」在内核页粒度层面贯通", "模拟架构无真实 MMU：页表由宿主进程承载"],
+      "interfaces": ["CONFIG_HAVE_PAGE_SIZE_4KB", "/proc/qpuinfo（page_size 自报）"],
+      "docs": [{"title": "Kbuild headers 文档", "url": "https://docs.kernel.org/kbuild/headers.html"}],
+      "summary": "量子架构页粒度固定 4KiB：把存储域的 4K 对齐纪律贯通到内核页粒度，形成「字节流→12 位重组 4096 进制→4K 页」的一致口径。",
+      "advice": "只读核验：/proc/qpuinfo 的 page_size 行与 build/.config 的 HAVE_PAGE_SIZE_4KB。",
+      "evidence_status": "repo_verified"
+    },
+    {
+      "key": "qarch-patch-distribution",
+      "name": "补丁分发与整树重建",
+      "org": "本仓 quantum-kernel（git 侧）",
+      "url": "https://www.kernel.org/",
+      "protocols": ["quilt 式系列补丁（0001-…）由内核树内 git 生成，可 git am 重建", "git 侧 quantum-kernel/ 保持 Linux 目录结构：arch/quantum/ 与 drivers/quantum/ 全量、被改文件的副本、patches/、scripts/", "完整树本地保留（.gitignore 排除 1.7GiB），GitHub 侧只有增量"],
+      "interfaces": ["scripts/fetch_kernel.sh（下载校验解压）", "scripts/build.sh（defconfig + 尽力编译验收）", "patches/0001-arch-quantum-*.patch"],
+      "docs": [{"title": "kernel.org 发布索引", "url": "https://www.kernel.org/"}],
+      "summary": "上传形态是「补丁+新增文件入 git」：增量镜像保持 Linux 目录结构（文件夹即子系统、目录结构即内核树），完整树凭脚本一键重建。这规避了全量 1.7GiB 入 git 的对象膨胀与不可靠推送。",
+      "advice": "重建校验：tarball sha256 + git am 补丁 + diff 空输出（重建树与本地树一致）。",
+      "evidence_status": "repo_verified"
+    },
+    {
+      "key": "qarch-build-honesty",
+      "name": "构建验收的诚实边界",
+      "org": "本仓 quantum-kernel",
+      "url": "https://www.kernel.org/",
+      "protocols": ["defconfig 级验收：make ARCH=quantum quantum_defconfig 全解析通过（Kconfig 依赖图完整）", "整树编译验收：make ARCH=quantum O=build -j$(nproc) 链接出真实 vmlinux（实测 EXIT=0、零警告，宿主工具链诚实编译）", "诚实边界：产出的是宿主 x86-64 机器码的模拟架构内核（arch/um 同型），不是量子处理器指令——量子处理器没有 gcc 后端，这是硬事实"],
+      "interfaces": ["build/.config（defconfig 产物）", "build/vmlinux（链接产物，实测约 4.6MB）", "build 日志（scripts/build.sh 三层验收）"],
+      "docs": [{"title": "arch/um 先例", "url": "https://docs.kernel.org/virt/uml/user_mode_linux_howto_v2.html"}],
+      "summary": "验收三层如实报告：①defconfig 全解析（已过）；②ARCH=quantum 整树编译并链接 vmlinux（已过——15 个 quantum_* 符号在 nm 清单内在位；宿主工具链诚实编译，产出宿主机器码）；③在真实量子硬件上运行（不可达——没有量子处理器，也没有它的编译器后端，这是硬事实，不虚报）。",
+      "advice": "后续可延展项：向 arch/um 级完整宿主模拟推进（需 os-Linux 层与 syscall 透传），以及 QPU 设备的用户态 round-trip 测试。",
+      "evidence_status": "repo_verified"
+    }
+  ]
+}

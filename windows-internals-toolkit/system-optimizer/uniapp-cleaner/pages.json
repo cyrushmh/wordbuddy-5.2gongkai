@@ -1,0 +1,16 @@
+{
+  "pages": [
+    {
+      "path": "pages/cleanup/cleanup",
+      "style": {
+        "navigationBarTitleText": "端上存储清理"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app 清理",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#f5f6f7"
+  }
+}

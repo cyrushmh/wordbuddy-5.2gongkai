@@ -1,0 +1,198 @@
+{
+  "launchd": {
+    "name": "launchd（macOS 服务与启动项管理：daemon / agent）",
+    "org": "Apple",
+    "url": "https://developer.apple.com/documentation/technotes/tn2083-daemons-and-agents",
+    "protocols": [
+      "launchd 域层级：system（/System/Library/LaunchDaemons，root）、global/loginwindow、gui/<uid>（用户级，~/Library/LaunchAgents）、user/<uid>",
+      "作业定义：plist（Program/ProgramArguments/Label/RunAtLoad/KeepAlive/StartInterval/LimitLoadToSessionType）",
+      "launchctl 子命令：bootstrap/bootout、load/unload（已弃用但仍可用）、start/stop/kickstart、list、print、disable/enable",
+      "作业加载优先级由 rcorder 风格的依赖图解析（每作业独立 plist，无单一总控文件）"
+    ],
+    "interfaces": [
+      "launchctl list（列出当前域已加载代理，只读）",
+      "launchctl print gui/$(id -u)（查看用户域作业详情，只读）",
+      "launchctl bootout gui/$(id -u)/<label>（卸载用户作业，非删除 plist）",
+      "launchctl disable gui/$(id -u)/<label>（禁用，下次登录不再加载）",
+      "plist 路径：~/Library/LaunchAgents、/Library/LaunchAgents、/Library/LaunchDaemons"
+    ],
+    "docs": [
+      "TN2083 Daemons and Agents（Apple Technical Note）",
+      "launchd.plist(5) / launchctl(1) man"
+    ],
+    "summary": "macOS 用 launchd 替代传统 init/SysV，统一管理系统与用户级后台作业。清理开机启动项本质是「禁用/卸载 LaunchAgent/LaunchDaemon」——只移走 plist 或 disable，绝不删系统 daemon。用户级代理在 ~/Library/LaunchAgents，系统级在 /Library/LaunchDaemons（受 SIP 保护，勿动）。",
+    "advice": "审查启动项：launchctl list 看当前代理；禁用用 launchctl disable gui/$(id -u)/<label>（持久）。不要 bootout 或删除来源不明的系统 daemon（如 networkd、syspolicyd），可能破坏网络或安全策略。清理只针对用户可写位置。"
+  },
+  "sysctl": {
+    "name": "sysctl（XNU 内核运行时参数：kern./hw./net./machdep.）",
+    "org": "Apple（XNU / Darwin）",
+    "url": "https://developer.apple.com/documentation/kernel",
+    "protocols": [
+      "sysctl MIB（管理信息库）：分层命名，如 kern.osrelease / hw.memsize / hw.ncpu / net.inet.tcp",
+      "sysctlbyname(name, oldp, oldlenp, newp, newlen) 系统调用（libc 提供），按名字读写内核变量",
+      "读用 sysctl -a；写用 sysctl -w（需 root），持久化放 /etc/sysctl.conf（较旧版本）或 launchd 加载的 sysctl 作业"
+    ],
+    "interfaces": [
+      "sysctl -a（dump 全部，只读）",
+      "sysctl hw.memsize / hw.ncpu / hw.model（只读单项）",
+      "sysctl -w <name>=<value>（写，需 root）"
+    ],
+    "docs": [
+      "sysctl(8) / sysctl(3) man（Darwin）",
+      "XNU 源码（github.com/apple-oss-distributions/xnu）"
+    ],
+    "summary": "XNU 内核把大量运行时状态暴露在 sysctl 命名空间下，读用 sysctl -a 或 sysctlbyname，写用 sysctl -w（root）。与 Linux 的 /proc/sys 等价但接口不同。硬件信息（型号/内存/核心数）优先用 sysctlbyname 而非解析文件，更权威。",
+    "advice": "只读核对用 sysctl -a 或单项 sysctl <name>；调优写用 sysctl -w（需 root）。macOS 上 kern.*/hw.* 多数为只读引导参数，写可能返回只读文件系统或权限拒绝。本工具探测只读，不写 sysctl。"
+  },
+  "defaults": {
+    "name": "defaults（用户偏好 CFPreferences：plist 后端）",
+    "org": "Apple（Core Foundation）",
+    "url": "https://developer.apple.com/documentation/foundation/userdefaults",
+    "protocols": [
+      "CFPreferences：域(domain)→键(key)→值(value)，后端为 ~/Library/Preferences/<domain>.plist（XML 或二进制）",
+      "cfprefsd 守护进程缓存并异步落盘，写入后需 killall cfprefsd 或对应进程才生效",
+      "域：应用 Bundle ID（如 com.apple.dock）、NSGlobalDomain（全局）、-currentHost 限定本机"
+    ],
+    "interfaces": [
+      "defaults read <domain> <key>（读单项，只读）",
+      "defaults domains（列出全部域，只读）",
+      "defaults write <domain> <key> -bool/-string/-int <value>（写，需 killall <app> 生效）",
+      "defaults delete <domain> <key>（恢复默认）"
+    ],
+    "docs": [
+      "defaults(1) man",
+      "CFPreferences 文档（developer.apple.com/documentation/corefoundation/cfpreferences）"
+    ],
+    "summary": "macOS 系统/应用设置大多存在 defaults 的 plist 后端。视觉效果优化（减弱透明、缩放最小化）就是写 com.apple.universalaccess / com.apple.dock 的键。改动可逆——删键即回默认。写入后一般要 killall 对应进程让新值生效。",
+    "advice": "改设置用 defaults write <domain> <key> ... 后 killall <app>（如 Dock 重启生效）；恢复用 defaults delete <domain> <key>。只读核对用 defaults read / defaults domains。勿批量 defaults write 未知域——可能锁死桌面（写错后删键即可恢复）。"
+  },
+  "softwareupdate": {
+    "name": "softwareupdate（系统软件更新：SUAppStore / SUS）",
+    "org": "Apple",
+    "url": "https://support.apple.com/en-us/HT201487",
+    "protocols": [
+      "Software Update 服务：本地 catalog / 远端 SUS（Software Update Server），按产品标识匹配",
+      "安装包分阶段下载到 /Library/Updates，安装走 SUCatalog 与 bootstrap 提权",
+      "随版本演进：旧版 softwareupdate -i -a，新版需 --restart 或 --os-only；无法在恢复/单用户态跑"
+    ],
+    "interfaces": [
+      "softwareupdate -l（列出可用更新，只读）",
+      "softwareupdate -i <label>（安装指定更新，需提权）",
+      "softwareupdate --fetch-full-installer（拉取完整安装器）"
+    ],
+    "docs": [
+      "softwareupdate(8) man",
+      "Apple 支持：更新 macOS 文档"
+    ],
+    "summary": "软件更新走 softwareupdate 命令，读取 SUS catalog 列出可升级项。优化前先确认是否需升级（安全补丁/新版性能）即用 -l 只读列出。安装需管理员权限并可能重启。保持在最新正式版（macOS 26+）可获得最佳性能与安全。",
+    "advice": "只读核对用 softwareupdate -l（列可用更新，不装）。真正安装需 sudo/提权且可能重启；CI/headless 机器谨慎。本工具仅报告可用更新，不改系统。"
+  },
+  "diskutil": {
+    "name": "diskutil（APFS / 宗卷 / 快照管理）",
+    "org": "Apple",
+    "url": "https://ss64.com/mac/diskutil.html",
+    "protocols": [
+      "APFS：容器(container) 包含多个宗卷(volume)，宗卷共享容器空间，支持 APFS 快照",
+      "CoreStorage（旧逻辑卷）+ APFS 双栈；diskutil 统一封装",
+      "verify/repair 走 fsck_apfs；snapshot 为 APFS COW 时间点"
+    ],
+    "interfaces": [
+      "diskutil apfs list（看容器/宗卷，只读）",
+      "diskutil apfs listSnapshots <vol>（列 APFS 快照，只读）",
+      "diskutil info <disk>（读宗卷信息，只读）",
+      "diskutil verifyVolume <vol>（只读一致性检查）",
+      "diskutil apfs deleteVolume / eraseVolume（写，破坏性）"
+    ],
+    "docs": [
+      "diskutil(8) man",
+      "Apple 文件系统 APFS 参考（developer.apple.com/documentation/filessystem）"
+    ],
+    "summary": "diskutil 是 macOS 磁盘与 APFS 的统一接口。清理空间常涉及 APFS 本地快照（Time Machine 占用）、宗卷容量。只读核对用 apfs list / listSnapshots / verifyVolume；repair/erase/delete 为写操作且可能丢数据。",
+    "advice": "只读评估用 diskutil apfs list / listSnapshots / verifyVolume；清理本地快照用 tmutil deletelocalsnapshots（见 tmutil）。绝不 diskutil eraseVolume / apfs deleteVolume 误操作——会销毁宗卷与数据。本工具探测只读。"
+  },
+  "pmset": {
+    "name": "pmset（电源管理：休眠/唤醒/节能配置）",
+    "org": "Apple",
+    "url": "https://developer.apple.com/documentation/iokit/iopmlib",
+    "protocols": [
+      "电源配置文件：AC / 电池 / UPS 三套，按源切换",
+      "关键项：sleep（休眠延时）、displaysleep、disksleep、hibernatemode（0/3/25）、powernap、standby",
+      "hibernatemode=25 为深度休眠（写 sleepimage 到 /private/var/vm），笔记本默认多为 3"
+    ],
+    "interfaces": [
+      "pmset -g（读当前全部设置，只读）",
+      "pmset -g custom（按源列出 AC/电池，只读）",
+      "pmset <name> <value>（写，需 root）"
+    ],
+    "docs": [
+      "pmset(1) man",
+      "IOPMlib / Power Management 文档（developer.apple.com）"
+    ],
+    "summary": "pmset 管理 macOS 休眠与节能。hibernatemode、sleepimage 大小与空间回收相关；桌面机可调高 sleep 延时省电。读用 pmset -g（root 与否均可读）。写 hibernatemode 需 root 且影响休眠行为。",
+    "advice": "只读核对用 pmset -g / pmset -g custom。回收休眠镜像见 mac_sleepimage 任务（sudo rm sleepimage，仅读不改 pmset）。改电源策略用 pmset <name> <value>（root）；笔记本勿随意设 hibernatemode=0（不用休眠镜像，意外断电易丢状态）。本工具探测只读。"
+  },
+  "tmutil": {
+    "name": "tmutil（Time Machine：本地快照/备份管理）",
+    "org": "Apple",
+    "url": "https://support.apple.com/en-us/HT201250",
+    "protocols": [
+      "APFS 本地快照：按时间间隔在本地宗卷生成可写时拷贝，系统空间紧张时自动回收",
+      "备份目标：网络/直连磁盘；增量备份按 FSEvents + 硬链接",
+      "本地快照占用计入宗卷「可清除空间」，清理可回收被占本地容量"
+    ],
+    "interfaces": [
+      "tmutil listlocalsnapshots /（列本地快照，只读）",
+      "tmutil status（看备份进度，只读）",
+      "tmutil deletelocalsnapshots <name>（删指定本地快照，回收空间）"
+    ],
+    "docs": [
+      "tmutil(8) man",
+      "Apple 支持：Time Machine 文档"
+    ],
+    "summary": "Time Machine 在 APFS 上生成本地快照，长期不连备份盘会累积占用本地容量。只读核对用 listlocalsnapshots；清理用 deletelocalsnapshots 回收空间。本地快照删除不影响远端备份磁盘上的历史备份。",
+    "advice": "只读核对用 tmutil listlocalsnapshots /。清理本地快照用 tmutil deletelocalsnapshots <name>（仅回收空间，不动远端备份）。系统空间紧张时 macOS 也会自动回收，不必手动频繁删。本工具探测只读。"
+  },
+  "spctl": {
+    "name": "spctl（Gatekeeper：代码签名/公证/评估）",
+    "org": "Apple",
+    "url": "https://support.apple.com/en-us/HT202491",
+    "protocols": [
+      "Gatekeeper 评估：对下载的应用做代码签名 + 公证(notarization) 校验",
+      "评估类型：assess（检查某路径是否满足 Gatekeeper）、source（允许来源：mac-app-store / identified-developer / anywhere）",
+      "全局开关：--global-disable / --global-enable（禁用/启用 Gatekeeper）"
+    ],
+    "interfaces": [
+      "spctl --status（看 Gatekeeper 状态，只读）",
+      "spctl --assess -v <path>（评估某应用，只读，不改动）",
+      "spctl --add --label / --label（加白名单，写）"
+    ],
+    "docs": [
+      "spctl(8) man",
+      "Apple 支持：在 Mac 上打开来自身份不明开发者的 App"
+    ],
+    "summary": "spctl 是 macOS 应用准入守门员，基于代码签名与公证评估可执行文件。只读核对用 spctl --status / --assess。切勿 spctl --global-disable 全局关闭 Gatekeeper——会彻底削弱系统防护，违背 SIP 初衷。",
+    "advice": "只读核对用 spctl --status（看是否已启用）/ spctl --assess -v <app>（评估某应用）。永远不要 spctl --global-disable（等于关掉应用白名单）。需要运行某开发者应用时用 xattr -d com.apple.quarantine 或右键打开，而非降全局安全。本工具仅只读评估。"
+  },
+  "networksetup": {
+    "name": "networksetup / systemsetup（网络与系统配置）",
+    "org": "Apple",
+    "url": "https://developer.apple.com/documentation/foundation/using_network_extension_framework",
+    "protocols": [
+      "网络配置：位置(location)/服务(service)/接口/DNS/代理，写在 /Library/Preferences/SystemConfiguration",
+      "networksetup 改网络栈（DNS、代理、Wi-Fi、硬件端口）；systemsetup 改主机名/时区/远程登录等",
+      "部分写操作需 root（如 -setdnsservers、systemsetup -setremotelogin）"
+    ],
+    "interfaces": [
+      "networksetup -listallnetworkservices（列网络服务，只读）",
+      "networksetup -getdnsservers <service>（读 DNS，只读）",
+      "systemsetup -getcomputername / -gettimezone（只读）",
+      "networksetup -setdnsservers <svc> <dns>（写，root）"
+    ],
+    "docs": [
+      "networksetup(8) / systemsetup(8) man",
+      "System Configuration 框架文档"
+    ],
+    "summary": "网络与系统配置走 networksetup / systemsetup，配置落在 /Library/Preferences/SystemConfiguration。只读核对用 -listallnetworkservices / -getdnsservers / -getcomputername；写 DNS/代理需 root。优化通常只排查（如 DNS 配置、代理残留），少改动。",
+    "advice": "只读核对用 networksetup -listallnetworkservices / -getdnsservers / systemsetup -getcomputername。清理代理/旧 DNS 残留用对应 -set*（root），改前先记录原值。本工具探测只读。"
+  }
+}

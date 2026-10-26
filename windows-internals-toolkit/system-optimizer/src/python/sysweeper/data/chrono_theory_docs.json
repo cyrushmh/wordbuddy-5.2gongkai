@@ -1,0 +1,89 @@
+{
+  "quantum_principles": {
+    "name": "量子理论及量子计算原理（系统观测的隐喻透镜）",
+    "org": "IEEE / ISO·IEC / NIST（标准）/ 本工具仅作只读参考透镜",
+    "url": "https://standards.ieee.org/ieee/7130/10962/ ; https://www.iso.org/standard/81499.html (ISO/IEC 4879 量子技术词汇)",
+    "protocols": [
+      "叠加态（superposition）：在「未测量」前系统同时处于多个可观维度的叠加——本工具对时间/空间/未来兼容等维度做并行非破坏性观测，不把任一维度「坍缩」为改动作",
+      "纠缠（entanglement）：资源间存在关联——时间维的不同时步与空间维的资源占用相互纠缠（如某时刻的负载高峰牵连某磁盘的写入放大）",
+      "测量（measurement）：只读探针即一次测量，观测本身不写系统、不改变态（与本项目只读红线一致）",
+      "后量子密码（post-quantum）：NIST FIPS 203/204/205（ML-KEM/ML-DSA/SLH-DSA）是「未来兼容」维度的硬约束，涉及加密与会话安全的组件须向前向量子安全迁移"
+    ],
+    "advice": "量子理论在此仅作为系统多维观测的方法论透镜：并行观察、关联识别、只读测量、向前向量子安全兼容；本工具不模拟量子硬件、不执行任何量子写操作。"
+  },
+  "computer_principles": {
+    "name": "计算机原理（冯·诺依曼 + 存储/计算/IO 层次）",
+    "org": "IEEE Computer Society / ACM（计算课程体系）/ 本工具只读参考",
+    "url": "https://www.computer.org/ ; https://dl.acm.org/ (CS2023)",
+    "protocols": [
+      "冯·诺依曼结构：运算器/控制器/存储器/输入/输出 五部分；本工具只读观察「存储」与「IO」维度的资源态",
+      "存储层次（金字塔）：寄存器 → L1/L2/L3 缓存 → 内存(RAM) → 本地 SSD/NVMe → 本地 HDD → 网络存储；越往下越慢越大，观测重点在「空间维度」的层级占用",
+      "NUMA：多路 CPU 下内存访问存在本地/远端开销差，属空间维度的拓扑事实",
+      "计算/存储/IO 解耦：算力、容量、带宽三者独立演进，优化须按维度分别观测，不可混为一谈"
+    ],
+    "advice": "计算机原理提供「维度」本体论：把系统拆成时间维（节律/生命周期）、空间维（资源拓扑）、未来兼容维（标准 EOL）、以及贯穿其上的量子观测透镜。"
+  },
+  "time_theory": {
+    "name": "时间理论（时钟同步 / 时区 / 生命周期阶段）",
+    "org": "IETF / IEEE / IANA（标准）",
+    "url": "https://www.rfc-editor.org/rfc/rfc5905 (NTPv4) ; https://ieeexplore.ieee.org/document/1441918 (IEEE 1588 PTP) ; https://www.iana.org/time-zones",
+    "protocols": [
+      "NTP（RFC 5905）：网络时间协议，毫秒级同步，绝大多数系统的默认时钟源",
+      "PTP（IEEE 1588）：精确时间协议，微秒/纳秒级，工业/金融/音视频同步用",
+      "chrono/systemd-timesyncd/chronyc：Linux 主流时钟守护；Windows w32time；macOS timed",
+      "IANA tz database：时区事实源，时区错配会导致日志、证书、排程全错位",
+      "生命周期阶段：provisioning(开通) → steady(稳定) → aging(老化) → EOL(终止支持)，由 uptime 与安装年龄推导"
+    ],
+    "advice": "时间维度只做只读观测：时钟是否同步、偏差多少、时区是否一致、当前处于哪个生命周期阶段；任何改时钟/改时区动作只给规范指引。"
+  },
+  "space_theory": {
+    "name": "空间理论（存储/内存/地址空间拓扑）",
+    "org": "Linux Foundation (FHS) / POSIX / IEEE",
+    "url": "https://refspecs.linuxfoundation.org/FHS_3.0/fhs-3.0.html ; https://pubs.opengroup.org/onlinepubs/9699919799/",
+    "protocols": [
+      "文件系统层次结构（FHS）：/ /usr /var /home /tmp 各司其职，空间占用错配会挤占日志/临时区",
+      "虚拟地址空间：进程独立 4G/128T 地址空间，分页映射到物理内存；OOM 即空间维度失衡",
+      "存储层级（见 computer_principles）：NVMe/SSD/HDD 与内存构成空间金字塔",
+      "挂载命名空间：/proc/mounts 暴露的挂载点是空间维度的边界事实",
+      "NUMA 拓扑：内存近端/远端访问差是空间维度的物理代价"
+    ],
+    "advice": "空间维度只做只读盘点：磁盘分区占用、内存容量、挂载点、地址空间是否失衡；任何分区/格式化/清理动作只给规范指引。"
+  },
+  "spacetime_theory": {
+    "name": "施时空组合理论（事件-时间-空间关联）",
+    "org": "本工具自洽模型（源自日志时间戳 + 资源态因果关联）",
+    "url": "https://www.freedesktop.org/software/systemd/man/journald.conf.html (journald 带时间戳事件) ; https://www.rsyslog.com/",
+    "protocols": [
+      "事件带时间戳：syslog/journald 每条记录含时间维，资源态变化可被定位到「何时」",
+      "时空组合：把「某时刻发生了什么」与「当时哪些空间资源被占用/改变」配对，形成可追责因果链",
+      "生命周期耦合：时间维的生命周期阶段 × 空间维的资源占用 = 何时该扩容/迁移/退役的决策依据",
+      "纠缠识别：时间维的高峰负载与空间维的写入放大/温度上升存在纠缠，须同时观测两维"
+    ],
+    "advice": "施时空组合只做只读关联：把时间维事件与空间维资源配对成因果链；不做任何阻断/回滚，只给观察结论与迁移建议。"
+  },
+  "future_compat": {
+    "name": "未来兼容（标准 EOL 追踪与向前兼容迁移）",
+    "org": "endoflife.date / NIST(后量子) / 各标准组织",
+    "url": "https://endoflife.date/ ; https://csrc.nist.gov/pubs/fips/203/final (ML-KEM) ; https://csrc.nist.gov/pubs/fips/204/final (ML-DSA)",
+    "protocols": [
+      "EOL 追踪：组件/标准到达终止支持即进入风险态，须有迁移路径（前向兼容）",
+      "后量子迁移：涉及加密的组件须向量子安全算法（FIPS 203/204/205）演进，属未来兼容硬约束",
+      "标准版本矩阵：本工具 data/*.json 标准知识库即各维度标准的版本事实源，可定期巡检 EOL",
+      "前向兼容原则：新引入标准须向后兼容既有（如 USB4 兼容 USB 3.2/2.0、星闪与 BLE/Wi-Fi 共存）"
+    ],
+    "advice": "未来兼容维只做只读评估：列出已达/近 EOL 的标准与组件、给出迁移方向；任何升级/替换动作只给规范指引。"
+  },
+  "power_grid_time_sync": {
+    "name": "电力授时（IRIG-B 与 PTP：变电站时间同步的互补架构）",
+    "org": "IRIG 标准组织 / IEEE / IEC（电力轮廓）",
+    "url": "https://www.nist.gov/pml/time-and-frequency-division/time-distribution/internet-code-time-synchronization ; IEEE Std 1588-2008",
+    "protocols": [
+      "IRIG-B（IRIG 200-04）：串行时间码，DC 码（RS-422，同步精度优于 1μs）/ AC 调制码（同轴长距、强电磁环境容错）；单向点对点下发，接收端无法反向测量线路时延",
+      "IEEE 1588-2008（PTPv2）：Sync/Follow_Up/Delay_Req/Delay_Resp 四步双向测算自动补偿链路时延；硬件时间戳（PHY/交换机芯片层）百 ns~亚 μs；BMCA 最佳主时钟算法自动选主切换",
+      "电力轮廓：IEEE C37.238-2017、IEC/IEEE 61850-9-3:2016——PTP 承载于 IEC 61850 过程层以太网，不单独敷设对时电缆",
+      "国内电力标准：DL/T 1100.1-2018（B 码相关电力标准）；北斗 B 码授时主流（北斗作顶层时间源）；BD 520002-2019（北斗定时型用户设备检定规程）",
+      "混合架构（主流新建智能变电站）：主时钟 PTP 上以太网 + PTP 转 B 码网关喂传统 IED——PTP 与 B 码互补而非替代"
+    ],
+    "advice": "chrono 只读登记时间同步标准口径；B 码/PTP 均不接真实设备、不代授时。"
+  }
+}

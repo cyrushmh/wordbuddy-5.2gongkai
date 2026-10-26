@@ -1,0 +1,12 @@
+[Unit]
+Description=Quantum architecture core monitor (emulated accounting model)
+Documentation=file:///usr/share/doc/xfce4-quantum/README.md
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/quantum-core
+Restart=on-failure
+RestartSec=1
+
+[Install]
+WantedBy=default.target

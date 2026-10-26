@@ -1,0 +1,33 @@
+{
+  "app": {
+    "signingConfigs": [],
+    "compileSdkVersion": 16,   // 升级 API 12 → 16（5.0.4 基线，详见 docs/01 §4.1）
+    "compatibleSdkVersion": 16,
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "compatibleSdkVersion": 16,
+        "runtimeOS": "HarmonyOS",
+        "buildOption": {
+          "strictMode": {
+            "caseSensitiveCheck": true,
+            "useNormalizedOHMUrl": true
+          }
+        }
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyTo": "phone"
+        }
+      ]
+    }
+  ]
+}

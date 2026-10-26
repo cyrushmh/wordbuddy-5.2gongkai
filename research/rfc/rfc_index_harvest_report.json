@@ -1,0 +1,74 @@
+{
+  "source": "/workspace/windows-internals-toolkit/research/rfc/rfc-index.txt",
+  "source_sha256": "24cc02402437a1e0c3679b879cbc2f9f933a99ec4f8a846f4a96f12e295726b5",
+  "entries_total": 10036,
+  "issued": 9848,
+  "not_issued": 188,
+  "not_issued_numbers_first20": [
+    14,
+    26,
+    92,
+    159,
+    201,
+    220,
+    244,
+    248,
+    257,
+    258,
+    259,
+    260,
+    261,
+    262,
+    272,
+    275,
+    277,
+    279,
+    284,
+    337
+  ],
+  "parse_odd": {
+    "count": 0,
+    "first20": []
+  },
+  "legacy_title_concatenated": {
+    "count": 11,
+    "first20": [
+      "rfc00016",
+      "rfc00128",
+      "rfc00408",
+      "rfc00457",
+      "rfc01108",
+      "rfc01811",
+      "rfc01816",
+      "rfc02146",
+      "rfc09113",
+      "rfc09114",
+      "rfc09580"
+    ]
+  },
+  "joined_sticky_lines": 0,
+  "status_distribution": {
+    "PROPOSED STANDARD": 4430,
+    "INFORMATIONAL": 3012,
+    "UNKNOWN": 887,
+    "EXPERIMENTAL": 559,
+    "HISTORIC": 353,
+    "BEST CURRENT PRACTICE": 337,
+    "NOT_ISSUED": 188,
+    "DRAFT STANDARD": 138,
+    "INTERNET STANDARD": 132
+  },
+  "series_subseries_count": 367,
+  "relation_coverage": {
+    "obs": 1265,
+    "oby": 1384,
+    "upd": 1293,
+    "udy": 1242,
+    "also": 449
+  },
+  "relation_dangling": {
+    "count": 0,
+    "first20": []
+  },
+  "output": "/workspace/windows-internals-toolkit/windows-internals-toolkit/system-optimizer/src/python/sysweeper/data/rfc_standards.json"
+}

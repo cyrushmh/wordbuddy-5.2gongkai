@@ -1,0 +1,7 @@
+# debhelper / dpkg-buildpackage 生成产物（可由 dpkg-buildpackage 重建）
+quantum-core/
+xfce4-quantum/
+.debhelper/
+files
+*.substvars
+debhelper-build-stamp

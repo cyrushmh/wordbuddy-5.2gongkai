@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: GPL-2.0
+config QUANTUM_NET_DEV
+	tristate "Emulated QNIC device /dev/qnet0"
+	default y
+	depends on QUANTUM_NET
+	help
+	  One misc device /dev/qnet0 exposing the quantum networking
+	  substrate: link add/del, Bell-pair distribution, entanglement
+	  swapping and teleportation counters. Built on the
+	  arch/quantum mesh orchestration model (quantum-net.c). The
+	  QNIC hardware abstraction (qnic.c) auto-negotiates a default
+	  mesh on probe.

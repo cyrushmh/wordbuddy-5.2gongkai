@@ -1,0 +1,17 @@
+SPDX-License-Identifier: GPL-3.0-or-later
+官方全文: https://www.gnu.org/licenses/gpl-3.0.txt
+
+GNU GENERAL PUBLIC LICENSE
+Version 3, 29 June 2007
+Copyright (C) 2007 Free Software Foundation, Inc.
+https://www.gnu.org/licenses/gpl-3.0.txt
+
+核心条款摘要（GPL v3）:
+1. 允许运行、研究、再发布、修改；再发布（含二进制）必须同时提供对应源代码（“对应源码”定义更明确）。
+2. 强 copyleft：整体派生作品须以 GPL v3 授权；新增“下游接收者专利授权”与“反 Tivoization”条款。
+3. 与 Apache-2.0 等兼容；与 AGPL 不同，仅“分发”触发源码提供义务（网络服务不触发）。
+
+------------------------------------------------------------------------------
+本文档引用该许可证的项目: 2dust/v2rayN（GPL-3.0）
+用途: 网络互联互通——Windows/Linux/macOS 上的 Xray/sing-box GUI 客户端。
+本工具不打包其二进制，用户需自行按 GPL-3.0 条款安装使用。

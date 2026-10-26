@@ -1,0 +1,226 @@
+{
+  "ips_pkg": {
+    "name": "IPS（Image Packaging System：pkg(1) / pkg(5) 镜像打包系统）",
+    "org": "Oracle Solaris / illumos",
+    "url": "https://illumos.org/man/1/pkg",
+    "protocols": [
+      "包标识用 FMRI：pkg://<publisher>/<name>@<version>,<build>-<branch>（如 pkg://solaris/system/library@0.5.11,5.11-11.4.42.0.0.1.0）",
+      "镜像即磁盘上某个根目录（image，通常 /），元数据在 <image>/var/pkg；publisher 指向远端 repository（file:// 或 https://）",
+      "catalog（目录）+ manifest 清单：manifest 描述动作（file/dir/link/driver/…）与依赖，安装前先解依赖再落地",
+      "与启动环境（BE / beadm|bectl）联动：升级类操作默认新建 BE，失败可回滚，包操作是原子的",
+      "历史：pkg history 记录每次镜像操作（可 purge-history 回收元数据）"
+    ],
+    "interfaces": [
+      "pkg list / pkg info（列已装包，只读）",
+      "pkg publisher（看软件源，只读）",
+      "pkg search / pkg contents（查文件归属与内容，只读）",
+      "pkg verify（校验已装文件与清单是否一致，只读）",
+      "pkg history（看操作历史，只读）/ pkg purge-history（清历史，写）",
+      "pkg refresh（刷新 publisher 目录，写本地元数据）/ pkg fix（按清单修复，写）"
+    ],
+    "docs": [
+      "pkg(1) / pkg(5) man（IPS 镜像与包格式）",
+      "Oracle Solaris 11.4 文档：Adding and Updating Software Packages",
+      "illumos / OmniOS 手册：pkg 与 beadm 启动环境"
+    ],
+    "summary": "Solaris 系用 IPS 取代了旧的 SVR4 pkgadd：包以 FMRI 全长标识，镜像（image）保存已装清单与历史，publisher 指向软件源；升级默认写进新的启动环境（BE），失败可回滚，从不「半装」。空间与一致性两端：pkg history 累积的历史可 purge 回收，pkg verify 能校验已装文件是否被改动。",
+    "advice": "只读核对用 pkg list / pkg info / pkg publisher / pkg verify（校验不改文件）。回收元数据用 pkg purge-history（只清历史，不影响已装）；修不一致用 pkg fix（按官方清单还原，勿手删 /usr 文件）。切勿 pkg uninstall -A 或手删清单里登记的文件——IPS 会失去一致性。本工具探测只读，调优只调官方子命令。"
+  },
+  "smf": {
+    "name": "SMF（Service Management Facility：svc.startd + FMRI 服务仓库）",
+    "org": "Oracle Solaris / illumos",
+    "url": "https://illumos.org/man/8/svc.startd",
+    "protocols": [
+      "服务用 FMRI 标识：svc:/<category>/<name>:<instance>（如 svc:/network/ssh:default、svc:/system/fmd:default）",
+      "清单（manifest）为 XML，放 /lib/svc/manifest/<category>/；svc.startd 依 PROVIDE/REQUIRE 依赖图按序启动",
+      "里程碑（milestone）：svc:/milestone/single-user|multi-user|multi-user-server 取代 System V 的运行级",
+      "服务状态：uninitialized / offline / online / degraded / maintenance / disabled / legacy-run",
+      "配置库取代 /etc 下的散装 rc 文件：svccfg 改属性（properties），管理与配置分离"
+    ],
+    "interfaces": [
+      "svcs -a / -x / -l <fmri>（看状态与依赖，只读）",
+      "svccfg export <fmri> / svccfg -s <fmri> listprop（导配置，只读）",
+      "svcadm enable|disable|restart|refresh <fmri>（启停，写）",
+      "svcadm clear <fmri>（清 maintenance 状态，写）",
+      "svcadm mark degraded|maintenance（标记，写）"
+    ],
+    "docs": [
+      "smf(7) / svc.startd(8) / svcs(1) / svcadm(8) / svccfg(8) man",
+      "Oracle Solaris 11.4 文档：Managing System Services（SMF）"
+    ],
+    "summary": "SMF 是 Solaris 的服务管理框架，彻底取代 System V 的 /etc/rc*.d：服务用 FMRI 命名、清单是 XML、状态由 svc.startd 维护。卡住的服务会进 maintenance（svcs -x 能看到原因），官方恢复接口是 svcadm clear 而不是手改文件。只读审查即 svcs -a 与 svccfg export。",
+    "advice": "只读核对用 svcs -a（列全部服务状态）/ svcs -x（只看故障）/ svccfg -s <fmri> listprop（看配置）。恢复用 svcadm clear <fmri>（官方清 maintenance 状态）；开启守护用 svcadm enable <fmri>。切勿 svcadm disable 关键服务（ssh/fmd/svc.startd 本身）——远程机器会失联。本工具探测只读，写接口只「启用」与「清状态」，不做 disable。"
+  },
+  "zfs": {
+    "name": "OpenZFS（Solaris/illumos 存储栈：zpool / dataset / 校验和自愈）",
+    "org": "OpenZFS（Solaris/illumos 发源）",
+    "url": "https://openzfs.github.io/openzfs-docs/",
+    "protocols": [
+      "存储池 zpool（vdev 组合：mirror/raidz/stripe + spare + log + cache）+ 数据集 dataset/zvol",
+      "写时复制（COW）+ 端到端校验和：scrub 遍历校验并在有冗余时自愈（resilver 重建）",
+      "快照 snapshot 与克隆 clone 基于 COW；属性继承（compression/atime/dedup/recordsize 逐层继承）",
+      "ARC 自适应缓存、ZIL 写日志；数据集属性可在线改，不影响已有数据（只作用于新写入）",
+      "trim：SSD 后备池回收空闲块（illumos 支持 autotrim 属性，或手动 zpool trim）"
+    ],
+    "interfaces": [
+      "zpool list / zpool status -x / zfs list（看健康与容量，只读）",
+      "zfs get compression|atime <dataset>（看属性，只读）",
+      "zpool scrub <pool>（后台校验，重 IO）/ zpool trim <pool>（回收 SSD 空闲块）",
+      "zfs set compression=lz4|atime=off <dataset>（改属性，写；只作用于新写入）",
+      "zfs snapshot / zfs destroy <ds>@<snap>（建/删快照，写）"
+    ],
+    "docs": [
+      "zpool(8) / zfs(8) / zfs(4) man（OpenZFS）",
+      "OpenZFS 文档（openzfs.github.io）"
+    ],
+    "summary": "ZFS 正是 Solaris 提出的存储栈：池化 + COW + 端到端校验和，scrub 能发现位衰减并在有冗余时自愈。属性（compression/atime）可在线改且只影响新写入，是安全方向上的调优手段：atime=off 少写元数据（相当于 NTFS 关最后访问时间），compression=lz4 用极低 CPU 代价换空间。空间杀手是累积快照与未回收的 SSD 块。",
+    "advice": "只读核对用 zpool list / zpool status -x / zfs list / zfs get atime。安全方向调优：zfs set atime=off（少写元数据）、zfs set compression=lz4（省空间），均只作用于新写入；SSD 池定期 zpool trim 或开 autotrim。校验用 zpool scrub（重 IO，选低峰）。切勿 zpool destroy 或 zfs destroy -r 清理空间——那是删数据。本工具探测只读，写接口只改属性与发起 scrub。"
+  },
+  "etc_release": {
+    "name": "/etc/release（Solaris 发行信息：不靠 /etc/os-release）",
+    "org": "Oracle Solaris / illumos（OmniOS / OpenIndiana / SmartOS）",
+    "url": "https://illumos.org/man/5/release",
+    "protocols": [
+      "首行即发行名与版本：Oracle Solaris 11.4 X86 / OpenIndiana … illumos-… / OmniOS … r151048",
+      "System V 系传统用 /etc/release 而非 Linux 的 /etc/os-release（os-release 是后来才加的可选兼容）",
+      "内核版本用 uname -a / uname -v 补齐；illumos 的 -v 带 build 时间戳（如 joyent_20210826T002458Z）",
+      "平台/固件：prtconf -b、isainfo -kv、prtdiag -v（SPARC 与 x86 差异大）"
+    ],
+    "interfaces": [
+      "cat /etc/release（读发行信息，只读）",
+      "uname -a / uname -v（读内核版本，只读）",
+      "pkg list entire / pkg list system/kernel（看包层面版本，只读）",
+      "beadm list / bectl list（看启动环境 BE，只读）"
+    ],
+    "docs": [
+      "release(5) / uname(1) man",
+      "Oracle Solaris 11.4 文档：系统识别与版本"
+    ],
+    "summary": "System V 系认发行版不读 /etc/os-release，而读 /etc/release 首行（含发行名与版本），内核版本再用 uname 补。确定版本后才能谈兼容（如 IPS publisher 必须匹配发行版），所以优化前先读它。BE（启动环境）列表则是包/升级可回滚的凭据。",
+    "advice": "只读核对用 cat /etc/release + uname -a（两条就够定位发行版与内核）；想看可回滚点用 beadm list / bectl list。不要凭 /etc/os-release 是否存在判断发行版——illumos 系可能没有。本工具探测只读。"
+  },
+  "logadm": {
+    "name": "logadm（Solaris 官方日志轮转：/etc/logadm.conf）",
+    "org": "Oracle Solaris / illumos",
+    "url": "https://illumos.org/man/8/logadm",
+    "protocols": [
+      "配置在 /etc/logadm.conf：每条指定日志路径、-C 保留份数、-p 周期、-s 大小阈值、-c 复制后截断",
+      "轮转语义：把当前日志改名为 .0（旧档顺延），再让写日志的进程重开（可选 -c 复制截断以免进程持句柄）",
+      "默认由 root 的 cron 每日跑（Solaris 传统），也可用 SMF 调度；轮转本身不删历史（按 -C 淘汰最旧）",
+      "与 Linux logrotate 不同：logadm 一条配置同时管「周期 + 份数 + 阈值」，并能校验配置语法（-V）"
+    ],
+    "interfaces": [
+      "logadm -V（校验配置语法，只读）",
+      "cat /etc/logadm.conf（看规则，只读）",
+      "logadm -v <logname>（预演轮转，只读打印）",
+      "logadm -r（立即按配置轮转一次，写）/ logadm -p now <logname>（立即，写）"
+    ],
+    "docs": [
+      "logadm(8) / logadm.conf(5) man",
+      "Oracle Solaris 11.4 文档：Managing Log Files"
+    ],
+    "summary": "Solaris 用 logadm 而不是 logrotate 管日志：规则集中在 /etc/logadm.conf，一份配置同时定周期、保留份数与大小阈值，每日由 cron 执行。轮转即归档（改名 + 可选压缩），按 -C 淘汰最旧档，不会删正在写的日志。手工想立刻轮转用 logadm -r（官方接口，不绕过配置）。",
+    "advice": "只读核对用 logadm -V（校验配置是否写对）+ cat /etc/logadm.conf；想看会做什么用 logadm -v 预演。执行轮转用 logadm -r（按配置走，绝不手 rm 日志）。回收空间应调小 -C 或加 -s 阈值，而不是删文件。本工具探测只读，写接口只调 logadm -r。"
+  },
+  "kstat": {
+    "name": "kstat（Solaris 内核统计：module:instance:name:class 四元组）",
+    "org": "Oracle Solaris / illumos",
+    "url": "https://illumos.org/man/1/kstat",
+    "protocols": [
+      "内核统计以四元组寻址：module:instance:name:class（如 unix:0:system_pages:pages、cpu_info:0:cpu_info0:cpu_info）",
+      "libkstat / kstat(3KSTAT) 读取内核里的命名统计表；kstat -p 输出 key=value，便于脚本",
+      "与 Linux 不同：Solaris 系统级统计走 kstat，/proc 只管进程级（/proc/<pid>）",
+      "配套观测命令：prstat（进程）、psrinfo -v（CPU）、vmstat/iostat/mpstat（采样）、prtconf（配置）",
+      "动态可加载：驱动自行注册 kstat 节点，故统计项随驱动/平台变化"
+    ],
+    "interfaces": [
+      "kstat -p（dump 全部，只读，量大）",
+      "kstat -p -m <module> -n <name> -s <stat>（读单项，只读）",
+      "prstat -a（按进程看 CPU/内存，只读）",
+      "psrinfo -v / prtconf（看 CPU 与内存配置，只读）",
+      "vmstat / iostat -xn（采样，只读）"
+    ],
+    "docs": [
+      "kstat(1) / kstat(3KSTAT) man",
+      "prstat(1) / psrinfo(1M) / prtconf(1M) man",
+      "Oracle Solaris 11.4 文档：System Administration Guide（性能观测）"
+    ],
+    "summary": "Solaris 不从 /proc/sys 读系统状态，而用 kstat：内核把统计组织成 module:instance:name:class 的命名表，用户态经 libkstat 读取。看物理内存是 unix:0:system_pages:physmem，看 CPU 是 cpu_info。上层观测工具（prstat/vmstat/iostat）都建立在它之上。",
+    "advice": "只读核对用 kstat -p -m <module> -n <name> -s <stat>（精读单项，别直接 -p 全 dump，量大且慢）；看进程用 prstat -a，看 CPU 用 psrinfo -v。kstat 全部是只读接口，本工具也只做只读读取；内核参数持久化不在 kstat（那要改 /etc/system 走 kmdb/mdb，本工具不动）。"
+  },
+  "zones": {
+    "name": "Zones（Solaris 虚拟化：global zone / non-global zone / branded zone）",
+    "org": "Oracle Solaris / illumos",
+    "url": "https://illumos.org/man/8/zoneadm",
+    "protocols": [
+      "全局区（global zone）掌握硬件与非全局区；非全局区（ngz）共享内核、有独立进程/网络/文件系统视图",
+      "配置用 zonecfg（交互或 -f 命令文件），属性含 zonepath、net、capped-cpu/capped-memory、dedicated-cpu",
+      "品牌区（branded zone）：solaris10（Solaris 10 容器）、lx（Linux 系统调用翻译）、illumos 上还有 bhyve/kvm，实现「内核共享 + ABI 翻译」",
+      "生命周期：configured → installed → running（zoneadm install/boot/halt/reboot/uninstall）",
+      "资源观测：zonestat(1) 按区采样 CPU/内存/网络，与 kstat 同源"
+    ],
+    "interfaces": [
+      "zoneadm list -cv（列全部区与状态，只读）",
+      "zonecfg -z <zone> info（看配置，只读）",
+      "zlogin <zone> 'cmd'（进区执行，非改系统）",
+      "zonestat（按区采样资源，只读）",
+      "zoneadm -z <zone> boot|halt|reboot|install|uninstall（生命周期，写）"
+    ],
+    "docs": [
+      "zones(7) / zoneadm(8) / zonecfg(8) / zlogin(1) / zonestat(1) man",
+      "Oracle Solaris 11.4 文档：Oracle Solaris Zones 介绍"
+    ],
+    "summary": "Zones 是 Solaris 的操作系统级虚拟化：非全局区共享内核但视图隔离，开销远低于全虚拟化。清点机器上的区用 zoneadm list -cv；看资源上限与网络用 zonecfg info；按区看实时占用用 zonestat。空间上，每个区的 zonepath（通常在 rpool 上）是主要占用。",
+    "advice": "只读核对用 zoneadm list -cv / zonecfg -z <zone> info / zonestat（都不动系统）；进区查东西用 zlogin（仅执行只读命令）。切勿 zoneadm uninstall（等于删掉整个区）来回收空间。本工具探测只读，不建/删/启停任何区。"
+  },
+  "fma": {
+    "name": "FMA（Fault Management Architecture：fmd + fmadm/fmdump 自愈）",
+    "org": "Oracle Solaris / illumos",
+    "url": "https://illumos.org/man/8/fmadm",
+    "protocols": [
+      "fmd(8) 守护进程接收故障遥测（ereport），诊断引擎（DE）把 ereport 关联成 fault（fault.<class>）",
+      "故障以 FRU（可更换单元，如 hc://:product-id=…/component=…）为粒度，含 UUID 与受影响设备",
+      "响应代理（agent）：对 CPU/内存做 retire（停用故障页/核）实现「预测式自愈」，服务不中断",
+      "故障库 /var/fm/fmd，日志事件用 fmdump 回溯；SMF 服务 svc:/system/fmd:default 负责拉起",
+      "与 SMF 联动：硬件故障会连带把依赖它的服务置为 maintenance/degraded"
+    ],
+    "interfaces": [
+      "fmadm faulty（列当前未处理故障，只读）",
+      "fmdump -v / fmdump -V（看故障与 ereport 历史，只读）",
+      "fmstat（看 fmd 各模块统计，只读）",
+      "fmadm repair <fmri> / fmadm acquit <uuid>（标记已处理，写）",
+      "svcadm enable svc:/system/fmd:default（开故障管理守护，写）"
+    ],
+    "docs": [
+      "fmd(8) / fmadm(8) / fmdump(8) / fmstat(8) man",
+      "Oracle Solaris 11.4 文档：Fault Management（预测式自愈）"
+    ],
+    "summary": "FMA 是 Solaris 的故障管理框架：fmd 收遥测、诊断引擎把 ereport 归因为 fault，再让响应代理 retire 掉坏掉的 CPU 页/内存页，做到「坏了自己隔离、不停机」。查当前故障用 fmadm faulty（只读），看历史用 fmdump。若 fmd 守护没起，机器就失去这层自愈，属于该开的没开。",
+    "advice": "只读核对用 fmadm faulty / fmdump -v / fmstat（看故障与自愈统计，不改状态）。恢复手段按官方顺序：先真正换/修硬件，再 fmadm repair 或 fmadm acquit 标记已处理；fmd 没起就 svcadm enable svc:/system/fmd:default（只开不关）。切勿用 acquit 掩盖未修复的硬件故障——那是把告警关掉而不是解决问题。本工具探测只读，写接口只「开启守护」。"
+  },
+  "ipadm_dladm": {
+    "name": "Crossbow 网络栈（dladm / ipadm / flowadm：取代 ifconfig 与 ndd）",
+    "org": "Oracle Solaris（Crossbow 网络虚拟化）",
+    "url": "https://illumos.org/man/8/ipadm",
+    "protocols": [
+      "数据链路层与接口层分离：dladm 管链路（datalink，含 VNIC/aggr/etherstub），ipadm 管 IP 接口与地址",
+      "网络虚拟化：VNIC 虚拟网卡、带宽限制、flow（flowadm 按流分流与限速）、IPMP 多路径",
+      "协议属性用 ipadm show-prop / set-prop 管理（取代旧的 ndd /dev/tcp 可调项）：如 tcp 的 ecn、congestion_control、max_buf、recv_buf、send_buf、sack",
+      "配置持久化：ipadm 写的属性随接口配置保存，不需要 /etc/system 或 /etc/rc 脚本",
+      "观察链路：dladm show-link / show-phys / show-ether / show-aggr"
+    ],
+    "interfaces": [
+      "dladm show-link / show-phys（看链路与物理网卡，只读）",
+      "ipadm show-addr / show-if（看接口与地址，只读）",
+      "ipadm show-prop tcp（看 TCP 协议可调项，只读）",
+      "ipadm set-prop -p ecn=active tcp（开 ECN，写）",
+      "flowadm（按流限速/统计，写规则）"
+    ],
+    "docs": [
+      "dladm(8) / ipadm(8) / flowadm(8) man",
+      "Oracle Solaris 11.4 文档：Configuring and Administering Network Components"
+    ],
+    "summary": "Solaris 11 起网络配置从 ifconfig/ndd 迁移到 dladm（链路层）+ ipadm（IP 层）：链路与接口解耦，VNIC/aggr/flow 提供网络虚拟化，TCP 可调项统一由 ipadm show-prop/set-prop 管。TCP 的 ecn=active 即 RFC 3168 显式拥塞通知——与 Linux 的 tcp_ecn、Windows 的 ecncapability 是同一件事，只是接口完全不同。",
+    "advice": "只读核对用 dladm show-link / ipadm show-addr / ipadm show-prop tcp（看链路、地址与协议属性）。调优用官方 ipadm set-prop（如 -p ecn=active tcp，RFC 3168），属性随接口配置持久化，不要再去改 /etc/system 或用 ndd -set 硬塞。切勿 ipadm delete-if/delete-addr 正在承载连接的接口——会直接断网。本工具探测只读，写接口只开 ECN 这类安全方向项。"
+  }
+}

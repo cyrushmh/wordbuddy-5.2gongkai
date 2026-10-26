@@ -1,0 +1,109 @@
+name: Build Package
+
+# 利用 GitHub 生成可分发包：
+#   Python: sdist + wheel（纯标准库、零依赖）+ 单文件 .pyz（docs/37 首推产物，含冒烟），
+#           由仓库自带 tools/syspkg.py 产出——
+#           该打包器对版本号格式零依赖（手写 PEP 427 wheel / sdist，不经由 setuptools，
+#           因此去中心化版本号 NNNN.NNNN.NNNN.NNNN[.YYYYMMDD] 不会触发任何 PEP 440 校验，
+#           不同模型接手也不会为"合规"把三处活版本改乱）；
+#   Go    : 交叉编译 sysweeper-go 多平台二进制（linux/windows/darwin × amd64/arm64/riscv64）；
+#   也可在 Actions 页手动（workflow_dispatch）触发，产物作为 artifact 留存。
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write   # tag 时创建 Release 并上传产物所需
+
+jobs:
+  build-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run tests
+        working-directory: system-optimizer
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest
+          PYTHONPATH=src/python python -m pytest -q -m "not slow"
+
+      - name: Build sdist and wheel (syspkg, 版本格式无关)
+        run: |
+          python3 tools/syspkg.py wheel --out system-optimizer/dist
+          python3 tools/syspkg.py sdist --out system-optimizer/dist
+
+      # docs/37 首推产物：单文件 .pyz（zipapp，纯标准库零依赖，任一 python3 机器可跑）。
+      # 此前只构建 sdist/wheel，Release 缺少 .pyz（用户无法按文档方式 A 下载即跑）——#662 补齐。
+      - name: Build single-file pyz + smoke (docs/37 recommended artifact)
+        run: |
+          python3 tools/syspkg.py pyz --out system-optimizer/dist
+          python3 tools/syspkg.py smoke --out system-optimizer/dist
+
+      - name: Upload python dist artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-python
+          path: system-optimizer/dist/*
+
+      - name: Publish python dist to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: system-optimizer/dist/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-go:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: system-optimizer/src/go
+    strategy:
+      fail-fast: false
+      matrix:
+        # 覆盖各系统 × 硬件：Windows(x64/arm64)、Linux(x64/arm64/riscv64)、macOS(x64/arm64)
+        include:
+          - { goos: linux,   goarch: amd64,  ext: "" }
+          - { goos: linux,   goarch: arm64,  ext: "" }
+          - { goos: linux,   goarch: riscv64, ext: "" }
+          - { goos: windows, goarch: amd64,  ext: ".exe" }
+          - { goos: windows, goarch: arm64,  ext: ".exe" }
+          - { goos: darwin,  goarch: arm64,  ext: "" }
+          - { goos: darwin,  goarch: amd64,  ext: "" }
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+
+      - name: Vet and build ${{ matrix.goos }}/${{ matrix.goarch }}
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+        run: |
+          go vet ./...
+          go build -trimpath -o "sysweeper-go-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.ext }}" .
+
+      - name: Upload go binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-go-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: system-optimizer/src/go/sysweeper-go-*
+
+      - name: Publish go binaries to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: system-optimizer/src/go/sysweeper-go-*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

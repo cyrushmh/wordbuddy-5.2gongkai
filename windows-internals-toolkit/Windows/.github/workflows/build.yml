@@ -1,0 +1,72 @@
+name: build-windows-toolkit
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Windows
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 配置 Rust 工具链（含 windows-gnu 交叉目标）
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-gnu aarch64-pc-windows-gnu
+
+      - name: 安装 mingw-w64（x64 + arm64 交叉编译器）
+        run: sudo apt-get update && sudo apt-get install -y mingw-w64 gcc-aarch64-w64-mingw32
+
+      - name: 配置 .NET 10 SDK（一致性测试需 dotnet build 无头控制台版）
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: 配置 JDK 25（一致性测试需 javac/java，纯标准库）
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: 配置 Ruby 3.2（一致性测试需 ruby 解释器，纯标准库）
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+
+      - name: 交叉编译 Windows 可执行文件 + 运行一致性测试
+        run: bash build.sh
+
+      - name: 跨语言一致性测试（显式步骤，便于 CI 状态查看）
+        run: python3 tests/parity_test.py
+
+      - name: Qt (PySide6) PE Viewer 无头冒烟（--json，复用 pe_inspect 解析，不依赖 Qt 运行时）
+        run: python3 src/python/peview_qt.py tools/peinfo.exe --json
+
+      - name: 上传产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: pe-binaries
+          path: |
+            Windows/tools/peinfo.exe
+            Windows/tools/peinfo32.exe
+            Windows/tools/peview.exe
+            Windows/tools/peinfo_rs.exe
+            Windows/tools/peinfo-arm64.exe
+            Windows/tools/peinfo_rs_arm64.exe
+
+      - name: 发布 Release（仅在打 tag 时）
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            Windows/tools/peinfo.exe
+            Windows/tools/peinfo32.exe
+            Windows/tools/peview.exe
+            Windows/tools/peinfo_rs.exe
+            Windows/tools/peinfo-arm64.exe
+            Windows/tools/peinfo_rs_arm64.exe

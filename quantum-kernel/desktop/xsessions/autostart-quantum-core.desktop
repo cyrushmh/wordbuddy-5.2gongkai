@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Quantum Core Daemon
+Comment=启动量子架构用户态守护进程 quantum-core（监控 /proc/quantum-energy 与 /dev/qpu0）
+Exec=/usr/bin/quantum-core
+X-GNOME-Autostart-enabled=true
+X-XFCE-Autostart-Override=true
+OnlyShowIn=XFCE;
+NoDisplay=false

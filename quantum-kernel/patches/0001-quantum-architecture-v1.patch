@@ -1,0 +1,4111 @@
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/boot/grub.cfg linux-6.18.57/arch/quantum/boot/grub.cfg
+--- /tmp/kbase/linux-6.18.57/arch/quantum/boot/grub.cfg	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/boot/grub.cfg	2026-10-21 19:35:55.854053020 +08:00
+@@ -0,0 +1,33 @@
++#
++# GRUB2 配置样例 —— Linux/quantum 架构内核（arch/quantum）
++#
++# 说明（诚实口径）：quantum 是「宿主模拟」架构，没有真实的引导镜像
++# 格式（无 bzImage/Image 引导协议），本文件是**内核命令行契约的
++# 参考样例**：bootloader 通过内核命令行把参数传给内核，
++# `idle=mwait` 即由此进入 arch/quantum 的空闲路径。
++#
++# idle= 参数（x86 兼容口径子集，详见 Documentation/arch/quantum/energy-model.rst）：
++#   idle=mwait  基态等待观测（默认）——宿主承载的 monitor/wait 语义；
++#   idle=poll   强制轮询（忙等）；
++#   idle=halt   最深停机态（模拟语义同 mwait）。
++# 注意：x86 官方文档已删除 idle=mwait 取值（deprecated），但参数在
++# 6.18.57 仍然可用，quantum 架构显式保留该语义。
++
++set default=0
++set timeout=5
++
++menuentry 'Linux/quantum 6.18.57 (host-emulated, idle=mwait)' {
++	insmod part_msdos
++	insmod ext2
++	set root='hd0,msdos1'
++	echo 'Loading Linux/quantum ...'
++	linux /boot/vmlinux-6.18.57-quantum root=/dev/sda1 ro idle=mwait
++}
++
++menuentry 'Linux/quantum 6.18.57 (host-emulated, idle=poll)' {
++	insmod part_msdos
++	insmod ext2
++	set root='hd0,msdos1'
++	echo 'Loading Linux/quantum ...'
++	linux /boot/vmlinux-6.18.57-quantum root=/dev/sda1 ro idle=poll
++}
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/boot/lilo.conf linux-6.18.57/arch/quantum/boot/lilo.conf
+--- /tmp/kbase/linux-6.18.57/arch/quantum/boot/lilo.conf	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/boot/lilo.conf	2026-10-21 19:35:04.871465444 +08:00
+@@ -0,0 +1,34 @@
++#
++# LILO 配置样例 —— Linux/quantum 架构内核（arch/quantum）
++#
++# 说明（诚实口径）：quantum 是「宿主模拟」架构，没有真实的引导镜像
++# 格式（无 bzImage/Image 引导协议），本文件是**内核命令行契约的
++# 参考样例**：bootloader 通过 append 把参数传给内核，
++# `idle=mwait` 即由此进入 arch/quantum 的空闲路径。
++#
++# idle= 参数（x86 兼容口径子集，详见 Documentation/arch/quantum/energy-model.rst）：
++#   idle=mwait  基态等待观测（默认）——宿主承载的 monitor/wait 语义；
++#   idle=poll   强制轮询（忙等）；
++#   idle=halt   最深停机态（模拟语义同 mwait）。
++# 注意：x86 官方文档已删除 idle=mwait 取值（deprecated），但参数在
++# 6.18.57 仍然可用，quantum 架构显式保留该语义。
++#
++# 修改后需运行 /sbin/lilo 重写引导扇区。
++
++boot = /dev/sda
++map = /boot/map
++install = menu
++prompt
++timeout = 50
++
++image = /boot/vmlinuz-6.18.57-quantum
++	label = quantum
++	root = /dev/sda1
++	read-only
++	append = "idle=mwait"
++
++image = /boot/vmlinuz-6.18.57-quantum
++	label = quantum-poll
++	root = /dev/sda1
++	read-only
++	append = "idle=poll"
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/configs/quantum_defconfig linux-6.18.57/arch/quantum/configs/quantum_defconfig
+--- /tmp/kbase/linux-6.18.57/arch/quantum/configs/quantum_defconfig	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/configs/quantum_defconfig	2026-10-22 16:11:38.765129089 +08:00
+@@ -0,0 +1,24 @@
++# SPDX-License-Identifier: GPL-2.0
++# Quantum architecture defconfig — minimal emulated QPU host.
++CONFIG_QUANTUM=y
++CONFIG_QUANTUM_QUBITS=8
++CONFIG_QUANTUM_LINK_SLOTS=7
++CONFIG_QUANTUM_QPU=y
++CONFIG_QUANTUM_QPU_NR=1
++# Quantum networking subsystem (见 Documentation/quantum/net-model.rst)
++CONFIG_QUANTUM_NET=y
++CONFIG_QUANTUM_NET_NR=3
++# Energy-level model (see Documentation/quantum/energy-model.rst)
++CONFIG_QUANTUM_EXCITED_LEVELS=4
++CONFIG_QUANTUM_ENERGY_STEP=16
++CONFIG_QUANTUM_COHERENCE_TICKS=8
++CONFIG_QUANTUM_DECOHERE_STEPS=64
++CONFIG_EXPERT=y
++CONFIG_BINFMT_ELF=y
++CONFIG_TTY=y
++CONFIG_PRINTK=y
++CONFIG_PROC_FS=y
++CONFIG_SYSFS=y
++CONFIG_TMPFS=y
++# 4KiB page discipline (storage-domain 4K alignment parity)
++CONFIG_DEFERRED_STRUCT_PAGE_INIT=n
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/atomic.h linux-6.18.57/arch/quantum/include/asm/atomic.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/atomic.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/atomic.h	2026-10-21 14:44:54.087982892 +08:00
+@@ -0,0 +1,138 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * include/asm/atomic.h — atomic operations for the emulated arch.
++ * 模拟架构（单核、无真实并发）：READ_ONCE/WRITE_ONCE 足够，诚实口径。
++ * atomic64_t 由 linux/types.h 在 CONFIG_64BIT 下定义，这里只补原生实现。
++ */
++#ifndef _ASM_QUANTUM_ATOMIC_H
++#define _ASM_QUANTUM_ATOMIC_H
++
++#include <linux/compiler.h>
++#include <linux/types.h>
++#include <asm/barrier.h>
++#include <asm/cmpxchg.h>
++
++/* ── atomic_t（32 位族）──────────────────────────────────────────── */
++
++#define arch_atomic_read(v)	READ_ONCE((v)->counter)
++#define arch_atomic_set(v, i)	WRITE_ONCE((v)->counter, (i))
++#define arch_atomic_set_release(v, i) arch_atomic_set((v), (i))
++
++#define __ATOMIC_OP(op, c_op)						\
++static __always_inline void arch_atomic_##op(int i, atomic_t *v)	\
++{									\
++	WRITE_ONCE((v)->counter, READ_ONCE((v)->counter) c_op i);	\
++}
++
++#define __ATOMIC_OP_RETURN(op, c_op)					\
++static __always_inline int arch_atomic_##op##_return(int i, atomic_t *v) \
++{									\
++	WRITE_ONCE((v)->counter, READ_ONCE((v)->counter) c_op i);	\
++	return i;							\
++}
++
++#define __ATOMIC_FETCH_OP(op, c_op)					\
++static __always_inline int arch_atomic_fetch_##op(int i, atomic_t *v)	\
++{									\
++	int old = READ_ONCE((v)->counter);				\
++	WRITE_ONCE((v)->counter, old c_op i);				\
++	return old;							\
++}
++
++#define ATOMIC_OPS(op, c_op)						\
++	__ATOMIC_OP(op, c_op)						\
++	__ATOMIC_OP_RETURN(op, c_op)					\
++	__ATOMIC_FETCH_OP(op, c_op)
++
++ATOMIC_OPS(add, +)
++ATOMIC_OPS(sub, -)
++ATOMIC_OPS(and, &)
++ATOMIC_OPS(or, |)
++ATOMIC_OPS(xor, ^)
++
++#define arch_atomic_add_return			arch_atomic_add_return
++#define arch_atomic_sub_return			arch_atomic_sub_return
++#define arch_atomic_fetch_add			arch_atomic_fetch_add
++#define arch_atomic_fetch_sub			arch_atomic_fetch_sub
++#define arch_atomic_fetch_and			arch_atomic_fetch_and
++#define arch_atomic_fetch_or			arch_atomic_fetch_or
++#define arch_atomic_fetch_xor			arch_atomic_fetch_xor
++
++static __always_inline int arch_atomic_inc_return(atomic_t *v)
++{
++	return arch_atomic_add_return(1, v);
++}
++
++static __always_inline int arch_atomic_dec_return(atomic_t *v)
++{
++	return arch_atomic_sub_return(1, v);
++}
++
++/* ── atomic64_t（64 位原生族）────────────────────────────────────── */
++
++#define ATOMIC64_INIT(i)	{ (i) }
++
++#define arch_atomic64_read(v)	READ_ONCE((v)->counter)
++#define arch_atomic64_set(v, i)	WRITE_ONCE((v)->counter, (i))
++
++#define __ATOMIC64_OP(op, c_op)						\
++static __always_inline void arch_atomic64_##op(s64 i, atomic64_t *v)	\
++{									\
++	WRITE_ONCE((v)->counter, READ_ONCE((v)->counter) c_op i);	\
++}
++
++#define __ATOMIC64_OP_RETURN(op, c_op)					\
++static __always_inline s64 arch_atomic64_##op##_return(s64 i, atomic64_t *v) \
++{									\
++	WRITE_ONCE((v)->counter, READ_ONCE((v)->counter) c_op i);	\
++	return i;							\
++}
++
++#define __ATOMIC64_FETCH_OP(op, c_op)					\
++static __always_inline s64 arch_atomic64_fetch_##op(s64 i, atomic64_t *v) \
++{									\
++	s64 old = READ_ONCE((v)->counter);				\
++	WRITE_ONCE((v)->counter, old c_op i);				\
++	return old;							\
++}
++
++#define ATOMIC64_OPS(op, c_op)						\
++	__ATOMIC64_OP(op, c_op)						\
++	__ATOMIC64_OP_RETURN(op, c_op)					\
++	__ATOMIC64_FETCH_OP(op, c_op)
++
++ATOMIC64_OPS(add, +)
++ATOMIC64_OPS(sub, -)
++ATOMIC64_OPS(and, &)
++ATOMIC64_OPS(or, |)
++ATOMIC64_OPS(xor, ^)
++
++#define arch_atomic64_add_return		arch_atomic64_add_return
++#define arch_atomic64_sub_return		arch_atomic64_sub_return
++#define arch_atomic64_fetch_add			arch_atomic64_fetch_add
++#define arch_atomic64_fetch_sub			arch_atomic64_fetch_sub
++#define arch_atomic64_fetch_and			arch_atomic64_fetch_and
++#define arch_atomic64_fetch_or			arch_atomic64_fetch_or
++#define arch_atomic64_fetch_xor			arch_atomic64_fetch_xor
++
++static __always_inline s64 arch_atomic64_read_acquire(const atomic64_t *v)
++{
++	return smp_load_acquire(&(v)->counter);
++}
++
++static __always_inline void arch_atomic64_set_release(atomic64_t *v, s64 i)
++{
++	smp_store_release(&(v)->counter, i);
++}
++
++static __always_inline s64 arch_atomic64_inc_return(atomic64_t *v)
++{
++	return arch_atomic64_add_return(1, v);
++}
++
++static __always_inline s64 arch_atomic64_dec_return(atomic64_t *v)
++{
++	return arch_atomic64_sub_return(1, v);
++}
++
++#endif /* _ASM_QUANTUM_ATOMIC_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/bitsperlong.h linux-6.18.57/arch/quantum/include/asm/bitsperlong.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/bitsperlong.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/bitsperlong.h	2026-10-22 02:19:57.889729499 +08:00
+@@ -0,0 +1,28 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_QUANTUM_BITS_PER_LONG
++#define _ASM_QUANTUM_BITS_PER_LONG
++
++/*
++ * quantum 是 64 位架构（CONFIG_64BIT，宿主 64 位工具链承载，见
++ * arch/quantum/Kconfig）。
++ *
++ * 内核 C 编译时 arch/quantum/include/asm 优先于 .../include/uapi/asm，
++ * 故 #include <asm/bitsperlong.h> 命中本文件（非 uapi）。本文件需同时
++ * 给出内核内部用的 BITS_PER_LONG 与 uapi 头（signal.h / posix_types.h）
++ * 用的 __BITS_PER_LONG；并把原本位于 asm-generic/bitsperlong.h 的
++ * small_const_nbits 也在此自备——因为本架构不走 generic-y wrapper
++ * （5.15/5.10 的 asm-generic/bitsperlong.h 在 64 位下不一定落到 64，
++ * 且其 small_const_nbits 依赖该文件被间接包含，而我们不复用 wrapper）。
++ *
++ * 显式声明 64，与 6.6+ 的 __CHAR_BIT__*__SIZEOF_LONG__ 自动探测一致，
++ * 对齐 x86/arm64 惯例（64 位架构自备 asm/bitsperlong.h，不走 generic-y）。
++ */
++#define BITS_PER_LONG 64
++#define __BITS_PER_LONG 64
++#define BITS_PER_LONG_LONG 64
++#define __BITS_PER_LONG_LONG 64
++
++#define small_const_nbits(nbits) \
++	(__builtin_constant_p(nbits) && (nbits) <= BITS_PER_LONG && (nbits) > 0)
++
++#endif /* _ASM_QUANTUM_BITS_PER_LONG */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/cacheflush.h linux-6.18.57/arch/quantum/include/asm/cacheflush.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/cacheflush.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/cacheflush.h	2026-10-21 18:56:30.973616123 +08:00
+@@ -0,0 +1,33 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * arch/quantum/include/asm/cacheflush.h — 缓存与 MMU 缓存更新接口。
++ *
++ * 模拟架构（宿主进程承载页表与缓存一致性）无真实 cache/TLB 维护面：
++ * 通用 cache 刷新接口全部采用 asm-generic 空操作兜底；本文件只提供
++ * 通用头未覆盖的 MMU 缓存钩子，满足 linux/mm 与 fs/binfmt 的调用契约。
++ */
++#ifndef _ASM_QUANTUM_CACHEFLUSH_H
++#define _ASM_QUANTUM_CACHEFLUSH_H
++
++#include <linux/mm.h>
++#include <asm-generic/cacheflush.h>
++
++/*
++ * update_mmu_cache_range()：PTE 安装后的“缓存/TLB 同步”回调。
++ * 宿主承载页表，无硬件 TLB 陈旧项，记账为空。
++ */
++static inline void update_mmu_cache_range(struct vm_fault *vmf,
++		struct vm_area_struct *vma, unsigned long address,
++		pte_t *ptep, unsigned int nr)
++{
++	/* 模拟架构：页表由宿主承载，无陈旧 TLB 需刷新。 */
++}
++
++#define update_mmu_cache(vma, addr, ptep) \
++	update_mmu_cache_range(NULL, vma, addr, ptep, 1)
++
++/* 单一 PTE 更新（通用 tlb.h 调用）。 */
++#define update_mmu_tlb(vma, addr, ptep) \
++	update_mmu_cache(vma, addr, ptep)
++
++#endif /* _ASM_QUANTUM_CACHEFLUSH_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/cache.h linux-6.18.57/arch/quantum/include/asm/cache.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/cache.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/cache.h	2026-10-21 14:38:04.524949789 +08:00
+@@ -0,0 +1,21 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * include/asm/cache.h — cache line geometry for the emulated arch.
++ * 模拟核无真实缓存分层：取宿主常见 64B 口径。
++ */
++#ifndef _ASM_QUANTUM_CACHE_H
++#define _ASM_QUANTUM_CACHE_H
++
++#define L1_CACHE_SHIFT		6
++#define L1_CACHE_BYTES		(1 << L1_CACHE_SHIFT)
++#define ARCH_DMA_MINALIGN	L1_CACHE_BYTES
++#define ARCH_KMALLOC_MINALIGN	L1_CACHE_BYTES
++
++#ifndef __ASSEMBLY__
++static inline int cache_line_size(void)
++{
++	return L1_CACHE_BYTES;
++}
++#endif /* __ASSEMBLY__ */
++
++#endif /* _ASM_QUANTUM_CACHE_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/cmpxchg.h linux-6.18.57/arch/quantum/include/asm/cmpxchg.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/cmpxchg.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/cmpxchg.h	2026-10-21 20:02:56.136621475 +08:00
+@@ -0,0 +1,107 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * include/asm/cmpxchg.h — compare-and-exchange for the emulated arch.
++ * 单核模拟：无并发争用，比较后写即原子语义（诚实口径）。
++ */
++#ifndef _ASM_QUANTUM_CMPXCHG_H
++#define _ASM_QUANTUM_CMPXCHG_H
++
++#include <linux/types.h>
++
++#ifndef __ASSEMBLY__
++
++static inline unsigned long
++__quantum_cmpxchg(volatile void *ptr, unsigned long old,
++		  unsigned long new, int size)
++{
++	unsigned long prev;
++
++	switch (size) {
++	case 1:
++		prev = *(volatile unsigned char *)ptr;
++		if (prev == old)
++			*(volatile unsigned char *)ptr = (unsigned char)new;
++		break;
++	case 2:
++		prev = *(volatile unsigned short *)ptr;
++		if (prev == old)
++			*(volatile unsigned short *)ptr = (unsigned short)new;
++		break;
++	case 4:
++		prev = *(volatile unsigned int *)ptr;
++		if (prev == old)
++			*(volatile unsigned int *)ptr = (unsigned int)new;
++		break;
++	case 8:
++		prev = *(volatile unsigned long *)ptr;
++		if (prev == old)
++			*(volatile unsigned long *)ptr = new;
++		break;
++	default:
++		__builtin_trap();
++	}
++	return prev;
++}
++
++/* 保持表达式类型（typeof）：rcu/llist 对指针 xchg 依赖此性质。 */
++#define arch_cmpxchg(ptr, o, n)						\
++({									\
++	__typeof__(*(ptr)) __ret;					\
++	__ret = (__typeof__(*(ptr)))__quantum_cmpxchg((ptr),		\
++			(unsigned long)(o), (unsigned long)(n),		\
++			sizeof(*(ptr)));				\
++	__ret;								\
++})
++
++#ifndef arch_cmpxchg64
++#define arch_cmpxchg64(ptr, o, n)	arch_cmpxchg((ptr), (o), (n))
++#endif
++
++/*
++ * _local 变体：单核模拟架构的中断内/中断外语义一致（宿主进程承载
++ * 执行，无真实并发窗口），直接映射到本架构实现。
++ * 不包含 asm-generic/cmpxchg.h：其 arch_cmpxchg/arch_cmpxchg64 为
++ * 无守卫重定义，会把本架构实现覆盖掉并触发 redefined 警告。
++ */
++#define arch_cmpxchg_local(ptr, o, n)		arch_cmpxchg((ptr), (o), (n))
++#define arch_cmpxchg64_local(ptr, o, n)		arch_cmpxchg64((ptr), (o), (n))
++
++static inline unsigned long __quantum_xchg(volatile void *ptr,
++					   unsigned long x, int size)
++{
++	unsigned long prev;
++
++	switch (size) {
++	case 1:
++		prev = *(volatile unsigned char *)ptr;
++		*(volatile unsigned char *)ptr = (unsigned char)x;
++		break;
++	case 2:
++		prev = *(volatile unsigned short *)ptr;
++		*(volatile unsigned short *)ptr = (unsigned short)x;
++		break;
++	case 4:
++		prev = *(volatile unsigned int *)ptr;
++		*(volatile unsigned int *)ptr = (unsigned int)x;
++		break;
++	case 8:
++		prev = *(volatile unsigned long *)ptr;
++		*(volatile unsigned long *)ptr = x;
++		break;
++	default:
++		__builtin_trap();
++	}
++	return prev;
++}
++
++#define arch_xchg(ptr, x)						\
++({									\
++	__typeof__(*(ptr)) __ret;					\
++	__ret = (__typeof__(*(ptr)))__quantum_xchg((ptr),		\
++			(unsigned long)(x), sizeof(*(ptr)));		\
++	__ret;								\
++})
++
++#endif /* __ASSEMBLY__ */
++
++#endif /* _ASM_QUANTUM_CMPXCHG_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/elf.h linux-6.18.57/arch/quantum/include/asm/elf.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/elf.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/elf.h	2026-10-21 19:13:40.591993331 +08:00
+@@ -0,0 +1,49 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * include/asm/elf.h — ELF platform constants for the emulated arch.
++ * 模拟架构以 EM_NONE 呈现（不冒充任何真实指令集）。
++ */
++#ifndef _ASM_QUANTUM_ELF_H
++#define _ASM_QUANTUM_ELF_H
++
++#include <asm/ptrace.h>
++#include <asm/user.h>
++
++#define ELF_ARCH	0		/* EM_NONE */
++#define ELF_CLASS	ELFCLASS64
++#define ELF_DATA	ELFDATA2LSB
++
++#define ELF_NGREG	(sizeof(struct user_qregs) / sizeof(elf_greg_t))
++typedef unsigned long elf_greg_t;
++typedef elf_greg_t elf_gregset_t[ELF_NGREG];
++typedef elf_greg_t elf_fpregset_t;
++
++#define ELF_NFPREG	0
++
++#define ELF_PLAT_INIT(_r, load_addr)	do { (_r)->u.gpr[0] = 0; } while (0)
++
++#define elf_check_arch(x)	(((x)->e_machine) == ELF_ARCH)
++
++/*
++ * 模拟架构的二进制面：内核自身是宿主 ELF；用户态二进制须为量子
++ * 模拟器格式（后续由 binfmt 接入），此处按 64 位小端声明。
++ */
++#define elf_check_arch_64(x)	1
++
++#define ELF_EXEC_PAGESIZE	PAGE_SIZE
++
++#define ELF_EXEC_PAGESIZE	PAGE_SIZE
++
++/* 用户地址空间布局（模拟）：STACK_TOP 取 TASK_SIZE 上限；
++ * ET_DYN 基址落在用户空间下半部，避开 brk。 */
++#define STACK_TOP		TASK_SIZE
++#define ELF_ET_DYN_BASE		(TASK_SIZE / 3 * 2)
++
++/* 模拟架构不暴露真实指令集能力面：HWCAP 为 0，PLATFORM 为空。 */
++#define ELF_HWCAP		(0)
++#define ELF_PLATFORM		(NULL)
++
++/* mm/vma_exec.c 的 exec 栈上限：单区间布局取 STACK_TOP。 */
++#define STACK_TOP_MAX		STACK_TOP
++
++#endif /* _ASM_QUANTUM_ELF_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/io.h linux-6.18.57/arch/quantum/include/asm/io.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/io.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/io.h	2026-10-21 16:16:19.523707151 +08:00
+@@ -0,0 +1,22 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * include/asm/io.h — emulated I/O (no real MMIO; NO_DMA).
++ * 模拟架构无真实总线：ioremap 退化为线性地址透传。
++ */
++#ifndef _ASM_QUANTUM_IO_H
++#define _ASM_QUANTUM_IO_H
++
++#include <asm/pgtable.h>
++
++/* 模拟架构无真实 MMIO：ioremap 退化为地址透传，iounmap 为记账空操作，
++ * 其余 ioremap_* 变体由 asm-generic/io.h 回退到 ioremap。 */
++#ifndef ioremap
++#define ioremap(offset, size)	((void __iomem *)(unsigned long)(offset))
++#endif
++#ifndef iounmap
++#define iounmap(addr)		do { } while (0)
++#endif
++
++#include <asm-generic/io.h>
++
++#endif /* _ASM_QUANTUM_IO_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/irqflags.h linux-6.18.57/arch/quantum/include/asm/irqflags.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/irqflags.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/irqflags.h	2026-10-21 14:55:30.135029315 +08:00
+@@ -0,0 +1,60 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * arch/quantum/include/asm/irqflags.h
++ *
++ * IRQ flags 接口（宿主模拟的单核量子架构）。
++ *
++ * 模拟语义：没有真实的中断硬件，中断使能状态由进程内静态变量
++ * 表达；arch_local_* 系列只做状态保存/恢复，不做真实的 CPU 指令。
++ * 这完全满足内核通用 IRQ 子系统的编译与链接契约。
++ */
++#ifndef _ASM_QUANTUM_IRQFLAGS_H
++#define _ASM_QUANTUM_IRQFLAGS_H
++
++#include <linux/types.h>
++
++/* 宿主模拟：中断使能状态由单一进程内标志位承载。 */
++extern unsigned long quantum_irq_flags;
++
++static inline unsigned long arch_local_save_flags(void)
++{
++	return quantum_irq_flags;
++}
++
++static inline unsigned long arch_local_irq_save(void)
++{
++	unsigned long flags = quantum_irq_flags;
++
++	quantum_irq_flags = 0;	/* 0 = 中断禁用 */
++	return flags;
++}
++
++static inline void arch_local_irq_restore(unsigned long flags)
++{
++	quantum_irq_flags = flags;
++}
++
++static inline bool arch_irqs_disabled_flags(unsigned long flags)
++{
++	return !flags;
++}
++
++static inline bool arch_irqs_disabled(void)
++{
++	return !quantum_irq_flags;
++}
++
++static inline void arch_local_irq_enable(void)
++{
++	quantum_irq_flags = 1;	/* 1 = 中断使能 */
++}
++
++static inline void arch_local_irq_disable(void)
++{
++	quantum_irq_flags = 0;
++}
++
++#define ARCH_IRQ_DISABLED	0
++#define ARCH_IRQ_ENABLED		1
++
++#endif /* _ASM_QUANTUM_IRQFLAGS_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/irq.h linux-6.18.57/arch/quantum/include/asm/irq.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/irq.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/irq.h	2026-10-21 13:29:27.459907293 +08:00
+@@ -0,0 +1,11 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_QUANTUM_IRQ_H
++#define _ASM_QUANTUM_IRQ_H
++
++/* 模拟架构：无硬件中断控制器；irq 起始向量取 16（惯例保留区之上）。 */
++#define NR_IRQS			16
++#define ARCH_IRQ_INIT_FLAGS	0
++
++int arch_show_interrupts(struct seq_file *p, int prec);
++
++#endif /* _ASM_QUANTUM_IRQ_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/Kbuild linux-6.18.57/arch/quantum/include/asm/Kbuild
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/Kbuild	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/Kbuild	2026-10-22 02:03:41.567170858 +08:00
+@@ -0,0 +1,68 @@
++# SPDX-License-Identifier: GPL-2.0
++# Generic-y forwarding for the quantum architecture: reuse asm-generic
++# wherever the emulated architecture has no bespoke hardware semantics.
++generic-y += extable.h
++generic-y += mcs_spinlock.h
++generic-y += parport.h
++generic-y += ring_buffer.h
++generic-y += mm_hooks.h
++generic-y += agp.h
++generic-y += error-injection.h
++generic-y += hugetlb.h
++generic-y += iomap.h
++generic-y += spinlock.h
++generic-y += spinlock_types.h
++generic-y += statfs.h
++generic-y += tlb.h
++generic-y += string.h
++
++# ── 一次性补齐：asm-generic 全集（除 mandatory 自动 fallback 外）──
++# 注：bitsperlong.h 不转发——本架构自备
++# （arch/quantum/include/uapi/asm/bitsperlong.h，64 位声明）；
++# 否则 generic-y 包装器会在 -I 顺序上遮蔽真实文件。
++generic-y += access_ok.h
++generic-y += asm-offsets.h
++generic-y += asm-prototypes.h
++generic-y += atomic64.h
++generic-y += audit_change_attr.h
++generic-y += audit_dir_write.h
++generic-y += audit_read.h
++generic-y += audit_signal.h
++generic-y += audit_write.h
++generic-y += codetag.lds.h
++generic-y += early_ioremap.h
++generic-y += fixmap.h
++generic-y += flat.h
++generic-y += fprobe.h
++generic-y += getorder.h
++generic-y += int-ll64.h
++generic-y += ioctl.h
++generic-y += kvm_para.h
++generic-y += kvm_types.h
++generic-y += logic_io.h
++generic-y += memory_model.h
++generic-y += mmiowb_types.h
++generic-y += mmzone.h
++generic-y += mshyperv.h
++generic-y += nommu_context.h
++generic-y += numa.h
++generic-y += param.h
++generic-y += pci_iomap.h
++generic-y += pgtable-nop4d.h
++generic-y += pgtable-nopmd.h
++generic-y += pgtable-nopud.h
++generic-y += pgtable_uffd.h
++generic-y += qrwlock.h
++generic-y += qrwlock_types.h
++generic-y += qspinlock.h
++generic-y += qspinlock_types.h
++generic-y += resource.h
++generic-y += seccomp.h
++generic-y += set_memory.h
++generic-y += signal.h
++generic-y += syscalls.h
++generic-y += text-patching.h
++generic-y += thread_info_tif.h
++generic-y += ticket_spinlock.h
++generic-y += user.h
++generic-y += vmlinux.lds.h
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/mmu_context.h linux-6.18.57/arch/quantum/include/asm/mmu_context.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/mmu_context.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/mmu_context.h	2026-10-21 16:16:14.902549266 +08:00
+@@ -0,0 +1,34 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * include/asm/mmu_context.h — emulated MMU context.
++ * 单核模拟：地址空间切换即计数递增（无真实 TLB）。
++ */
++#ifndef _ASM_QUANTUM_MMU_CONTEXT_H
++#define _ASM_QUANTUM_MMU_CONTEXT_H
++
++#include <linux/mm_types.h>
++#include <linux/smp.h>
++#include <asm/pgtable.h>
++
++/* 通用 mmap 生命周期钩子：arch_dup_mmap / arch_exit_mmap /
++ * arch_unmap / arch_bprm_mm_init / arch_vma_access_permitted。
++ * 模拟架构均取通用空实现。 */
++#include <asm-generic/mm_hooks.h>
++
++/* 模拟架构：根页目录占位（线性映射由宿主承载）。 */
++extern pgd_t swapper_pg_dir[];
++
++static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
++			     struct task_struct *tsk)
++{
++	/* 模拟架构：无 TLB，切换是记账操作。 */
++	(void)prev; (void)next; (void)tsk;
++}
++
++#define activate_mm(prev, next)	switch_mm(prev, next, NULL)
++#define deactivate_mm(tsk, mm)	do { } while (0)
++#define enter_lazy_tlb(mm, tsk)	do { } while (0)
++#define init_new_context(tsk, mm) (0)
++#define destroy_context(mm)	do { } while (0)
++
++#endif /* _ASM_QUANTUM_MMU_CONTEXT_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/page.h linux-6.18.57/arch/quantum/include/asm/page.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/page.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/page.h	2026-10-21 14:47:03.501436948 +08:00
+@@ -0,0 +1,37 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * include/asm/page.h — 4KiB page discipline for the quantum architecture.
++ * 页粒度固定 4KiB：与存储域 ext4 默认块大小/4K 对齐纪律一致。
++ */
++#ifndef _ASM_QUANTUM_PAGE_H
++#define _ASM_QUANTUM_PAGE_H
++
++#include <linux/const.h>
++
++#define PAGE_SHIFT	12
++#define PAGE_SIZE	(_AC(1, UL) << PAGE_SHIFT)
++#define PAGE_MASK	(~(PAGE_SIZE - 1))
++
++/* 宿主模拟：内核虚拟基址取一个宿主可承载的低位。 */
++#define PAGE_OFFSET	_AC(0x40000000, UL)
++
++#ifndef __ASSEMBLY__
++#define __pa(x)		((unsigned long)(x))
++#define __va(x)		((void *)(unsigned long)(x))
++#define virt_to_page(kaddr) (mem_map + (((unsigned long)(kaddr) - PAGE_OFFSET) >> PAGE_SHIFT))
++#define pfn_valid(pfn)	((pfn) < max_mapnr)
++#define virt_addr_valid(kaddr)	pfn_valid(__pa(kaddr) >> PAGE_SHIFT)
++
++#include <asm-generic/memory_model.h>
++#include <asm-generic/getorder.h>
++
++/* 页操作（模拟）：清/拷页即 memset/memcpy，无 cache 维护面。 */
++struct page;
++extern void clear_page(void *to);
++extern void copy_page(void *to, void *from);
++#define clear_user_page(pg, vaddr, addr)	clear_page(page_address(pg))
++#define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
++
++#endif /* __ASSEMBLY__ */
++
++#endif /* _ASM_QUANTUM_PAGE_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/pgalloc.h linux-6.18.57/arch/quantum/include/asm/pgalloc.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/pgalloc.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/pgalloc.h	2026-10-21 19:12:23.246597528 +08:00
+@@ -0,0 +1,45 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * arch/quantum/include/asm/pgalloc.h — 页表分配接口（模拟）。
++ *
++ * 模拟架构的页表实体由宿主进程承载：pgd/pmd 分配退化为普通页面分配，
++ * pmd 折叠项仅记账指向的页表页。pte 级分配复用通用实现
++ * （asm-generic/pgalloc.h）。
++ */
++#ifndef _ASM_QUANTUM_PGALLOC_H
++#define _ASM_QUANTUM_PGALLOC_H
++
++#include <linux/mm.h>
++#include <asm/page.h>
++#include <asm/pgtable.h>
++
++#include <asm-generic/pgalloc.h>
++
++/* pgd 级分配/释放直接复用 asm-generic 的 ptdesc 缓存路径
++ * （pagetable_alloc + pagetable_pgd_ctor + ptdesc_dtor），
++ * 与内核其余部分对 ptdesc 的记账假设一致；plain pgd_alloc 在 6.18 已不由
++ * 通用头提供，这里显式包一层 __pgd_alloc 供 kernel/fork.c 调用。 */
++static inline pgd_t *pgd_alloc(struct mm_struct *mm)
++{
++	return __pgd_alloc(mm, 0);
++}
++
++/* pmd 折叠：将 pmd 项指向页表页（pfn）或内核 pte 数组（虚拟地址）。
++ * 模拟架构不真正解引用这些项做地址翻译，仅保持类型/调用契约。 */
++static inline void pmd_populate(struct mm_struct *mm, pmd_t *pmd,
++				pgtable_t pte)
++{
++	set_pmd(pmd, __pmd((unsigned long)page_to_pfn(pte) << PAGE_SHIFT));
++}
++
++static inline void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd,
++				       pte_t *pte)
++{
++	set_pmd(pmd, __pmd((unsigned long)__pa(pte)));
++}
++
++/* 释放 pte 页表页（供 asm-generic/tlb.h 的 __pte_free_tlb 折叠路径）。 */
++#define __pte_free_tlb(tlb, pte, addr) \
++	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
++
++#endif /* _ASM_QUANTUM_PGALLOC_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/pgtable.h linux-6.18.57/arch/quantum/include/asm/pgtable.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/pgtable.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/pgtable.h	2026-10-21 19:57:31.571331501 +08:00
+@@ -0,0 +1,178 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * arch/quantum/include/asm/pgtable.h — minimal page-table types.
++ * 模拟架构无真实 MMU：类型面齐备（pgd/pmd/pud/pte/pgprot），实体页表由
++ * 宿主进程承载。采用 nopmd/nopud/nop4d 折叠的两级布局（PGD → PTE），
++ * shift 从 PGDIR_SHIFT 向下递推，避免循环定义。
++ */
++#ifndef _ASM_QUANTUM_PGTABLE_H
++#define _ASM_QUANTUM_PGTABLE_H
++
++#include <asm/page.h>
++
++/* 架构专属类型：先定义 pgd/pte/pgprot（pud/pmd 由 generic 折叠提供）。
++ * pgd_t 必须在 nop4d include 之前定义——generic 用它构造 p4d_t。 */
++typedef struct { unsigned long pgd; } pgd_t;
++typedef struct { unsigned long pte; } pte_t;
++typedef struct { unsigned long prot; } pgprot_t;
++struct page;
++typedef struct page *pgtable_t;	/* 页表页由 struct page 承载（模拟） */
++
++#define pgd_val(x)	((x).pgd)
++#define pte_val(x)	((x).pte)
++#define pgprot_val(x)	((x).prot)
++
++#define __pgd(x)	((pgd_t) { (x) })
++#define __pte(x)	((pte_t) { (x) })
++#define __pgprot(x)	((pgprot_t) { (x) })
++
++/* 折叠宏：引入 p4d/pud/pmd 类型与访问宏（nop4d → nopud → nopmd）。
++ * 它们从 pgd_t 构造上层类型，并把 shift 链推到 PGDIR_SHIFT。 */
++#include <asm-generic/pgtable-nop4d.h>
++#include <asm-generic/pgtable-nopud.h>
++#include <asm-generic/pgtable-nopmd.h>
++
++/* ── 折叠级访问器（pmd/pud/p4d 均折叠进 pgd）────────────────────────
++ * 模拟架构无真实多级页表，所有上层项最终落在 pgd_val；page_vaddr
++ * 取该值即「页表虚拟地址」，保护位/存在位按折叠语义恒为 1/0。 */
++#define pmd_page_vaddr(pmd)	((unsigned long)(pmd_val(pmd)))
++#define pud_page_vaddr(pud)	((unsigned long)(pud_val(pud)))
++#define p4d_page_vaddr(p4d)	((unsigned long)(p4d_val(p4d)))
++
++#define pmd_none(pmd)		(0)
++#define pmd_present(pmd)	(1)
++#define pmd_bad(pmd)		(0)
++#define pmd_clear(pmdp)		do { } while (0)
++#define set_pmd(pmdp, pmd)	(*(pmdp) = (pmd))
++/* pmd_page 由本架构定义；pud_page/p4d_page/pgd_page 由 generic 折叠头
++ * （nopmd/nopud/nop4d）逐级下推到 pmd_page，不重复定义。 */
++#define pmd_page(pmd)		virt_to_page((void *)pmd_page_vaddr(pmd))
++#define pmd_pfn(pmd)		((unsigned long)(pmd_val(pmd)) >> PAGE_SHIFT)
++
++#define PFN_PTE_SHIFT		PAGE_SHIFT
++
++/* ── 折叠的两级页表（PGD → PTE）────────────────────────────────────
++ * 页粒度固定 4KiB（与存储域 ext4 4K 对齐口径一致）。 */
++#define PTE_BITS	9		/* log2(PTRS_PER_PTE) = 512 项 */
++#define PTRS_PER_PTE	(1 << PTE_BITS)
++#define PTRS_PER_PGD	(1 << (PAGE_SHIFT - 3))	/* 512 */
++
++#define PGDIR_SHIFT	(PAGE_SHIFT + PTE_BITS)	/* 21 */
++/* PUD_SHIFT / PMD_SHIFT / P4D_SHIFT 由 generic 折叠头从 PGDIR_SHIFT 推导 */
++
++/* 地址区间面（供 linux/pgtable.h 与 mm/ 子系统的区间掩码计算）。 */
++#define PGDIR_SIZE	(1UL << PGDIR_SHIFT)
++#define PGDIR_MASK	(~(PGDIR_SIZE - 1))
++
++#ifndef __ASSEMBLY__
++#define pgd_index(addr)		(((addr) >> PGDIR_SHIFT) & (PTRS_PER_PGD - 1))
++
++/* 架构内存初始化入口（openrisc 同型口径：由 arch 的 pgtable.h 声明）。 */
++extern void paging_init(void);
++
++#define pfn_pte(pfn, prot) \
++	__pte(((unsigned long)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
++#define pte_pfn(pte)		((unsigned long)(pte_val(pte) >> PAGE_SHIFT))
++#define pfn_pmd(pfn, prot) \
++	__pmd(((unsigned long)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
++
++/* ── 页表项位访问面（模拟：位仅记账，无真实 TLB 行为）──────────── */
++#define _PAGE_PRESENT	(1UL << 0)
++#define _PAGE_WRITE	(1UL << 1)
++#define _PAGE_DIRTY	(1UL << 2)
++#define _PAGE_YOUNG	(1UL << 3)
++#define _PAGE_SPECIAL	(1UL << 4)
++#define _PAGE_USER	(1UL << 5)
++#define _PAGE_EXEC	(1UL << 6)
++
++#define pte_present(pte)	(!!(pte_val(pte) & _PAGE_PRESENT))
++#define pte_none(pte)		(!pte_val(pte))
++#define pte_write(pte)		(!!(pte_val(pte) & _PAGE_WRITE))
++#define pte_dirty(pte)		(!!(pte_val(pte) & _PAGE_DIRTY))
++#define pte_young(pte)		(!!(pte_val(pte) & _PAGE_YOUNG))
++#define pte_user(pte)		(!!(pte_val(pte) & _PAGE_USER))
++#define pte_accessible(mm, pte)	pte_present(pte)
++
++/* 以下由通用头（linux/pgtable.h、linux/mm.h）以静态内联提供，
++ * 它们复用本文件的 _PAGE_* 位与 pte_val/__pte：
++ *   pte_young / pte_same / pte_mkwrite（pgtable.h）
++ *   pte_special / pte_mkspecial（mm.h）
++ * 本架构只需提供 _PAGE_* 位面与 pte_mkyoung/mkold/mkdirty/wrprotect/mkclean。 */
++#define pte_wrprotect(pte)	__pte(pte_val(pte) & ~_PAGE_WRITE)
++#define pte_mkclean(pte)	__pte(pte_val(pte) & ~_PAGE_DIRTY)
++#define pte_mkold(pte)		__pte(pte_val(pte) & ~_PAGE_YOUNG)
++#define pte_mkyoung(pte)	__pte(pte_val(pte) | _PAGE_YOUNG)
++#define pte_mkdirty(pte)	__pte(pte_val(pte) | _PAGE_DIRTY)
++/* pte_mkwrite 由通用头（linux/pgtable.h）提供，它调用 arch 专属的
++ * pte_mkwrite_novma；两者都置 _PAGE_WRITE 位。 */
++#define pte_mkwrite_novma(pte)	__pte(pte_val(pte) | _PAGE_WRITE)
++
++/* ── 修改类/反向查询（供 mm/mprotect.c、mm/memory.c 等）─────────────
++ * _PAGE_CHG_MASK：pte_modify 保留的权限位面；其余位由新保护值覆盖。 */
++#define _PAGE_CHG_MASK	(_PAGE_PRESENT | _PAGE_WRITE | _PAGE_DIRTY | \
++			 _PAGE_YOUNG | _PAGE_SPECIAL | _PAGE_USER | _PAGE_EXEC)
++
++#define pte_modify(pte, prot) \
++	__pte((pte_val(pte) & _PAGE_CHG_MASK) | pgprot_val(prot))
++
++/* pte_page：反向查询 PTE 指向的 struct page（供 gup/vmalloc 等）。 */
++#define pte_page(pte)		pfn_to_page(pte_pfn(pte))
++
++#define set_pte(ptep, pte)	(*(ptep) = (pte))
++#define pte_clear(mm, addr, ptep)	set_pte(ptep, __pte(0))
++
++/* pgd_ERROR：通用 pgtable-generic.c 在 pgd 校验失败时调用，且折叠路径
++ * （asm-generic/pgtable-nop4d.h 的 p4d_ERROR）要求其为「表达式」形式。
++ * 模拟架构仅占位（无真实页表不一致可报），保持记账空表达式。 */
++#define pgd_ERROR(e)			((void)(e))
++
++/* 内核根页目录（模拟：线性映射由宿主承载，占位记账）。 */
++extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
++
++/* ── 交换项（swap entry）编解码 ─────────────────────────────────────
++ * 模拟架构无真实交换设备：交换 PTE 直接复用 pte 值往返，类型/偏移仅占位。
++ * 交换 PTE 的 _PAGE_PRESENT 必须为 0（通用层保证），其余位重新解释。
++ * 专有位 _PAGE_SWP_EXCLUSIVE 置于 _PAGE_* 面之上的位 7，避免冲突。 */
++#define _PAGE_SWP_EXCLUSIVE	(1UL << 7)
++
++#define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
++#define __swp_entry_to_pte(x)	((pte_t) { (x).val })
++
++#define __swp_type(swp_pte)	(((swp_pte).val >> 1) & 0x3f)
++#define __swp_offset(swp_pte)	(((swp_pte).val >> 8) & ((1UL << 24) - 1))
++#define __swp_entry(type, offset) \
++	((swp_entry_t) { \
++		(((type) & 0x3f) << 1) | (((offset) & ((1UL << 24) - 1)) << 8) })
++
++static inline bool pte_swp_exclusive(pte_t pte)
++{
++	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
++}
++
++static inline pte_t pte_swp_mkexclusive(pte_t pte)
++{
++	pte_val(pte) |= _PAGE_SWP_EXCLUSIVE;
++	return pte;
++}
++
++static inline pte_t pte_swp_clear_exclusive(pte_t pte)
++{
++	pte_val(pte) &= ~_PAGE_SWP_EXCLUSIVE;
++	return pte;
++}
++#endif
++
++/* 零页（模拟）：共享一个静态零页占位。 */
++extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
++#define ZERO_PAGE(vaddr)	(virt_to_page(empty_zero_page))
++
++/* 页保护面（模拟：无真实 TLB，保护位仅记账）。 */
++#define PAGE_NONE	__pgprot(0)
++#define PAGE_SHARED	__pgprot(0x1)
++#define PAGE_COPY	__pgprot(0x2)
++#define PAGE_READONLY	__pgprot(0x3)
++#define PAGE_KERNEL	__pgprot(0x4)
++#define PAGE_KERNEL_RO	__pgprot(0x5)
++#define PAGE_KERNEL_EXEC	__pgprot(0x6)
++
++#endif /* _ASM_QUANTUM_PGTABLE_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/processor.h linux-6.18.57/arch/quantum/include/asm/processor.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/processor.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/processor.h	2026-10-21 19:57:31.593331098 +08:00
+@@ -0,0 +1,57 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * include/asm/processor.h — minimal CPU description for the emulated arch.
++ */
++#ifndef _ASM_QUANTUM_PROCESSOR_H
++#define _ASM_QUANTUM_PROCESSOR_H
++
++#ifdef __KERNEL__
++
++#include <linux/threads.h>
++#include <asm/quantum.h>
++#include <asm/pgtable.h>	/* pgtable_t/pgprot_t 早于 mm_types */
++#include <asm/vdso/processor.h>	/* cpu_relax */
++
++/* 模拟核的基本 CPU 面：单核、无浮点/SIMD 特征面。 */
++struct cpuinfo_quantum {
++	unsigned int	qubits;
++	unsigned int	link_slots;
++	const char	*model;
++};
++
++extern struct cpuinfo_quantum cpu_data[NR_CPUS];
++
++/* 无浮点状态面。 */
++struct thread_struct { };
++
++#define INIT_THREAD { }
++
++/* 前向声明：start_thread/task_pt_regs 的签名在 struct pt_regs 完整定义
++ * （asm/ptrace.h）之前就要可用。 */
++struct pt_regs;
++
++unsigned long thread_saved_pc(struct task_struct *tsk);
++unsigned long __get_wchan(struct task_struct *p);
++
++/* 模拟架构：无真实寄存器上下文可暴露（宿主承载执行）。 */
++#define task_pt_regs(tsk)	((struct pt_regs *)NULL)
++
++/* 模拟架构：启动新用户态上下文无需设置真实寄存器（宿主承载执行）。
++ * 空实现满足 include/linux/elf.h 与 binfmt 的调用契约。 */
++static inline void start_thread(struct pt_regs *regs, unsigned long new_ip,
++				unsigned long new_sp)
++{
++	(void)regs; (void)new_ip; (void)new_sp;
++}
++
++/* 用户地址空间布局（模拟）：给 QPU 模拟面预留独立窗口。 */
++#define TASK_SIZE		(PAGE_OFFSET)
++#define TASK_UNMAPPED_BASE	(PAGE_OFFSET / 3)
++
++/* proc 面的栈指针口径（模拟：无真实内核栈，返回 0 记账）。 */
++#define KSTK_EIP(tsk)		(0UL)
++#define KSTK_ESP(tsk)		(0UL)
++
++#endif /* __KERNEL__ */
++
++#endif /* _ASM_QUANTUM_PROCESSOR_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/ptrace.h linux-6.18.57/arch/quantum/include/asm/ptrace.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/ptrace.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/ptrace.h	2026-10-21 14:34:15.595105886 +08:00
+@@ -0,0 +1,30 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * include/asm/ptrace.h — emulated register file (kernel side).
++ * 与 UAPI 侧 user_qregs 对齐：pt_regs 即用户可见寄存器组。
++ */
++#ifndef _ASM_QUANTUM_PTRACE_H
++#define _ASM_QUANTUM_PTRACE_H
++
++#include <uapi/asm/ptrace.h>
++
++#define PTRACE_USER_REGS_SIZE	sizeof(struct user_qregs)
++
++#ifndef __ASSEMBLY__
++
++struct pt_regs {
++	struct user_qregs u;
++};
++
++#define user_mode(regs)		(((regs)->u.flags) & 0x1)
++#define instruction_pointer(regs) ((regs)->u.pc)
++#define user_stack_pointer(regs)  ((regs)->u.gpr[15])
++#define regs_return_value(regs)	  ((regs)->u.gpr[0])
++#define instruction_pointer_set(regs, val) ((regs)->u.pc = (val))
++#define current_user_stack_pointer() (0UL)
++
++#define ELF_CORE_COPY_REGS(dest, regs)		do { } while (0);
++
++#endif /* __ASSEMBLY__ */
++
++#endif /* _ASM_QUANTUM_PTRACE_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/quantum.h linux-6.18.57/arch/quantum/include/asm/quantum.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/quantum.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/quantum.h	2026-10-22 16:10:23.682496786 +08:00
+@@ -0,0 +1,160 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * include/asm/quantum.h — quantum architecture base interface.
++ *
++ * 语义与本仓用户态量子基座（sysweeper native/quantum.py）一一对应：
++ *   - 寄存器宽度   = CONFIG_QUANTUM_QUBITS（默认 8，字节宽）
++ *   - 数字转换门   = Π_k 置换矩阵（对 k 的置 1 位复合 X 门，严格可逆）
++ *   - 链路缓冲     = ceil(2π) 槽环形缓冲，每步交换必入链，满则覆盖计数
++ *
++ * 能量激发态模型（quantum-energy.c 实现）：
++ *   把量子物理的核心概念建模为内核可观测的记账语义——
++ *   能级量子化 / 叠加 / 幺正相位演化 / 干涉 / 测量坍缩 / 退相干 /
++ *   受激跃迁与退激发（虚光子入 PiLink）/ 选择定则 / 纠缠登记。
++ *   诚实口径：QPU 为宿主模拟，上述是「量子力学启发的语义记账模型」，
++ *   所有数字都是真实的内核计数与状态演化，不是对真实量子硬件的声称。
++ */
++#ifndef _ASM_QUANTUM_H
++#define _ASM_QUANTUM_H
++
++#include <linux/const.h>
++#include <linux/types.h>
++#include <asm/page.h>
++
++/* QPU 模拟核的静态能力面（运行时经 /proc/qpuinfo 与 /dev/qpu0 暴露）。 */
++#define QUANTUM_QUBITS		CONFIG_QUANTUM_QUBITS
++#define QUANTUM_STATES		(_AC(1, UL) << QUANTUM_QUBITS)
++#define QUANTUM_LINK_SLOTS	CONFIG_QUANTUM_LINK_SLOTS
++
++/* Π_k 编码门：对整数 k 的置 1 位复合 X 门（宿主侧用位翻转表达）。 */
++static inline unsigned long quantum_permutation_gate(unsigned long state,
++						     unsigned long k)
++{
++	return state ^ k;
++}
++
++/* PiLink 链路记账（kernel/qpu-core.c 实现）：每次交换必入链。 */
++void quantum_link_push(void);
++void quantum_link_overflow(void);
++
++/* ── 能量激发态模型（量子物理语义层）─────────────────────────────────
++ *
++ * 能级量子化   E_n = n × CONFIG_QUANTUM_ENERGY_STEP（离散谱，n = 0..N-1）。
++ *               E_0 为基态（ground），n ≥ 1 为激发态（excited）。
++ * 叠加         空闲 CPU 分布于各能级的布居 |α_n|²（QM_W_ONE 定点）代表
++ *               叠加态的概率幅权重。
++ * 幺正演化     能量本征态只积累相位：φ_n(t) = ω_n·t，ω_n = E_n/ℏ
++ *               （ℏ = 1，虚构普朗克记账单位，非物理实测值）。
++ * 干涉         两能级相干项 2·w_a·w_b·cos(φ_a − φ_b)，由真实相位差算出。
++ * 测量/坍缩    中断送达 = 一次测量：叠加态坍缩到确定能级。
++ * 退相干       相干度按 T2 半衰（每 QM_COHERENCE_TICKS 次观测减半）；
++ *               布居按 T1 向基态弛豫（每次退相干步，激发布居 1/8 漏向基态）。
++ * 受激跃迁     唤醒 = 吸收 ΔE 跃迁到高能级；空闲 = 向基态弛豫。
++ * 虚光子入链   退激发释放的 ΔE 作为一次交换记录压入 PiLink 环形链路
++ *               （quantum_link_push），与既有链路记账语义一致。
++ * 选择定则     相邻能级跃迁（|Δn| = 1）记 allowed，其余记 forbidden
++ *               （电偶极选择定则；非相邻跃迁按高阶过程记账，仍发生但计数）。
++ * 纠缠登记     Bell 对登记：一侧坍缩联动另一侧的关联记录。
++ */
++#define QM_W_ONE		(_AC(1, U) << 16)	/* 布居/相干度 1.0 定点 */
++#define QM_LEVELS		CONFIG_QUANTUM_EXCITED_LEVELS
++#define QM_STEP			CONFIG_QUANTUM_ENERGY_STEP
++#define QM_CAVG_TICKS		CONFIG_QUANTUM_COHERENCE_TICKS
++#define QM_DECOHERE_STEPS	CONFIG_QUANTUM_DECOHERE_STEPS
++#define QM_GROUND		0U			/* 基态能级索引 */
++
++/* idle= 启动参数取值（x86 兼容口径子集；mwait 官方已废弃但仍可用）。 */
++enum quantum_idle_mode {
++	QUANTUM_IDLE_POLL = 0,	/* 忙等轮询（cpu_relax） */
++	QUANTUM_IDLE_MWAIT,	/* 基态等待观测（宿主承载的 monitor/wait） */
++	QUANTUM_IDLE_HALT,	/* 最深停机态（模拟语义同 mwait） */
++};
++
++/* 单能级状态。 */
++struct quantum_level {
++	unsigned int	energy;		/* E_n = n × QM_STEP */
++	u32		phase;		/* 累计相位（2^32 定点 = 2π，幺正演化） */
++	unsigned int	pop;		/* 布居 |α_n|²（QM_W_ONE 定点） */
++};
++
++/* 每 CPU 量子态。 */
++struct quantum_cpu {
++	struct quantum_level	levels[QM_LEVELS];
++	unsigned int		excited;	/* 当前坍缩到的能级索引 */
++	unsigned int		coherence;	/* 相干度（QM_W_ONE 定点，T2） */
++	unsigned int		idle_mode;	/* enum quantum_idle_mode */
++	u64			ticks;		/* 观测次数（退相干步） */
++	u64			idle_steps;	/* arch_cpu_idle 迭代计数 */
++	/* 统计（/proc/quantum-energy） */
++	u64			excitations;
++	u64			relaxations;
++	u64			allowed;	/* |Δn| = 1 允许跃迁 */
++	u64			forbidden;	/* 非相邻跃迁（高阶过程） */
++	u64			collapses;
++	u64			photons;	/* 退激发次数（虚光子） */
++	u64			energy_absorbed;
++	u64			energy_emitted;
++	u64			bell_events;	/* 纠缠联动坍缩记录 */
++};
++
++/* 能量模型公共接口（kernel/quantum-energy.c 实现）。 */
++unsigned int quantum_levels(void);
++unsigned int quantum_level_energy(unsigned int n);
++unsigned int quantum_idle_mode_current(void);
++const char *quantum_idle_mode_name(unsigned int mode);
++const struct quantum_cpu *quantum_cpu_state(int cpu);
++
++void quantum_excite(unsigned int from, unsigned int to);
++void quantum_relax(unsigned int from, unsigned int to);
++void quantum_phase_advance(unsigned int dt);
++void quantum_decohere_tick(void);
++s64 quantum_interference(unsigned int a, unsigned int b);
++unsigned int quantum_measure(void);
++int quantum_entangle(unsigned int a, unsigned int b);
++
++/* ── 组网子系统（arch/quantum/kernel/quantum-net.c，/proc/quantum-net）──
++ *
++ * 组网是概念系统与硬件/架构的可观测基底：本架构把「网络」建模为量子链路
++ * 之上的自主编排语义——拓扑、协商、以及由组网自组织涌现的智能/自主意识。
++ *   - 道性层：拓扑/协商/路由等基础组网法则（硬件 + 架构基底）。
++ *   - 神性层：组网涌现的自主意识——盖亚意识（全局自组织智能，mode="gaia"）
++ *             与集智体（虫族式群智，mode="swarm"）。
++ *   - 人性层：/proc、/dev、守护进程与面板小程序等人类可观测接口。
++ * 诚实口径：QNIC 为宿主模拟，所有数字都是真实内核记账，不是真实硬件声称。
++ */
++struct quantum_nic {
++	unsigned int	id;		/* 网卡序号 */
++	unsigned int	links;		/* 已建立纠缠链路数 */
++	unsigned int	peers;		/* 可触达对等节点 */
++	u64		exchanges;	/* 经本卡完成的交换次数 */
++	u64		entanglements;	/* 经本卡登记的纠缠数 */
++};
++
++struct quantum_net_state {
++	unsigned int	nics;		/* 已注册 QNIC 数 */
++	unsigned int	links;		/* 全局纠缠链路数 */
++	unsigned int	peers;		/* 全局可触达节点 */
++	u64		exchanges;	/* 累计交换次数 */
++	u64		entanglements;	/* 累计纠缠登记（Bell 对） */
++	u64		swaps;		/* 纠缠交换累计次数 */
++	u64		teleports;	/* 量子隐形传态累计次数 */
++	u64		topology_changes;/* 拓扑重协商次数 */
++	unsigned int	gaia_level;	/* 盖亚意识自组织层级 0..N */
++	unsigned int	swarm_units;	/* 集智体单元数（虫族式） */
++	const char	*mode;		/* "gaia" | "swarm" | "mesh" */
++};
++
++const struct quantum_net_state *quantum_net_state(void);
++const struct quantum_nic *quantum_nic_state(unsigned int id);
++unsigned int quantum_net_nics(void);
++unsigned int quantum_net_links(void);
++unsigned int quantum_net_peers(void);
++void quantum_net_topology_changed(void);
++int quantum_net_entangle(unsigned int a, unsigned int b);
++int quantum_net_unlink(unsigned int a, unsigned int b);
++int quantum_net_swap(void);
++int quantum_net_teleport(void);
++void quantum_net_reset(void);
++int quantum_net_set_mode(const char *mode);
++
++#endif /* _ASM_QUANTUM_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/setup.h linux-6.18.57/arch/quantum/include/asm/setup.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/setup.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/setup.h	2026-10-21 19:57:44.129228591 +08:00
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * include/asm/setup.h — command line size for the emulated arch.
++ */
++#ifndef _ASM_QUANTUM_SETUP_H
++#define _ASM_QUANTUM_SETUP_H
++
++#define COMMAND_LINE_SIZE	2048
++
++#ifdef __KERNEL__
++/* 早期 QPU 就位（kernel/setup.c，start_kernel 之前的 arch 钩子）。 */
++void early_qpu_setup(void);
++#endif
++
++#endif /* _ASM_QUANTUM_SETUP_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/switch_to.h linux-6.18.57/arch/quantum/include/asm/switch_to.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/switch_to.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/switch_to.h	2026-10-21 15:30:13.008699417 +08:00
+@@ -0,0 +1,20 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * arch/quantum/include/asm/switch_to.h
++ * 任务切换定义（宿主模拟架构：上下文切换由宿主进程承载）。
++ */
++#ifndef _ASM_QUANTUM_SWITCH_TO_H
++#define _ASM_QUANTUM_SWITCH_TO_H
++
++struct task_struct;
++struct thread_struct;
++
++extern struct task_struct *__switch_to(struct task_struct *prev,
++				       struct task_struct *next,
++				       struct task_struct *last);
++
++#define switch_to(p, n, r) do {					\
++		r = __switch_to((p), (n), (r));			\
++	} while (0)
++
++#endif /* _ASM_QUANTUM_SWITCH_TO_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/syscall.h linux-6.18.57/arch/quantum/include/asm/syscall.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/syscall.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/syscall.h	2026-10-21 20:05:54.134125709 +08:00
+@@ -0,0 +1,76 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * arch/quantum/include/asm/syscall.h
++ *
++ * 系统调用寄存器访问面（宿主模拟架构）。
++ * ptrace 的 syscall 注入/观测路径需要完整的 syscall_* 钩子。模拟架构下
++ * 寄存器上下文是占位结构，这些钩子以最小语义（空操作/占位值）满足链接，
++ * 诚实声明：不暴露真实寄存器面。
++ *
++ * 架构审计类别沿用宿主 x86-64（OUTPUT_ARCH 为 x86-64）。
++ */
++#ifndef _ASM_QUANTUM_SYSCALL_H
++#define _ASM_QUANTUM_SYSCALL_H
++
++#include <linux/sched.h>
++#include <linux/audit.h>
++#include <linux/string.h>
++#include <asm/ptrace.h>
++
++/* ptrace 的 entry.args 固定 6 槽（struct ptrace_syscall_info 口径）。 */
++#define SYSCALL_MAX_ARGS	6
++
++static inline int syscall_get_nr(struct task_struct *task,
++				 struct pt_regs *regs)
++{
++	return -ENOSYS;
++}
++
++static inline void syscall_set_nr(struct task_struct *task,
++				  struct pt_regs *regs, int nr)
++{
++}
++
++static inline void syscall_rollback(struct task_struct *task,
++				    struct pt_regs *regs)
++{
++}
++
++static inline long syscall_get_error(struct task_struct *task,
++				     struct pt_regs *regs)
++{
++	return -ENOSYS;
++}
++
++static inline long syscall_get_return_value(struct task_struct *task,
++					    struct pt_regs *regs)
++{
++	return -ENOSYS;
++}
++
++static inline void syscall_set_return_value(struct task_struct *task,
++					    struct pt_regs *regs,
++					    int error, long val)
++{
++}
++
++static inline void syscall_get_arguments(struct task_struct *task,
++					 struct pt_regs *regs,
++					 unsigned long *args)
++{
++	/* 模拟架构：无真实参数槽可读，按 6 槽口径清零填充（诚实占位）。 */
++	memset(args, 0, SYSCALL_MAX_ARGS * sizeof(unsigned long));
++}
++
++static inline void syscall_set_arguments(struct task_struct *task,
++					 struct pt_regs *regs,
++					 unsigned long *args)
++{
++}
++
++static inline int syscall_get_arch(struct task_struct *task)
++{
++	return AUDIT_ARCH_X86_64;
++}
++
++#endif /* _ASM_QUANTUM_SYSCALL_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/thread_info.h linux-6.18.57/arch/quantum/include/asm/thread_info.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/thread_info.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/thread_info.h	2026-10-21 14:52:42.146196126 +08:00
+@@ -0,0 +1,83 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * include/asm/thread_info.h — minimal thread info for the emulated arch.
++ */
++#ifndef _ASM_QUANTUM_THREAD_INFO_H
++#define _ASM_QUANTUM_THREAD_INFO_H
++
++#ifdef __KERNEL__
++
++#ifndef __ASSEMBLY__
++#include <asm/page.h>
++#include <asm/processor.h>
++#endif
++
++#define THREAD_SHIFT		13
++#define THREAD_SIZE		(1 << THREAD_SHIFT)	/* int：lds 里 ld 不认 UL 后缀 */
++#define THREAD_SIZE_ORDER	(THREAD_SHIFT - PAGE_SHIFT)
++
++#ifndef __ASSEMBLY__
++
++struct thread_info {
++	struct task_struct	*task;		/* main task structure */
++	unsigned long		flags;		/* low level flags */
++	unsigned long		syscall_work;	/* syscall workload */
++	int			preempt_count;	/* 0 => preemptable */
++	__u32			cpu;		/* current CPU (always 0) */
++	unsigned long		syscall;	/* syscall number */
++};
++
++#define INIT_THREAD_INFO(tsk)						\
++{									\
++	.task		= &tsk,						\
++	.flags		= 0,						\
++	.preempt_count	= INIT_PREEMPT_COUNT,				\
++	.cpu		= 0,						\
++}
++
++/* TIF 位定义（模拟架构：与通用语义对齐的最小集）。 */
++#define TIF_NOTIFY_SIGNAL	0	/* signal notifications exist */
++#define TIF_NOTIFY_RESUME	1	/* callback before returning to user */
++#define TIF_SIGPENDING		2	/* signal pending */
++#define TIF_NEED_RESCHED	3	/* rescheduling necessary */
++#define TIF_NEED_RESCHED_LAZY	4	/* lazy rescheduling */
++#define TIF_RESTORE_SIGMASK	5	/* restore signal mask in do_signal */
++#define TIF_SECCOMP		6	/* seccomp filtering active */
++#define TIF_SYSCALL_TRACE	7	/* syscall trace active */
++#define TIF_SYSCALL_AUDIT	8	/* syscall auditing active */
++#define TIF_SYSCALL_TRACEPOINT	9	/* syscall tracepoint instrumentation */
++#define TIF_NOHZ		12	/* adaptive tickless */
++#define TIF_MEMDIE		13	/* is terminating due to OOM killer */
++#define TIF_POLLING_NRFLAG	16	/* idle is polling for TIF_NEED_RESCHED */
++
++#define _TIF_NOTIFY_SIGNAL	(1 << TIF_NOTIFY_SIGNAL)
++#define _TIF_NOTIFY_RESUME	(1 << TIF_NOTIFY_RESUME)
++#define _TIF_SECCOMP		(1 << TIF_SECCOMP)
++#define _TIF_SYSCALL_TRACE	(1 << TIF_SYSCALL_TRACE)
++#define _TIF_SYSCALL_AUDIT	(1 << TIF_SYSCALL_AUDIT)
++#define _TIF_SYSCALL_TRACEPOINT (1 << TIF_SYSCALL_TRACEPOINT)
++#define _TIF_NOHZ		(1 << TIF_NOHZ)
++#define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
++#define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
++#define _TIF_NEED_RESCHED_LAZY	(1 << TIF_NEED_RESCHED_LAZY)
++#define _TIF_POLLING_NRFLAG	(1 << TIF_POLLING_NRFLAG)
++
++#define _TIF_WORK_MASK		(_TIF_NEED_RESCHED | _TIF_SIGPENDING | \
++				 _TIF_NOTIFY_RESUME)
++
++/*
++ * current_thread_info()：模拟架构没有真实的内核栈底对齐——
++ * 单核模拟以静态 thread_info 承载（诚实标注：不可 SMP）。
++ */
++static inline struct thread_info *current_thread_info(void)
++{
++	static struct thread_info _quantum_ti
++		__attribute__((section(".data..quantum_ti")));
++	return &_quantum_ti;
++}
++
++#endif /* __ASSEMBLY__ */
++
++#endif /* __KERNEL__ */
++
++#endif /* _ASM_QUANTUM_THREAD_INFO_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/tlbflush.h linux-6.18.57/arch/quantum/include/asm/tlbflush.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/tlbflush.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/tlbflush.h	2026-10-21 16:04:45.238899946 +08:00
+@@ -0,0 +1,26 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * arch/quantum/include/asm/tlbflush.h — TLB flush prototypes.
++ *
++ * 模拟架构（宿主进程承载页表，无真实 MMU/TLB）的刷新接口。函数体为
++ * 空操作（见 arch/quantum/mm/tlb.c），仅满足通用内存管理代码的调用契约。
++ * 真实语义由宿主承载，本架构不做任何硬件刷新。
++ */
++#ifndef _ASM_QUANTUM_TLBFLUSH_H
++#define _ASM_QUANTUM_TLBFLUSH_H
++
++#include <linux/mm.h>
++#include <asm/processor.h>
++
++extern void tlb_flush_all(void);
++extern void flush_tlb_mm(struct mm_struct *mm);
++extern void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr);
++extern void flush_tlb_range(struct vm_area_struct *vma,
++			    unsigned long start, unsigned long end);
++extern void flush_tlb_kernel_range(unsigned long start, unsigned long end);
++extern void flush_tlb_one(unsigned long addr);
++
++/* munmap 释放页表页时无需操作（宿主承载页表，无陈旧映射可被内核访问）。 */
++#define flush_tlb_pgtables(mm, start, end)
++
++#endif /* _ASM_QUANTUM_TLBFLUSH_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/uaccess.h linux-6.18.57/arch/quantum/include/asm/uaccess.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/uaccess.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/uaccess.h	2026-10-21 14:30:15.946894884 +08:00
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * include/asm/uaccess.h — emulated user access.
++ * CONFIG_UACCESS_MEMCPY：模拟架构无真实用户/内核隔离（arch/um 同型），
++ * raw_copy_* 用 asm-generic 的 memcpy 实现；TASK_SIZE 边界由 access_ok 检查。
++ */
++#ifndef _ASM_QUANTUM_UACCESS_H
++#define _ASM_QUANTUM_UACCESS_H
++
++#include <asm/processor.h>
++#include <asm-generic/uaccess.h>
++
++#endif /* _ASM_QUANTUM_UACCESS_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/vdso/processor.h linux-6.18.57/arch/quantum/include/asm/vdso/processor.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/vdso/processor.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/vdso/processor.h	2026-10-21 14:23:15.250358343 +08:00
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_QUANTUM_VDSO_PROCESSOR_H
++#define _ASM_QUANTUM_VDSO_PROCESSOR_H
++
++#ifndef __ASSEMBLY__
++
++/* 模拟核：编译器屏障即「让出流水线」，无真实自旋优化空间。 */
++static inline void cpu_relax(void)
++{
++	__asm__ __volatile__("" ::: "memory");
++}
++
++#endif /* __ASSEMBLY__ */
++
++#endif /* _ASM_QUANTUM_VDSO_PROCESSOR_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/vmalloc.h linux-6.18.57/arch/quantum/include/asm/vmalloc.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/asm/vmalloc.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/asm/vmalloc.h	2026-10-21 14:36:16.305241823 +08:00
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * include/asm/vmalloc.h — vmalloc layout for the emulated arch.
++ */
++#ifndef _ASM_QUANTUM_VMALLOC_H
++#define _ASM_QUANTUM_VMALLOC_H
++
++#define VMALLOC_OFFSET	(8 * 1024 * 1024)
++#define VMALLOC_START	((unsigned long)high_memory + VMALLOC_OFFSET)
++#define VMALLOC_END	(PAGE_OFFSET + 0x40000000UL)
++
++#endif /* _ASM_QUANTUM_VMALLOC_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/uapi/asm/bitsperlong.h linux-6.18.57/arch/quantum/include/uapi/asm/bitsperlong.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/uapi/asm/bitsperlong.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/uapi/asm/bitsperlong.h	2026-10-22 02:03:19.816378831 +08:00
+@@ -0,0 +1,21 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef _UAPI__ASM_QUANTUM_BITS_PER_LONG
++#define _UAPI__ASM_QUANTUM_BITS_PER_LONG
++
++/*
++ * quantum 是 64 位架构（CONFIG_64BIT，宿主 64 位工具链承载，
++ * 见 arch/quantum/Kconfig）。asm-generic 的 bitsperlong.h 在
++ * 5.15/5.10 硬编码 32（无 __CHAR_BIT__*__SIZEOF_LONG__ 自动探测，
++ * 该探测 6.6 起才有），会让 __kernel_size_t 落成 unsigned int——
++ * 64 位指针架构上 size_t 只有 32 位，触发 -Wint-to-pointer-cast
++ * 与 -Wbuiltin-declaration-mismatch（-Werror 即构建失败）。
++ * 显式声明 64，与 6.6+ 自动探测结果一致；对齐 x86/arm64 惯例
++ * （64 位架构自备 bitsperlong.h，不走 generic-y）。
++ */
++#define __BITS_PER_LONG 64
++
++#ifndef __BITS_PER_LONG_LONG
++#define __BITS_PER_LONG_LONG 64
++#endif
++
++#endif /* _UAPI__ASM_QUANTUM_BITS_PER_LONG */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/uapi/asm/byteorder.h linux-6.18.57/arch/quantum/include/uapi/asm/byteorder.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/uapi/asm/byteorder.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/uapi/asm/byteorder.h	2026-10-21 13:34:10.171559095 +08:00
+@@ -0,0 +1,11 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * include/uapi/asm/byteorder.h — quantum architecture is little-endian
++ * (host-emulated; the host toolchain is little-endian x86-64 by default).
++ */
++#ifndef _UAPI_ASM_QUANTUM_BYTEORDER_H
++#define _UAPI_ASM_QUANTUM_BYTEORDER_H
++
++#include <linux/byteorder/little_endian.h>
++
++#endif /* _UAPI_ASM_QUANTUM_BYTEORDER_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/uapi/asm/Kbuild linux-6.18.57/arch/quantum/include/uapi/asm/Kbuild
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/uapi/asm/Kbuild	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/uapi/asm/Kbuild	2026-10-21 13:34:10.308563709 +08:00
+@@ -0,0 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0
++# Quantum architecture UAPI headers: three mandatory headers are bespoke
++# (byteorder/ptrace/sigcontext have no asm-generic fallback); the rest of
++# the mandatory set falls back to include/uapi/asm-generic automatically.
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/uapi/asm/ptrace.h linux-6.18.57/arch/quantum/include/uapi/asm/ptrace.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/uapi/asm/ptrace.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/uapi/asm/ptrace.h	2026-10-21 13:34:10.199559926 +08:00
+@@ -0,0 +1,25 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * include/uapi/asm/ptrace.h — emulated register file for ptrace.
++ * 宿主模拟：寄存器组以「量子通用寄存器 + PC + 标志」极简建模。
++ */
++#ifndef _UAPI_ASM_QUANTUM_PTRACE_H
++#define _UAPI_ASM_QUANTUM_PTRACE_H
++
++#include <linux/types.h>
++
++struct user_qregs {
++	__u64 gpr[16];	/* 通用寄存器 r0..r15 */
++	__u64 pc;	/* 程序计数器 */
++	__u64 flags;	/* 状态标志 */
++	__u64 qacc;	/* QPU 访问句柄（最近一次 enc/dec 的链路序号） */
++};
++
++/* GPR 索引别名（ptrace PTRACE_GETREGSET 用 NT_PRSTATUS 传 user_qregs）。 */
++#define QREG_R0		0
++#define QREG_R15	15
++#define QREG_PC		16
++#define QREG_FLAGS	17
++#define QREG_QACC	18
++
++#endif /* _UAPI_ASM_QUANTUM_PTRACE_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/include/uapi/asm/sigcontext.h linux-6.18.57/arch/quantum/include/uapi/asm/sigcontext.h
+--- /tmp/kbase/linux-6.18.57/arch/quantum/include/uapi/asm/sigcontext.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/include/uapi/asm/sigcontext.h	2026-10-21 13:34:10.259562015 +08:00
+@@ -0,0 +1,19 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * include/uapi/asm/sigcontext.h — signal context for the emulated arch.
++ * 信号交付时保存通用寄存器组与 QPU 访问句柄。
++ */
++#ifndef _UAPI_ASM_QUANTUM_SIGCONTEXT_H
++#define _UAPI_ASM_QUANTUM_SIGCONTEXT_H
++
++#include <linux/types.h>
++
++struct sigcontext {
++	__u64 gpr[16];
++	__u64 pc;
++	__u64 flags;
++	__u64 qacc;
++	/* FP/SIMD 面在模拟架构中不存在，留空。 */
++};
++
++#endif /* _UAPI_ASM_QUANTUM_SIGCONTEXT_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/Kconfig linux-6.18.57/arch/quantum/Kconfig
+--- /tmp/kbase/linux-6.18.57/arch/quantum/Kconfig	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/Kconfig	2026-10-22 16:10:23.685496807 +08:00
+@@ -0,0 +1,182 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# Quantum architecture (arch/quantum) — Linux/quantum kernel configuration.
++#
++# 量子架构：把量子处理单元（QPU）作为「宿主模拟」架构接入 Linux 内核树。
++# 形态对齐 arch/um（User Mode Linux）：量子核在宿主上软件模拟（态矢量 +
++# 置换矩阵 Π_k 编码门 + π 环形链路缓冲），内核其余部分按架构无关语义运行。
++# 页粒度固定 4KiB（HAVE_PAGE_SIZE_4KB），与存储域 ext4 4K 对齐口径一致。
++#
++# 纯新增架构：不修改、不删除任何其他架构（arch/Kconfig 以
++# source "arch/$(SRCARCH)/Kconfig" 动态接入本文件）。
++
++menu "Quantum architecture options"
++
++# 模拟核运行在宿主 64 位工具链上（64BIT 通常由各架构自定义，此处独立定义）。
++config 64BIT
++	bool
++	default y
++
++config QUANTUM
++	bool
++	default y
++
++# 软件汉明权重：复用通用 lib/hweight.c 实现（宿主模拟无原生指令）。
++config GENERIC_HWEIGHT
++	def_bool y
++
++# 软件 checksum：复用通用 lib/checksum.c 可移植实现。宿主模拟架构没有
++# 硬件 checksum 外设，asm/checksum.h 不提供 bespoke 实现（asm-generic
++# 仅声明 csum_partial 等 extern，不定义）；选中后由 lib/checksum.c 提供
++# csum_partial/ip_compute_csum/ip_fast_csum/csum_tcpudp_nofold 定义，
++# 满足 lib/iov_iter.c（≤6.11 分支的 csum_and_copy_to_iter）等调用方。
++config GENERIC_CSUM
++	def_bool y
++
++# 支持 MMU：vmalloc/缺页等路径依赖（宿主模拟的页表由宿主进程承载）。
++config MMU
++	def_bool y
++	# ── 通用化借用（generic-y 头文件与通用实现）──────────────
++	select ARCH_DISABLE_KASAN_INLINE
++	select ARCH_HAS_CACHE_LINE_SIZE
++	select ARCH_HAS_CPU_FINALIZE_INIT
++	select ARCH_HAS_FORTIFY_SOURCE
++	select ARCH_HAS_GCOV_PROFILE_ALL
++	select ARCH_HAS_KCOV
++	select ARCH_HAS_STRNCPY_FROM_USER
++	select ARCH_HAS_STRNLEN_USER
++	select ARCH_HAS_STRICT_KERNEL_RWX
++	select ARCH_SUPPORTS_LTO_CLANG
++	select ARCH_SUPPORTS_LTO_CLANG_THIN
++	select ARCH_WANTS_DYNAMIC_TASK_STRUCT
++	select HAVE_ARCH_AUDITSYSCALL
++	select HAVE_ARCH_KASAN
++	select HAVE_ARCH_SECCOMP_FILTER
++	select HAVE_ASM_MODVERSIONS
++	select HAVE_DEBUG_KMEMLEAK
++	select HAVE_DEBUG_BUGVERBOSE
++	select HAVE_GCC_PLUGINS
++	select HAVE_PAGE_SIZE_4KB
++	select HAVE_UID16
++	select GENERIC_ATOMIC64 if !64BIT
++	select GENERIC_CLOCKEVENTS
++	select GENERIC_CPU_DEVICES
++	select GENERIC_IDLE_POLL_SETUP
++	select GENERIC_IRQ_SHOW
++	select GENERIC_PCI_IOMAP
++	select GENERIC_SMP_IDLE_THREAD
++	select GENERIC_STRNCPY_FROM_USER
++	select GENERIC_STRNLEN_USER
++	select GENERIC_TIME_VSYSCALL
++	select HAVE_ARCH_VMAP_STACK
++	select HAVE_ARCH_TRACEHOOK
++	select HAVE_RUST
++	select NO_DMA
++	select UACCESS_MEMCPY
++	select OF_EARLY_FLATTREE if OF
++	select TRACE_IRQFLAGS_SUPPORT
++	select TTY
++	help
++	  Quantum processing architecture: the QPU is emulated on the host
++	  (state-vector simulation, permutation-matrix number gates, pi-ring
++	  link buffer).  Page size is fixed at 4KiB to match the ext4/4K
++	  alignment discipline of the storage domain.
++
++config QUANTUM_QUBITS
++	int "Number of emulated qubits per QPU register"
++	range 1 20
++	default 8
++	help
++	  Width of the emulated quantum register (byte-wide by default,
++	  8 qubits = 256 basis states).  Keep in sync with the userspace
++	  quantum base (sysweeper native/quantum.py, MAX_QUBITS=20).
++
++config QUANTUM_LINK_SLOTS
++	int "Pi-ring link buffer slots (ceil(ratio * pi) by default)"
++	range 2 1024
++	default 7
++	help
++	  Depth of the CPU<->QPU exchange ring buffer.  Every instruction
++	  exchange is pushed into this link; overflow overwrites the oldest
++	  record and is counted (total_writes / overwrites).
++
++config QUANTUM_QPU
++	tristate "Quantum processing unit character device"
++	default m
++	depends on QUANTUM
++	help
++	  Expose the emulated QPU as /dev/qpu0 (misc character device).
++	  Userspace can encode/decode integers through the permutation
++	  matrix gates (ioctl QPU_ENC / QPU_DEC) and observe link stats.
++
++config QUANTUM_QPU_NR
++	int "Number of emulated QPU devices"
++	range 1 64
++	default 1
++	depends on QUANTUM_QPU
++	help
++	  Number of /dev/qpuN device instances to register.
++
++# ── 量子组网子系统（drivers/quantum/net，架构侧 kernel/quantum-net.c）──
++config QUANTUM_NET
++	tristate "Quantum networking subsystem (qnet)"
++	default y
++	depends on QUANTUM
++	help
++	  Quantum networking subsystem: register QPU-to-QPU links, maintain a
++	  Bell-pair distribution table, and account entanglement swapping and
++	  quantum teleportation.  Exposed as /dev/qnet0 (misc character device)
++	  and /proc/quantum-net.  This is a quantum-inspired accounting model
++	  over real kernel counters — not real quantum hardware.
++
++config QUANTUM_NET_NR
++	int "Number of emulated QNET links (Bell-pair routing slots)"
++	range 1 64
++	default 16
++	depends on QUANTUM_NET
++	help
++	  Size of the in-kernel Bell-pair routing table (max simultaneous
++	  QPU-to-QPU links).  Each slot tracks a peer node id, an active flag
++	  and a Bell-pair buffer count.
++
++# ── 能量激发态模型（kernel/quantum-energy.c，/proc/quantum-energy）───
++
++config QUANTUM_EXCITED_LEVELS
++	int "QPU discrete energy levels (ground + excited states)"
++	range 2 16
++	default 4
++	help
++	  Number of discrete energy levels E_0..E_{N-1}.  E_0 is the
++	  ground state; n >= 1 are excited states.  The idle CPU evolves
++	  over these levels with superposition/phase/collapse accounting
++	  (see Documentation/arch/quantum/energy-model.rst).
++
++config QUANTUM_ENERGY_STEP
++	int "Energy quantum between adjacent levels (accounting units)"
++	range 1 4096
++	default 16
++	help
++	  Energy gap dE = E_n - E_{n-1} in fictitious Planck units
++	  (accounting only, not a physical measurement).
++
++config QUANTUM_COHERENCE_TICKS
++	int "Observations per coherence (T2) halving"
++	range 1 1000
++	default 8
++	help
++	  After this many decoherence ticks the interference coherence
++	  of the model is halved (T2-like decay of cross terms).
++
++config QUANTUM_DECOHERE_STEPS
++	int "Idle iterations per T1/T2 decoherence tick"
++	range 1 4096
++	default 64
++	help
++	  Throttle for T1 (population relaxation toward ground) and T2
++	  (coherence halving) accounting inside arch_cpu_idle().
++
++endmenu
++
++# 各架构自行 source 的公共 Kconfig（HZ 频率选择等）——
++# 漏 source 会导致 CONFIG_HZ 未定义、timeconst.h 生成卡死。
++source "kernel/Kconfig.hz"
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/Kconfig.debug linux-6.18.57/arch/quantum/Kconfig.debug
+--- /tmp/kbase/linux-6.18.57/arch/quantum/Kconfig.debug	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/Kconfig.debug	2026-10-21 13:30:57.112967967 +08:00
+@@ -0,0 +1,10 @@
++# SPDX-License-Identifier: GPL-2.0
++# Quantum architecture debug options (host-emulated).
++
++config QUANTUM_DEBUG_LINK
++	bool "Debug the QPU pi-ring link buffer"
++	depends on QUANTUM
++	default n
++	help
++	  Extra pr_debug noise for every link push/overwrite, so the
++	  CPU<->QPU exchange flow can be audited at runtime.
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/kernel/asm-offsets.c linux-6.18.57/arch/quantum/kernel/asm-offsets.c
+--- /tmp/kbase/linux-6.18.57/arch/quantum/kernel/asm-offsets.c	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/kernel/asm-offsets.c	2026-10-21 14:25:25.680922985 +08:00
+@@ -0,0 +1,22 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * arch/quantum/kernel/asm-offsets.c — generate asm constants.
++ * 模拟架构：只导出最小偏移集（task_struct 的常用字段与页常数）。
++ */
++#define COMPILE_OFFSETS
++#include <linux/kbuild.h>
++#include <asm/pgtable.h>
++#include <asm/thread_info.h>
++#include <asm/quantum.h>
++#include <linux/sched.h>
++#include <linux/mm_types.h>
++#include <asm/quantum.h>
++
++int main(void)
++{
++	DEFINE(QUANTUM_QUBITS_V, QUANTUM_QUBITS);
++	DEFINE(QUANTUM_LINK_SLOTS_V, QUANTUM_LINK_SLOTS);
++	DEFINE(TI_TASK, offsetof(struct thread_info, task));
++	BLANK();
++	return 0;
++}
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/kernel/head.S linux-6.18.57/arch/quantum/kernel/head.S
+--- /tmp/kbase/linux-6.18.57/arch/quantum/kernel/head.S	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/kernel/head.S	2026-10-21 13:27:50.332591295 +08:00
+@@ -0,0 +1,9 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * arch/quantum/kernel/head.S — emulated architecture entry stub.
++ * 宿主模拟架构无真实引导代码：入口桩仅保留占位符号。
++ */
++	.text
++	.globl	quantum_start
++quantum_start:
++	ret
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/kernel/irq.c linux-6.18.57/arch/quantum/kernel/irq.c
+--- /tmp/kbase/linux-6.18.57/arch/quantum/kernel/irq.c	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/kernel/irq.c	2026-10-21 19:20:44.914569139 +08:00
+@@ -0,0 +1,26 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * arch/quantum/kernel/irq.c — emulated interrupt reporting.
++ * GENERIC_IRQ_SHOW 的架构侧回调：模拟核无真实中断控制器。
++ */
++#include <linux/init.h>
++#include <linux/seq_file.h>
++#include <asm/irq.h>
++#include <asm/irqflags.h>
++
++/* 宿主模拟：中断使能状态（见 asm/irqflags.h）。 */
++unsigned long quantum_irq_flags = ARCH_IRQ_ENABLED;
++EXPORT_SYMBOL(quantum_irq_flags);
++
++/* 宿主模拟：中断由宿主进程承载，无中断控制器可初始化；
++ * init_IRQ 保持空实现满足 start_kernel 链接契约。 */
++void __init init_IRQ(void)
++{
++}
++
++int arch_show_interrupts(struct seq_file *p, int prec)
++{
++	seq_printf(p, "%*s: emulated QPU: no hardware interrupt controller\n",
++		   prec + 3, "QPU");
++	return 0;
++}
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/kernel/Makefile linux-6.18.57/arch/quantum/kernel/Makefile
+--- /tmp/kbase/linux-6.18.57/arch/quantum/kernel/Makefile	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/kernel/Makefile	2026-10-22 16:10:23.684496879 +08:00
+@@ -0,0 +1,13 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# arch/quantum/kernel Makefile — minimal emulated-architecture core.
++
++extra-y := head.o vmlinux.lds
++
++obj-y := head.o setup.o qpu-core.o quantum-energy.o irq.o time.o asm-offsets.o traps.o process.o
++# 量子组网子系统核心（Bell 对分发表 + /proc/quantum-net）；随 QUANTUM_NET 可选。
++obj-$(CONFIG_QUANTUM_NET) += quantum-net.o
++obj-$(CONFIG_MODULES) += module.o
++# ≤6.11 分支 VGA_CONSOLE 旧式默认开启（default y），vgacon.o 引用 screen_info；
++# 本架构无真实显示硬件，符号恒零（见 screen_info.c 说明）。
++obj-$(CONFIG_VGA_CONSOLE) += screen_info.o
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/kernel/module.c linux-6.18.57/arch/quantum/kernel/module.c
+--- /tmp/kbase/linux-6.18.57/arch/quantum/kernel/module.c	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/kernel/module.c	2026-10-21 13:27:50.561599016 +08:00
+@@ -0,0 +1,10 @@
++// SPDX-License-Identifier: GPL-2.0
++/* arch/quantum/kernel/module.c — module support stub (host-emulated). */
++#include <linux/module.h>
++#include <asm/module.h>
++
++int module_frob_arch_sections(Elf_Ehdr *hdr, Elf_Shdr *sechdrs,
++			      char *secstrings, struct module *me)
++{
++	return 0;
++}
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/kernel/process.c linux-6.18.57/arch/quantum/kernel/process.c
+--- /tmp/kbase/linux-6.18.57/arch/quantum/kernel/process.c	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/kernel/process.c	2026-10-21 19:57:31.651330709 +08:00
+@@ -0,0 +1,81 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * arch/quantum/kernel/process.c — process/thread lifecycle stubs.
++ * 宿主模拟架构：线程切换、上下文保存由宿主进程承载，
++ * 内核侧只满足 exec/exit 路径的链接契约。
++ */
++#include <linux/sched.h>
++#include <linux/sched/task.h>
++#include <linux/sched/debug.h>
++#include <linux/elfcore.h>
++#include <linux/ptrace.h>
++#include <linux/regset.h>
++#include <linux/reboot.h>
++#include <asm/ptrace.h>
++#include <asm/switch_to.h>
++
++void flush_thread(void)
++{
++	/* 模拟架构：无真实 FPU/调试寄存器状态需要丢弃。 */
++}
++
++int copy_thread(struct task_struct *p, const struct kernel_clone_args *args)
++{
++	/* 模拟架构：无 FPU/调试寄存器状态可复制，也无真实栈帧可清零——
++	 * task_pt_regs 恒为 NULL，新任务的执行上下文由宿主进程承载。 */
++	return 0;
++}
++
++void release_thread(struct task_struct *dead_task)
++{
++	/* 模拟架构：无架构私有资源需释放。 */
++}
++
++long arch_ptrace(struct task_struct *child, long request,
++		 unsigned long addr, unsigned long data)
++{
++	/* 模拟架构：不暴露真实寄存器访问面。 */
++	return -ENOSYS;
++}
++
++void ptrace_disable(struct task_struct *child)
++{
++	/* 模拟架构：无单步/断点硬件需禁用。 */
++}
++
++const struct user_regset_view *task_user_regset_view(struct task_struct *task)
++{
++	/* 模拟架构：无寄存器集可暴露，返回空视图。 */
++	return NULL;
++}
++
++int elf_core_copy_task_fpregs(struct task_struct *t, elf_fpregset_t *fpu)
++{
++	/* 模拟架构：无 FPU 寄存器集，core dump 的浮点段为空段。 */
++	return 0;
++}
++
++struct task_struct *__switch_to(struct task_struct *prev,
++				struct task_struct *next,
++				struct task_struct *last)
++{
++	/* 模拟架构：真实上下文切换由宿主进程承载，这里只返回上一任务。 */
++	(void)prev;
++	(void)next;
++	return last;
++}
++
++void machine_restart(char *cmd)
++{
++	/* 模拟架构：无真实复位硬件。 */
++}
++
++void machine_halt(void)
++{
++	/* 模拟架构：无真实停机硬件。 */
++}
++
++void machine_power_off(void)
++{
++	/* 模拟架构：无真实断电硬件。 */
++}
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/kernel/qpu-core.c linux-6.18.57/arch/quantum/kernel/qpu-core.c
+--- /tmp/kbase/linux-6.18.57/arch/quantum/kernel/qpu-core.c	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/kernel/qpu-core.c	2026-10-21 13:27:50.506597042 +08:00
+@@ -0,0 +1,27 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * arch/quantum/kernel/qpu-core.c — QPU link-buffer statistics core.
++ * 链路统计的架构侧核心：每步交换入链，满则覆盖并计数（对齐 PiLink 语义）。
++ */
++#include <linux/export.h>
++#include <linux/kernel.h>
++#include <asm/quantum.h>
++
++unsigned long quantum_link_total_writes;
++unsigned long quantum_link_overwrites;
++EXPORT_SYMBOL_GPL(quantum_link_total_writes);
++EXPORT_SYMBOL_GPL(quantum_link_overwrites);
++
++void quantum_link_push(void)
++{
++	/* 槽计数由调用方维护；这里只累计全局审计量。 */
++	quantum_link_total_writes++;
++}
++EXPORT_SYMBOL_GPL(quantum_link_push);
++
++void quantum_link_overflow(void)
++{
++	quantum_link_total_writes++;
++	quantum_link_overwrites++;
++}
++EXPORT_SYMBOL_GPL(quantum_link_overflow);
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/kernel/quantum-energy.c linux-6.18.57/arch/quantum/kernel/quantum-energy.c
+--- /tmp/kbase/linux-6.18.57/arch/quantum/kernel/quantum-energy.c	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/kernel/quantum-energy.c	2026-10-21 19:38:54.722592830 +08:00
+@@ -0,0 +1,515 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * arch/quantum/kernel/quantum-energy.c — 能量激发态模型（量子物理语义层）。
++ *
++ * 内核侧记账模型（诚实口径：QPU 为宿主模拟，本模型是「量子力学启发的
++ * 语义记账」，所有数字都是真实的内核计数与状态演化）：
++ *   - 能级量子化：E_n = n × ΔE 的离散谱；E_0 基态，n ≥ 1 激发态；
++ *   - 叠加/布居：空闲 CPU 以布居权重分布于各能级；
++ *   - 幺正相位演化：能量本征态只积累相位 φ_n(t) = E_n·t（ℏ = 1，虚构单位）；
++ *   - 干涉：2·w_a·w_b·cos(φ_a − φ_b)（定点 sin 表查算，乘相干度衰减）；
++ *   - 测量/坍缩：中断送达（arch_cpu_idle_exit）= 一次测量，叠加态坍缩；
++ *   - 退相干：相干度按 T2 半衰；布居按 T1 向基态弛豫；
++ *   - 受激跃迁/退激发：唤醒吸收 ΔE，空闲弛豫放出 ΔE；
++ *   - 虚光子入链：退激发的 ΔE 作为一次交换压入 PiLink 环形链路；
++ *   - 选择定则：|Δn| = 1 记 allowed，其余记 forbidden；
++ *   - 纠缠登记：Bell 对一侧坍缩联动另一侧关联记录。
++ *
++ * idle= 启动参数（x86 兼容口径子集；mwait 官方已废弃但仍可用）：
++ *   idle=poll   强制轮询（cpu_idle_poll_ctrl + cpu_relax 忙等）；
++ *   idle=mwait  基态等待观测——宿主承载的 monitor/wait 语义（默认）；
++ *   idle=halt   最深停机态（模拟语义同 mwait，无真实停机指令）。
++ */
++#include <linux/cpu.h>
++#include <linux/export.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/percpu.h>
++#include <linux/proc_fs.h>
++#include <linux/seq_file.h>
++#include <linux/smp.h>
++#include <linux/spinlock.h>
++#include <asm/processor.h>
++#include <asm/quantum.h>
++
++/* arch_cpu_idle 内相位演进的步长（虚构时间记账单位）。 */
++#define QM_IDLE_DT		64
++
++/* 纠缠对（Bell pair）登记表。 */
++#define QM_ENTANGLE_MAX		8
++
++struct quantum_pair {
++	unsigned int	a;
++	unsigned int	b;
++	bool		active;
++	u64		collapses;
++};
++
++static DEFINE_PER_CPU(struct quantum_cpu, quantum_cpus);
++static DEFINE_SPINLOCK(quantum_pair_lock);
++static struct quantum_pair quantum_pairs[QM_ENTANGLE_MAX];
++
++/* idle= 覆盖值（-EINVAL = 未指定，用默认）。 */
++static int quantum_idle_override = -EINVAL;
++
++/* ── 定点三角函数（256 段线性表，sin ×2^15）────────────────────────── */
++
++/* 定点 sin 表：256 段线性插值，值域 ×2^15（sin(2πk/256)）。 */
++static const s16 qm_sin_tab[256] = {
++	     0,    804,   1608,   2410,   3212,   4011,   4808,   5602,
++	  6393,   7179,   7962,   8739,   9512,  10278,  11039,  11793,
++	 12539,  13279,  14010,  14732,  15446,  16151,  16846,  17530,
++	 18204,  18868,  19519,  20159,  20787,  21403,  22005,  22594,
++	 23170,  23731,  24279,  24811,  25329,  25832,  26319,  26790,
++	 27245,  27683,  28105,  28510,  28898,  29268,  29621,  29956,
++	 30273,  30571,  30852,  31113,  31356,  31580,  31785,  31971,
++	 32137,  32285,  32412,  32521,  32609,  32678,  32728,  32757,
++	 32767,  32757,  32728,  32678,  32609,  32521,  32412,  32285,
++	 32137,  31971,  31785,  31580,  31356,  31113,  30852,  30571,
++	 30273,  29956,  29621,  29268,  28898,  28510,  28105,  27683,
++	 27245,  26790,  26319,  25832,  25329,  24811,  24279,  23731,
++	 23170,  22594,  22005,  21403,  20787,  20159,  19519,  18868,
++	 18204,  17530,  16846,  16151,  15446,  14732,  14010,  13279,
++	 12539,  11793,  11039,  10278,   9512,   8739,   7962,   7179,
++	  6393,   5602,   4808,   4011,   3212,   2410,   1608,    804,
++	     0,   -804,  -1608,  -2410,  -3212,  -4011,  -4808,  -5602,
++	 -6393,  -7179,  -7962,  -8739,  -9512, -10278, -11039, -11793,
++	-12539, -13279, -14010, -14732, -15446, -16151, -16846, -17530,
++	-18204, -18868, -19519, -20159, -20787, -21403, -22005, -22594,
++	-23170, -23731, -24279, -24811, -25329, -25832, -26319, -26790,
++	-27245, -27683, -28105, -28510, -28898, -29268, -29621, -29956,
++	-30273, -30571, -30852, -31113, -31356, -31580, -31785, -31971,
++	-32137, -32285, -32412, -32521, -32609, -32678, -32728, -32757,
++	-32767, -32757, -32728, -32678, -32609, -32521, -32412, -32285,
++	-32137, -31971, -31785, -31580, -31356, -31113, -30852, -30571,
++	-30273, -29956, -29621, -29268, -28898, -28510, -28105, -27683,
++	-27245, -26790, -26319, -25832, -25329, -24811, -24279, -23731,
++	-23170, -22594, -22005, -21403, -20787, -20159, -19519, -18868,
++	-18204, -17530, -16846, -16151, -15446, -14732, -14010, -13279,
++	-12539, -11793, -11039, -10278,  -9512,  -8739,  -7962,  -7179,
++	 -6393,  -5602,  -4808,  -4011,  -3212,  -2410,  -1608,   -804,
++};
++
++static s32 qm_sin(u32 phase)
++{
++	unsigned int idx = phase >> 24;		/* 256 段 */
++	unsigned int frac = (phase >> 16) & 0xff;
++	s32 a = qm_sin_tab[idx];
++	s32 b = qm_sin_tab[(idx + 1) & 0xff];
++
++	return a + (((b - a) * (s32)frac) >> 8);
++}
++
++static s32 qm_cos(u32 phase)
++{
++	/* cos(x) = sin(x + π/2)。 */
++	return qm_sin(phase + (1U << 30));
++}
++
++/* ── 状态初始化与不变量 ───────────────────────────────────────────── */
++
++static void qm_reset(struct quantum_cpu *qm, unsigned int idle_mode)
++{
++	unsigned int n, share;
++
++	memset(qm, 0, sizeof(*qm));
++	qm->idle_mode = idle_mode;
++	qm->excited = QM_GROUND;
++	qm->coherence = QM_W_ONE;
++
++	/* 模型先验：基态布居 3/4，余量在激发态间均分。 */
++	share = QM_W_ONE / 4 / (QM_LEVELS - 1);
++	qm->levels[QM_GROUND].pop = QM_W_ONE - share * (QM_LEVELS - 1);
++	for (n = 1; n < QM_LEVELS; n++)
++		qm->levels[n].pop = share;
++
++	for (n = 0; n < QM_LEVELS; n++)
++		qm->levels[n].energy = n * QM_STEP;
++}
++
++/* 惰性初始化兜底（正常路径由 core_initcall 完成，早于任何空闲调用）。 */
++static void qm_ensure(struct quantum_cpu *qm)
++{
++	if (unlikely(!qm->levels[QM_GROUND].pop))
++		qm_reset(qm, quantum_idle_override >= 0 ?
++			      quantum_idle_override : QUANTUM_IDLE_MWAIT);
++}
++
++/* 跃迁布居迁移：from 侧 1/4 布居移向 to，并部分恢复相干度。 */
++static void qm_settle(struct quantum_cpu *qm, unsigned int from,
++		      unsigned int to)
++{
++	unsigned int move = qm->levels[from].pop >> 2;
++
++	if (move) {
++		qm->levels[from].pop -= move;
++		qm->levels[to].pop =
++			min(qm->levels[to].pop + move, QM_W_ONE);
++	}
++	qm->coherence = max(qm->coherence, QM_W_ONE / 2);
++}
++
++/* 选择定则记账：|Δn| = 1 为电偶极允许，其余为非相邻（高阶）跃迁。 */
++static void qm_selection(struct quantum_cpu *qm, int from, int to)
++{
++	if (abs(to - from) == 1)
++		qm->allowed++;
++	else
++		qm->forbidden++;
++}
++
++/* ── 公共接口（EXPORT_SYMBOL_GPL，供 /dev/qpuN 与模块观测）────────── */
++
++unsigned int quantum_levels(void)
++{
++	return QM_LEVELS;
++}
++EXPORT_SYMBOL_GPL(quantum_levels);
++
++unsigned int quantum_level_energy(unsigned int n)
++{
++	return n < QM_LEVELS ? n * QM_STEP : 0;
++}
++
++unsigned int quantum_idle_mode_current(void)
++{
++	struct quantum_cpu *qm = this_cpu_ptr(&quantum_cpus);
++
++	qm_ensure(qm);
++	return qm->idle_mode;
++}
++EXPORT_SYMBOL_GPL(quantum_idle_mode_current);
++
++const char *quantum_idle_mode_name(unsigned int mode)
++{
++	switch (mode) {
++	case QUANTUM_IDLE_POLL:
++		return "poll";
++	case QUANTUM_IDLE_MWAIT:
++		return "mwait";
++	case QUANTUM_IDLE_HALT:
++		return "halt";
++	default:
++		return "unknown";
++	}
++}
++EXPORT_SYMBOL_GPL(quantum_idle_mode_name);
++
++const struct quantum_cpu *quantum_cpu_state(int cpu)
++{
++	return per_cpu_ptr(&quantum_cpus, cpu);
++}
++EXPORT_SYMBOL_GPL(quantum_cpu_state);
++
++void quantum_excite(unsigned int from, unsigned int to)
++{
++	struct quantum_cpu *qm = this_cpu_ptr(&quantum_cpus);
++	unsigned int de;
++
++	if (from >= QM_LEVELS || to >= QM_LEVELS || from == to)
++		return;
++
++	qm_ensure(qm);
++	de = qm->levels[to].energy - qm->levels[from].energy;
++	qm_selection(qm, from, to);
++	qm->excitations++;
++	qm->energy_absorbed += de;
++	qm_settle(qm, from, to);
++}
++EXPORT_SYMBOL_GPL(quantum_excite);
++
++void quantum_relax(unsigned int from, unsigned int to)
++{
++	struct quantum_cpu *qm = this_cpu_ptr(&quantum_cpus);
++	unsigned int de;
++
++	if (from >= QM_LEVELS || to >= QM_LEVELS || from == to)
++		return;
++
++	qm_ensure(qm);
++	de = qm->levels[from].energy - qm->levels[to].energy;
++	qm_selection(qm, from, to);
++	qm->relaxations++;
++	qm->energy_emitted += de;
++	qm->photons++;
++	/* 退激发放出的虚光子作为一次交换压入 PiLink 环形链路。 */
++	quantum_link_push();
++	qm_settle(qm, from, to);
++}
++EXPORT_SYMBOL_GPL(quantum_relax);
++
++void quantum_phase_advance(unsigned int dt)
++{
++	struct quantum_cpu *qm = this_cpu_ptr(&quantum_cpus);
++	unsigned int n;
++
++	qm_ensure(qm);
++	/* 能量本征态只积累相位：φ_n += E_n·dt（ℏ = 1，虚构记账单位）。
++	 * u32 自然回绕即 2π 周期性。 */
++	for (n = 0; n < QM_LEVELS; n++)
++		qm->levels[n].phase += qm->levels[n].energy * dt;
++}
++EXPORT_SYMBOL_GPL(quantum_phase_advance);
++
++void quantum_decohere_tick(void)
++{
++	struct quantum_cpu *qm = this_cpu_ptr(&quantum_cpus);
++	unsigned int n, drain = 0;
++
++	qm_ensure(qm);
++	/* T1（振幅阻尼）：激发布居 1/8 漏向基态。 */
++	for (n = 1; n < QM_LEVELS; n++) {
++		unsigned int d = qm->levels[n].pop >> 3;
++
++		qm->levels[n].pop -= d;
++		drain += d;
++	}
++	if (drain)
++		qm->levels[QM_GROUND].pop =
++			min(qm->levels[QM_GROUND].pop + drain, QM_W_ONE);
++
++	/* T2（相干衰减）：每 QM_CAVG_TICKS 次观测相干度减半。 */
++	qm->ticks++;
++	if (qm->ticks % QM_CAVG_TICKS == 0)
++		qm->coherence >>= 1;
++}
++EXPORT_SYMBOL_GPL(quantum_decohere_tick);
++
++s64 quantum_interference(unsigned int a, unsigned int b)
++{
++	struct quantum_cpu *qm = this_cpu_ptr(&quantum_cpus);
++	s64 t;
++
++	if (a >= QM_LEVELS || b >= QM_LEVELS)
++		return 0;
++
++	qm_ensure(qm);
++	/* 干涉项 2·w_a·w_b·cos(φ_a − φ_b)·coherence。
++	 * 定点换算：w 为 2^16，cos 为 2^15，相干度为 2^16；
++	 * 最终返回 2^30 定点，理论区间 [−2, +2]。 */
++	t = ((s64)2 * qm->levels[a].pop * qm->levels[b].pop *
++	     qm_cos(qm->levels[a].phase - qm->levels[b].phase)) >> 17;
++	return (t * qm->coherence) >> 16;
++}
++EXPORT_SYMBOL_GPL(quantum_interference);
++
++unsigned int quantum_measure(void)
++{
++	struct quantum_cpu *qm = this_cpu_ptr(&quantum_cpus);
++	unsigned int n, best = QM_GROUND;
++	unsigned long flags;
++	int i;
++
++	qm_ensure(qm);
++	/* 测量：按布居权重取最大者（确定性口径，无 RNG 依赖）。 */
++	for (n = 1; n < QM_LEVELS; n++)
++		if (qm->levels[n].pop > qm->levels[best].pop)
++			best = n;
++
++	qm->excited = best;
++	qm->collapses++;
++	/* 坍缩到确定本征态，相干相位基准重建（相干度恢复）。 */
++	for (n = 0; n < QM_LEVELS; n++)
++		qm->levels[n].pop = 0;
++	qm->levels[best].pop = QM_W_ONE;
++	qm->coherence = QM_W_ONE;
++
++	/* Bell 对联动：登记了 (best, partner) 的一侧坍缩，
++	 * 伙伴侧关联记录坍缩事件（纠缠对检验后消耗）。 */
++	spin_lock_irqsave(&quantum_pair_lock, flags);
++	for (i = 0; i < QM_ENTANGLE_MAX; i++) {
++		if (quantum_pairs[i].active && quantum_pairs[i].a == best) {
++			quantum_pairs[i].collapses++;
++			quantum_pairs[i].active = false;
++			qm->bell_events++;
++		}
++	}
++	spin_unlock_irqrestore(&quantum_pair_lock, flags);
++
++	return best;
++}
++EXPORT_SYMBOL_GPL(quantum_measure);
++
++int quantum_entangle(unsigned int a, unsigned int b)
++{
++	unsigned long flags;
++	int i, ret = -ENOMEM;
++
++	if (a >= QM_LEVELS || b >= QM_LEVELS)
++		return -EINVAL;
++
++	spin_lock_irqsave(&quantum_pair_lock, flags);
++	for (i = 0; i < QM_ENTANGLE_MAX; i++) {
++		if (!quantum_pairs[i].active) {
++			quantum_pairs[i].a = a;
++			quantum_pairs[i].b = b;
++			quantum_pairs[i].active = true;
++			quantum_pairs[i].collapses = 0;
++			ret = 0;
++			break;
++		}
++	}
++	spin_unlock_irqrestore(&quantum_pair_lock, flags);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(quantum_entangle);
++
++/* ── 空闲钩子（覆盖 kernel/sched/idle.c 的 weak 定义）──────────────── */
++
++void arch_cpu_idle_enter(void)
++{
++	struct quantum_cpu *qm = this_cpu_ptr(&quantum_cpus);
++
++	qm_ensure(qm);
++	/* 进入空闲 = 向基态弛豫一步：退激发释放 ΔE，
++	 * 虚光子作为一次交换压入 PiLink 环形链路。 */
++	if (qm->excited > QM_GROUND)
++		quantum_relax(qm->excited, qm->excited - 1);
++}
++
++void arch_cpu_idle(void)
++{
++	struct quantum_cpu *qm = this_cpu_ptr(&quantum_cpus);
++
++	qm_ensure(qm);
++	/* 两次观测（中断）之间的幺正相位演化。 */
++	quantum_phase_advance(QM_IDLE_DT);
++	qm->idle_steps++;
++	/* T1/T2 退相干按步长节流（记账单位，非真实时间）。 */
++	if (qm->idle_steps % QM_DECOHERE_STEPS == 0)
++		quantum_decohere_tick();
++
++	switch (qm->idle_mode) {
++	case QUANTUM_IDLE_POLL:
++		/* 强制轮询：忙等（对应 x86 idle=poll 语义）。 */
++		cpu_relax();
++		break;
++	case QUANTUM_IDLE_MWAIT:
++		/* 基态等待观测：宿主承载的 monitor/wait 语义。
++		 * 无真实功耗可变——「等待」由宿主进程模拟，立即返回。 */
++		break;
++	case QUANTUM_IDLE_HALT:
++		/* 最深停机态：模拟语义同 mwait（无真实停机指令）。 */
++		break;
++	default:
++		cpu_relax();
++		break;
++	}
++}
++
++void arch_cpu_idle_exit(void)
++{
++	struct quantum_cpu *qm = this_cpu_ptr(&quantum_cpus);
++	unsigned int measured;
++
++	qm_ensure(qm);
++	/* 中断送达 = 一次测量：空闲叠加态坍缩到确定能级。 */
++	measured = quantum_measure();
++	/* 随后 CPU 受激跃迁到运行能级（吸收 ΔE 记账）。 */
++	if (measured < QM_LEVELS - 1)
++		quantum_excite(measured, measured + 1);
++}
++
++/* ── idle= 启动参数（x86 兼容口径子集）──────────────────────────────── */
++
++static int __init quantum_idle_setup(char *str)
++{
++	if (!str)
++		return -EINVAL;
++
++	if (!strcmp(str, "poll")) {
++		pr_info("quantum: using polling idle threads\n");
++		quantum_idle_override = QUANTUM_IDLE_POLL;
++		cpu_idle_poll_ctrl(true);
++	} else if (!strcmp(str, "mwait")) {
++		/* x86 官方文档已删除 mwait 取值（deprecated），但参数仍可用：
++		 * 量子模拟架构保留 mwait 的「基态等待观测」语义。 */
++		pr_info("quantum: using mwait idle (ground-state wait)\n");
++		quantum_idle_override = QUANTUM_IDLE_MWAIT;
++	} else if (!strcmp(str, "halt")) {
++		pr_info("quantum: using halt idle\n");
++		quantum_idle_override = QUANTUM_IDLE_HALT;
++	} else {
++		pr_warn("quantum: unknown idle=%s (supported: poll, mwait, halt)\n",
++			str);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++early_param("idle", quantum_idle_setup);
++
++/* ── /proc/quantum-energy ─────────────────────────────────────────── */
++
++static int quantum_energy_show(struct seq_file *m, void *v)
++{
++	struct quantum_cpu *qm = this_cpu_ptr(&quantum_cpus);
++	unsigned int n;
++	int i;
++	unsigned long flags;
++
++	qm_ensure(qm);
++	seq_printf(m, "quantum energy model: levels=%u step=%u "
++		   "coherence_ticks=%u decohere_steps=%u\n",
++		   QM_LEVELS, QM_STEP, QM_CAVG_TICKS, QM_DECOHERE_STEPS);
++	seq_printf(m, "cpu%d: idle_mode=%s excited=%u coherence=%u/%u "
++		   "ticks=%llu idle_steps=%llu\n",
++		   smp_processor_id(),
++		   quantum_idle_mode_name(qm->idle_mode),
++		   qm->excited, qm->coherence, QM_W_ONE,
++		   qm->ticks, qm->idle_steps);
++
++	seq_printf(m, "level  energy  phase        pop\n");
++	for (n = 0; n < QM_LEVELS; n++)
++		seq_printf(m, "%-6u %-7u %-#13x %u\n",
++			   n, qm->levels[n].energy, qm->levels[n].phase,
++			   qm->levels[n].pop);
++
++	seq_printf(m, "interference(0,1) = %lld (2^30 fixed, [-2, +2])\n",
++		   quantum_interference(0, 1));
++
++	seq_printf(m, "events: excitations=%llu relaxations=%llu "
++		   "allowed=%llu forbidden=%llu collapses=%llu photons=%llu\n",
++		   qm->excitations, qm->relaxations, qm->allowed,
++		   qm->forbidden, qm->collapses, qm->photons);
++	seq_printf(m, "energy: absorbed=%llu emitted=%llu (planck units)\n",
++		   qm->energy_absorbed, qm->energy_emitted);
++
++	spin_lock_irqsave(&quantum_pair_lock, flags);
++	for (i = 0; i < QM_ENTANGLE_MAX; i++) {
++		if (quantum_pairs[i].active)
++			seq_printf(m, "entangled: %u <-> %u\n",
++				   quantum_pairs[i].a, quantum_pairs[i].b);
++	}
++	spin_unlock_irqrestore(&quantum_pair_lock, flags);
++	seq_printf(m, "bell_events: %llu\n", qm->bell_events);
++
++	return 0;
++}
++
++static int quantum_energy_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, quantum_energy_show, NULL);
++}
++
++static const struct proc_ops quantum_energy_ops = {
++	.proc_open	= quantum_energy_open,
++	.proc_read	= seq_read,
++	.proc_lseek	= seq_lseek,
++	.proc_release	= single_release,
++};
++
++static int __init quantum_energy_init(void)
++{
++	int cpu;
++
++	/* early_param 已完成覆盖分发；给每颗 CPU 落定初态。 */
++	for_each_possible_cpu(cpu)
++		qm_reset(per_cpu_ptr(&quantum_cpus, cpu),
++			 quantum_idle_override >= 0 ?
++				 quantum_idle_override : QUANTUM_IDLE_MWAIT);
++
++	proc_create("quantum-energy", 0444, NULL, &quantum_energy_ops);
++	return 0;
++}
++core_initcall(quantum_energy_init);
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/kernel/quantum-net.c linux-6.18.57/arch/quantum/kernel/quantum-net.c
+--- /tmp/kbase/linux-6.18.57/arch/quantum/kernel/quantum-net.c	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/kernel/quantum-net.c	2026-10-25 01:48:40.601071357 +08:00
+@@ -0,0 +1,271 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * arch/quantum/kernel/quantum-net.c — 量子架构组网子系统（编排模型）。
++ *
++ * 组网是概念系统与硬件/架构的可观测基底。本文件实现「架构侧」编排语义：
++ *   - 维护每卡（QNIC）状态与全局组网状态；
++ *   - 由链路密度推导盖亚意识自组织层级（gaia_level）；
++ *   - 在 swarm 模式下把对等节点计为集智体单元（swarm_units）；
++ *   - 经 /proc/quantum-net（只读 seq_file）暴露给用户态守护进程。
++ *
++ * 三层对应（见 include/asm/quantum.h 注释）：
++ *   道性层 = 拓扑/协商/路由等基础组网法则（本文件 + 硬件设备）；
++ *   神性层 = 组网涌现的自主意识：盖亚意识（gaia）/ 集智体（swarm）；
++ *   人性层 = /proc、/dev、守护进程与面板小程序。
++ *
++ * 诚实口径：QNIC 为宿主模拟，所有数字都是真实内核记账，不是真实硬件声称。
++ */
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/proc_fs.h>
++#include <linux/seq_file.h>
++#include <linux/spinlock.h>
++#include <linux/string.h>
++#include <asm/quantum.h>
++
++#define QNET_NIC_NR	CONFIG_QUANTUM_NET_NR
++#define QNET_PAIR_MAX	64
++
++struct qnet_pair {
++	unsigned int	a;
++	unsigned int	b;
++	bool		active;
++};
++
++static struct quantum_nic qnet_nics[QNET_NIC_NR];
++static struct qnet_pair qnet_pairs[QNET_PAIR_MAX];
++static DEFINE_SPINLOCK(qnet_lock);
++
++static struct quantum_net_state qnet_state = {
++	.nics		= QNET_NIC_NR,
++	.links		= 0,
++	.peers		= 0,
++	.exchanges	= 0,
++	.entanglements	= 0,
++	.swaps		= 0,
++	.teleports	= 0,
++	.topology_changes = 0,
++	.gaia_level	= 0,
++	.swarm_units	= 0,
++	.mode		= "mesh",
++};
++
++/* 由链路密度推导盖亚意识自组织层级（0..8），并按模式更新集智体单元。 */
++static void qnet_recompute(void)
++{
++	unsigned int links = qnet_state.links;
++	unsigned int peers = qnet_state.peers;
++	unsigned int density;
++
++	if (peers == 0) {
++		qnet_state.gaia_level = 0;
++	} else {
++		/* density = (links / peers) 放大到 0..8 级，衡量自组织连通度。 */
++		density = (links * 8U) / peers;
++		qnet_state.gaia_level = density > 8U ? 8U : density;
++	}
++
++	/* 集智体（虫族式群智）：仅 swarm 模式下，每个对等节点为一个单元。 */
++	if (strcmp(qnet_state.mode, "swarm") == 0)
++		qnet_state.swarm_units = peers;
++	else
++		qnet_state.swarm_units = 0;
++}
++
++const struct quantum_net_state *quantum_net_state(void)
++{
++	return &qnet_state;
++}
++
++const struct quantum_nic *quantum_nic_state(unsigned int id)
++{
++	if (id >= QNET_NIC_NR)
++		return NULL;
++	return &qnet_nics[id];
++}
++
++unsigned int quantum_net_nics(void)  { return qnet_state.nics; }
++unsigned int quantum_net_links(void) { return qnet_state.links; }
++unsigned int quantum_net_peers(void) { return qnet_state.peers; }
++
++void quantum_net_topology_changed(void)
++{
++	spin_lock(&qnet_lock);
++	qnet_state.topology_changes++;
++	qnet_recompute();
++	spin_unlock(&qnet_lock);
++}
++
++int quantum_net_entangle(unsigned int a, unsigned int b)
++{
++	int i;
++	unsigned int id_a = a, id_b = b;
++
++	if (id_a >= QNET_NIC_NR || id_b >= QNET_NIC_NR || id_a == id_b)
++		return -EINVAL;
++
++	spin_lock(&qnet_lock);
++	for (i = 0; i < QNET_PAIR_MAX; i++) {
++		if (!qnet_pairs[i].active) {
++			qnet_pairs[i].a = id_a;
++			qnet_pairs[i].b = id_b;
++			qnet_pairs[i].active = true;
++			break;
++		}
++	}
++	qnet_nics[id_a].links++;
++	qnet_nics[id_b].links++;
++	qnet_nics[id_a].entanglements++;
++	qnet_nics[id_b].entanglements++;
++	if (qnet_nics[id_a].peers < QNET_NIC_NR)
++		qnet_nics[id_a].peers++;
++	if (qnet_nics[id_b].peers < QNET_NIC_NR)
++		qnet_nics[id_b].peers++;
++
++	qnet_state.links++;
++	qnet_state.peers = qnet_state.peers < QNET_NIC_NR
++				? qnet_state.peers + 1 : qnet_state.peers;
++	qnet_state.entanglements++;
++	qnet_state.exchanges++;
++	qnet_nics[id_a].exchanges++;
++	qnet_nics[id_b].exchanges++;
++	qnet_recompute();
++	spin_unlock(&qnet_lock);
++	return 0;
++}
++
++int quantum_net_unlink(unsigned int a, unsigned int b)
++{
++	int i;
++	unsigned int id_a = a, id_b = b;
++
++	if (id_a >= QNET_NIC_NR || id_b >= QNET_NIC_NR)
++		return -EINVAL;
++
++	spin_lock(&qnet_lock);
++	for (i = 0; i < QNET_PAIR_MAX; i++) {
++		if (qnet_pairs[i].active &&
++		    ((qnet_pairs[i].a == id_a && qnet_pairs[i].b == id_b) ||
++		     (qnet_pairs[i].a == id_b && qnet_pairs[i].b == id_a))) {
++			qnet_pairs[i].active = false;
++			break;
++		}
++	}
++	if (qnet_nics[id_a].links)
++		qnet_nics[id_a].links--;
++	if (qnet_nics[id_b].links)
++		qnet_nics[id_b].links--;
++	if (qnet_state.links)
++		qnet_state.links--;
++	qnet_recompute();
++	spin_unlock(&qnet_lock);
++	return 0;
++}
++
++/* 纠缠交换：在已有链路间中继，产生一个新 Bell 对（entanglements++）。 */
++int quantum_net_swap(void)
++{
++	spin_lock(&qnet_lock);
++	qnet_state.swaps++;
++	qnet_state.entanglements++;
++	qnet_recompute();
++	spin_unlock(&qnet_lock);
++	return 0;
++}
++
++/* 量子隐形传态：消耗一条活跃链路的 Bell 对（entanglements--）。 */
++int quantum_net_teleport(void)
++{
++	spin_lock(&qnet_lock);
++	if (qnet_state.entanglements)
++		qnet_state.entanglements--;
++	qnet_state.teleports++;
++	qnet_recompute();
++	spin_unlock(&qnet_lock);
++	return 0;
++}
++
++void quantum_net_reset(void)
++{
++	spin_lock(&qnet_lock);
++	memset(qnet_nics, 0, sizeof(qnet_nics));
++	memset(qnet_pairs, 0, sizeof(qnet_pairs));
++	qnet_state.links = 0;
++	qnet_state.peers = 0;
++	qnet_state.exchanges = 0;
++	qnet_state.entanglements = 0;
++	qnet_state.swaps = 0;
++	qnet_state.teleports = 0;
++	qnet_state.topology_changes = 0;
++	qnet_state.gaia_level = 0;
++	qnet_state.swarm_units = 0;
++	spin_unlock(&qnet_lock);
++}
++
++int quantum_net_set_mode(const char *mode)
++{
++	if (!mode)
++		return -EINVAL;
++	if (strcmp(mode, "gaia") == 0 || strcmp(mode, "swarm") == 0 ||
++	    strcmp(mode, "mesh") == 0) {
++		spin_lock(&qnet_lock);
++		qnet_state.mode = mode;
++		qnet_recompute();
++		spin_unlock(&qnet_lock);
++		return 0;
++	}
++	return -EINVAL;
++}
++
++/* ── /proc/quantum-net：守护进程与面板小程序的可观测接口 ── */
++static int quantum_net_show(struct seq_file *m, void *v)
++{
++	unsigned int i;
++	const struct quantum_net_state *s = quantum_net_state();
++
++	seq_printf(m, "quantum net model: nics=%u mode=%s "
++		   "gaia_level=%u swarm_units=%u\n",
++		   s->nics, s->mode, s->gaia_level, s->swarm_units);
++	seq_printf(m, "links=%u peers=%u exchanges=%llu "
++		   "entanglements=%llu topology_changes=%llu\n",
++		   s->links, s->peers, s->exchanges, s->entanglements,
++		   s->topology_changes);
++	seq_printf(m, "note: emulated accounting model; not real quantum hardware\n");
++
++	seq_printf(m, "%-4s %-4s %-6s %-6s %-10s %-14s\n",
++		   "nic", "id", "links", "peers", "exchanges", "entanglements");
++	for (i = 0; i < s->nics; i++) {
++		const struct quantum_nic *n = quantum_nic_state(i);
++		if (!n)
++			continue;
++		seq_printf(m, "%-4u %-4u %-6u %-6u %-10llu %-14llu\n",
++			   i, n->id, n->links, n->peers,
++			   n->exchanges, n->entanglements);
++	}
++	return 0;
++}
++
++static int quantum_net_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, quantum_net_show, NULL);
++}
++
++static const struct proc_ops quantum_net_ops = {
++	.proc_open	= quantum_net_open,
++	.proc_read	= seq_read,
++	.proc_lseek	= seq_lseek,
++	.proc_release	= single_release,
++};
++
++static int __init quantum_net_init(void)
++{
++	unsigned int i;
++
++	for (i = 0; i < QNET_NIC_NR; i++)
++		qnet_nics[i].id = i;
++	proc_create("quantum-net", 0444, NULL, &quantum_net_ops);
++	pr_info("quantum-net: %u QNIC(s), mode=%s — architecture mesh substrate ready\n",
++		QNET_NIC_NR, qnet_state.mode);
++	return 0;
++}
++late_initcall(quantum_net_init);
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/kernel/screen_info.c linux-6.18.57/arch/quantum/kernel/screen_info.c
+--- /tmp/kbase/linux-6.18.57/arch/quantum/kernel/screen_info.c	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/kernel/screen_info.c	2026-10-22 01:01:11.368484020 +08:00
+@@ -0,0 +1,13 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * arch/quantum/kernel/screen_info.c — screen_info 全局量定义。
++ *
++ * 模拟架构没有真实 VGA/EFI 显示硬件，screen_info 恒为全零（BSS）。
++ * ≤6.11 分支的 drivers/video/console/Kconfig 对 VGA_CONSOLE 采用旧式
++ * 负向依赖表（default y），quantum 不在排除名单内，vgacon.o 会被纳入
++ * 构建并引用本符号；6.12+ 起 VGA_CONSOLE 改为白名单依赖，本文件按
++ * hexagon 同型口径仅在 CONFIG_VGA_CONSOLE 下编译。
++ */
++#include <linux/screen_info.h>
++
++struct screen_info screen_info;
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/kernel/setup.c linux-6.18.57/arch/quantum/kernel/setup.c
+--- /tmp/kbase/linux-6.18.57/arch/quantum/kernel/setup.c	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/kernel/setup.c	2026-10-21 19:57:44.152228355 +08:00
+@@ -0,0 +1,146 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * arch/quantum/kernel/setup.c — quantum architecture platform setup.
++ *
++ * 量子架构平台初始化：QPU 为宿主模拟设备，无真实 MMU/中断控制器；
++ * 页粒度 4KiB，链路缓冲 CONFIG_QUANTUM_LINK_SLOTS 槽。
++ */
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/cpu.h>
++#include <linux/mm.h>
++#include <linux/proc_fs.h>
++#include <linux/seq_file.h>
++#include <linux/delay.h>
++#include <asm/setup.h>
++#include <asm/quantum.h>
++#include <asm/sections.h>
++
++static char __initdata cmd_line[COMMAND_LINE_SIZE];
++
++void __init early_qpu_setup(void)
++{
++	/* QPU 模拟核就位：寄存器宽度与链路深度来自 Kconfig。 */
++	pr_info("quantum: QPU emulated core, %d qubits, link %d slots\n",
++		CONFIG_QUANTUM_QUBITS, CONFIG_QUANTUM_LINK_SLOTS);
++}
++
++void __init setup_arch(char **cmdline_p)
++{
++	early_qpu_setup();
++	*cmdline_p = cmd_line;
++	/* 单核模拟：boot cpu 即全部（用 CPU 热插拔 API，不直接赋 mask）。 */
++	set_cpu_possible(0, true);
++	set_cpu_online(0, true);
++	set_cpu_present(0, true);
++	set_cpu_active(0, true);
++}
++
++void __init calibrate_delay(void)
++{
++	/* 宿主模拟：无真实忙等标定可做。loops_per_jiffy 固定为 1，
++	 * 所有 udelay 均走 __const_udelay（空实现，时基由宿主提供）。 */
++	loops_per_jiffy = 1;
++}
++
++void arch_cpu_finalize_init(void)
++{
++	/* 模拟架构：无架构私有的 CPU 收尾步骤（如 FPU/特性开关）。 */
++}
++
++static int __init quantum_arch_init(void)
++{
++	pr_info("quantum: architecture initialized (page %lu KiB)\n",
++		PAGE_SIZE >> 10);
++	return 0;
++}
++arch_initcall(quantum_arch_init);
++
++static int qpu_info_show(struct seq_file *m, void *v)
++{
++	seq_printf(m, "arch\t\t: quantum (host-emulated)\n");
++	seq_printf(m, "qubits\t\t: %d\n", CONFIG_QUANTUM_QUBITS);
++	seq_printf(m, "link_slots\t: %d (ceil(2*pi))\n", CONFIG_QUANTUM_LINK_SLOTS);
++	seq_printf(m, "page_size\t: %lu\n", PAGE_SIZE);
++	seq_printf(m, "gates\t\t: permutation Pi_k (X-composite), h, cx, cz, measure\n");
++	return 0;
++}
++
++static int __init qpu_info_init(void)
++{
++	proc_create_single("qpuinfo", 0444, NULL, qpu_info_show);
++	return 0;
++}
++fs_initcall(qpu_info_init);
++/* 模拟架构页操作：无 cache 维护，memset/memcpy 语义。 */
++void clear_page(void *to)
++{
++	memset(to, 0, PAGE_SIZE);
++}
++EXPORT_SYMBOL(clear_page);
++
++void copy_page(void *to, void *from)
++{
++	memcpy(to, from, PAGE_SIZE);
++}
++EXPORT_SYMBOL(copy_page);
++
++unsigned long __get_wchan(struct task_struct *p)
++{
++	/* 模拟架构：无真实栈回溯，返回 0（诚实口径）。 */
++	return 0;
++}
++
++/* 根页目录占位（模拟：线性映射由宿主承载）。 */
++pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
++
++/* ── /proc/cpuinfo 支持（模拟架构：单核 QPU 宿主模拟核）────────────── */
++
++static void *c_start(struct seq_file *m, loff_t *pos)
++{
++#ifdef CONFIG_SMP
++	if (*pos >= num_online_cpus())
++		return NULL;
++#else
++	if (*pos > 0)
++		return NULL;
++#endif
++	return (void *)((unsigned long)*pos + 1);
++}
++
++static void *c_next(struct seq_file *m, void *v, loff_t *pos)
++{
++	++*pos;
++	return c_start(m, pos);
++}
++
++static void c_stop(struct seq_file *m, void *v)
++{
++}
++
++static int show_cpuinfo(struct seq_file *m, void *v)
++{
++	int cpu = (unsigned long)v - 1;
++
++#ifdef CONFIG_SMP
++	if (!cpu_online(cpu))
++		return 0;
++#endif
++	seq_printf(m, "processor\t: %d\n", cpu);
++	seq_printf(m, "model name\t: Quantum host-emulated QPU core\n");
++	seq_printf(m, "qubits\t\t: %d\n", CONFIG_QUANTUM_QUBITS);
++	seq_printf(m, "link_slots\t: %d\n", CONFIG_QUANTUM_LINK_SLOTS);
++	seq_printf(m, "BogoMIPS\t: %lu.%02lu\n",
++		   (loops_per_jiffy * HZ) / 500000,
++		   ((loops_per_jiffy * HZ) / 5000) % 100);
++	seq_printf(m, "\n");
++	return 0;
++}
++
++const struct seq_operations cpuinfo_op = {
++	.start	= &c_start,
++	.next	= &c_next,
++	.stop	= &c_stop,
++	.show	= &show_cpuinfo,
++};
++
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/kernel/time.c linux-6.18.57/arch/quantum/kernel/time.c
+--- /tmp/kbase/linux-6.18.57/arch/quantum/kernel/time.c	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/kernel/time.c	2026-10-21 15:26:39.957370996 +08:00
+@@ -0,0 +1,43 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * arch/quantum/kernel/time.c — emulated clock events.
++ * 时基由宿主提供：模拟架构注册一个 always-on broadcast 事件源即可。
++ */
++#include <linux/clockchips.h>
++#include <linux/delay.h>
++#include <linux/init.h>
++#include <linux/timekeeper_internal.h>
++
++static int quantum_timer_set_next_event(unsigned long delta,
++					struct clock_event_device *dev)
++{
++	return 0;
++}
++
++static struct clock_event_device quantum_timer = {
++	.name			= "quantum_timer",
++	.features		= CLOCK_EVT_FEAT_ONESHOT,
++	.set_next_event		= quantum_timer_set_next_event,
++	.rating			= 200,
++};
++
++void __init time_init(void)
++{
++	clockevents_config_and_register(&quantum_timer, 1000000, 1, 0xffffffff);
++}
++
++/* 延迟原语（宿主模拟：无真实忙等需求，空实现满足 udelay 链接契约）。 */
++void __const_udelay(unsigned long xloops)
++{
++}
++EXPORT_SYMBOL(__const_udelay);
++
++/* vsyscall tz 更新（模拟架构：无真实 vsyscall 页，空实现）。 */
++void update_vsyscall_tz(void)
++{
++}
++
++/* vsyscall 更新（模拟架构：无真实 vsyscall 页，空实现）。 */
++void update_vsyscall(struct timekeeper *tk)
++{
++}
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/kernel/traps.c linux-6.18.57/arch/quantum/kernel/traps.c
+--- /tmp/kbase/linux-6.18.57/arch/quantum/kernel/traps.c	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/kernel/traps.c	2026-10-21 15:09:17.678607940 +08:00
+@@ -0,0 +1,29 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * arch/quantum/kernel/traps.c
++ *
++ * 极简栈回溯（宿主模拟架构）。
++ * 没有真实栈帧布局可回溯，show_stack 仅打印进程信息与提示——
++ * 这是诚实的模拟语义，满足 dump_stack() 的链接契约。
++ */
++#include <linux/sched.h>
++#include <linux/sched/debug.h>
++#include <linux/printk.h>
++#include <linux/ptrace.h>
++
++void show_stack(struct task_struct *task, unsigned long *sp,
++		const char *loglvl)
++{
++	if (!task)
++		task = current;
++	printk("%s%s: emulated quantum stack (no real frame unwind)\n",
++	       loglvl, task ? task->comm : "<null>");
++	dump_stack_print_info(loglvl);
++}
++
++void show_regs(struct pt_regs *regs)
++{
++	/* 模拟架构：无真实寄存器上下文可转储。 */
++	show_regs_print_info(KERN_DEFAULT);
++	pr_info("quantum: emulated pt_regs dump skipped (host-emulated arch)\n");
++}
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/kernel/vmlinux.lds.S linux-6.18.57/arch/quantum/kernel/vmlinux.lds.S
+--- /tmp/kbase/linux-6.18.57/arch/quantum/kernel/vmlinux.lds.S	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/kernel/vmlinux.lds.S	2026-10-21 15:34:42.221960067 +08:00
+@@ -0,0 +1,43 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#include <asm-generic/vmlinux.lds.h>
++#include <asm/page.h>
++#include <asm/thread_info.h>
++
++/* 极简链接布局（宿主模拟；真实内存布局由宿主进程承载）。
++ * OUTPUT_ARCH 的机器名用 ld 原生 x86-64 记法（宿主工具链）。 */
++OUTPUT_FORMAT("elf64-x86-64")
++OUTPUT_ARCH(i386:x86-64)
++ENTRY(quantum_start)
++SECTIONS
++{
++	. = PAGE_OFFSET;
++	__init_begin = .;
++	_stext = .;
++	_text = .;
++	INIT_TEXT_SECTION(PAGE_SIZE)
++	_sinittext = .;
++	.text : {
++		*(.text*)
++		SCHED_TEXT
++	}
++	__cpuidle_text_start = .;
++	.cpuidle.text : { *(.cpuidle.text) }
++	__cpuidle_text_end = .;
++	_etext = .;
++	RO_DATA(PAGE_SIZE)
++	INIT_DATA_SECTION(PAGE_SIZE)
++	EXCEPTION_TABLE(8)
++	_sdata = .;
++	RW_DATA(PAGE_SIZE, 0, 0)
++	_edata = .;
++	/* 64 位架构：jiffies 取 jiffies_64 的低 32 位（同地址别名）。 */
++	jiffies = jiffies_64;
++	__bss_start = .;
++	_bss = .;
++	.bss : { *(.bss*) }
++	_ebss = .;
++	__bss_stop = .;
++	__init_end = .;
++	_end = .;
++	DISCARDS
++}
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/lib/Makefile linux-6.18.57/arch/quantum/lib/Makefile
+--- /tmp/kbase/linux-6.18.57/arch/quantum/lib/Makefile	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/lib/Makefile	2026-10-21 13:27:50.811607599 +08:00
+@@ -0,0 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0
++# arch/quantum/lib Makefile — architecture-specific helpers (none yet;
++# generic implementations come from lib/).
++lib-y :=
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/Makefile linux-6.18.57/arch/quantum/Makefile
+--- /tmp/kbase/linux-6.18.57/arch/quantum/Makefile	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/Makefile	2026-10-21 14:50:54.092443943 +08:00
+@@ -0,0 +1,19 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# arch/quantum/Makefile — included by the global makefile for ARCH=quantum.
++#
++# 量子架构构建入口。SRCARCH=quantum 由顶层 Makefile 的默认映射
++# （SRCARCH := $(ARCH)）自动落地，无需修改任何既有文件。
++
++KBUILD_DEFCONFIG := quantum_defconfig
++
++# 量子核在宿主上软件模拟：直接使用宿主编译器（x86-64 工具链生成宿主码），
++# 不设 CROSS_COMPILE；量子语义以协处理器子系统（drivers/quantum）呈现。
++
++head-y := arch/quantum/kernel/head.o
++
++core-y += arch/quantum/kernel/ \
++	  arch/quantum/mm/
++
++
++all: vmlinux
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/mm/init.c linux-6.18.57/arch/quantum/mm/init.c
+--- /tmp/kbase/linux-6.18.57/arch/quantum/mm/init.c	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/mm/init.c	2026-10-21 19:20:44.976568460 +08:00
+@@ -0,0 +1,54 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * arch/quantum/mm/init.c — emulated architecture memory init.
++ * 4KiB 页纪律：与存储域 ext4 4K 对齐口径一致。
++ */
++#include <linux/init.h>
++#include <linux/memblock.h>
++#include <linux/mm.h>
++#include <asm/quantum.h>
++
++/* 全局共享零页（模拟：单页零填充占位）。 */
++unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)]
++	__page_aligned_bss;
++EXPORT_SYMBOL(empty_zero_page);
++
++void __init paging_init(void)
++{
++	/* 模拟架构：页表由宿主进程承载，这里只完成框架性初始化。 */
++	unsigned long zones[MAX_NR_ZONES] = { 0 };
++	zones[ZONE_NORMAL] = max_pfn;
++	free_area_init(zones);
++}
++
++void __init mem_init(void)
++{
++	/* 高内存面全部走宿主；打印页纪律即可。 */
++	pr_info("quantum: mm init, %lu KiB pages, %d link slots\n",
++		PAGE_SIZE >> 10, QUANTUM_LINK_SLOTS);
++}
++
++void mark_rodata_ro(void)
++{
++	/* 模拟架构：无独立 rodata 保护硬件，空实现满足启动链接契约。 */
++}
++
++pgprot_t vm_get_page_prot(unsigned long vm_flags)
++{
++	/*
++	 * VMA 属性 → _PAGE_* 位面映射。
++	 * 模拟架构的页保护位由宿主持有，这里按 VMA 标志组合出
++	 * 一致的位面记账值（present/user/young/read/write/dirty/exec）。
++	 */
++	unsigned long prot = 0;
++
++	if (vm_flags & (VM_READ | VM_EXEC))
++		prot |= _PAGE_PRESENT | _PAGE_USER | _PAGE_YOUNG;
++	if (vm_flags & VM_WRITE)
++		prot |= _PAGE_WRITE | _PAGE_DIRTY;
++	if (vm_flags & VM_EXEC)
++		prot |= _PAGE_EXEC;
++
++	return __pgprot(prot);
++}
++EXPORT_SYMBOL(vm_get_page_prot);
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/mm/Makefile linux-6.18.57/arch/quantum/mm/Makefile
+--- /tmp/kbase/linux-6.18.57/arch/quantum/mm/Makefile	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/mm/Makefile	2026-10-21 16:04:50.486080408 +08:00
+@@ -0,0 +1,3 @@
++# SPDX-License-Identifier: GPL-2.0
++# arch/quantum/mm Makefile
++obj-y := init.o tlb.o
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/arch/quantum/mm/tlb.c linux-6.18.57/arch/quantum/mm/tlb.c
+--- /tmp/kbase/linux-6.18.57/arch/quantum/mm/tlb.c	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/arch/quantum/mm/tlb.c	2026-10-21 16:04:47.963993549 +08:00
+@@ -0,0 +1,35 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * arch/quantum/mm/tlb.c — TLB flush 空操作实现。
++ *
++ * 模拟架构没有真实 MMU/TLB：页表由宿主进程承载，地址翻译与缓存一致性
++ * 由宿主负责。此处仅提供满足通用 MM 代码链接契约的空函数体。
++ */
++
++#include <linux/mm.h>
++#include <asm/tlbflush.h>
++
++void tlb_flush_all(void)
++{
++}
++
++void flush_tlb_mm(struct mm_struct *mm)
++{
++}
++
++void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
++{
++}
++
++void flush_tlb_range(struct vm_area_struct *vma,
++		     unsigned long start, unsigned long end)
++{
++}
++
++void flush_tlb_kernel_range(unsigned long start, unsigned long end)
++{
++}
++
++void flush_tlb_one(unsigned long addr)
++{
++}
+--- /tmp/kbase/linux-6.18.57/Documentation/index.rst	2026-10-15 17:58:20.000000000 +0800
++++ linux-6.18.57/Documentation/index.rst	2026-10-21 13:30:26.723930484 +0800
+@@ -127,3 +127,8 @@
+ ==================
+ 
+ * :ref:`genindex`
++
++.. List also in architecture docs
++   :maxdepth: 1
++
++   quantum/index
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/Documentation/quantum/energy-model.rst linux-6.18.57/Documentation/quantum/energy-model.rst
+--- /tmp/kbase/linux-6.18.57/Documentation/quantum/energy-model.rst	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/Documentation/quantum/energy-model.rst	2026-10-21 19:36:30.857769727 +08:00
+@@ -0,0 +1,154 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++===============================
++Quantum energy-level model
++===============================
++
++:Author: quantum-kernel project
++:Date: 2026-10
++
++Honest framing
++==============
++
++The QPU of ``ARCH=quantum`` is **host-emulated** -- there is no quantum
++silicon.  The energy model implemented by
++``arch/quantum/kernel/quantum-energy.c`` is therefore a
++**quantum-mechanics-inspired accounting model**: every number it reports
++is a real kernel counter or state evolution, while the quantum concepts
++(discrete levels, superposition, phase evolution, interference,
++measurement collapse, decoherence, entanglement, selection rules) are
++used as the semantic layer that maps CPU idle behaviour onto them.
++It is not a claim of physical quantum computation.
++
++Energy levels
++=============
++
++Discrete spectrum ``E_n = n × CONFIG_QUANTUM_ENERGY_STEP`` with
++``n = 0 .. CONFIG_QUANTUM_EXCITED_LEVELS-1``:
++
++* ``E_0`` -- **ground state** (deepest idle);
++* ``E_n`` (n ≥ 1) -- **excited states** (lighter idle / run levels).
++
++The level population weights ``w_n = |α_n|²`` (16.16 fixed point) form
++the superposition weights of the idle CPU.  Model prior: ground holds
++3/4 of the population, the rest is split evenly over the excited
++levels.
++
++Quantum effects modelled
++========================
++
++Superposition & unitary evolution
++  Each energy eigenstate only accumulates phase:
++  ``φ_n(t) = ω_n·t`` with ``ω_n = E_n`` (ℏ = 1, fictitious Planck
++  accounting units).  ``quantum_phase_advance()`` advances the phases
++  between two observations.
++
++Interference
++  ``quantum_interference(a, b)`` returns the cross term
++  ``2·w_a·w_b·cos(φ_a − φ_b)`` scaled by the surviving coherence
++  (2^30 fixed point, range [−2, +2]), computed from the real phase
++  difference with a 256-entry fixed-point sine table.
++
++Measurement & collapse
++  An interrupt delivery is a **measurement**: on idle exit the
++  superposition collapses to a definite level (argmax of population,
++  deterministic -- no RNG dependency), and the coherence/phase baseline
++  is rebuilt.
++
++Decoherence
++  T1: per decoherence tick, 1/8 of every excited population leaks to
++  the ground state (amplitude damping).  T2: the coherence is halved
++  every ``CONFIG_QUANTUM_COHERENCE_TICKS`` observations.  Transitions
++  partially restore coherence (a new observation rebuilds the phase
++  baseline).
++
++Stimulated transition & relaxation
++  Waking up absorbs ``ΔE`` (excitation); entering idle relaxes one step
++  toward the ground state and **emits ΔE as a virtual photon** which is
++  pushed into the PiLink ring buffer (``quantum_link_push``) -- one
++  exchange, one link record, matching the existing link semantics.
++
++Selection rules
++  Adjacent-level transitions (``|Δn| = 1``) are counted as *allowed*
++  (electric-dipole-like); non-adjacent transitions are counted as
++  *forbidden* (higher-order processes: they still happen in the model,
++  but are counted separately).
++
++Entanglement
++  ``quantum_entangle(a, b)`` registers a Bell pair; a collapse of side
++  ``a`` at level ``a`` records the correlated collapse of side ``b``
++  (``bell_events``).  Up to 8 pairs.
++
++idle= boot parameter
++====================
++
++``arch/quantum`` registers ``early_param("idle", ...)`` with the x86
++compatible subset:
++
++===========  ==========================================================
++idle=poll    Force polling: ``cpu_idle_poll_ctrl(true)`` plus a busy
++             ``cpu_relax()`` spin in ``arch_cpu_idle()``.
++idle=mwait   Ground-state wait (default): the host-emulated
++             monitor/wait semantics -- no busy spin, the wait itself is
++             emulated by the host process, so ``arch_cpu_idle()``
++             returns immediately.  x86 dropped ``idle=mwait`` from its
++             documented values (deprecated), but the parameter still
++             works in 6.18.57 and the quantum architecture keeps the
++             semantics on purpose.
++idle=halt    Deepest halt state (emulated semantics identical to
++             mwait; there is no real halt instruction).
++===========  ==========================================================
++
++Bootloader usage
++================
++
++GRUB (``grub.cfg`` sample in ``arch/quantum/boot/grub.cfg``)::
++
++    menuentry 'Linux/quantum 6.18.57 (host-emulated, idle=mwait)' {
++            set root='hd0,msdos1'
++            linux /boot/vmlinux-6.18.57-quantum root=/dev/sda1 ro idle=mwait
++    }
++
++LILO (``lilo.conf`` sample in ``arch/quantum/boot/lilo.conf``)::
++
++    image = /boot/vmlinux-6.18.57-quantum
++            label = quantum
++            root = /dev/sda1
++            read-only
++            append = "idle=mwait"
++
++Honest caveat: the quantum architecture is host-emulated and has no
++bootable image format (no bzImage/Image boot protocol); the bootloader
++configs are **kernel-command-line contract samples** documenting how
++``idle=mwait`` reaches the architecture idle path.
++
++Observation
++===========
++
++``/proc/quantum-energy`` dumps the live model::
++
++    quantum energy model: levels=4 step=16 coherence_ticks=8 decohere_steps=64
++    cpu0: idle_mode=mwait excited=0 coherence=65536/65536 ticks=128 idle_steps=8192
++    level  energy  phase        pop
++    0      0       0            49152
++    ...
++    interference(0,1) = <s64> (2^30 fixed, [-2, +2])
++    events: excitations=... relaxations=... allowed=... forbidden=...
++    energy: absorbed=... emitted=... (planck units)
++    bell_events: ...
++
++Exported API (EXPORT_SYMBOL_GPL, usable from modules such as
++``drivers/quantum``)::
++
++    unsigned int quantum_levels(void);
++    unsigned int quantum_level_energy(unsigned int n);
++    unsigned int quantum_idle_mode_current(void);
++    const char *quantum_idle_mode_name(unsigned int mode);
++    const struct quantum_cpu *quantum_cpu_state(int cpu);
++    void quantum_excite(unsigned int from, unsigned int to);
++    void quantum_relax(unsigned int from, unsigned int to);
++    void quantum_phase_advance(unsigned int dt);
++    void quantum_decohere_tick(void);
++    s64 quantum_interference(unsigned int a, unsigned int b);
++    unsigned int quantum_measure(void);
++    int quantum_entangle(unsigned int a, unsigned int b);
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/Documentation/quantum/index.rst linux-6.18.57/Documentation/quantum/index.rst
+--- /tmp/kbase/linux-6.18.57/Documentation/quantum/index.rst	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/Documentation/quantum/index.rst	2026-10-21 19:36:59.011542081 +08:00
+@@ -0,0 +1,89 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++=====================
++Quantum architecture
++=====================
++
++:Author: quantum-kernel project
++:Date: 2026-10
++
++The quantum architecture (``ARCH=quantum``) brings a **host-emulated
++quantum processing unit (QPU)** into the Linux kernel tree, in the same
++spirit as arch/um (User Mode Linux): there is no quantum silicon behind
++the port -- the QPU is simulated, and everything else runs on the host
++toolchain.
++
++Pure addition
++=============
++
++This port is **purely additive**: ``arch/Kconfig`` sources
++``arch/$(SRCARCH)/Kconfig`` dynamically and the top-level Makefile maps
++``SRCARCH := $(ARCH)`` by default, so no existing architecture was
++modified or removed.  The only edits to existing files are two
++append-only registrations in ``drivers/Kconfig`` / ``drivers/Makefile``
++and one line in the documentation index.
++
++Layout (Linux kernel tree discipline)
++=====================================
++
++::
++
++    arch/quantum/
++    ├── Kconfig              architecture options (QUANTUM, QPU, link slots,
++    │                        energy levels)
++    ├── Makefile             KBUILD_DEFCONFIG, core-y paths
++    ├── configs/
++    │   └── quantum_defconfig
++    ├── boot/                grub.cfg / lilo.conf command-line samples
++    │                        (idle=mwait and friends)
++    ├── include/asm/
++    │   ├── Kbuild           generic-y forwarding (asm-generic reuse)
++    │   ├── quantum.h        Π_k gate / 8-qubit / pi-link semantics +
++    │   │                    energy-level model interface
++    │   ├── page.h           4KiB page discipline
++    │   └── irq.h            emulated NR_IRQS
++    ├── kernel/              setup, head stub, irq, time, qpu-core,
++    │                        quantum-energy, module
++    ├── mm/                  emulated memory init
++    └── lib/                 (empty; generic lib covers it)
++
++    drivers/quantum/         /dev/qpuN misc device (QPU_ENC/DEC/STATS/RESET)
++    include/uapi/linux/quantum.h   user API
++
++Semantics (aligned with the userspace quantum base)
++===================================================
++
++- **Register width**: ``CONFIG_QUANTUM_QUBITS`` (default 8, byte-wide,
++  256 basis states; hard ceiling 20 matching the userspace base).
++- **Number gate**: ``enc k`` applies the permutation matrix Π_k --
++  composite of X gates on the set bits of ``k``.  From |0...0> encoding
++  ``k`` yields ``|k>``; encoding ``j`` again *without reset* yields
++  ``|k XOR j>`` (flip semantics -- keep the reset contract).
++- **Link buffer**: ring of ``CONFIG_QUANTUM_LINK_SLOTS`` slots
++  (default ceil(2π) = 7).  Every exchange is pushed; overflow
++  overwrites the oldest record and counts in ``overwrites``.
++- **Page discipline**: 4KiB pages, matching the ext4/4K alignment
++  discipline of the storage domain.
++
++Energy-level model
++==================
++
++See :doc:`energy-model` for the quantum-physics semantics of the idle
++CPU: discrete levels, superposition, unitary phase evolution,
++interference, measurement collapse, decoherence (T1/T2), selection
++rules, virtual photons into the PiLink buffer, entanglement -- and the
++``idle=mwait`` boot parameter (x86 deprecated it, but it still works;
++GRUB/LILO samples in ``arch/quantum/boot/``).
++
++Build
++=====
++
++::
++
++    make ARCH=quantum O=build quantum_defconfig
++    make ARCH=quantum O=build -j$(nproc)
++
++The build produces a real ``vmlinux`` on the host toolchain (there is
++no gcc backend for a quantum processor, so the QPU itself is
++host-emulated; see ``quantum-kernel/README.md`` for the honest build
++report).
+--- /tmp/kbase/linux-6.18.57/drivers/Kconfig	2026-10-15 17:58:20.000000000 +0800
++++ linux-6.18.57/drivers/Kconfig	2026-10-21 13:29:59.803011392 +0800
+@@ -251,4 +251,6 @@
+ 
+ source "drivers/cdx/Kconfig"
+ 
++source "drivers/quantum/Kconfig"
++
+ endmenu
+--- /tmp/kbase/linux-6.18.57/drivers/Makefile	2026-10-15 17:58:20.000000000 +0800
++++ linux-6.18.57/drivers/Makefile	2026-10-21 13:29:59.803011392 +0800
+@@ -197,3 +197,4 @@
+ 
+ obj-$(CONFIG_DIBS)		+= dibs/
+ obj-$(CONFIG_S390)		+= s390/
++obj-$(CONFIG_QUANTUM_QPU_DEV)	+= quantum/
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/drivers/quantum/Kconfig linux-6.18.57/drivers/quantum/Kconfig
+--- /tmp/kbase/linux-6.18.57/drivers/quantum/Kconfig	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/drivers/quantum/Kconfig	2026-10-22 16:10:23.687496900 +08:00
+@@ -0,0 +1,23 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# Quantum processing unit subsystem (drivers/quantum).
++# 注意：QUANTUM_QPU 三态开关定义在 arch/quantum/Kconfig（架构配置域），
++# 本文件只登记具体设备实现，避免重复定义。
++
++config QUANTUM_QPU_DEV
++	tristate "Emulated QPU device /dev/qpuN"
++	default y
++	depends on QUANTUM_QPU
++	help
++	  One misc device per emulated QPU (count from CONFIG_QUANTUM_QPU_NR):
++	  /dev/qpu0 exposes QPU_ENC / QPU_DEC / QPU_LINK_STATS / QPU_RESET.
++
++config QUANTUM_NET_DEV
++	tristate "Quantum networking device /dev/qnet0"
++	default y
++	depends on QUANTUM_NET
++	help
++	  One misc device per emulated quantum-network endpoint:
++	  /dev/qnet0 exposes QNET_LINK_ADD / QNET_LINK_DEL / QNET_LINK_STATS /
++	  QNET_ENTANGLE_SWAP / QNET_TELEPORT / QNET_RESET.  Feeds the Bell-pair
++	  routing table maintained by arch/quantum/kernel/quantum-net.c.
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/drivers/quantum/Makefile linux-6.18.57/drivers/quantum/Makefile
+--- /tmp/kbase/linux-6.18.57/drivers/quantum/Makefile	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/drivers/quantum/Makefile	2026-10-22 16:10:23.686496973 +08:00
+@@ -0,0 +1,8 @@
++# SPDX-License-Identifier: GPL-2.0
++# Quantum processing unit subsystem.
++
++obj-$(CONFIG_QUANTUM_QPU_DEV) += qpu.o
++qpu-objs := qpu-dev.o qpu-gates.o
++
++# Quantum networking subsystem (architecture: arch/quantum/kernel/quantum-net.c).
++obj-$(CONFIG_QUANTUM_NET_DEV) += net/
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/drivers/quantum/net/Kconfig linux-6.18.57/drivers/quantum/net/Kconfig
+--- /tmp/kbase/linux-6.18.57/drivers/quantum/net/Kconfig	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/drivers/quantum/net/Kconfig	2026-10-22 16:10:23.690497159 +08:00
+@@ -0,0 +1,12 @@
++# SPDX-License-Identifier: GPL-2.0
++config QUANTUM_NET_DEV
++	tristate "Emulated QNIC device /dev/qnet0"
++	default y
++	depends on QUANTUM_NET
++	help
++	  One misc device /dev/qnet0 exposing the quantum networking
++	  substrate: link add/del, Bell-pair distribution, entanglement
++	  swapping and teleportation counters. Built on the
++	  arch/quantum mesh orchestration model (quantum-net.c). The
++	  QNIC hardware abstraction (qnic.c) auto-negotiates a default
++	  mesh on probe.
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/drivers/quantum/net/Makefile linux-6.18.57/drivers/quantum/net/Makefile
+--- /tmp/kbase/linux-6.18.57/drivers/quantum/net/Makefile	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/drivers/quantum/net/Makefile	2026-10-22 16:10:23.691497087 +08:00
+@@ -0,0 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0
++# Quantum networking subsystem (硬件侧：QNIC 设备 + 硬件抽象).
++obj-$(CONFIG_QUANTUM_NET_DEV) += qnet.o
++qnet-objs := qnet-dev.o qnic.o
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/drivers/quantum/net/qnet-dev.c linux-6.18.57/drivers/quantum/net/qnet-dev.c
+--- /tmp/kbase/linux-6.18.57/drivers/quantum/net/qnet-dev.c	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/drivers/quantum/net/qnet-dev.c	2026-10-22 16:10:23.695497274 +08:00
+@@ -0,0 +1,103 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * drivers/quantum/net/qnet-dev.c — emulated QNIC misc device /dev/qnet0.
++ *
++ * 硬件侧 QNIC 设备：用户态经 QNET_LINK_ADD / QNET_LINK_DEL / QNET_LINK_STATS /
++ * QNET_ENTANGLE_SWAP / QNET_TELEPORT / QNET_RESET 与架构侧组网编排
++ * （arch/quantum/kernel/quantum-net.c）交互。诚实口径：QNIC 为宿主模拟字符
++ * 设备，不是真实量子硬件。
++ */
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/miscdevice.h>
++#include <linux/fs.h>
++#include <linux/uaccess.h>
++#include <uapi/linux/quantum.h>
++#include <asm/quantum.h>
++#include "qnic.h"
++
++static long qnet_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
++{
++	__u32 peer;
++	struct qnet_link_stats st;
++	const struct quantum_net_state *s;
++
++	switch (cmd) {
++	case QNET_LINK_ADD:
++		if (copy_from_user(&peer, (void __user *)arg, sizeof(peer)))
++			return -EFAULT;
++		return quantum_net_entangle(0, peer);
++	case QNET_LINK_DEL:
++		if (copy_from_user(&peer, (void __user *)arg, sizeof(peer)))
++			return -EFAULT;
++		return quantum_net_unlink(0, peer);
++	case QNET_LINK_STATS:
++		s = quantum_net_state();
++		st.links = s->links;
++		st.active = s->links;
++		st.bell_pairs = s->entanglements;
++		st.swaps = s->swaps;
++		st.teleports = s->teleports;
++		if (copy_to_user((void __user *)arg, &st, sizeof(st)))
++			return -EFAULT;
++		return 0;
++	case QNET_ENTANGLE_SWAP:
++		return quantum_net_swap();
++	case QNET_TELEPORT:
++		return quantum_net_teleport();
++	case QNET_RESET:
++		quantum_net_reset();
++		return 0;
++	default:
++		return -ENOTTY;
++	}
++}
++
++static int qnet_open(struct inode *inode, struct file *file)
++{
++	return 0;
++}
++
++static const struct file_operations qnet_fops = {
++	.owner		= THIS_MODULE,
++	.open		= qnet_open,
++	.unlocked_ioctl	= qnet_ioctl,
++	.compat_ioctl	= compat_ptr_ioctl,
++	.llseek		= noop_llseek,
++};
++
++static struct miscdevice qnet_miscdev = {
++	.minor		= MISC_DYNAMIC_MINOR,
++	.name		= "qnet0",
++	.fops		= &qnet_fops,
++	.mode		= 0600,
++};
++
++static int __init qnet_init(void)
++{
++	int ret;
++
++	ret = qnic_hw_probe();
++	if (ret)
++		return ret;
++	ret = misc_register(&qnet_miscdev);
++	if (ret) {
++		qnic_hw_remove();
++		return ret;
++	}
++	pr_info("qnet: emulated QNIC /dev/qnet0 ready (architecture mesh substrate)\n");
++	return 0;
++}
++
++static void __exit qnet_exit(void)
++{
++	misc_deregister(&qnet_miscdev);
++	qnic_hw_remove();
++}
++
++module_init(qnet_init);
++module_exit(qnet_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("Emulated quantum network interface card (/dev/qnet0)");
++MODULE_AUTHOR("quantum-kernel project");
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/drivers/quantum/net/qnic.c linux-6.18.57/drivers/quantum/net/qnic.c
+--- /tmp/kbase/linux-6.18.57/drivers/quantum/net/qnic.c	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/drivers/quantum/net/qnic.c	2026-10-22 16:10:23.693497180 +08:00
+@@ -0,0 +1,39 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * drivers/quantum/net/qnic.c — 模拟量子网卡（QNIC）硬件抽象。
++ *
++ * 硬件层（概念系统「道性」基底）：在探测时把一组默认 Mesh 链路自动协商
++ * 入架构侧组网状态（arch/quantum/kernel/quantum-net.c），代表 QNIC 上电后
++ * 自发现对等节点。诚实口径：纯宿主模拟寄存器，不是真实硬件。
++ */
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <asm/quantum.h>
++#include "qnic.h"
++
++/* 上电自协商的默认 Mesh：3 节点环（0-1, 1-2, 2-0）。 */
++static const unsigned int qnic_ring[][2] = {
++	{ 0, 1 }, { 1, 2 }, { 2, 0 },
++};
++
++int qnic_hw_probe(void)
++{
++	unsigned int i;
++
++	for (i = 0; i < ARRAY_SIZE(qnic_ring); i++)
++		quantum_net_entangle(qnic_ring[i][0], qnic_ring[i][1]);
++	quantum_net_topology_changed();
++	pr_info("qnic: hardware mesh brought up (%zu links auto-negotiated)\n",
++		ARRAY_SIZE(qnic_ring));
++	return 0;
++}
++
++void qnic_hw_remove(void)
++{
++	quantum_net_reset();
++}
++
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("Emulated quantum NIC hardware abstraction");
++MODULE_AUTHOR("quantum-kernel project");
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/drivers/quantum/net/qnic.h linux-6.18.57/drivers/quantum/net/qnic.h
+--- /tmp/kbase/linux-6.18.57/drivers/quantum/net/qnic.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/drivers/quantum/net/qnic.h	2026-10-22 16:10:23.692497253 +08:00
+@@ -0,0 +1,23 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _DRIVERS_QUANTUM_NET_QNIC_H
++#define _DRIVERS_QUANTUM_NET_QNIC_H
++
++#include <linux/types.h>
++
++/* 模拟量子网卡（QNIC）寄存器面——宿主记账，非真实 MMIO。
++ *
++ * 硬件层即「道性」基底：拓扑/协商/路由等基础组网法则由硬件寄存器表达，
++ * 上电自协商出对等节点并登记到架构侧组网编排（arch/quantum/kernel/quantum-net.c）。
++ */
++struct qnic_hw {
++	__u32 link_ctrl;	/* 链路建立/断开控制 */
++	__u32 bell_fifo;	/* Bell 对 FIFO 深度 */
++	__u32 peer_map;		/* 对等节点位图（每 bit = 一个可触达 peer） */
++	__u32 qos;		/* 服务等级（纠缠保真度阈值，定点） */
++};
++
++/* 上电自协商默认 Mesh；退出时清空。返回发现的链路数（<0 为错误）。 */
++int qnic_hw_probe(void);
++void qnic_hw_remove(void);
++
++#endif /* _DRIVERS_QUANTUM_NET_QNIC_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/drivers/quantum/qpu-dev.c linux-6.18.57/drivers/quantum/qpu-dev.c
+--- /tmp/kbase/linux-6.18.57/drivers/quantum/qpu-dev.c	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/drivers/quantum/qpu-dev.c	2026-10-21 14:37:08.993047237 +08:00
+@@ -0,0 +1,190 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * drivers/quantum/qpu-dev.c — emulated QPU misc character device.
++ *
++ * /dev/qpu0：用户态经 QPU_ENC/QPU_DEC/QPU_LINK_STATS/QPU_RESET 与模拟
++ * 量子核交互。门语义 = Π_k 置换矩阵（对 k 置 1 位复合 X 门）：
++ * 从 |0...0> 编码 k 得 |k>；不复位继续编码 j 得 |k XOR j>（翻转语义，
++ * 与用户态量子基座一致）。QPU_DEC 模拟真实测量坍缩。
++ */
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/miscdevice.h>
++#include <linux/fs.h>
++#include <linux/uaccess.h>
++#include <linux/mutex.h>
++#include <linux/slab.h>
++#include <uapi/linux/quantum.h>
++#include <asm/quantum.h>
++
++#define QPU_MAX_QUBITS 20 /* 与用户态量子基座 MAX_QUBITS 对齐 */
++
++struct qpu_state {
++	struct mutex lock;
++	unsigned int nqubits;
++	unsigned long state;      /* 计算基矢（模拟寄存器内容） */
++	bool collapsed;
++	/* π 链路缓冲（环形，满则覆盖计数）。 */
++	unsigned int slots;
++	unsigned int buffered;
++	u64 total_writes;
++	u64 overwrites;
++	unsigned long *ring;
++};
++
++static struct qpu_state **qpus;
++static int qpu_count;
++
++static void qpu_link_push(struct qpu_state *q)
++{
++	if (q->buffered == q->slots) {
++		q->overwrites++;
++	} else {
++		q->buffered++;
++	}
++	q->total_writes++;
++}
++
++static int qpu_open(struct inode *inode, struct file *filp)
++{
++	filp->private_data = qpus[iminor(inode) - qpu_count < 0 ?
++				  0 : iminor(inode) % qpu_count];
++	return 0;
++}
++
++static long qpu_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
++{
++	struct qpu_state *q = filp->private_data;
++	unsigned long k;
++	struct qpu_link_stats st;
++	int ret = 0;
++
++	mutex_lock(&q->lock);
++	switch (cmd) {
++	case QPU_ENC:
++		if (copy_from_user(&k, (void __user *)arg, sizeof(k))) {
++			ret = -EFAULT;
++			break;
++		}
++		if (k >= (1UL << q->nqubits)) {
++			ret = -EOVERFLOW;
++			break;
++		}
++		/* Π_k 置换矩阵门：对置 1 位复合 X（模拟核里是异或）。 */
++		q->state = quantum_permutation_gate(q->state, k);
++		q->collapsed = false;
++		qpu_link_push(q);
++		break;
++	case QPU_DEC:
++		/* 真实坍缩模拟：解码后寄存器保持（测量还原）。 */
++		k = q->state;
++		if (copy_to_user((void __user *)arg, &k, sizeof(k))) {
++			ret = -EFAULT;
++			break;
++		}
++		q->collapsed = true;
++		qpu_link_push(q);
++		break;
++	case QPU_LINK_STATS:
++		st.slots = q->slots;
++		st.buffered = q->buffered;
++		st.total_writes = q->total_writes;
++		st.overwrites = q->overwrites;
++		if (copy_to_user((void __user *)arg, &st, sizeof(st)))
++			ret = -EFAULT;
++		break;
++	case QPU_RESET:
++		q->state = 0;
++		q->collapsed = false;
++		qpu_link_push(q);
++		break;
++	default:
++		ret = -ENOTTY;
++	}
++	mutex_unlock(&q->lock);
++	return ret;
++}
++
++static const struct file_operations qpu_fops = {
++	.owner		= THIS_MODULE,
++	.open		= qpu_open,
++	.unlocked_ioctl	= qpu_ioctl,
++	.compat_ioctl	= compat_ptr_ioctl,
++	.llseek		= noop_llseek,
++};
++
++static struct miscdevice *qpu_miscdevs;
++
++static int __init qpu_init(void)
++{
++	int i, ret;
++
++	qpu_count = CONFIG_QUANTUM_QPU_NR;
++	qpus = kcalloc(qpu_count, sizeof(*qpus), GFP_KERNEL);
++	qpu_miscdevs = kcalloc(qpu_count, sizeof(*qpu_miscdevs), GFP_KERNEL);
++	if (!qpus || !qpu_miscdevs) {
++		ret = -ENOMEM;
++		goto err_free;
++	}
++
++	for (i = 0; i < qpu_count; i++) {
++		struct qpu_state *q = kzalloc(sizeof(*q), GFP_KERNEL);
++
++		if (!q) {
++			ret = -ENOMEM;
++			goto err_free;
++		}
++		mutex_init(&q->lock);
++		q->nqubits = QUANTUM_QUBITS;
++		q->slots = QUANTUM_LINK_SLOTS;
++		q->ring = kcalloc(q->slots, sizeof(unsigned long), GFP_KERNEL);
++		if (!q->ring) {
++			kfree(q);
++			ret = -ENOMEM;
++			goto err_free;
++		}
++		qpus[i] = q;
++
++		qpu_miscdevs[i].minor = MISC_DYNAMIC_MINOR;
++		qpu_miscdevs[i].name = kasprintf(GFP_KERNEL, "qpu%d", i);
++		qpu_miscdevs[i].fops = &qpu_fops;
++		qpu_miscdevs[i].mode = 0600;
++		ret = misc_register(&qpu_miscdevs[i]);
++		if (ret)
++			goto err_free;
++	}
++
++	pr_info("qpu: %d emulated device(s), %d qubits, %d link slots\n",
++		qpu_count, QUANTUM_QUBITS, QUANTUM_LINK_SLOTS);
++	return 0;
++
++err_free:
++	while (--i >= 0) {
++		misc_deregister(&qpu_miscdevs[i]);
++		kfree(qpus[i]->ring);
++		kfree(qpus[i]);
++	}
++	kfree(qpu_miscdevs);
++	kfree(qpus);
++	return ret;
++}
++module_init(qpu_init);
++
++static void __exit qpu_exit(void)
++{
++	int i;
++
++	for (i = 0; i < qpu_count; i++) {
++		misc_deregister(&qpu_miscdevs[i]);
++		kfree(qpu_miscdevs[i].name);
++		kfree(qpus[i]->ring);
++		kfree(qpus[i]);
++	}
++	kfree(qpu_miscdevs);
++	kfree(qpus);
++}
++module_exit(qpu_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("Emulated quantum processing unit (/dev/qpuN)");
++MODULE_AUTHOR("quantum-kernel project");
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/drivers/quantum/qpu-gates.c linux-6.18.57/drivers/quantum/qpu-gates.c
+--- /tmp/kbase/linux-6.18.57/drivers/quantum/qpu-gates.c	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/drivers/quantum/qpu-gates.c	2026-10-21 19:58:04.937058210 +08:00
+@@ -0,0 +1,30 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * drivers/quantum/qpu-gates.c — gate semantics table.
++ * 门集导出：置换矩阵 Π_k（数字转换门）+ 受控翻转（cx）+ 相位观测。
++ */
++#include <linux/module.h>
++#include <linux/stringify.h>
++#include <asm/quantum.h>
++#include "qpu-gates.h"
++
++/* 门集清单（与用户态量子基座 GATES 对齐的子集）。 */
++static const char *const qpu_gates[] = {
++	"x", "cx", "cz", "h", "measure", "enc", "dec", "reset", "barrier",
++};
++
++const char *qpu_gate_name(unsigned int idx)
++{
++	if (idx >= ARRAY_SIZE(qpu_gates))
++		return NULL;
++	return qpu_gates[idx];
++}
++EXPORT_SYMBOL_GPL(qpu_gate_name);
++
++unsigned int qpu_gate_count(void)
++{
++	return ARRAY_SIZE(qpu_gates);
++}
++EXPORT_SYMBOL_GPL(qpu_gate_count);
++
++MODULE_LICENSE("GPL");
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/drivers/quantum/qpu-gates.h linux-6.18.57/drivers/quantum/qpu-gates.h
+--- /tmp/kbase/linux-6.18.57/drivers/quantum/qpu-gates.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/drivers/quantum/qpu-gates.h	2026-10-21 19:57:44.190227985 +08:00
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * drivers/quantum/qpu-gates.h — internal gate table interface.
++ * 门集清单的模块内声明（qpu-gates.c 实现，EXPORT_SYMBOL_GPL 导出）。
++ */
++#ifndef _QPU_GATES_H
++#define _QPU_GATES_H
++
++const char *qpu_gate_name(unsigned int idx);
++unsigned int qpu_gate_count(void);
++
++#endif /* _QPU_GATES_H */
+diff --color --color -ruN '--exclude=build' '--exclude=build-x86' /tmp/kbase/linux-6.18.57/include/uapi/linux/quantum.h linux-6.18.57/include/uapi/linux/quantum.h
+--- /tmp/kbase/linux-6.18.57/include/uapi/linux/quantum.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-6.18.57/include/uapi/linux/quantum.h	2026-10-22 16:10:23.688497066 +08:00
+@@ -0,0 +1,65 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * include/uapi/linux/quantum.h — QPU / QNET user API.
++ *
++ * /dev/qpu0（misc 字符设备）的 UAPI：把整数经 Π_k 置换矩阵门写入模拟
++ * 量子寄存器、测量解码还原，并读取链路缓冲统计。
++ * /dev/qnet0（misc 字符设备）的 UAPI：量子组网子系统（qnet）——链路登记、
++ * Bell 对分发表、纠缠交换与隐形传态的计数记账。
++ * 语义与本仓用户态量子基座一致（8q 字节宽、ceil(2π)=7 槽链路）。
++ *
++ * 诚实口径：量子为宿主模拟架构；qnet 是「量子力学启发的语义记账 +
++ * 真实内核计数」，不是真实量子硬件（无 gcc 后端 / 无可引导镜像）。
++ */
++#ifndef _UAPI_LINUX_QUANTUM_H
++#define _UAPI_LINUX_QUANTUM_H
++
++#include <linux/ioctl.h>
++#include <linux/types.h>
++
++#define QPU_IOC_MAGIC	'q'
++
++/* CPU -> QPU：把整数 k 经 Π_k 门写入寄存器（翻转语义：基于当前态复合）。 */
++#define QPU_ENC		_IOW(QPU_IOC_MAGIC, 1, __u64)
++/* QPU -> CPU：测量全部比特解码（真实坍缩模拟）。 */
++#define QPU_DEC		_IOR(QPU_IOC_MAGIC, 2, __u64)
++/* 读取链路统计：total_writes / overwrites / slots。 */
++#define QPU_LINK_STATS	_IOR(QPU_IOC_MAGIC, 3, struct qpu_link_stats)
++/* 复位量子核到 |0...0>（用户态 load() 语义）。 */
++#define QPU_RESET	_IO(QPU_IOC_MAGIC, 4)
++
++struct qpu_link_stats {
++	__u32 slots;
++	__u32 buffered;
++	__u64 total_writes;
++	__u64 overwrites;
++};
++
++/* ── 量子组网子系统（qnet）UAPI ───────────────────────────────────────
++ * /dev/qnet0：登记 QPU 间链路、读取 Bell 对分发表与纠缠交换/隐形传态计数。
++ * 设备节点与 proc 文件常量供用户态（quantum-core 守护进程）引用。 */
++#define QNET_DEVICE	"/dev/qnet0"
++#define QUANTUM_NET_PROC	"/proc/quantum-net"
++
++/* 在 QPU 网络中登记一条到 peer 节点的链路。 */
++#define QNET_LINK_ADD	_IOW(QPU_IOC_MAGIC, 5, __u32)
++/* 在 QPU 网络中删除一条到 peer 节点的链路。 */
++#define QNET_LINK_DEL	_IOW(QPU_IOC_MAGIC, 6, __u32)
++/* 读取组网统计：链路数 / 活跃链路 / Bell 对总数 / 纠缠交换 / 隐形传态。 */
++#define QNET_LINK_STATS	_IOR(QPU_IOC_MAGIC, 7, struct qnet_link_stats)
++/* 执行一次纠缠交换（在活跃链路间中继 Bell 对，产生新 Bell 对）。 */
++#define QNET_ENTANGLE_SWAP	_IO(QPU_IOC_MAGIC, 8)
++/* 执行一次量子隐形传态（消耗一条活跃链路的 Bell 对 + 经典回传位）。 */
++#define QNET_TELEPORT	_IO(QPU_IOC_MAGIC, 9)
++/* 复位 qnet 子系统（清空链路表与全部计数）。 */
++#define QNET_RESET	_IO(QPU_IOC_MAGIC, 10)
++
++struct qnet_link_stats {
++	__u32 links;		/* 链路槽总数 */
++	__u32 active;		/* 当前活跃链路数 */
++	__u64 bell_pairs;	/* Bell 对累计产生数 */
++	__u64 swaps;		/* 纠缠交换累计次数 */
++	__u64 teleports;		/* 隐形传态累计次数 */
++};
++
++#endif /* _UAPI_LINUX_QUANTUM_H */

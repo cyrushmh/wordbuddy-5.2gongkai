@@ -1,0 +1,232 @@
+{
+ "fdroid_repo_model": {
+  "name": "F-Droid 存储库模型（自由来源的 Android 应用分发）",
+  "org": "F-Droid Limited（英格兰非营利机构）；Ciaran Gultnieks 2010 年创建，客户端复刻 Aptoide 源码（Wikipedia 2026-10 实检）",
+  "url": "https://f-droid.org/",
+  "protocols": [
+   "F-Droid 是自由/开源 Android 应用的目录式存储库：应用可浏览、下载、安装，**无需注册账号**（Wikipedia 原话：without registering an account）",
+   "主仓库（F-Droid Main）只收自由软件应用；任何第三方都可自建仓库，用同一套客户端协议分发——仓库生态开放",
+   "服务端全部运行自由软件；F-Droid 由非营利机构 F-Droid Limited 运营",
+   "与 Google Play 的根本差异：分发入口不是设备预装而是用户主动添加仓库/装客户端，APK 直装即可"
+  ],
+  "interfaces": [
+   "本工具的对应形态：Sysweeper Android 端零权限、零网络、AOSP 公开 API、无 GMS 依赖——正是 F-Droid 主仓库友好型 App",
+   "国内可用性（用户口径）：只要能下载 APK 即可安装——不依赖 GMS/Play 服务，安装后即完整体验（本工具无任何账号/推送依赖）",
+   "分发决策对照：Play（全球商业分发、政策门槛逐年抬高）/ F-Droid（自由软件分发、免 GMS）/ 国内商店（备案+合规）三条通道互不排斥"
+  ],
+  "docs": [
+   "收录政策（f-droid.org/docs/Inclusion_Policy）",
+   "Anti-Features（f-droid.org/docs/Anti-Features）",
+   "Wikipedia: F-Droid（2026-10 实检）"
+  ],
+  "summary": "F-Droid = 免账号、免 GMS、自由软件优先的应用分发网络；『能下载就能装』的特性与国内无 GMS 环境天然契合。",
+  "advice": "免 GMS 通道优先 F-Droid 主仓库或其镜像；自研工具类 App 若保持零权限零网络，天然满足 F-Droid 收录面。"
+ },
+ "inclusion_policy": {
+  "name": "F-Droid 收录政策（Inclusion Policy）",
+  "org": "F-Droid 项目；f-droid.org/zh_Hans/docs/Inclusion_Policy（2026-10 检索实检，.org 域直连不可达，取官方中文文档检索快照）",
+  "url": "https://f-droid.org/docs/Inclusion_Policy",
+  "protocols": [
+   "政策目的（官方原话）：确保主存储库所有应用支持 F-Droid 核心使命——提供受信赖的方式来发现和分享**尊重隐私、自由和开源**的安卓应用",
+   "自由软件要求（官方原话）：存储库中所有应用必须是自由开源软件（FLOSS）",
+   "开放性：即使应用不满足主仓库标准，仍可通过单独（第三方）仓库提供给 F-Droid 用户——主仓库是『认证级』清单而非唯一入口",
+   "隐私导向：追踪、广告、非自由依赖等不良属性不计入收录阻断，但必须以 Anti-Features 明示（见 anti_features 条）"
+  ],
+  "interfaces": [
+   "收录自评：本工具 Android 端 manifest 零权限、无可疑 SDK、源码全量开源（与主仓库同盘托管于 GitHub），符合收录面",
+   "对照 any App 拟入 F-Droid：许可证是否 OSI/FSF 认可的自由许可、构建是否可在服务器复现、是否夹带非自由依赖",
+   "拒收不等于不能分发——可自建仓库（见 repo 协议条），用户自行添加来源"
+  ],
+  "docs": [
+   "Anti-Features（f-droid.org/docs/Anti-Features）",
+   "构建元数据规范（f-droid.org/docs/Build_Metadata_Reference）",
+   "fdroiddata 仓库（github.com/f-droid/fdroiddata，主仓库数据）"
+  ],
+  "summary": "F-Droid 主仓库只收自由软件；不满足的应用可走第三方仓库，但必须透明标注反特征。",
+  "advice": "拟入主仓库的 App：自由许可 + 可从源码复现构建 + 无阻断性反特征；有追踪/广告的走第三方仓库并如实标注。"
+ },
+ "anti_features": {
+  "name": "F-Droid 反特征体系（Anti-Features）",
+  "org": "F-Droid 项目；f-droid.org/docs/Anti-Features（韩文版检索快照 2026-10 实检列表）",
+  "url": "https://f-droid.org/docs/Anti-Features",
+  "protocols": [
+   "反特征定义（官方口径）：不必然阻断收录、但许多用户可能不想接受的属性；App 被打上反特征标签，用户可据此自主选择",
+   "官方列表（实检原样）：Ads（广告）、Tracking（用户追踪）、Disabled Algorithm（使用不安全的签名算法）、Known Vulnerability（含已知安全漏洞）、Non-Free Addons（推广其他非自由应用/插件）、Non-Free Network Services（依赖非自由网络服务）、Non-Free Dependencies（依赖非自由应用/库）、UpstreamNonFree（上游非自由）、NoSourceSince（源码后续不可得）",
+   "样例释义（IzzyOnDroid 实例实检）：NonFreeDep=依赖含 Google Drive 等非自由部分的应用；NonFreeNet=应用连接 Google 服务器/Google APIs",
+   "反特征只是标注而非下架——用户看到标签后自行决定装不装，与 Play 的『一刀切政策』形成对比"
+  ],
+  "interfaces": [
+   "用户视角：装 F-Droid 应用前先看反特征标签——带电追踪/广告/非自由依赖的要么换要么知情安装",
+   "开发者视角：把反特征清单当发布前体检：能不引的非自由依赖就不引、追踪项必须有真实开关",
+   "本工具自身：零权限零网络零 SDK —— 全部反特征项天然为空，是主仓库最友好的形态"
+  ],
+  "docs": [
+   "收录政策（f-droid.org/docs/Inclusion_Policy）",
+   "IzzyOnDroid 仓库（apt.izzysoft.de/fdroid/repo，第三方仓库实例）"
+  ],
+  "summary": "反特征是 F-Droid 的透明化机制：广告、追踪、非自由依赖、已知漏洞、不安全签名全部明示，把选择权还给用户。",
+  "advice": "看反特征再安装；开发者把反特征清零（或至少标注）作为上架主仓库的加分项。"
+ },
+ "build_metadata": {
+  "name": "F-Droid 构建元数据与 fdroiddata（主仓库数据）",
+  "org": "F-Droid 项目；github.com/f-droid/fdroiddata（GitHub 实检：358 stars，主仓库数据；顶层含 metadata/ templates/ srclibs/ repo/ tools/ schemas/ config.yml）",
+  "url": "https://github.com/f-droid/fdroiddata",
+  "protocols": [
+   "fdroiddata 仓库 = 主 F-Droid 仓库的全部应用清单与构建配方：每个应用一个 metadata/<包名>.yml，声明源码位置、版本、许可、反特征、构建方式",
+   "template 与 srclibs 机制：配方模板化 + 源码库声明，构建服务器据此在隔离环境中从源码构建 APK",
+   "schemas 目录：对配方 YAML 做结构校验，保证元数据机器可读、可持续集成",
+   "贡献流程：向主仓库加应用 = 向 fdroiddata 提配方 PR（CONTRIBUTING.md 有完整流程），经构建服务器验证后进仓库"
+  ],
+  "interfaces": [
+   "拟入主仓库的 App：按 Build Metadata Reference 写 .yml（repo/源码 tag/许可/antifeatures/build 入口）",
+   "构建服务器自动验证配方可复现性——配方能构建 = 第一道准入门槛",
+   "本工具若入主仓库：配方将引用本仓库 GitHub Release/tag 的源码，构建产物即当前 CI 产物（android/ 工程的 APK）"
+  ],
+  "docs": [
+   "Build Metadata Reference（f-droid.org/docs/Build_Metadata_Reference）",
+   "CONTRIBUTING.md（github.com/f-droid/fdroiddata）",
+   "收录政策（见 inclusion_policy 条）"
+  ],
+  "summary": "fdroiddata 是 F-Droid 主仓库的『配方库』：一个应用一个 yml，构建服务器照单下锅；入仓库即提交配方。",
+  "advice": "入主仓库从写 .yml 配方开始：源码 tag、自由许可、无阻断反特征；配方过构建服务器验证即拿到入场券。"
+ },
+ "reproducible_builds": {
+  "name": "F-Droid 可复现构建（从源码构建与签名）",
+  "org": "F-Droid 项目；官方商店页原话实检：『此套件包由 F-Droid 建置和簽署，並保證與此原始碼 Tarball 一致』（f-droid.org 中文包页，2026-10 检索实检）",
+  "url": "https://f-droid.org/docs/Reproducible_Builds",
+  "protocols": [
+   "核心承诺（官方原话）：主仓库 APK 由 F-Droid 服务器从源码构建并签名，且**保证与源码 tarball 一致**——服务端构建，不是收开发者上传的二进制",
+   "可复现构建：相同源码在相同环境得出位级相同的 APK，任何第三方可重复构建比对",
+   "服务器自动完成：拉源码 tag → 按配方构建 → 签名（reproducible 模式下比对已有 APK 指纹）→ 入库",
+   "与 Play 的对照：Play 收 AAB 由 Google 重签名；F-Droid 收配方由自己从源码构建——二进制来源可审计性更强"
+  ],
+  "interfaces": [
+   "信任模型：用户信任的是『源码 → 构建配方 → 服务器』这条链，而非任何签名者身份",
+   "迁移/自校验：装好 App 后可用同一配方在本地复现构建并比对签名确认一致",
+   "本仓库 android/ 工程构建链（Gradle + Kotlin + AGP）即配方输入；保持构建可复现（锁依赖版本）是入库前提"
+  ],
+  "docs": [
+   "fdroiddata 配方库（github.com/f-droid/fdroiddata）",
+   "Verification Server / 复现校验（f-droid.org 文档 Reproducible Builds）"
+  ],
+  "summary": "F-Droid 的差异化：不收开发者上传的 APK，所有包由服务器从源码构建签名并承诺与源码 tarball 一致。",
+  "advice": "要进主仓库先保证构建可复现：锁依赖、去时间戳/绝对路径类不确定性；发布前用官方复现流程自校验一次。"
+ },
+ "client_and_repo_proto": {
+  "name": "F-Droid 客户端与仓库协议（index/签名/特权扩展）",
+  "org": "F-Droid 项目；github.com/f-droid/fdroidclient 实检（GPL-3.0，3222 stars，Android client application；GitLab 主力仓 2688 stars）",
+  "url": "https://github.com/f-droid/fdroidclient",
+  "protocols": [
+   "客户端（fdroidclient）：Android 上的仓库目录/下载/安装前端，GPL-3.0 自由软件，GitHub 与 GitLab 双仓镜像（实检数据）",
+   "仓库协议：仓库以索引文件描述全部应用/版本/反特征/哈希，客户端拉取索引 → 选包 → 下 APK → 系统安装器安装",
+   "签名信任：仓库索引自身有签名，客户端校验仓库指纹后才信任其内容；第三方仓库需用户主动添加并确认指纹",
+   "F-Droid Privileged Extension：预装特权的系统扩展可使客户端免逐次确认静默安装/更新（需系统签名的特权应用配合）",
+   "多仓库并存：客户端可同时挂主仓库 + IzzyOnDroid 等第三方仓库，各自独立签名与索引"
+  ],
+  "interfaces": [
+   "自建仓库：用 fdroidserver 工具生成签名索引，客户端『添加仓库 → 扫码/确认指纹』即可分发——企业内部分发零成本",
+   "国内使用路径：客户端 + 国内可达的仓库镜像 → 直装 APK（无需 GMS/Play 服务）",
+   "与本工具关系：诊断类工具分发给内网/客户时，可参照该协议自建仓库；不强制走任何商业商店"
+  ],
+  "docs": [
+   "fdroidclient（github.com/f-droid/fdroidclient）",
+   "F-Droid Privileged Extension（github.com/f-droid/privileged-extension）",
+   "fdroidserver 工具文档（f-droid.org 文档 Setup an F-Droid App Repo）"
+  ],
+  "summary": "F-Droid 客户端是纯目录+下载+安装；仓库带签名索引，第三方仓库可自建，特权扩展可免确认安装。",
+  "advice": "内部分发/免 GMS 分发：用 F-Droid 客户端 + 自建签名仓库；加仓库前核对仓库指纹，来源不明的仓库不加。"
+ },
+ "gms_independence": {
+  "name": "免 GMS 分发与国内可用性（F-Droid 通道）",
+  "org": "本仓库自研口径 + F-Droid 公开事实（2026-10 实检）；事实部分见 fdroid_repo_model/inclusion_policy 条",
+  "url": "https://f-droid.org/",
+  "protocols": [
+   "GMS 授权国内拿不到 → Play 通道客观上不可用 → F-Droid 成为免 GMS 的标准分发答案",
+   "安装条件极简：只要 APK 可下载即可安装（用户口径）——不经过 Play 服务、不需要谷歌框架、不需要账号",
+   "运行条件同样宽松：F-Droid 生态应用普遍不依赖 GMS；依赖 Google 服务的会被打 Non-Free Network Services/Dependencies 反特征",
+   "microG 话题：需要 GMS 接口的场景可用自由实现 microG 替代（需自行添加仓库安装），但本工具类应用完全不需要"
+  ],
+  "interfaces": [
+   "本工具 Android 端：零权限、零网络、零依赖、AOSP 公开 API → 国内任何设备下载即装即用，正是该通道的理想载荷",
+   "对照 Play 三件套（Integrity/App Signing/targetSdk）：F-Droid 侧等价物 = 反特征标注 + 复现构建 + 配方治理，门槛更低但透明度更高",
+   "国内对照：若日后要上国内商店仍需备案（见 androidstd 知识库 app_filing 条），F-Droid 通道与国内合规是两件事，可并行"
+  ],
+  "docs": [
+   "Anti-Features（见 anti_features 条）",
+   "microG 项目（microg.org/，按需）",
+   "国内 App 备案（对照 androidstd 知识库 app_filing 条）"
+  ],
+  "summary": "国内 Get 不到 GMS：F-Droid 凭『能下载就能装』成为免 GMS 分发的标准通道；零依赖 App 在该通道如鱼得水。",
+  "advice": "免 GMS 场景优先 F-Droid 客户端 + 主仓库或可信镜像；装完即用，无需任何谷歌组件。"
+ },
+ "fdroid_vs_play": {
+  "name": "F-Droid 与 Google Play 分发对照",
+  "org": "本知识库综合（事实均经 2026-10 实检，见 gmsstd/fdroidstd 各条）",
+  "url": "https://f-droid.org/",
+  "protocols": [
+   "收录哲学：F-Droid 只收 FLOSS（主仓库），Play 收闭源商业 App（政策合规即可）；反特征标注 vs 政策下架",
+   "构建信任：F-Droid 服务器从源码构建签名并承诺与源码一致；Play 收 AAB 由 Google 用托管应用签名密钥重签",
+   "更新触达：Play 靠设备预装服务自动更新；F-Droid 靠客户端主动拉索引、用户确认安装（特权扩展可免确认）",
+   "账号与统计：F-Droid 无账号无强制统计；Play 账号体系 + 安装量/收入报表",
+   "地域可得性：Play 需 GMS 与地区政策许可；F-Droid 仓库全球可达（镜像可自建），国内直接可用"
+  ],
+  "interfaces": [
+   "通道选择矩阵：全球商业变现 → Play；自由软件/免 GMS/内部分发 → F-Droid；国内公开分发 → 国内商店（备案）；三条可并行",
+   "同一 APK 多通道分发：F-Droid 通道保持零依赖形态；Play 通道再叠加 Integrity/目标 API 合规",
+   "本工具当前定位：诊断工具走 GitHub Releases + 国内直装即可；F-Droid 入库是增量而非必需"
+  ],
+  "docs": [
+   "GMS 标准知识库（gmsstd：play_integrity_api / play_app_signing / play_target_api）",
+   "国内标准知识库（androidstd：pipl / app_filing）",
+   "F-Droid 收录政策（inclusion_policy 条）"
+  ],
+  "summary": "Play 与 F-Droid 是两种分发哲学：商业合规准入 vs 自由软件+源码可复现；免 GMS 场景下后者是国内唯一默认选项。",
+  "advice": "按受众选通道，不站队；工具类零依赖 App 建议全通道占位（GitHub Release + F-Droid + 国内商店视合规而定）。"
+ },
+ "security_signing": {
+  "name": "F-Droid 签名与信任模型（仓库指纹/APK 签名）",
+  "org": "F-Droid 项目；客户端与仓库协议事实经 GitHub 实检（fdroidclient），协议行为见官方文档",
+  "url": "https://github.com/f-droid/fdroidclient",
+  "protocols": [
+   "仓库索引签名：每个仓库的索引由仓库维护者密钥签名，客户端首次添加仓库时核对指纹，之后只信已确认指纹",
+   "APK 签名：F-Droid 主仓库 APK 由官方构建密钥签名；客户端安装走系统安装器校验",
+   "Disabled Algorithm 反特征：使用不安全签名算法（如 MD5/SHA-1 弱签名）的应用被显式标记",
+   "信任边界：自建仓库 = 你自担信任——客户端加来源时显示的指纹就是唯一锚点，加错仓库等于把安装权交出去"
+  ],
+  "interfaces": [
+   "用户侧纪律：只添加指纹可公开核实的仓库（主仓库指纹在官网列示）；更新客户端但指纹不变",
+   "自建仓库侧：生成专用签名密钥、私钥离线保管、指纹通过站外渠道发布（不要只在仓库页发布）",
+   "本工具仓库治理：若自建分发仓库，指纹与公钥随文档走 GitHub 官方渠道发布"
+  ],
+  "docs": [
+   "客户端与仓库协议（client_and_repo_proto 条）",
+   "Anti-Features 之 Disabled Algorithm（anti_features 条）",
+   "APK 签名方案（source.android.google.cn/security/apksigning）"
+  ],
+  "summary": "F-Droid 信任链 = 仓库指纹（添加时核对）+ 索引签名 + APK 系统签名；加仓库时的指纹确认是安全底线。",
+  "advice": "加任何第三方仓库前核对指纹；自己的仓库指纹要放在与仓库分离的可信渠道；弱签名算法的 App 直接避开。"
+ },
+ "fdroid_client_build": {
+  "name": "F-Droid 客户端自身（fdroidclient，GPL-3.0）",
+  "org": "F-Droid 项目；GitHub 镜像实检：f-droid/fdroidclient，3222 stars，GPL-3.0，'Android client application'；GitLab 主力 2688 stars",
+  "url": "https://github.com/f-droid/fdroidclient",
+  "protocols": [
+   "客户端本身即自由软件（GPL-3.0），与主仓库同标准：可自由获取、审计、再分发",
+   "GitHub/GitLab 双仓：GitHub 镜像面向普通用户与 CI，GitLab 主力承载 issue/CI/协作（实检双仓数据）",
+   "生态派生：Neo Store、Droid-ify 等第三方客户端复刻（IzzyOnDroid 页面实检提及），说明协议开放度",
+   "客户端覆盖：主仓库、第三方仓库、特权扩展、交换（Swap）近场分享等能力"
+  ],
+  "interfaces": [
+   "本仓库工程实践对照：android/ 工程（Kotlin + Gradle + AGP）与 fdroidclient 同代构建链；版本号/探针扩展示范可作客户端侧参照",
+   "若把 Sysweeper 端上 App 投稿主仓库：fdroidclient 的 CI 与配方（fdroiddata）即审阅样板",
+   "普通用户只需装客户端（F-Droid 官网或镜像 APK），无需编译"
+  ],
+  "docs": [
+   "fdroidclient 仓库（github.com/f-droid/fdroidclient）",
+   "GitLab 主力仓（gitlab.com/fdroid/fdroidclient）",
+   "主仓库数据（fdroiddata，build_metadata 条）"
+  ],
+  "summary": "F-Droid 客户端自身也是自由软件（GPL-3.0、GitHub/GitLab 双仓），协议开放到第三方客户端可复刻。",
+  "advice": "直接用官方客户端即可；有二次需求（企业内控）可基于 GPL-3.0 源码自建发行版。"
+ }
+}

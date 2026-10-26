@@ -1,0 +1,71 @@
+{
+  "smart": {
+    "name": "S.M.A.R.T.（自检分析与报告技术）",
+    "standard": "T13 / ATA8-ACS, ATA/ATAPI Command Set (ACS)",
+    "org": "INCITS T13（后被 INCITS 吸收）",
+    "summary": "磁盘自我监测、分析与报告技术，通过属性阈值预警潜在故障。",
+    "key_attributes": {
+      "0x01": "Raw Read Error Rate 原始读取错误率",
+      "0x05": "Reallocated Sector Count 重映射扇区数（升高=坏道预警）",
+      "0x09": "Power-On Hours 通电时间",
+      "0x0C": "Power Cycle Count 通电次数",
+      "0xBB": "Reported Uncorrectable Errors 报告不可纠正错误",
+      "0xC5": "Current Pending Sector 待映射扇区（危险信号）",
+      "0xC6": "Uncorrectable Sector Count 不可纠正扇区",
+      "0xC7": "UltraDMA CRC Error 接口 CRC 错误"
+    },
+    "advice": "重映射扇区数 / 待映射扇区 / 不可纠正错误持续上升即应备份并更换磁盘。"
+  },
+  "acpi": {
+    "name": "ACPI（高级配置与电源接口）",
+    "standard": "ACPI Specification（UEFI Forum 维护）",
+    "org": "UEFI Forum",
+    "summary": "定义全局/设备电源状态与睡眠、唤醒机制。",
+    "states": {
+      "G0/G1": "工作状态 / 睡眠（由 S 态细分）",
+      "G2/S5": "软关机（Soft Off）",
+      "G3": "机械断电（Mechanical Off）",
+      "S0": "正常工作",
+      "S3": "挂起到内存（Suspend-to-RAM）",
+      "S4": "休眠（Suspend-to-Disk）",
+      "C-states": "CPU 空闲态（C0 运行 → C1/C2… 更深休眠）",
+      "P-states": "CPU 性能态（调频/调压）"
+    },
+    "advice": "笔记本用 S3/S4 节能；服务器常禁用深度睡眠以保响应；调 C/P-state 需确认硬件支持。"
+  },
+  "pci": {
+    "name": "PCI / PCIe 设备分类",
+    "standard": "PCI Local Bus Specification / PCI Express Base Specification",
+    "org": "PCI-SIG",
+    "summary": "用 class code 标识设备类别（存储/网络/显示/桥接…）。",
+    "class_codes": {
+      "0x01": "Storage Controller 存储控制器",
+      "0x02": "Network Controller 网络控制器",
+      "0x03": "Display Controller 显示控制器",
+      "0x06": "Bridge Device 桥接设备",
+      "0x0C": "Serial Bus Controller 串行总线（USB 等）"
+    },
+    "advice": "lspci -nn 可同时给出厂商与类代码；驱动缺失常表现为设备无绑定驱动。"
+  },
+  "usb": {
+    "name": "USB 设备分类",
+    "standard": "USB Device Class Definitions",
+    "org": "USB Implementers Forum (USB-IF)",
+    "summary": "定义设备类（大容量存储 / 人机接口 / 音频 / 通信…）。",
+    "class_codes": {
+      "0x08": "Mass Storage 大容量存储",
+      "0x03": "HID 人机接口（键鼠）",
+      "0x02": "CDC 通信设备（调制解调器/网卡）",
+      "0x09": "Hub 集线器",
+      "0x0E": "Video 视频（摄像头）"
+    },
+    "advice": "USB 自动挂起（autosuspend）可节能；但部分 HID/音频设备在挂起后唤醒延迟，需排除。"
+  },
+  "ata_trim": {
+    "name": "SSD TRIM / Dataset Management",
+    "standard": "ATA/ATAPI Command Set（DATA SET MANAGEMENT, TRIM）",
+    "org": "INCITS T13",
+    "summary": "通知 SSD 哪些块不再使用，利于 wear-leveling 与性能维持。",
+    "advice": "定期 fstrim（Linux）或优化驱动器（Windows）可维持 SSD 性能；已启用连续 TRIM 的文件系统可不定时跑。"
+  }
+}

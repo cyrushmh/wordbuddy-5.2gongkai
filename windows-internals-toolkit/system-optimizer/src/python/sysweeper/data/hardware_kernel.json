@@ -1,0 +1,158 @@
+{
+  "cpufreq": {
+    "name": "CPU 频率调节（CPUFreq）",
+    "path": "Documentation/admin-guide/pm/cpufreq.rst",
+    "subsystem": "power management / CPUFreq",
+    "interfaces": [
+      "/sys/devices/system/cpu/cpufreq/policy<N>/scaling_governor",
+      "/sys/devices/system/cpu/cpufreq/policy<N>/scaling_available_governors",
+      "/sys/devices/system/cpu/cpufreq/policy<N>/scaling_cur_freq"
+    ],
+    "summary": "CPUFreq 框架统一暴露调频 governor（schedutil / powersave / performance / ondemand / conservative / userspace），由 cpufreq 驱动按策略设置 P-state。",
+    "advice": "笔记本/桌面偏节能用 schedutil 或 powersave；高负载服务器偏性能用 performance；ondemand/conservative 为经典采样策略。改 governor 影响功耗与响应延迟。"
+  },
+  "cpuidle": {
+    "name": "CPU 空闲状态（cpuidle）",
+    "path": "Documentation/admin-guide/pm/cpuidle.rst",
+    "subsystem": "power management / cpuidle",
+    "interfaces": [
+      "/sys/devices/system/cpu/cpu<N>/cpuidle/state<N>/name",
+      "/sys/devices/system/cpu/cpu<N>/cpuidle/state<N>/latency",
+      "/sys/devices/system/cpu/cpu<N>/cpuidle/state<N>/power"
+    ],
+    "summary": "cpuidle 框架枚举 C-state（空闲态），越深越省电但唤醒延迟越大；菜单/teo  governors 在节能与延迟间取舍。",
+    "advice": "深 C-state 省电但唤醒延迟高；服务器/低延迟负载可限制最深 C-state（需内核/固件支持）。"
+  },
+  "intel_pstate": {
+    "name": "Intel P-State 调速器",
+    "path": "Documentation/admin-guide/pm/intel_pstate.rst",
+    "subsystem": "power management / intel_pstate",
+    "interfaces": [
+      "/sys/devices/system/cpu/intel_pstate/status",
+      "/sys/devices/system/cpu/intel_pstate/max_perf_pct",
+      "/sys/devices/system/cpu/intel_pstate/min_perf_pct"
+    ],
+    "summary": "Intel 原生 P-State 驱动，active 模式自带 schedutil/performance 类 governor，passive 模式则委托给通用 CPUFreq。",
+    "advice": "现代 Intel CPU 建议保留 intel_pstate（active），配合 schedutil 最稳；可经 max_perf_pct/min_perf_pct 限制性能窗口。"
+  },
+  "amd_pstate": {
+    "name": "AMD P-State 调速器",
+    "path": "Documentation/admin-guide/pm/amd-pstate.rst",
+    "subsystem": "power management / amd_pstate",
+    "interfaces": [
+      "/sys/devices/system/cpu/amd_pstate/status",
+      "/sys/devices/system/cpu/cpufreq/policy<N>/scaling_driver"
+    ],
+    "summary": "AMD 现代 CPU 的 P-State 驱动（active / passive / guided 三模式），基于 CPPC 协作式调频。",
+    "advice": "优先 amd_pstate 的 guided/active 模式，能效与响应优于传统 acpi-cpufreq。"
+  },
+  "pm_overview": {
+    "name": "电源管理总览",
+    "path": "Documentation/admin-guide/pm/overview.rst",
+    "subsystem": "power management",
+    "interfaces": ["/sys/power/state", "/sys/devices/system/cpu/cpuidle/", "/sys/devices/system/cpu/cpufreq/"],
+    "summary": "内核电源管理总纲：suspend/休眠、cpuidle、cpufreq、devfreq、OPP 等子系统的协作关系。",
+    "advice": "调优前先读 overview 理清各子系统边界，避免重复或冲突设置。"
+  },
+  "thermal": {
+    "name": "温控与热区（thermal sysfs）",
+    "path": "Documentation/admin-guide/thermal/sysfs-api.rst",
+    "subsystem": "thermal",
+    "interfaces": [
+      "/sys/class/thermal/thermal_zone<N>/type",
+      "/sys/class/thermal/thermal_zone<N>/temp",
+      "/sys/class/thermal/thermal_zone<N>/trip_point<N>_temp",
+      "/sys/class/thermal/cooling_device<N>/type"
+    ],
+    "summary": "thermal 子系统把传感器（thermal_zone）与降温手段（cooling_device）经 thermal governor 串联，超阈值即降频/关核。",
+    "advice": "过热降频会拖慢系统；软件仅能核对热区与阈值，硬件层面需清灰/换硅脂/改善风道。"
+  },
+  "powerclamp": {
+    "name": "Intel 强制空闲（intel_powerclamp）",
+    "path": "Documentation/admin-guide/thermal/intel_powerclamp.rst",
+    "subsystem": "thermal / intel_powerclamp",
+    "interfaces": ["/sys/class/thermal/cooling_device<N>/type"],
+    "summary": "通过注入空闲（forced idle）把 CPU 平均温度压到目标，无需降频即可降温。",
+    "advice": "过载过热时由内核自动介入；属于被动降温手段，不应替代正常散热。"
+  },
+  "thp": {
+    "name": "透明大页（Transparent Hugepage）",
+    "path": "Documentation/admin-guide/mm/transhuge.rst",
+    "subsystem": "memory management / THP",
+    "interfaces": ["/sys/kernel/mm/transparent_hugepage/enabled", "/sys/kernel/mm/transparent_hugepage/defrag"],
+    "summary": "内核自动把连续 4K 页合并为 2M/1G 大页，减少 TLB miss；状态为 always / madvise / never。",
+    "advice": "大内存/数据库受益；延迟敏感负载用 madvise 更稳，避免 compaction 抖动。改用 never 可消除 THP 抖动但增加 TLB 压力。"
+  },
+  "zswap": {
+    "name": "zswap 压缩交换缓存",
+    "path": "Documentation/mm/zswap.rst",
+    "subsystem": "memory management / zswap",
+    "interfaces": ["/sys/module/zswap/parameters/enabled", "/sys/module/zswap/parameters/max_pool_percent", "/sys/module/zswap/parameters/zpool"],
+    "summary": "换页前先压缩存入内存池，减少磁盘换页 I/O；超限或压缩失败再落入后端 swap。",
+    "advice": "内存换页压力大的机器收益明显（以少量 CPU 换 I/O）；可调 max_pool_percent 控制内存占用。"
+  },
+  "zram": {
+    "name": "zram 内存压缩块设备",
+    "path": "Documentation/admin-guide/blockdev/zram.rst",
+    "subsystem": "block / zram",
+    "interfaces": ["/sys/block/zram<N>/disksize", "/sys/block/zram<N>/mm_stat", "/sys/class/zram-control/hot_add"],
+    "summary": "用压缩内存块设备替代（或前置）磁盘 swap，几乎零磁盘 I/O；常用于嵌入式/桌面/容器。",
+    "advice": "把 /dev/zram<N> 用作 swap 比磁盘 swap 快得多；注意设置合理 disksize 并监控压缩率。"
+  },
+  "block": {
+    "name": "块层与 I/O 调度器",
+    "path": "Documentation/block/index.rst",
+    "subsystem": "block layer",
+    "interfaces": ["/sys/block/<dev>/queue/scheduler", "/sys/block/<dev>/queue/rotational", "/sys/block/<dev>/queue/nr_requests"],
+    "summary": "多队列块层提供 none / mq-deadline / bfq / kyber 等调度器，决定请求合并与排序策略。",
+    "advice": "SSD/NVMe 用 none 或 mq-deadline；机械盘用 bfq 更顺滑；数据库盘改调度器前先评估延迟。"
+  },
+  "bfq": {
+    "name": "BFQ I/O 调度器",
+    "path": "Documentation/block/bfq-iosched.rst",
+    "subsystem": "block layer / BFQ",
+    "interfaces": ["/sys/block/<dev>/queue/scheduler", "/sys/block/<dev>/queue/iosched/"],
+    "summary": "基于预算公平的调度器，保证交互与低吞吐任务的低延迟，适合桌面/机械盘。",
+    "advice": "桌面/机械盘优先 BFQ；服务器高吞吐 SSD 场景反而可能不如 none/mq-deadline。"
+  },
+  "nvme": {
+    "name": "NVMe 固态存储子系统",
+    "path": "Documentation/nvme/index.rst",
+    "subsystem": "nvme",
+    "interfaces": ["/sys/class/nvme/", "/sys/class/nvme/nvme<N>/model", "/sys/block/nvme<N>n<N>/queue/"],
+    "summary": "NVMe 多队列协议，远比 AHCI 高的并行度；配合 TRIM（discard）维持性能与寿命。",
+    "advice": "定期 fstrim（或启用连续 discard）；多队列默认可用，无需手工调 nr_requests。"
+  },
+  "numa": {
+    "name": "NUMA 内存策略与自动平衡",
+    "path": "Documentation/admin-guide/mm/numa_memory_policy.rst",
+    "subsystem": "memory management / NUMA",
+    "interfaces": ["/proc/sys/kernel/numa_balancing", "/sys/devices/system/node/"],
+    "summary": "NUMA 架构下内存分节点，内核自动迁移页以贴近访问 CPU（numa_balancing），或按策略绑定。",
+    "advice": "多路服务器开启 numa_balancing 收益明显；单路/桌面收益有限，误开反而引入跨节点开销。"
+  },
+  "watchdog": {
+    "name": "硬件看门狗",
+    "path": "Documentation/watchdog/watchdog-api.rst",
+    "subsystem": "watchdog",
+    "interfaces": ["/sys/class/watchdog/", "/dev/watchdog<N>"],
+    "summary": "硬件定时器，守护进程须定期『喂狗』，否则超时硬重启，避免系统假死无人响应。",
+    "advice": "关键服务器应启用看门狗并配守护进程保活；误关守护进程会导致周期性硬重启。"
+  },
+  "vm_sysctl": {
+    "name": "内存管理 sysctl（vm.swappiness 等）",
+    "path": "Documentation/admin-guide/sysctl/vm.rst",
+    "subsystem": "memory management / sysctl",
+    "interfaces": ["/proc/sys/vm/swappiness", "/proc/sys/vm/vfs_cache_pressure", "/proc/sys/vm/dirty_ratio"],
+    "summary": "vm.* 控制换页激进度、缓存回收与脏页回写；swappiness 决定内存压力下换页倾向（0–100）。",
+    "advice": "桌面/服务器可适当降低 swappiness 减少换页抖动；内存极端紧张时过低易触发 OOM。"
+  },
+  "sched_eas": {
+    "name": "能耗感知调度（EAS）",
+    "path": "Documentation/scheduler/sched-energy.rst",
+    "subsystem": "scheduler / EAS",
+    "interfaces": ["/proc/sys/kernel/sched_energy_aware", "/sys/devices/system/cpu/cpu<N>/cpu_capacity"],
+    "summary": "调度器结合 Energy Model 选择最省电的 CPU 放置任务，移动/笔记本节能关键。",
+    "advice": "异构大小核（big.LITTLE / 混合架构）开启 EAS 收益最大；需 Energy Model 与 schedutil 配合。"
+  }
+}

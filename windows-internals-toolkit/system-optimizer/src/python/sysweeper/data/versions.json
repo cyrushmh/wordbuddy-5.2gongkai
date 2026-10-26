@@ -1,0 +1,240 @@
+{
+ "windows": {
+  "10": {
+   "name": "Windows 10 (22H2)",
+   "eol": true,
+   "latest": false,
+   "note": "已于 2025-10-14 终止支持，微软不再提供安全补丁，强烈建议升级 Windows 11。"
+  },
+  "11": {
+   "name": "Windows 11 (24H2)",
+   "eol": false,
+   "latest": true,
+   "note": "当前稳定版；保持开启 Windows Update，定期用本工具清理即可。"
+  }
+ },
+ "macos": {
+  "13": {
+   "name": "macOS 13 Ventura",
+   "eol": false,
+   "latest": false,
+   "note": "较旧但仍可获安全更新；部分新 App 已要求 macOS 14+。"
+  },
+  "14": {
+   "name": "macOS 14 Sonoma",
+   "eol": false,
+   "latest": false,
+   "note": "稳定可用；建议在支持范围内升级到最新。"
+  },
+  "15": {
+   "name": "macOS 15 Sequoia",
+   "eol": false,
+   "latest": false,
+   "note": "前代稳定版，iPhone 镜像等特性在此引入。"
+  },
+  "26": {
+   "name": "macOS 26 Tahoe",
+   "eol": false,
+   "latest": true,
+   "note": "当前最新稳定版（2025-09 发布）；清理时注意 SIP 保护路径。"
+  }
+ },
+ "linux": {
+  "ubuntu:22.04": {
+   "name": "Ubuntu 22.04 LTS",
+   "eol": false,
+   "latest": false,
+   "note": "LTS，支持至 2027；apt 系列清理命令适用。"
+  },
+  "ubuntu:24.04": {
+   "name": "Ubuntu 24.04 LTS",
+   "eol": false,
+   "latest": false,
+   "note": "当前 LTS，支持至 2029；apt 系列清理命令适用。"
+  },
+  "ubuntu:26.04": {
+   "name": "Ubuntu 26.04 LTS",
+   "eol": false,
+   "latest": true,
+   "note": "最新 LTS（2026-04）；apt 系列清理命令适用。"
+  },
+  "debian:12": {
+   "name": "Debian 12 (Bookworm)",
+   "eol": false,
+   "latest": false,
+   "note": "apt 系列清理命令适用；stable 分支极稳定。"
+  },
+  "fedora:42": {
+   "name": "Fedora 42",
+   "eol": false,
+   "latest": false,
+   "note": "dnf 系列清理命令适用。"
+  },
+  "fedora:43": {
+   "name": "Fedora 43",
+   "eol": false,
+   "latest": true,
+   "note": "最新 Fedora；dnf 系列清理命令适用。"
+  },
+  "arch": {
+   "name": "Arch Linux (滚动)",
+   "eol": false,
+   "latest": true,
+   "note": "pacman/paccache 清理命令适用；滚动更新需常维护。"
+  }
+ },
+ "android": {
+  "8": {
+   "name": "Android 8.0 Oreo",
+   "eol": true,
+   "latest": false,
+   "note": "API 26；本工具下探下限。色彩校正起可用；无高对比度/深色模式。"
+  },
+  "8.1": {
+   "name": "Android 8.1 Oreo",
+   "eol": true,
+   "latest": false,
+   "note": "API 27；同上。"
+  },
+  "9": {
+   "name": "Android 9 Pie",
+   "eol": true,
+   "latest": false,
+   "note": "API 28；新增字重微调与护眼夜览。"
+  },
+  "10": {
+   "name": "Android 10",
+   "eol": true,
+   "latest": false,
+   "note": "API 29；新增高对比度文本与深色模式。"
+  },
+  "11": {
+   "name": "Android 11",
+   "eol": true,
+   "latest": false,
+   "note": "API 30；应用休眠(set-app-hibernate)需此版本以上。"
+  },
+  "12": {
+   "name": "Android 12",
+   "eol": true,
+   "latest": false,
+   "note": "API 31；前台服务与后台启动加固，清理逻辑同上。"
+  },
+  "12L": {
+   "name": "Android 12L",
+   "eol": true,
+   "latest": false,
+   "note": "API 32；12 的特性发布版。"
+  },
+  "13": {
+   "name": "Android 13 (Tiramisu)",
+   "eol": false,
+   "latest": false,
+   "note": "较旧；日常清理以手动/厂商工具为主。"
+  },
+  "14": {
+   "name": "Android 14 (Upside Down Cake)",
+   "eol": false,
+   "latest": false,
+   "note": "稳定；adb trim 缓存可用。"
+  },
+  "15": {
+   "name": "Android 15",
+   "eol": false,
+   "latest": false,
+   "note": "引入私有空间；清理逻辑同上。"
+  },
+  "16": {
+   "name": "Android 16",
+   "eol": false,
+   "latest": false,
+   "note": "2025 年发布；adb 清理可用。"
+  },
+  "17": {
+   "name": "Android 17",
+   "eol": false,
+   "latest": true,
+   "note": "当前最新（2026-06）；后台音频等加固，清理逻辑一致。"
+  }
+ },
+ "ios": {
+  "16": {
+   "name": "iOS 16",
+   "eol": false,
+   "latest": false,
+   "note": "较旧；建议升级到受支持的最新正式版。"
+  },
+  "17": {
+   "name": "iOS 17",
+   "eol": false,
+   "latest": false,
+   "note": "稳定旧版。"
+  },
+  "18": {
+   "name": "iOS 18",
+   "eol": false,
+   "latest": false,
+   "note": "前代稳定版。"
+  },
+  "26": {
+   "name": "iOS 26",
+   "eol": false,
+   "latest": true,
+   "note": "当前最新（2025 年改年份命名）；保持最新以获得安全补丁。"
+  }
+ },
+ "bsd": {
+  "14": {
+   "name": "FreeBSD 14",
+   "eol": false,
+   "latest": false,
+   "note": "稳定；pkg 系列清理命令适用（pkg clean / autoremove）。"
+  },
+  "15": {
+   "name": "FreeBSD 15",
+   "eol": false,
+   "latest": true,
+   "note": "最新稳定版；pkg 系列清理命令适用。"
+  },
+  "7": {
+   "name": "OpenBSD 7.x",
+   "eol": false,
+   "latest": true,
+   "note": "pkg_add 系列；无 pkg autoremove，清理较克制。"
+  },
+  "10": {
+   "name": "NetBSD 10",
+   "eol": false,
+   "latest": true,
+   "note": "pkgin 系列；清理用 pkgin clean / autoremove。"
+  }
+ },
+ "unix": {
+  "11": {
+   "name": "Oracle Solaris 11",
+   "eol": false,
+   "latest": false,
+   "note": "IPS pkg 系列；清理用 pkg purge-history。深度清理需 root。"
+  },
+  "2024": {
+   "name": "illumos (OpenIndiana/OmniOS)",
+   "eol": false,
+   "latest": true,
+   "note": "illumos 衍生的 System V；IPS pkgin 系列。"
+  }
+ },
+ "uniapp": {
+  "3": {
+   "name": "uni-app 3.x（Vue 3 + Vite）",
+   "eol": false,
+   "latest": false,
+   "note": "Vue3/Vite 体系；构建缓存为 node_modules/.vite、unpackage/dist。"
+  },
+  "4": {
+   "name": "uni-app 4.x（当前主线）",
+   "eol": false,
+   "latest": true,
+   "note": "主线版本（配合 HBuilderX 4.x / CLI @dcloudio/uvm）；端上 storage 清理需用户确认。"
+  }
+ }
+}

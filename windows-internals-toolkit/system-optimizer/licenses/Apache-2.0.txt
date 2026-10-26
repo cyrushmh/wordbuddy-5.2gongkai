@@ -1,0 +1,20 @@
+SPDX-License-Identifier: Apache-2.0
+官方全文: https://www.apache.org/licenses/LICENSE-2.0.txt
+
+Apache License
+Version 2.0, January 2004
+http://www.apache.org/licenses/
+
+（完整正文见上方官方链接，约 11KB；此处列核心条款）
+
+核心条款摘要:
+1. 授予版权与**专利**许可（明确包含贡献者专利，遇专利诉讼指控可终止）。
+2. 再发布须：附本许可证、保留 NOTICE 文件（如有）、标明做了哪些修改。
+3. 不要求公开派生作品的源代码（可与专有软件组合，非 copyleft）。
+4. 商标权不随许可授予。
+
+------------------------------------------------------------------------------
+本文档引用该许可证的项目: zhiyi7/gfw-pac
+（其仓库根 LICENSE.txt 解码内容为 "Licensed under the Apache License, Version 2.0"；
+GitHub API 自动判定为 NOASSERTION，以仓库内实际 LICENSE 文件为准。）
+本工具不打包其二进制，用户需自行按 Apache-2.0 条款安装使用。

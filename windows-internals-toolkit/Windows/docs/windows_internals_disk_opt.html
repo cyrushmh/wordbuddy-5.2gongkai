@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Windows 系统内部机理与磁盘优化方案 · 文档展示系统</title>
+<style>
+  :root{
+    --bg:#0f1320; --panel:#161b2e; --panel-2:#1c2238; --ink:#e7ebf5; --ink-2:#aab3c9;
+    --line:#2a3252; --brand:#4f8cff; --brand-2:#7c5cff; --ok:#36d399; --warn:#fbbd23;
+    --bad:#f87272; --chip:#222a45; --shadow:0 10px 30px rgba(0,0,0,.35);
+    --code-bg:#0b0f1c; --radius:14px;
+  }
+  html[data-theme="light"]{
+    --bg:#f4f6fb; --panel:#ffffff; --panel-2:#f7f9fd; --ink:#1a2138; --ink-2:#586079;
+    --line:#e3e8f3; --brand:#2f6fed; --brand-2:#6a47ff; --chip:#eef2fb;
+    --shadow:0 10px 30px rgba(40,60,120,.10); --code-bg:#0b0f1c;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--brand);text-decoration:none}
+  /* layout */
+  .shell{display:grid;grid-template-columns:288px 1fr;min-height:100vh}
+  /* sidebar */
+  aside{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;background:var(--panel);
+    border-right:1px solid var(--line);padding:22px 16px}
+  .brand{display:flex;align-items:center;gap:10px;padding:6px 8px 16px}
+  .brand .logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--brand),var(--brand-2));
+    display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:15px}
+  .brand b{font-size:15px;line-height:1.2}
+  .brand span{display:block;font-size:11px;color:var(--ink-2)}
+  nav .grp{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin:18px 8px 8px}
+  nav a{display:block;padding:9px 11px;border-radius:9px;color:var(--ink-2);font-size:13.5px;margin:2px 0;transition:.15s}
+  nav a:hover{background:var(--panel-2);color:var(--ink)}
+  nav a.active{background:linear-gradient(90deg,rgba(79,140,255,.18),rgba(124,92,255,.06));color:#fff;
+    box-shadow:inset 3px 0 0 var(--brand)}
+  /* main */
+  main{padding:0 0 80px}
+  .topbar{position:sticky;top:0;z-index:20;backdrop-filter:blur(8px);background:color-mix(in srgb,var(--bg) 82%,transparent);
+    border-bottom:1px solid var(--line);padding:14px 32px;display:flex;align-items:center;gap:14px}
+  .topbar .prog{flex:1;height:4px;background:var(--panel-2);border-radius:99px;overflow:hidden}
+  .topbar .prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--brand-2))}
+  .topbar button{background:var(--chip);color:var(--ink);border:1px solid var(--line);border-radius:9px;
+    padding:7px 12px;cursor:pointer;font-size:13px}
+  .wrap{max-width:980px;margin:0 auto;padding:0 32px}
+  /* hero */
+  .hero{padding:54px 32px 30px}
+  .tag{display:inline-flex;gap:6px;align-items:center;background:var(--chip);border:1px solid var(--line);
+    color:var(--ink-2);font-size:12px;padding:5px 12px;border-radius:99px;margin-bottom:18px}
+  .hero h1{font-size:34px;line-height:1.2;margin:0 0 14px;
+    background:linear-gradient(120deg,#fff,#bcd0ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  html[data-theme="light"] .hero h1{background:linear-gradient(120deg,#1a2138,#2f6fed);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{color:var(--ink-2);font-size:16px;max-width:760px;margin:0}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+  .meta .m{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:150px}
+  .meta .m b{display:block;font-size:22px;color:#fff}
+  html[data-theme="light"] .meta .m b{color:var(--ink)}
+  .meta .m span{font-size:12px;color:var(--ink-2)}
+  /* sections */
+  section{padding:30px 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:none}
+  h2{font-size:25px;margin:0 0 6px;display:flex;align-items:center;gap:10px}
+  h2 .no{font-size:13px;color:var(--brand);background:rgba(79,140,255,.12);border:1px solid rgba(79,140,255,.25);
+    padding:3px 9px;border-radius:8px}
+  h3{font-size:18px;margin:28px 0 8px;color:var(--ink)}
+  h3 .bar{display:inline-block;width:5px;height:16px;background:var(--brand);border-radius:3px;margin-right:9px;vertical-align:-2px}
+  .lead{color:var(--ink-2);margin:4px 0 18px}
+  p{margin:10px 0}
+  /* cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin:18px 0}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+  .card h4{margin:0 0 6px;font-size:15.5px;display:flex;align-items:center;gap:8px}
+  .card .dot{width:9px;height:9px;border-radius:50%;background:var(--brand)}
+  .card p{font-size:13.5px;color:var(--ink-2);margin:6px 0 0}
+  .card .rel{display:inline-block;margin-top:10px;font-size:11.5px;color:var(--brand);background:var(--chip);
+    border:1px solid var(--line);padding:3px 9px;border-radius:7px}
+  /* callouts */
+  .note,.tip,.warn{border-radius:12px;padding:14px 16px;margin:16px 0;border:1px solid var(--line);font-size:14px}
+  .note{background:rgba(79,140,255,.08)}
+  .tip{background:rgba(54,211,153,.08)}
+  .warn{background:rgba(248,114,114,.08)}
+  .note b,.tip b,.warn b{display:block;margin-bottom:4px}
+  /* table */
+  .tbl{overflow-x:auto;margin:18px 0;border:1px solid var(--line);border-radius:var(--radius)}
+  table{border-collapse:collapse;width:100%;font-size:13.5px}
+  th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--panel-2);color:var(--ink);font-weight:600;position:sticky;top:0}
+  tbody tr:hover{background:var(--panel-2)}
+  td code,code{font-family:"SFMono-Regular",Consolas,monospace;background:var(--code-bg);color:#9ad;padding:1px 6px;border-radius:5px;font-size:12.5px}
+  /* diagram */
+  .diagram{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin:18px 0;overflow-x:auto}
+  .diagram svg{width:100%;height:auto;min-width:640px}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-size:12.5px;color:var(--ink-2)}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+  /* flow steps */
+  .steps{counter-reset:s;margin:16px 0}
+  .step{position:relative;padding:14px 16px 14px 52px;background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;margin:10px 0}
+  .step::before{counter-increment:s;content:counter(s);position:absolute;left:14px;top:14px;width:24px;height:24px;
+    border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;font-size:12px;
+    display:flex;align-items:center;justify-content:center;font-weight:700}
+  .step b{display:block;margin-bottom:3px}
+  .step p{margin:0;color:var(--ink-2);font-size:13.5px}
+  /* two col */
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+  .pill{display:inline-block;font-size:11.5px;padding:3px 10px;border-radius:99px;border:1px solid var(--line);
+    background:var(--chip);color:var(--ink-2);margin:3px 4px 3px 0}
+  .pill.ok{color:var(--ok);border-color:rgba(54,211,153,.4)}
+  .pill.bad{color:var(--bad);border-color:rgba(248,114,114,.4)}
+  .pill.warn{color:var(--warn);border-color:rgba(251,189,35,.4)}
+  footer{padding:30px 32px 10px;color:var(--ink-2);font-size:13px;border-top:1px solid var(--line)}
+  .src{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:10px;font-size:13px;color:var(--ink-2)}
+  /* mobile */
+  .menu-btn{display:none}
+  @media(max-width:860px){
+    .shell{grid-template-columns:1fr}
+    aside{position:fixed;left:0;top:0;z-index:50;width:268px;transform:translateX(-100%);transition:.25s}
+    aside.open{transform:translateX(0)}
+    .menu-btn{display:inline-flex}
+    .wrap,.hero,.topbar,.footer{padding-left:18px;padding-right:18px}
+    .twocol{grid-template-columns:1fr}
+    .hero h1{font-size:27px}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside id="sidebar">
+    <div class="brand">
+      <div class="logo">WI</div>
+      <div><b>Windows 内部机理<br>磁盘优化系统</b><span>基于《Windows Internals 7e Part 1》</span></div>
+    </div>
+    <nav id="nav">
+      <div class="grp">开始</div>
+      <a href="#overview">概览与方法</a>
+      <div class="grp">一 · 原书分析</div>
+      <a href="#book">书籍结构与磁盘相关度</a>
+      <a href="#io">I/O 系统与存储驱动栈</a>
+      <a href="#memory">内存分页与磁盘</a>
+      <a href="#cache">缓存管理器</a>
+      <div class="grp">二 · 优化方案</div>
+      <a href="#media">按介质分类：HDD vs SSD</a>
+      <a href="#defrag">碎片整理策略</a>
+      <a href="#writecache">写入缓存与延迟写</a>
+      <a href="#prefetch">预取与 ReadyBoost</a>
+      <a href="#stack">存储驱动栈调优</a>
+      <a href="#power">电源与链路电源管理</a>
+      <a href="#ioprio">I/O 优先级调优</a>
+      <a href="#pagefile">分页文件与卷布局</a>
+      <div class="grp">三 · 落地</div>
+      <a href="#tools">诊断工具集</a>
+      <a href="#quickref">优化速查表</a>
+      <a href="#source">资料来源</a>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <button class="menu-btn" id="menuBtn">☰</button>
+      <div style="font-size:13px;color:var(--ink-2)">阅读进度</div>
+      <div class="prog"><i id="prog"></i></div>
+      <button id="themeBtn">🌓 主题</button>
+    </div>
+
+    <div class="hero">
+      <div class="tag">📚 资料库分析 · 文档展示系统</div>
+      <h1>Windows 系统内部机理<br>与磁盘优化方案</h1>
+      <p>将《Windows Internals, Part 1》（第 7 版，1120 页）中分散在 I/O 系统、内存管理与缓存管理器里的磁盘相关机理，系统梳理为一套可直接落地的磁盘优化方案——每个优化项都标注其背后的内部机理依据。</p>
+      <div class="meta">
+        <div class="m"><b>1120</b><span>原书页数</span></div>
+        <div class="m"><b>7</b><span>覆盖章节</span></div>
+        <div class="m"><b>4</b><span>磁盘核心子系统</span></div>
+        <div class="m"><b>11</b><span>优化方案条目</span></div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <!-- 概览 -->
+      <section id="overview">
+        <h2><span class="no">00</span>概览与方法</h2>
+        <p class="lead">本系统不是泛泛的"系统加速技巧"，而是从 Windows 内核的<strong>真实机理</strong>出发推导优化动作。</p>
+        <p>《Windows Internals 第 1 部分》的主题是"系统架构、进程、线程、内存管理，以及更多"。其中直接决定磁盘性能的有三个子系统：</p>
+        <div class="cards">
+          <div class="card"><h4><span class="dot"></span>I/O 系统（第 6 章）</h4><p>设备驱动模型、IRP 分层、存储驱动栈、I/O 优先级、完成端口。磁盘读写请求在这里被层层翻译为硬件命令。</p><span class="rel">原书 Ch.6</span></div>
+          <div class="card"><h4><span class="dot"></span>内存管理（第 5 章）</h4><p>虚拟内存、分页文件（pagefile）、工作集、页面优先级。内存压力会直接转化为磁盘 I/O。</p><span class="rel">原书 Ch.5</span></div>
+          <div class="card"><h4><span class="dot"></span>缓存管理器（第 14 章/Part 2）</h4><p>把最近引用的磁盘数据留在内存，并把写操作延迟一小段时间再下刷（延迟写 / write-back），是文件 I/O 性能的关键。</p><span class="rel">原书 提及</span></div>
+          <div class="card"><h4><span class="dot"></span>存储驱动栈</h4><p>文件系统驱动 → 卷管理器 → 磁盘类驱动 → 端口驱动 → 微端口驱动。每一层都影响延迟、队列深度与吞吐。</p><span class="rel">原书 Ch.6</span></div>
+        </div>
+        <div class="note"><b>方法说明</b>每一条优化方案都遵循"<strong>机理 → 现象 → 动作</strong>"链路：先说明 Windows 内部为什么这样工作，再解释它导致的可观测现象，最后给出可执行的优化动作与适用边界。标注 <span class="pill ok">SSD</span> <span class="pill warn">HDD</span> 表示介质适用性。</div>
+      </section>
+
+      <!-- 书籍结构 -->
+      <section id="book">
+        <h2><span class="no">01</span>书籍结构与磁盘相关度</h2>
+        <p class="lead">《Windows Internals 7e Part 1》共 7 章，下表标注各章与磁盘/存储优化的关联强度。</p>
+        <div class="tbl">
+          <table>
+            <thead><tr><th>章节</th><th>主题</th><th>与磁盘优化关联</th><th>可推导的优化点</th></tr></thead>
+            <tbody>
+              <tr><td>Ch.1</td><td>概念与工具</td><td>● 弱</td><td>Sysinternals 诊断工具（Process Monitor / RAMMap）</td></tr>
+              <tr><td>Ch.2</td><td>系统架构</td><td>● 弱</td><td>Executive / 内核划分，理解驱动运行上下文</td></tr>
+              <tr><td>Ch.3</td><td>进程与作业</td><td>● 弱</td><td>进程 I/O 优先级继承</td></tr>
+              <tr><td>Ch.4</td><td>线程</td><td>● 中</td><td>线程 I/O 优先级、I/O 完成端口并发</td></tr>
+              <tr><td>Ch.5</td><td>内存管理</td><td>●●● 强</td><td>分页文件优化、工作集修剪、SuperFetch/预取</td></tr>
+              <tr><td>Ch.6</td><td>I/O 系统</td><td>●●● 强</td><td>存储驱动栈、IRP、I/O 优先级、写缓存、驱动验证</td></tr>
+              <tr><td>Ch.7</td><td>安全</td><td>● 弱</td><td>VBS/凭证保护对 I/O 路径的轻微开销</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tip"><b>关键洞察</b>磁盘性能并非由"磁盘"单独决定，而是<strong>I/O 系统（请求路径）+ 内存管理（压力来源）+ 缓存管理器（读写缓冲）</strong>三者耦合的结果。因此优化必须跨这三个子系统协同进行。</div>
+      </section>
+
+      <!-- I/O 系统 -->
+      <section id="io">
+        <h2><span class="no">02</span>I/O 系统与存储驱动栈</h2>
+        <p class="lead">原书第 6 章指出：设备驱动是连接 I/O 管理器与相关硬件的内核模块（.sys），运行在三种上下文之一——发起 I/O 的用户线程、内核系统线程、或中断上下文。</p>
+        <h3><span class="bar"></span>存储驱动栈（Storage Driver Stack）</h3>
+        <p>一次磁盘读请求会自上而下穿过如下分层驱动。理解它才能定位延迟发生在哪一层：</p>
+        <div class="diagram">
+          <svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI,PingFang SC,sans-serif">
+            <defs>
+              <linearGradient id="g1" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#4f8cff"/><stop offset="1" stop-color="#7c5cff"/></linearGradient>
+              <marker id="ar" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8aa0d8"/></marker>
+            </defs>
+            <!-- boxes -->
+            <g font-size="13" fill="#e7ebf5">
+              <rect x="180" y="20" width="400" height="42" rx="9" fill="#222a45" stroke="#2a3252"/>
+              <text x="380" y="46" text-anchor="middle" font-weight="700">应用程序 / 用户态 API (ReadFile / CreateFile)</text>
+
+              <rect x="180" y="80" width="400" height="42" rx="9" fill="#2a3358" stroke="#3a4a8a"/>
+              <text x="380" y="106" text-anchor="middle" font-weight="700">I/O 管理器 (I/O Manager) — 构造 IRP</text>
+
+              <rect x="180" y="140" width="400" height="42" rx="9" fill="#2a3358" stroke="#3a4a8a"/>
+              <text x="380" y="166" text-anchor="middle" font-weight="700">文件系统驱动 (NTFS.sys)</text>
+
+              <rect x="180" y="200" width="400" height="42" rx="9" fill="#2a3358" stroke="#3a4a8a"/>
+              <text x="380" y="226" text-anchor="middle" font-weight="700">卷管理器 (volmgr.sys) — 卷→磁盘/LUN 映射</text>
+
+              <rect x="180" y="260" width="400" height="42" rx="9" fill="#2a3358" stroke="#3a4a8a"/>
+              <text x="380" y="286" text-anchor="middle" font-weight="700">磁盘类驱动 (disk.sys) / 端口驱动 (storport.sys)</text>
+
+              <rect x="180" y="320" width="400" height="36" rx="9" fill="url(#g1)"/>
+              <text x="380" y="343" text-anchor="middle" font-weight="700" fill="#fff">微型端口驱动 (miniport) → 物理磁盘 / SSD</text>
+            </g>
+            <g stroke="#8aa0d8" stroke-width="2" marker-end="url(#ar)" fill="none">
+              <line x1="380" y1="62" x2="380" y2="78"/>
+              <line x1="380" y1="122" x2="380" y2="138"/>
+              <line x1="380" y1="182" x2="380" y2="198"/>
+              <line x1="380" y1="242" x2="380" y2="258"/>
+              <line x1="380" y1="302" x2="380" y2="318"/>
+            </g>
+            <!-- side labels -->
+            <g font-size="11" fill="#aab3c9">
+              <text x="600" y="106">IRP = I/O 请求包</text>
+              <text x="600" y="166">把文件偏移</text>
+              <text x="600" y="182">翻译成扇区</text>
+              <text x="600" y="226">多路径/容错在此</text>
+              <text x="600" y="286">队列深度与 MSI-X</text>
+            </g>
+          </svg>
+          <div class="legend">
+            <span><i style="background:#7c5cff"></i>最底层微端口直接对话硬件</span>
+            <span><i style="background:#3a4a8a"></i>分层驱动：每层可加 Filter 驱动</span>
+            <span><i style="background:#2a3252"></i>请求逐层封装为 IRP</span>
+          </div>
+        </div>
+        <h3><span class="bar"></span>IRP 与分层驱动模型</h3>
+        <p>原书强调：<em>"Windows 中的设备驱动并不直接操作硬件，而是通过调用 HAL（硬件抽象层）例程与硬件交互。"</em> 每个驱动把请求封装成<strong>I/O 请求包（IRP）</strong>传给下一层。这意味着：</p>
+        <ul>
+          <li><strong>Filter 驱动可叠加在任何层</strong>：例如磁盘的上层 Filter 驱动可做额外安全检查（原书 Ch.6 举例），文件系统的 Filter 驱动可做镜像、加密、病毒扫描——但每层都会增加一点 I/O 延迟。</li>
+          <li><strong>越往栈底越靠近硬件</strong>：storport 端口驱动与微端口驱动决定队列深度、NCQ/命令调度、MSI-X 中断效率，是延迟的"最后一公里"。</li>
+        </ul>
+        <div class="warn"><b>优化含义</b>过多的文件系统过滤驱动（杀软、加密、备份代理）会让每一次读写都穿过更多层。磁盘慢时，应先排查过滤驱动数量与顺序，而非盲目换硬件。</div>
+      </section>
+
+      <!-- 内存分页 -->
+      <section id="memory">
+        <h2><span class="no">03</span>内存分页与磁盘</h2>
+        <p class="lead">原书第 5 章：当物理内存不足时，内存管理器会把部分内存内容<strong>换页到磁盘</strong>（paging to disk）；线程访问已被换出的虚拟地址时，内存管理器再从磁盘加载回来。</p>
+        <div class="steps">
+          <div class="step"><b>内存压力是磁盘 I/O 的源头</b><p>物理内存紧张 → 工作集被修剪 → 页面被写入分页文件 → 后续访问触发<strong>页错误（page fault）</strong>，引发磁盘读。这就是"内存不够时系统变卡且磁盘灯狂闪"的机理。</p></div>
+          <div class="step"><b>页面优先级（Page Priority）</b><p>原书提到页面优先级与进程 I/O/页面优先级继承：后台进程默认页面优先级 5、I/O 优先级 Normal；可通过 Job/进程属性调低，使其换页与 I/O 不抢占前台。</p></div>
+          <div class="step"><b>主动内存管理：SuperFetch</b><p>原书在"Proactive memory management"一节描述 SuperFetch 与 ReadyBoost——按使用模式把可能用到的页面预取到内存/ReadyBoost 缓存，减少未来的磁盘读取。</p></div>
+        </div>
+        <div class="tip"><b>优化含义</b>很多"磁盘问题"实际是"内存问题"。优先保证足够物理内存、合理设置分页文件，可消除大量由换页引起的磁盘读。</div>
+      </section>
+
+      <!-- 缓存管理器 -->
+      <section id="cache">
+        <h2><span class="no">04</span>缓存管理器</h2>
+        <p class="lead">原书描述缓存管理器：通过让最近引用的磁盘数据驻留内存来加速文件 I/O，并<strong>把更新暂存在内存中一小段时间再下刷磁盘（延迟写）</strong>——它借助内存管理器的映射文件支持实现。</p>
+        <div class="twocol">
+          <div class="card"><h4><span class="dot" style="background:var(--ok)"></span>读缓存（Read Caching）</h4><p>热点文件重复读命中内存缓存，不落盘。顺序大文件扫描会"污染"缓存——这是大型拷贝后系统变慢的常见原因。</p><span class="rel">机理：最近引用驻留内存</span></div>
+          <div class="card"><h4><span class="dot" style="background:var(--warn)"></span>延迟写（Lazy Write）</h4><p>写操作先入内存、稍后由延迟写入线程批量下刷。提升吞吐但存在<strong>掉电丢数据</strong>窗口；关键数据应走 write-through / 强制刷新。</p><span class="rel">机理：write-back 缓冲</span></div>
+        </div>
+        <div class="warn"><b>优化含义</b>对数据库、交易类写入，需权衡"延迟写带来的吞吐提升"与"崩溃一致性"。必要时用 <code>FILE_FLAG_WRITE_THROUGH</code> 或电池备份写缓存（BBWC）来既保性能又保安全。</div>
+      </section>
+
+      <!-- 按介质分类 -->
+      <section id="media">
+        <h2><span class="no">05</span>按介质分类：HDD vs SSD</h2>
+        <p class="lead">所有后续优化都受介质物理特性约束。先建立介质模型，才能正确选择动作。</p>
+        <div class="tbl">
+          <table>
+            <thead><tr><th>维度</th><th>HDD（机械盘）</th><th>SSD（固态盘）</th></tr></thead>
+            <tbody>
+              <tr><td>随机读写</td><td>慢（寻道 + 旋转延迟，毫秒级）</td><td>快（无寻道，微秒级）</td></tr>
+              <tr><td>顺序读写</td><td>尚可（持续吞吐）</td><td>极快</td></tr>
+              <tr><td>碎片影响</td><td>大（随机寻道被放大）</td><td>几乎无（无机械寻道）</td></tr>
+              <tr><td>写磨损</td><td>无</td><td>有（PE 周期，需 TRIM/均衡）</td></tr>
+              <tr><td>优化重心</td><td>减少随机寻道、碎片整理、队列深度</td><td>TRIM、预留空间、避免不必要写入</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note"><b>结论</b>对 SSD，"碎片整理"应关闭（系统不会对其运行传统 defrag，而是运行 <code>Retrim</code>）；对 HDD，碎片整理仍显著提升随机读取性能。</div>
+      </section>
+
+      <!-- 碎片整理 -->
+      <section id="defrag">
+        <h2><span class="no">06</span>碎片整理策略</h2>
+        <div class="twocol">
+          <div class="card"><h4><span class="dot" style="background:var(--warn)"></span>HDD <span class="pill warn">推荐</span></h4><p>定期碎片整理可把文件连续化，把随机寻道变为顺序读取，直接对应"随机读写慢"的介质特性。用内置 <code>defrag /O</code>（优化 + 常规碎片整理）。</p><span class="rel">机理：消除随机寻道</span></div>
+          <div class="card"><h4><span class="dot" style="background:var(--ok)"></span>SSD <span class="pill ok">不需要</span></h4><p>SSD 无机械寻道，碎片对性能几乎无影响；运行传统碎片整理反而增加写磨损。Windows 对 SSD 自动改为 <code>Retrim</code>（通知 SSD 可回收无效块），由计划任务定期执行。</p><span class="rel">机理：TRIM 回收</span></div>
+        </div>
+        <div class="tip"><b>可执行动作</b><code>defrag C: /O /V</code> 查看优化状态；确认 SSD 的"已通过 Retrim 优化"。对 HDD 设每周计划任务；对 SSD 仅保留 Retrim。</div>
+      </section>
+
+      <!-- 写入缓存 -->
+      <section id="writecache">
+        <h2><span class="no">07</span>写入缓存与延迟写</h2>
+        <p class="lead">对应缓存管理器的延迟写（write-back）与磁盘类驱动的写缓存缓冲。这是"吞吐 vs 崩溃一致性"的核心权衡。</p>
+        <div class="steps">
+          <div class="step"><b>开启设备写缓存缓冲（Write Cache Buffer Flushing）</b><p>在磁盘策略中启用"启用设备上的写入缓存"，可把小写入合并批量下刷，大幅提升吞吐。代价：断电可能丢最近写入。必须配合 UPS 或带电容保护的 RAID 写缓存（BBWC/HBBU）。</p></div>
+          <div class="step"><b>关闭"关闭设备写缓存刷新"需谨慎</b><p>若禁用写缓存刷新（让 OS 认为每次写都已落盘），会牺牲性能换取更强一致性；仅在无 UPS 且不能容忍丢失时使用。</p></div>
+          <div class="step"><b>数据库/日志走 Write-Through</b><p>关键事务用 <code>FILE_FLAG_WRITE_THROUGH</code> + 磁盘带保护写缓存，既保崩溃一致性又不牺牲全部吞吐。</p></div>
+        </div>
+        <div class="warn"><b>风险边界</b>无 UPS、无电池保护时开启写缓存 = 断电即可能丢失已"确认"的写入。笔记本用电池可视为天然 UPS，台式机/服务器务必配 UPS 或 BBWC。</div>
+      </section>
+
+      <!-- 预取 -->
+      <section id="prefetch">
+        <h2><span class="no">08</span>预取（Prefetcher）与 ReadyBoost</h2>
+        <p class="lead">对应第 5 章的"逻辑预取器与 ReadyBoot""主动内存管理（SuperFetch）""ReadyBoost"。</p>
+        <div class="cards">
+          <div class="card"><h4><span class="dot"></span>Prefetcher / SuperFetch</h4><p>按启动与应用使用模式预取页面到内存，减少冷启动后的磁盘读取。默认开启；内存充足时收益最大。</p><span class="rel">机理：主动内存管理</span></div>
+          <div class="card"><h4><span class="dot"></span>ReadyBoost</h4><p>用高速 U 盘/SD 作"缓存补充"，缓存随机读热点。对<strong>内存/磁盘受限的老机器</strong>有效；对已有充裕 RAM + SSD 的现代机器收益甚微。</p><span class="rel">机理：随机读缓存</span></div>
+          <div class="card"><h4><span class="dot"></span>ReadyBoot</h4><p>启动轨迹预取，加速系统启动 I/O。属于 Prefetcher 的启动场景实现。</p><span class="rel">机理：启动轨迹</span></div>
+        </div>
+        <div class="note"><b>优化含义</b>现代 SSD + 大内存机器上 ReadyBoost 基本无收益，可禁用以省去一层过滤/缓存开销；老 HDD 小内存机器则保留并配高速 U 盘。</div>
+      </section>
+
+      <!-- 存储驱动栈调优 -->
+      <section id="stack">
+        <h2><span class="no">09</span>存储驱动栈调优</h2>
+        <p class="lead">对应第 6 章存储驱动栈：端口驱动（storport）、微端口、队列深度与中断。</p>
+        <div class="tbl">
+          <table>
+            <thead><tr><th>调优点</th><th>机理依据（原书）</th><th>动作</th></tr></thead>
+            <tbody>
+              <tr><td>使用 Storport 而非旧 ATAPI</td><td>storport.sys 是面向高吞吐/高队列深度的现代端口驱动</td><td>SATA/SAS/RAID 用 Storport 栈的厂商驱动</td></tr>
+              <tr><td>启用 MSI-X 中断</td><td>原书：storport 用 MSI-X 提升多队列中断效率</td><td>在设备高级设置启用 MSI-X，减少单中断瓶颈</td></tr>
+              <tr><td>队列深度（NCQ / TCQ）</td><td>端口驱动管理命令队列</td><td>保持默认；SSD/RAID 确保 NCQ 开启</td></tr>
+              <tr><td>精简过滤驱动</td><td>每层 Filter 都增加 IRP 路径延迟</td><td>审计并移除不必要的文件系统过滤驱动</td></tr>
+              <tr><td>驱动版本与签名</td><td>原书：Driver Verifier 验证内核驱动完整性</td><td>用厂商认证驱动；必要时用 Verifier 排查坏驱动</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tip"><b>可执行动作</b>用 <code>fltmc instances</code> 列出文件系统过滤驱动；用设备管理器查看磁盘"策略"中的"启用设备写入缓存"与"启用 MSI"。</div>
+      </section>
+
+      <!-- 电源 -->
+      <section id="power">
+        <h2><span class="no">10</span>电源与链路电源管理</h2>
+        <p class="lead">对应第 6 章电源管理器（Connected Standby / Modern Standby、电源可用性请求）。链路电源管理会在空闲时降低链路功耗，但带来唤醒延迟。</p>
+        <div class="twocol">
+          <div class="card"><h4><span class="dot" style="background:var(--warn)"></span>ALPM / HIPM 链路节电 <span class="pill warn">服务器慎用</span></h4><p>AHCI/NVMe 链路电源管理在空闲时降功耗，但恢复 I/O 有毫秒级唤醒延迟，会让随机小 I/O 抖动。数据库/低延迟场景建议设为"主动"。</p><span class="rel">机理：电源管理器链路状态</span></div>
+          <div class="card"><h4><span class="dot" style="background:var(--ok)"></span>电源计划 = 高性能 <span class="pill ok">推荐</span></h4><p>对存储服务器/工作站，选"高性能"或自定义：禁用磁盘闲置超时（或设很长），避免频繁停转/降速。</p><span class="rel">机理：电源可用性请求</span></div>
+        </div>
+        <div class="tip"><b>可执行动作</b>电源选项 → 高级 → 硬盘 →"在此时间后关闭硬盘"设为 0（从不）；"PCI Express → 链路状态电源管理"设为关闭（低延迟场景）。</div>
+      </section>
+
+      <!-- I/O 优先级 -->
+      <section id="ioprio">
+        <h2><span class="no">11</span>I/O 优先级调优</h2>
+        <p class="lead">对应第 6 章"I/O 优先级"与第 3/4 章进程/线程优先级继承。原书：每个线程有 I/O 优先级（Critical/High/Normal/Low/Very Low），并继承父进程默认（Normal）。</p>
+        <div class="steps">
+          <div class="step"><b>压低后台任务的 I/O 优先级</b><p>备份、索引、杀毒扫描等设 Low/Very Low I/O 优先级，使其不抢占前台交互的磁盘带宽。原书指出 I/O 优先级与页面优先级一并继承。</p></div>
+          <div class="step"><b>前台的 I/O 不被饿死</b><p>系统本身对前台进程有 I/O/页面优先级提升；为避免反例，勿把所有任务都设为 High/Critical。</p></div>
+          <div class="step"><b>容器/作业级隔离</b><p>用 Job 对象统一设置 CpuPriorityClass / IoPriority / PagePriority，把批处理作业关进低优先级"笼子"。</p></div>
+        </div>
+        <div class="note"><b>可执行动作</b>用 Process Explorer 的"列 → I/O 优先级"查看；用 <code>start /LOW /WAIT</code> 或任务计划程序的"运行级别"约束后台任务；用 <code>wpr</code>/ETW 抓取 I/O 真实分布。</div>
+      </section>
+
+      <!-- 分页文件 -->
+      <section id="pagefile">
+        <h2><span class="no">12</span>分页文件与卷布局</h2>
+        <p class="lead">综合第 5 章内存管理（分页到磁盘）与第 2 章架构（4K/扇区对齐）。</p>
+        <div class="tbl">
+          <table>
+            <thead><tr><th>优化项</th><th>机理依据</th><th>建议</th></tr></thead>
+            <tbody>
+              <tr><td>分页文件位置</td><td>换页 I/O 直接落到 pagefile</td><td>放最快的盘（ preferably SSD）；多盘可分散</td></tr>
+              <tr><td>分页文件大小</td><td>过小→频繁修剪/页错误；过大→浪费</td><td>系统托管或固定为 1–1.5× 物理内存（服务器按负载）</td></tr>
+              <tr><td>4K 扇区对齐</td><td>512e/4Kn 盘未对齐会产生读-改-写</td><td>用 DISKPART 确认分区 4K 对齐；新装系统默认已对齐</td></tr>
+              <tr><td>卷布局</td><td>随机 I/O 集中在热点卷</td><td>系统/数据/日志分开卷，热点数据独立磁盘</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="warn"><b>常见误区</b>完全禁用分页文件并不能"加速"，反而让内存管理器失去安全阀，极端情况下触发系统受限甚至崩溃。除非物理内存极其充裕且明确负载，否则保留系统托管分页文件。</div>
+      </section>
+
+      <!-- 工具 -->
+      <section id="tools">
+        <h2><span class="no">13</span>诊断工具集</h2>
+        <p class="lead">第 1 章"概念与工具"大量介绍 Sysinternals 工具，下列直接服务于磁盘问题定位。</p>
+        <div class="cards">
+          <div class="card"><h4><span class="dot"></span>Process Monitor</h4><p>实时捕获文件系统/注册表/网络 I/O，按"Path 含磁盘"过滤，定位哪个进程在狂写。</p><span class="rel">Sysinternals</span></div>
+          <div class="card"><h4><span class="dot"></span>Process Explorer</h4><p>进程"磁盘"标签与 I/O 优先级列；看每个进程的读写字节与速率。</p><span class="rel">Sysinternals</span></div>
+          <div class="card"><h4><span class="dot"></span>RAMMap</h4><p>查看各类内存（活跃/备用/已修改/分页文件）分布，判断是否因内存压力触发换页。</p><span class="rel">Sysinternals</span></div>
+          <div class="card"><h4><span class="dot"></span>DiskView / Contig</h4><p>可视化磁盘碎片、对单个文件做紧凑（contig）整理。</p><span class="rel">Sysinternals</span></div>
+          <div class="card"><h4><span class="dot"></span>fltmc</h4><p>列出文件系统过滤驱动实例，审计 I/O 栈上的额外层。</p><span class="rel">系统内置</span></div>
+          <div class="card"><h4><span class="dot"></span>PerfMon / ETW</h4><p>Logical/Physical Disk 计数器、WPR 抓取 I/O 真实分布与延迟来源。</p><span class="rel">系统内置</span></div>
+        </div>
+      </section>
+
+      <!-- 速查表 -->
+      <section id="quickref">
+        <h2><span class="no">14</span>优化速查表</h2>
+        <div class="tbl">
+          <table>
+            <thead><tr><th>优化项</th><th>介质</th><th>动作</th><th>内部机理依据</th></tr></thead>
+            <tbody>
+              <tr><td>碎片整理</td><td><span class="pill warn">HDD</span></td><td><code>defrag C: /O</code> 计划任务</td><td>消除随机寻道（介质特性）</td></tr>
+              <tr><td>TRIM / Retrim</td><td><span class="pill ok">SSD</span></td><td>保持计划任务自动执行</td><td>回收无效块、均衡磨损</td></tr>
+              <tr><td>设备写缓存</td><td>通用</td><td>开启 + UPS/BBWC</td><td>延迟写合并（缓存管理器/类驱动）</td></tr>
+              <tr><td>Write-Through</td><td>通用</td><td>关键写入加标志位</td><td>崩溃一致性（write-back 窗口）</td></tr>
+              <tr><td>ReadyBoost</td><td><span class="pill warn">老机</span></td><td>内存/SSD 机器禁用</td><td>随机读缓存（SuperFetch）</td></tr>
+              <tr><td>过滤驱动精简</td><td>通用</td><td><code>fltmc</code> 审查</td><td>IRP 分层路径延迟</td></tr>
+              <tr><td>MSI-X / Storport</td><td>通用</td><td>启用现代端口驱动</td><td>中断与队列效率（storport）</td></tr>
+              <tr><td>链路电源管理</td><td><span class="pill warn">服务器</span></td><td>设"主动/关闭"</td><td>电源管理器唤醒延迟</td></tr>
+              <tr><td>I/O 优先级</td><td>通用</td><td>后台任务设 Low</td><td>I/O 优先级继承（Ch.6）</td></tr>
+              <tr><td>分页文件</td><td>通用</td><td>SSD + 系统托管</td><td>换页 I/O 源（Ch.5）</td></tr>
+              <tr><td>4K 对齐</td><td>通用</td><td>分区对齐</td><td>避免 RMW（4Kn 盘）</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 来源 -->
+      <section id="source">
+        <h2><span class="no">15</span>资料来源</h2>
+        <div class="src">
+          <p><strong>主文献</strong>：Yosifovich P., Ionescu A., Solomon D. A. — <em>Windows Internals, Part 1: System architecture, processes, threads, memory management, and more</em>（7th Edition, 1120 页）。</p>
+          <p><strong>分析章节</strong>：Ch.5 内存管理（分页到磁盘、页面优先级、SuperFetch/ReadyBoost）；Ch.6 I/O 系统（I/O 管理器、设备驱动模型、存储驱动栈、IRP、I/O 优先级、缓存管理器、电源管理器）；Ch.1 工具（Sysinternals）。</p>
+          <p><strong>说明</strong>：本系统内容来自对资料库节点 <code>GLVCPGSSHEBmgcBFIn3JKs</code>（Windows_System_Internals_7e_Part_1.pdf）的提取与分析，优化方案在原书机理基础上结合 Windows 磁盘管理通用实践推导，标注"介质/场景适用"边界以供按需取舍。</p>
+        </div>
+      </section>
+
+      <footer>
+        文档展示系统 · 由资料库分析生成 · 内容基于《Windows Internals 7e Part 1》并在磁盘优化实践中可落地。所有原理标注均可在原书对应章节回查。
+      </footer>
+    </div>
+  </main>
+</div>
+
+<script>
+  // theme
+  const root=document.documentElement;
+  document.getElementById('themeBtn').onclick=()=>{
+    const t=root.getAttribute('data-theme')==='light'?'dark':'light';
+    root.setAttribute('data-theme',t); localStorage.setItem('wb-theme',t);
+  };
+  if(localStorage.getItem('wb-theme')==='light') root.setAttribute('data-theme','light');
+  // mobile menu
+  const sb=document.getElementById('sidebar');
+  document.getElementById('menuBtn').onclick=()=>sb.classList.toggle('open');
+  document.querySelectorAll('#nav a').forEach(a=>a.onclick=()=>sb.classList.remove('open'));
+  // scroll spy + progress
+  const links=[...document.querySelectorAll('#nav a')];
+  const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+  const prog=document.getElementById('prog');
+  function onScroll(){
+    const y=window.scrollY, h=document.documentElement.scrollHeight-window.innerHeight;
+    prog.style.width=(h>0?Math.min(100,y/h*100):0)+'%';
+    let cur=0; secs.forEach((s,i)=>{ if(s&&s.getBoundingClientRect().top<=120) cur=i; });
+    links.forEach((a,i)=>a.classList.toggle('active',i===cur));
+  }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+</script>
+</body>
+</html>

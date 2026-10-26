@@ -1,0 +1,163 @@
+name: Build Package
+
+# 利用 GitHub 生成可分发包：
+#   Python: sdist + wheel（纯标准库、零依赖）+ 单文件 .pyz（docs/37 首推产物），
+#           打 `v*` tag 时附到 Release；
+#   Go    : 交叉编译 sysweeper-go 多平台二进制（linux/windows/darwin × amd64/arm64/riscv64）；
+#   Rust  : 交叉编译 classics 十目标（Linux×7 架构 / Windows×2 / WASM），打 `v*` tag 时附到 Release；
+#   也可在 Actions 页手动（workflow_dispatch）触发，产物作为 artifact 留存。
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write   # tag 时创建 Release 并上传产物所需
+
+jobs:
+  build-python:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: windows-internals-toolkit/system-optimizer
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run tests
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest
+          PYTHONPATH=src/python python -m pytest -q
+
+      - name: Install build tooling
+        run: python -m pip install --upgrade pip build
+
+      - name: Build sdist and wheel
+        run: python -m build
+
+      # docs/37 首推产物：单文件 .pyz（zipapp，纯标准库零依赖，任一 python3 机器可跑）。
+      # 此前只构建 sdist/wheel，Release 缺少 .pyz（用户无法按文档方式 A 下载即跑）——#662 补齐。
+      - name: Build single-file pyz (docs/37 recommended artifact)
+        run: python3 ../../tools/syspkg.py pyz --out dist
+
+      - name: Smoke test pyz (run + knowledge-base sanity)
+        run: python3 ../../tools/syspkg.py smoke --out dist
+
+      - name: Upload python dist artifacts
+        uses: actions/upload-artifact@v5
+        with:
+          name: dist-python
+          path: windows-internals-toolkit/system-optimizer/dist/*
+
+      - name: Publish python dist to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: windows-internals-toolkit/system-optimizer/dist/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-go:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: windows-internals-toolkit/system-optimizer/src/go
+    strategy:
+      fail-fast: false
+      matrix:
+        # 覆盖各系统 × 硬件：Windows(x64/arm64)、Linux(x64/arm64/riscv64)、macOS(x64/arm64)
+        include:
+          - { goos: linux,   goarch: amd64,  ext: "" }
+          - { goos: linux,   goarch: arm64,  ext: "" }
+          - { goos: linux,   goarch: riscv64, ext: "" }
+          - { goos: windows, goarch: amd64,  ext: ".exe" }
+          - { goos: windows, goarch: arm64,  ext: ".exe" }
+          - { goos: darwin,  goarch: arm64,  ext: "" }
+          - { goos: darwin,  goarch: amd64,  ext: "" }
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.27"
+
+      - name: Vet and build ${{ matrix.goos }}/${{ matrix.goarch }}
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+        run: |
+          go vet ./...
+          go build -trimpath -o "sysweeper-go-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.ext }}" .
+
+      - name: Upload go binaries
+        uses: actions/upload-artifact@v5
+        with:
+          name: dist-go-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: windows-internals-toolkit/system-optimizer/src/go/sysweeper-go-*
+
+      - name: Publish go binaries to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: windows-internals-toolkit/system-optimizer/src/go/sysweeper-go-*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-rs:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: windows-internals-toolkit/classics-rs
+    steps:
+      - uses: actions/checkout@v4
+
+      # Rust 单一内核 × 十目标：Linux 七架构（x86-64/ARM64/ARM32/RISC-V/
+      # x86-32/PowerPC64LE/IBM-Z）+ Windows 两位宽（x86-64/x86-32）+ WASM。
+      # 不可构建两项如实缺席：aarch64-pc-windows-gnu（rustc target-list 无）、
+      # *-apple-darwin（无 macOS SDK）——见 classics-rs/.cargo/config.toml 头注释。
+      - name: Set up Rust（stable + 全部目标）
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: >-
+            aarch64-unknown-linux-gnu,
+            armv7-unknown-linux-gnueabihf,
+            riscv64gc-unknown-linux-gnu,
+            i686-unknown-linux-gnu,
+            powerpc64le-unknown-linux-gnu,
+            s390x-unknown-linux-gnu,
+            x86_64-pc-windows-gnu,
+            i686-pc-windows-gnu,
+            wasm32-unknown-unknown
+
+      - name: Install cross toolchains (apt)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            gcc-aarch64-linux-gnu gcc-arm-linux-gnueabihf gcc-riscv64-linux-gnu \
+            gcc-i686-linux-gnu gcc-powerpc64le-linux-gnu gcc-s390x-linux-gnu \
+            gcc-mingw-w64
+
+      # 构建脚本自带前置检查（target/链接器缺席则 SKIP 不中断）与 file 验证
+      - name: Build all 10 targets
+        run: ./build-rs.sh
+
+      - name: Upload rust binaries
+        uses: actions/upload-artifact@v5
+        with:
+          name: dist-rs
+          path: windows-internals-toolkit/classics-rs/dist/*
+
+      - name: Publish rust binaries to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: windows-internals-toolkit/classics-rs/dist/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

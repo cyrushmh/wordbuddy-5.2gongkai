@@ -1,0 +1,16 @@
+[package]
+name = "peinfo"
+version = "2026.10.24"
+edition = "2021"
+rust-version = "1.74"
+description = "稳定版 Rust（纯标准库）实现的 PE 头解析器"
+license = "MIT"
+
+[[bin]]
+name = "peinfo"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 3
+lto = true
+strip = true

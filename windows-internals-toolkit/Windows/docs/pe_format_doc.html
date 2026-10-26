@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>微软程序格式 PE / Portable Executable · 文档展示系统</title>
+<style>
+  :root{
+    --bg:#f5f7fb; --panel:#ffffff; --panel-2:#f7f9fd; --ink:#1a2138; --ink-2:#586079;
+    --line:#e3e8f3; --brand:#2f6fed; --brand-2:#6a47ff; --chip:#eef2fb; --ok:#1f9d55;
+    --warn:#c8821a; --risk:#d24b4b; --code:#0f1b2d; --code-bg:#0f1b2d;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.7;font-size:15px}
+  a{color:var(--brand);text-decoration:none}
+  code{background:var(--chip);padding:1px 6px;border-radius:5px;font-family:"SFMono-Regular",Consolas,Menlo,monospace;font-size:13px}
+  pre{background:var(--code-bg);color:#e6edf7;padding:14px 16px;border-radius:10px;overflow:auto;font-size:13px;line-height:1.55}
+  pre code{background:none;color:inherit;padding:0}
+  .layout{display:flex;min-height:100vh}
+  /* sidebar */
+  nav{width:268px;flex:0 0 268px;background:var(--panel);border-right:1px solid var(--line);
+    position:sticky;top:0;height:100vh;overflow:auto;padding:18px 14px}
+  nav .logo{font-weight:800;font-size:16px;letter-spacing:.2px;display:flex;align-items:center;gap:8px;margin-bottom:4px}
+  nav .logo .dot{width:11px;height:11px;border-radius:3px;background:linear-gradient(135deg,var(--brand),var(--brand-2))}
+  nav .sub{color:var(--ink-2);font-size:12px;margin-bottom:14px}
+  nav a{display:block;padding:7px 10px;border-radius:8px;color:var(--ink-2);font-size:13.5px;margin:1px 0}
+  nav a:hover{background:var(--panel-2);color:var(--ink)}
+  nav a.lvl2{padding-left:22px;font-size:12.5px}
+  nav .grp{font-size:11px;font-weight:700;color:#9aa3b8;text-transform:uppercase;letter-spacing:.6px;margin:14px 0 4px 10px}
+  /* main */
+  main{flex:1;min-width:0;padding:34px 46px 90px;max-width:1120px}
+  .hero{background:linear-gradient(135deg,#1f2c4d,#2f6fed 70%,#6a47ff);color:#fff;border-radius:18px;
+    padding:30px 34px;margin-bottom:30px;box-shadow:0 10px 30px rgba(47,111,237,.18)}
+  .hero h1{margin:0 0 8px;font-size:27px;letter-spacing:.3px}
+  .hero p{margin:0;opacity:.92;font-size:14.5px;max-width:760px}
+  .hero .tags{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
+  .hero .tag{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);padding:4px 11px;border-radius:20px;font-size:12.5px}
+  h2{font-size:22px;margin:46px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+  h2 .num{color:var(--brand);font-weight:800;margin-right:8px}
+  h3{font-size:17px;margin:26px 0 10px}
+  p{margin:10px 0}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:16px 0;
+    box-shadow:0 2px 10px rgba(20,40,80,.04)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:860px){.grid2,.grid3{grid-template-columns:1fr}.layout{flex-direction:column}nav{position:static;width:100%;height:auto;border-right:none;border-bottom:1px solid var(--line)}main{padding:22px}}
+  .meta{color:var(--ink-2);font-size:12.5px}
+  .chip{display:inline-block;background:var(--chip);color:var(--ink-2);padding:2px 9px;border-radius:6px;font-size:12px;margin:2px 3px 2px 0}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px;background:var(--panel)}
+  th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+  th{background:var(--panel-2);color:var(--ink);font-weight:700}
+  tr:nth-child(even) td{background:#fafbfe}
+  .callout{border-left:4px solid var(--brand);background:var(--panel-2);padding:12px 16px;border-radius:0 10px 10px 0;margin:16px 0;font-size:14px}
+  .callout.warn{border-color:var(--warn)}
+  .callout.risk{border-color:var(--risk)}
+  .callout.ok{border-color:var(--ok)}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;color:#fff}
+  .b-low{background:var(--ok)}.b-mid{background:var(--warn)}.b-high{background:var(--risk)}
+  .mono{font-family:"SFMono-Regular",Consolas,Menlo,monospace;font-size:13px}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);margin:10px 0}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  svg{max-width:100%}
+  .foot{margin-top:50px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-2);font-size:12.5px}
+  .kref{font-size:12px;color:var(--ink-2)}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav>
+  <div class="logo"><span class="dot"></span>PE 格式展示系统</div>
+  <div class="sub">微软程序格式 · Portable Executable</div>
+  <a href="#overview">① 概述与文件类型</a>
+  <a href="#layout">② 文件总体布局（图）</a>
+  <a href="#dos">③ DOS 头与 Stub</a>
+  <a href="#coff">④ NT / COFF 文件头</a>
+  <a href="#optional">⑤ 可选头与关键字段</a>
+  <a href="#datadir">⑥ 数据目录（16 项）</a>
+  <a href="#sections">⑦ 节表与常见节</a>
+  <a href="#import">⑧ 导入表</a>
+  <a href="#export">⑨ 导出表</a>
+  <a href="#reloc">⑩ 重定位</a>
+  <a href="#loader">⑪ 加载流程</a>
+  <a href="#security">⑫ 安全特性</a>
+  <a href="#tools">⑬ 分析工具</a>
+  <a href="#quick">⑭ 速查表</a>
+  <a href="#series">⑮ 与资料库系列衔接</a>
+  <div class="grp">说明</div>
+  <a href="#series">来源 / 适用边界</a>
+</nav>
+
+<main>
+  <div class="hero">
+    <h1>微软程序格式：PE / Portable Executable</h1>
+    <p>Windows 加载一切可执行代码（.exe、.dll、.sys 驱动、.ocx 等）所依赖的底层文件格式。本文档基于《Windows Internals 7e》的镜像与加载机理整理，作为本资料库「磁盘优化 / Win10 整体优化」系列的第三根支柱——理解"程序到底长什么样、系统如何把它放进内存"。</p>
+    <div class="tags">
+      <span class="tag">PE32 / PE32+</span>
+      <span class="tag">DOS 头 · NT 头</span>
+      <span class="tag">节表 Sections</span>
+      <span class="tag">导入 / 导出表</span>
+      <span class="tag">重定位</span>
+      <span class="tag">加载器 Loader</span>
+    </div>
+  </div>
+
+  <!-- ① -->
+  <h2 id="overview"><span class="num">①</span>概述与文件类型</h2>
+  <div class="card">
+    <p><b>PE（Portable Executable，可移植可执行）</b>是微软 32/64 位 Windows 采用的 executable / object / DLL 文件格式，由 COFF（Common Object File Format）扩展而来。它的设计目标是让同一个文件格式既能装"映像文件"（加载进内存执行），也能装"对象文件"（供链接器组合）。</p>
+    <div class="grid2">
+      <div>
+        <h3>支持的文件扩展名</h3>
+        <p><span class="chip">.exe</span><span class="chip">.dll</span><span class="chip">.sys</span><span class="chip">.ocx</span><span class="chip">.scr</span><span class="chip">.drv</span><span class="chip">.cpl</span><span class="chip">.efi</span></p>
+        <p class="kref">其中 .efi 是 UEFI 环境下的 PE 变体；.sys 是内核模式驱动，由 I/O 管理器加载（见本库「磁盘优化」方案中存储驱动栈一节）。</p>
+      </div>
+      <div>
+        <h3>历史与变体</h3>
+        <ul>
+          <li><b>COFF</b>：Unix 系 a.out 之后、微软接手改造的通用对象格式。</li>
+          <li><b>PE32</b>：32 位 Windows，可选头 <code>Magic = 0x10B</code>。</li>
+          <li><b>PE32+</b>：64 位 Windows（x64/ARM64），<code>Magic = 0x20B</code>，指针字段扩为 8 字节。</li>
+          <li><b>ROM 映像</b>：极少用，<code>0x107</code>。</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout ok">
+      <b>为什么重要：</b>所有"程序慢 / 加载失败 / DLL 劫持 / 加壳检测"问题，最终都会落到 PE 结构的某个字段或某个目录上。看懂 PE，才能看懂 Windows 如何"把磁盘上的字节变成内存里跑的进程"。
+    </div>
+  </div>
+
+  <!-- ② -->
+  <h2 id="layout"><span class="num">②</span>文件总体布局</h2>
+  <p class="meta">下图展示从文件偏移 0 到节数据的完整线性结构。注意：磁盘上的"文件偏移"与内存中的"RVA（相对虚拟地址）"是两个不同的地址空间，由节表分别映射。</p>
+  <div class="card">
+    <svg viewBox="0 0 820 470" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PE 文件布局图">
+      <defs>
+        <style>
+          .t{font:12px -apple-system,Segoe UI,PingFang SC,sans-serif;fill:#1a2138}
+          .th{font:bold 12px -apple-system,Segoe UI,sans-serif;fill:#fff}
+          .box{stroke:#cdd6ea;stroke-width:1.2}
+        </style>
+      </defs>
+      <!-- DOS header -->
+      <rect x="20" y="30" width="200" height="56" rx="8" fill="#2f6fed"/>
+      <text x="120" y="50" text-anchor="middle" class="th">DOS 头 (MZ)</text>
+      <text x="120" y="68" text-anchor="middle" class="th">IMAGE_DOS_HEADER 64B</text>
+      <rect x="20" y="92" width="200" height="40" rx="8" fill="#5b8def"/>
+      <text x="120" y="117" text-anchor="middle" class="th">DOS Stub (不够长就跳)</text>
+      <!-- PE signature -->
+      <rect x="20" y="140" width="200" height="40" rx="8" fill="#6a47ff"/>
+      <text x="120" y="165" text-anchor="middle" class="th">PE\0\0 签名 (4B)</text>
+      <!-- COFF + optional -->
+      <rect x="20" y="188" width="200" height="44" rx="8" fill="#8a63ff"/>
+      <text x="120" y="208" text-anchor="middle" class="th">COFF 文件头 20B</text>
+      <rect x="20" y="240" width="200" height="44" rx="8" fill="#8a63ff"/>
+      <text x="120" y="260" text-anchor="middle" class="th">可选头 96B/112B</text>
+      <rect x="20" y="292" width="200" height="40" rx="8" fill="#a07bff"/>
+      <text x="120" y="317" text-anchor="middle" class="th">数据目录 16×8B</text>
+      <!-- Section table -->
+      <rect x="20" y="340" width="200" height="44" rx="8" fill="#c8821a"/>
+      <text x="120" y="360" text-anchor="middle" class="th">节表 Section Table</text>
+      <text x="120" y="378" text-anchor="middle" class="th">每节 40B × N</text>
+      <!-- Sections -->
+      <rect x="20" y="392" width="780" height="56" rx="8" fill="#eef2fb" stroke="#2f6fed" stroke-width="1.4"/>
+      <text x="410" y="416" text-anchor="middle" class="t">节数据 Sections (.text / .rdata / .data / .rsrc / .reloc …) —— 按节表映射到内存</text>
+      <!-- arrow connecting header chain -->
+      <line x1="220" y1="52" x2="230" y2="52" stroke="#cdd6ea" stroke-width="2"/>
+      <path d="M120 70 L120 88" stroke="#cdd6ea" stroke-width="1.5" marker-end="url(#a)"/>
+      <path d="M120 132 L120 138" stroke="#cdd6ea" stroke-width="1.5" marker-end="url(#a)"/>
+      <path d="M120 180 L120 186" stroke="#cdd6ea" stroke-width="1.5" marker-end="url(#a)"/>
+      <path d="M120 232 L120 238" stroke="#cdd6ea" stroke-width="1.5" marker-end="url(#a)"/>
+      <path d="M120 284 L120 290" stroke="#cdd6ea" stroke-width="1.5" marker-end="url(#a)"/>
+      <path d="M120 332 L120 338" stroke="#cdd6ea" stroke-width="1.5" marker-end="url(#a)"/>
+      <path d="M120 384 L120 390" stroke="#cdd6ea" stroke-width="1.5" marker-end="url(#a)"/>
+      <!-- side note -->
+      <rect x="560" y="30" width="240" height="120" rx="10" fill="#fff" class="box"/>
+      <text x="580" y="52" class="t" font-weight="bold">两条地址空间</text>
+      <text x="580" y="74" class="t">• 文件偏移 (File Offset)</text>
+      <text x="580" y="94" class="t">• RVA 相对虚拟地址</text>
+      <text x="580" y="114" class="t">• VA = ImageBase + RVA</text>
+      <text x="580" y="138" class="t" fill="#d24b4b">节表负责两者映射</text>
+      <defs><marker id="a" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#cdd6ea"/></marker></defs>
+    </svg>
+    <div class="legend">
+      <span><i style="background:#2f6fed"></i>最外层容器</span>
+      <span><i style="background:#6a47ff"></i>PE 签名</span>
+      <span><i style="background:#8a63ff"></i>NT 头（文件+可选）</span>
+      <span><i style="background:#c8821a"></i>节表</span>
+      <span><i style="background:#eef2fb"></i>节数据区</span>
+    </div>
+  </div>
+
+  <!-- ③ -->
+  <h2 id="dos"><span class="num">③</span>DOS 头与 Stub</h2>
+  <div class="card">
+    <p>每个 PE 文件都以一个 <b>DOS 兼容头</b>开头，目的是"在老 DOS 上运行时打印一句提示就退出"，同时保留 <code>e_lfanew</code> 字段指向真正的 NT 头位置。</p>
+    <table>
+      <tr><th>字段</th><th>偏移</th><th>说明</th></tr>
+      <tr><td><code>e_magic</code></td><td>0x00</td><td>必须为 <code>"MZ"</code>（0x5A4D）—— 这是"是不是 PE"的第一道快速判断。</td></tr>
+      <tr><td><code>e_lfanew</code></td><td>0x3C</td><td><b>关键</b>：4 字节，指向 NT 头（PE 签名）的文件偏移。几乎所有 PE 解析都先读这个。</td></tr>
+    </table>
+    <p><b>DOS Stub</b>：一段 16 位实模式代码，通常是 <code>"This program cannot be run in DOS mode."</code>。长度不固定，但 <code>e_lfanew</code> 总能带你越过它找到 NT 头。</p>
+    <div class="callout">
+      <b>快速校验伪代码：</b>
+      <pre><code>read e_magic @ 0  → must be "MZ"
+read e_lfanew @ 0x3C → pe_off
+read 4 bytes @ pe_off → must be "PE\0\0"
+# 命中即确认这是一个 PE 文件</code></pre>
+    </div>
+  </div>
+
+  <!-- ④ -->
+  <h2 id="coff"><span class="num">④</span>NT / COFF 文件头</h2>
+  <div class="card">
+    <p>从 <code>e_lfanew</code> 处开始是 <code>IMAGE_NT_HEADERS</code> = 4 字节签名 <code>PE\0\0</code> + <code>IMAGE_FILE_HEADER</code> + <code>IMAGE_OPTIONAL_HEADER</code>。</p>
+    <h3>IMAGE_FILE_HEADER（COFF，20 字节）</h3>
+    <table>
+      <tr><th>字段</th><th>含义</th></tr>
+      <tr><td><code>Machine</code></td><td>目标 CPU：0x14C=x86, 0x8664=x64, 0xAA64=ARM64, 0x200=IA64。</td></tr>
+      <tr><td><code>NumberOfSections</code></td><td>节的数量（决定节表有多长）。</td></tr>
+      <tr><td><code>TimeDateStamp</code></td><td>链接时间戳（链接器写入，非文件创建时间）。</td></tr>
+      <tr><td><code>PointerToSymbolTable</code> / <code>NumberOfSymbols</code></td><td>COFF 符号表位置（映像文件通常为 0）。</td></tr>
+      <tr><td><code>SizeOfOptionalHeader</code></td><td>紧接其后的可选头大小（PE32=0xE0=224，PE32+=0xF0=240）。</td></tr>
+      <tr><td><code>Characteristics</code></td><td>文件属性位图，如 <code>0x2000</code>=DLL、<code>0x0002</code>=可执行映像、<code>0x0100</code>=32 位字系统。</td></tr>
+    </table>
+  </div>
+
+  <!-- ⑤ -->
+  <h2 id="optional"><span class="num">⑤</span>可选头与关键字段</h2>
+  <div class="card">
+    <p>名字叫"可选"，对映像文件其实<b>必选</b>。它承载了加载器最需要的信息：入口点、内存布局、子系统、数据目录指针。</p>
+    <table>
+      <tr><th>字段</th><th>含义</th></tr>
+      <tr><td><code>Magic</code></td><td><code>0x10B</code>=PE32，<code>0x20B</code>=PE32+（64 位）。解析前先读它决定字段宽度。</td></tr>
+      <tr><td><code>AddressOfEntryPoint</code></td><td>RVA：程序入口（EXE 的 <code>mainCRTStartup</code> / DLL 的 <code>DllMain</code>）。加壳后常被指向解压 stub。</td></tr>
+      <tr><td><code>ImageBase</code></td><td>期望加载的虚拟地址（EXE 默认 0x400000 / 64 位 0x140000000；DLL 默认 0x10000000）。</td></tr>
+      <tr><td><code>SectionAlignment</code> / <code>FileAlignment</code></td><td>内存中节对齐（通常 0x1000=4KB 页）/ 文件中节对齐（通常 0x200 或 0x1000）。</td></tr>
+      <tr><td><code>SizeOfImage</code></td><td>载入内存后映像的总大小（含所有对齐）。</td></tr>
+      <tr><td><code>Subsystem</code></td><td>1=原生(驱动)，2=GUI，3=控制台(CUI)，9=WinCE，10=EFI。</td></tr>
+      <tr><td><code>DllCharacteristics</code></td><td>见下方"安全特性"节（DYNAMIC_BASE=ASLR、NX_COMPAT=DEP 等）。</td></tr>
+      <tr><td><code>DataDirectory[16]</code></td><td>16 个目录的（RVA, Size）对，指向导入/导出/资源/重定位等表。</td></tr>
+    </table>
+    <div class="callout warn">
+      <b>对齐不一致是常见坑：</b>磁盘上节之间可能有很多 0 填充（因为 FileAlignment），但内存中节地址由 SectionAlignment 决定——所以"文件偏移"和"RVA"之间不能简单相加，必须按节逐个换算（<code>RVA→FOA</code> 转换是 PE 解析的基本功）。
+    </div>
+  </div>
+
+  <!-- ⑥ -->
+  <h2 id="datadir"><span class="num">⑥</span>数据目录（16 项）</h2>
+  <div class="card">
+    <p><code>DataDirectory</code> 是可选头末尾的 16 个 <code>{VirtualAddress, Size}</code> 结构，是加载器定位各功能表的"目录"。索引如下：</p>
+    <table>
+      <tr><th>#</th><th>常量</th><th>内容</th></tr>
+      <tr><td>0</td><td>EXPORT</td><td>导出表（EAT）</td></tr>
+      <tr><td>1</td><td>IMPORT</td><td>导入表（IAT + INT）</td></tr>
+      <tr><td>2</td><td>RESOURCE</td><td>资源（图标/对话框/版本信息）</td></tr>
+      <tr><td>3</td><td>EXCEPTION</td><td>异常表（x64 的 .pdata）</td></tr>
+      <tr><td>4</td><td>SECURITY</td><td><b>数字签名</b>（Authenticode，位于文件末尾，不在内存映射中）</td></tr>
+      <tr><td>5</td><td>BASERELOC</td><td>基址重定位表</td></tr>
+      <tr><td>6</td><td>DEBUG</td><td>调试信息</td></tr>
+      <tr><td>7</td><td>ARCHITECTURE</td><td>保留</td></tr>
+      <tr><td>8</td><td>GLOBALPTR</td><td>保留</td></tr>
+      <tr><td>9</td><td>TLS</td><td>线程局部存储</td></tr>
+      <tr><td>10</td><td>LOAD_CONFIG</td><td>加载配置（CFG/安全 Cookie 等）</td></tr>
+      <tr><td>11</td><td>BOUND_IMPORT</td><td>绑定导入（加速，但可能过期）</td></tr>
+      <tr><td>12</td><td>IAT</td><td>导入地址表（运行时被填真实地址）</td></tr>
+      <tr><td>13</td><td>DELAY_IMPORT</td><td>延迟加载导入</td></tr>
+      <tr><td>14</td><td>COM_DESCRIPTOR</td><td>.NET / COM 运行时描述符</td></tr>
+      <tr><td>15</td><td>RESERVED</td><td>保留</td></tr>
+    </table>
+    <p class="kref">注意 SECURITY（#4）是唯一不在内存映射中的目录——签名是附加在文件尾部、Verify 时才读取的，因此它不参与 VA 空间。</p>
+  </div>
+
+  <!-- ⑦ -->
+  <h2 id="sections"><span class="num">⑦</span>节表与常见节</h2>
+  <div class="card">
+    <p>节表紧跟可选头之后，每个 <code>IMAGE_SECTION_HEADER</code> 40 字节，描述一节在<b>文件</b>与<b>内存</b>两边的位置/大小/属性。</p>
+    <table>
+      <tr><th>字段</th><th>含义</th></tr>
+      <tr><td><code>Name</code></td><td>8 字节节名（.text/.data…），可自定义（加壳常用乱名如 .upx0）。</td></tr>
+      <tr><td><code>VirtualSize</code></td><td>内存中该节实际大小（未对齐）。</td></tr>
+      <tr><td><code>VirtualAddress</code></td><td>RVA：该节映射到的内存起始。</td></tr>
+      <tr><td><code>SizeOfRawData</code></td><td>磁盘上该节占用大小（按 FileAlignment 对齐）。</td></tr>
+      <tr><td><code>PointerToRawData</code></td><td>该节在文件中的偏移。</td></tr>
+      <tr><td><code>Characteristics</code></td><td>属性位：0x20000000=可执行、0x40000000=可读、0x80000000=可写 等组合。</td></tr>
+    </table>
+    <h3>常见节</h3>
+    <div class="grid3">
+      <div class="card" style="margin:0"><b>.text</b><p class="meta">代码（可执行、可读）</p></div>
+      <div class="card" style="margin:0"><b>.rdata</b><p class="meta">只读数据：导入/导出的名称、常量</p></div>
+      <div class="card" style="margin:0"><b>.data</b><p class="meta">已初始化全局变量（可读写）</p></div>
+      <div class="card" style="margin:0"><b>.rsrc</b><p class="meta">资源树（图标/版本/对话框）</p></div>
+      <div class="card" style="margin:0"><b>.reloc</b><p class="meta">基址重定位修复表</p></div>
+      <div class="card" style="margin:0"><b>.pdata</b><p class="meta">x64 异常处理/展开表</p></div>
+    </div>
+    <div class="callout">
+      <b>RWX 是危险信号：</b>一个节同时具有"可写 + 可执行"（W+X）通常是代码注入或加壳/打包的特征，杀软会重点盯。正常编译器产出的节会把"写"和"执行"分开。
+    </div>
+  </div>
+
+  <!-- ⑧ -->
+  <h2 id="import"><span class="num">⑧</span>导入表</h2>
+  <div class="card">
+    <p>程序要调用别的 DLL（如 <code>kernel32.dll</code> 的 <code>CreateFile</code>），并不把代码塞进自己文件，而是记录"我需要哪些 DLL 的哪些函数"。加载时由加载器填好真实地址。</p>
+    <table>
+      <tr><th>结构</th><th>角色</th></tr>
+      <tr><td>ILT / INT（导入名称表）</td><td>记录"需要什么"（函数名或序号），解析时作为参照。</td></tr>
+      <tr><td>IAT（导入地址表）</td><td>运行前和 INT 相同；加载后被<b>改写为函数真实地址</b>，CPU 调用时直接跳这里。</td></tr>
+      <tr><td>Hint/Name/Ordinal</td><td>定位函数的三种方式（按名、按序号、按提示序号）。</td></tr>
+      <tr><td>Bound Import</td><td>预先绑定地址以加速，但 DLL 重定位后即过期，需重新解析。</td></tr>
+      <tr><td>Delay Load</td><td>用到时才真正解析（如大型 COM/可选组件），减小启动开销。</td></tr>
+    </table>
+    <div class="callout warn">
+      <b>安全关联 · DLL 劫持：</b>导入表只写 DLL 名不写路径。加载器按"Known DLLs → 程序目录 → 系统目录…"的顺序搜索，若攻击者把同名恶意 DLL 放到搜索更靠前的目录，就会先被加载。这正是本库「Win10 整体优化」里"审计启动项/服务路径"要防的一类问题。
+    </div>
+  </div>
+
+  <!-- ⑨ -->
+  <h2 id="export"><span class="num">⑨</span>导出表</h2>
+  <div class="card">
+    <p>DLL 用导出表对外暴露函数。核心是三张并行表：<b>导出地址表 EAT</b>（函数 RVA）、<b>名称表</b>、<b>序号表</b>。调用方可通过名称或序号查到函数入口。</p>
+    <ul>
+      <li><code>NumberOfFunctions</code> / <code>NumberOfNames</code>：导出总数 / 按名导出数。</li>
+      <li><code>AddressOfFunctions</code>：EAT 数组（RVA）。</li>
+      <li>转发（Forwarding）：导出项可指向 <code>otherdll.exportname</code>，实现 DLL 间的函数转发（系统常用）。</li>
+    </ul>
+  </div>
+
+  <!-- ⑩ -->
+  <h2 id="reloc"><span class="num">⑩</span>重定位</h2>
+  <div class="card">
+    <p>代码里写死的绝对地址（如全局变量指针）都基于 <code>ImageBase</code> 假设。当映像<b>无法</b>按期望基址加载（被 ASLR 挪走或与其他 DLL 撞车）时，加载器需按 <b>.reloc</b> 表里的"修复记录"把绝对地址整体平移 <code>Δ = 实际基址 - 期望基址</code>。</p>
+    <div class="callout">
+      <b>为什么 DLL 必须可重定位：</b>多个 DLL 共享 4GB(32位) 地址空间，冲突不可避免。EXE 通常能拿到首选基址（冲突少），但 DLL 几乎一定会被重定位——这就是重定位表存在的意义。<code>IMAGE_FILE_RELOCS_STRIPPED</code> 标志位（被 EXE 常见、DLL 致命）表示"本文件无重定位信息"。
+    </div>
+  </div>
+
+  <!-- ⑪ -->
+  <h2 id="loader"><span class="num">⑪</span>加载流程（加载器如何把 PE 变成进程）</h2>
+  <div class="card">
+    <p>当用户双击 .exe，Windows 走这条主线（与《Windows Internals》进程/内存/映射文件机理一致）：</p>
+    <table>
+      <tr><th>步骤</th><th>发生的事</th></tr>
+      <tr><td>1. 创建进程</td><td><code>CreateProcess</code> → 内核创建 EPROCESS/句柄表/地址空间（空）。</td></tr>
+      <tr><td>2. 映射映像</td><td>以<b>映射文件（Section 对象）</b>方式把 PE 映像按节表放进新进程地址空间（注意：这是"内存映射文件"，呼应本库「磁盘优化」里缓存/映射文件一节）。</td></tr>
+      <tr><td>3. 重定位</td><td>若实际基址 ≠ ImageBase，按 .reloc 修复绝对地址。</td></tr>
+      <tr><td>4. 解析导入</td><td>逐个加载依赖 DLL → 填好 IAT（递归，依赖也有自己的导入）。</td></tr>
+      <tr><td>5. TLS / 安全</td><td>执行 TLS 回调（早于 main！是恶意代码偏好点）、应用 CFG/DEP 等。</td></tr>
+      <tr><td>6. 跳入口</td><td>调度器把线程指向 <code>AddressOfEntryPoint</code>，用户态程序开始跑。</td></tr>
+    </table>
+    <div class="callout warn">
+      <b>性能关联：</b>导入表越大、依赖 DLL 越多、需重定位越多 → 进程启动越慢、页错误（page fault）越多、冷启动 I/O 越重。这正是本库「Win10 启动优化」要砍开机项/清理依赖的根本原因——每一次"多加载一个 DLL"在 PE 层面都对应一串额外的导入解析 + 节映射 I/O。
+    </div>
+  </div>
+
+  <!-- ⑫ -->
+  <h2 id="security"><span class="num">⑫</span>安全特性（DllCharacteristics / 目录）</h2>
+  <div class="card">
+    <p>现代 PE 通过可选头 <code>DllCharacteristics</code> 标志位声明它配合哪些 OS 安全机制：</p>
+    <table>
+      <tr><th>标志</th><th>机制</th><th>作用</th></tr>
+      <tr><td><code>DYNAMIC_BASE (0x40)</code></td><td>ASLR</td><td>加载基址随机化，对抗 ROP/内存布局猜测。</td></tr>
+      <tr><td><code>NX_COMPAT (0x100)</code></td><td>DEP</td><td>数据页不可执行，防 shellcode 注入。</td></tr>
+      <tr><td><code>GUARD_CF (0x4000)</code></td><td>CFG</td><td>控制流保护，校验间接调用目标。</td></tr>
+      <tr><td><code>FORCE_INTEGRITY (0x80)</code></td><td>强制签名校验</td><td>加载前必须过签名（驱动/安全组件）。</td></tr>
+      <tr><td>目录 #4 SECURITY</td><td>Authenticode</td><td>嵌入 X.509 签名，用于 SmartScreen/驱动签名。</td></tr>
+    </table>
+    <div class="callout risk">
+      <b>加壳/混淆的识别（防御视角）：</b>异常小的导入表 + 单一可执行节 + 入口指向解压 stub + 节名非标准 + 缺失正常安全标志，往往意味着程序被打包（合法如 Installer/保护器，也可能藏恶意代码）。识别它是为了<b>审计</b>，不是去拆解它。
+    </div>
+  </div>
+
+  <!-- ⑬ -->
+  <h2 id="tools"><span class="num">⑬</span>分析工具</h2>
+  <div class="card">
+    <div class="grid3">
+      <div class="card" style="margin:0"><b>dumpbin</b><p class="meta">Visual Studio 自带，<code>/headers /imports /exports</code> 直接看 PE 结构。</p></div>
+      <div class="card" style="margin:0"><b>pefile</b><p class="meta">Python 库，脚本化解析 PE，自动化审计首选。</p></div>
+      <div class="card" style="margin:0"><b>CFF Explorer</b><p class="meta">图形化查看/编辑 PE 各字段。</p></div>
+      <div class="card" style="margin:0"><b>PEView / LordPE</b><p class="meta">经典 PE 阅读器，快速浏览节与目录。</p></div>
+      <div class="card" style="margin:0"><b>Dependency Walker</b><p class="meta">可视化导入/依赖树（注意新版用Dependencies）。</p></div>
+      <div class="card" style="margin:0"><b>Process Monitor</b><p class="meta">看加载器实际从哪个路径加载了哪个 DLL（抓 DLL 劫持）。</p></div>
+    </div>
+  </div>
+
+  <!-- ⑭ -->
+  <h2 id="quick"><span class="num">⑭</span>速查表</h2>
+  <div class="card">
+    <div class="grid2">
+      <div>
+        <h3>关键 Magic 值</h3>
+        <table>
+          <tr><th>值</th><th>含义</th></tr>
+          <tr><td><code>4D 5A</code> ("MZ")</td><td>DOS 头魔数</td></tr>
+          <tr><td><code>50 45 00 00</code> ("PE\0\0")</td><td>NT 签名</td></tr>
+          <tr><td><code>0x10B</code></td><td>PE32</td></tr>
+          <tr><td><code>0x20B</code></td><td>PE32+</td></tr>
+        </table>
+      </div>
+      <div>
+        <h3>Characteristics 常用位</h3>
+        <table>
+          <tr><th>位</th><th>含义</th></tr>
+          <tr><td><code>0x0002</code></td><td>可执行映像</td></tr>
+          <tr><td><code>0x2000</code></td><td>DLL</td></tr>
+          <tr><td><code>0x0100</code></td><td>32 位字系统</td></tr>
+          <tr><td><code>0x010F</code> 组合</td><td>典型 EXE</td></tr>
+        </table>
+      </div>
+    </div>
+    <h3>解析顺序（记这条就够了）</h3>
+    <pre><code>MZ@0 → e_lfanew@0x3C → "PE\0\0" → COFF(Machine/Sections) → Optional(Magic/Entry/ImageBase) → DataDirectory[16] → SectionTable(N×40B) → Sections</code></pre>
+  </div>
+
+  <!-- ⑮ -->
+  <h2 id="series"><span class="num">⑮</span>与资料库系列衔接</h2>
+  <div class="card">
+    <p>本页是《Windows Internals》分析系列的第三根支柱，与前两份文档形成闭环：</p>
+    <table>
+      <tr><th>文档</th><th>定位</th><th>衔接点</th></tr>
+      <tr><td>① 磁盘优化方案</td><td>存储介质/I/O 栈机理</td><td>PE 是"映射文件"被读进内存；节映射 = 磁盘 I/O 来源之一</td></tr>
+      <tr><td>② Win10 整体优化</td><td>启动/内存/服务/视觉</td><td>导入表大小 → 启动快慢；DLL 劫持 → 启动项审计</td></tr>
+      <tr><td>③ PE 格式（本页）</td><td>程序底层结构</td><td>解释"为什么加载会慢、为什么会劫持、加载器怎么做"</td></tr>
+    </table>
+    <div class="callout ok">
+      <b>一句话收束：</b>磁盘优化解决"字节怎么从盘到内存快"，Win10 优化解决"系统怎么为程序让路"，PE 格式解决"程序在盘上到底长什么样、加载器怎么翻译它"——三者合起来，才是对"Windows 为什么这么运行"的完整回答。
+    </div>
+    <p class="kref">来源：《Windows Internals, 7th Edition, Part 1》（资料库节点 GLVCPGSSHEBmgcBFIn3JKs）的镜像加载 / I/O / 进程机理章节。本页为机理梳理与工程速查，不含任何第三方图片外链，可离线阅读。</p>
+  </div>
+
+  <div class="foot">
+    本系列由 WorkBuddy 基于资料库《Windows Internals 7e Part 1》分析生成 · 仅用于学习与系统排障 · 所有优化动作请遵守"一次只改一项、可回退优先"的执行纪律。
+  </div>
+</main>
+</div>
+</body>
+</html>

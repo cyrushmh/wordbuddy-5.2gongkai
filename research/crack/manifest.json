@@ -1,0 +1,41 @@
+{
+  "title": "破解线诚实归档（iOS 书加密 zip + MongoDB PDF）",
+  "created_utc": "2026-10-18T12:00:00Z",
+  "policy": "口令来源仅限本地可枚举空间 + 自建词库；不自动访问第三方引流站（yiquma.com / manongbook.com），不提交任何信息；不臆造解密内容",
+  "targets": {
+    "ios_book": {
+      "label": "《iOS编程 第4版》iOS Programming: The Big Nerd Ranch Guide, 4th Edition（中文版）",
+      "chain": "rar(RAR5 明文) → zip①(明文) → zip②(ZipCrypto 传统加密 + Deflate) → iOS编程 第4版_.pdf(24.7MB)",
+      "encryption": "最内层 zip② 为 ZIP 传统加密（ZipCrypto），非 AES；PDF 本体在 zip 解密前不可见",
+      "password_gate": "密码链接说明.txt 指向 http://www.yiquma.com/code/Nqq18bMw0tk1h8VD（manongbook.com 引流站）",
+      "attempts": {
+        "tooling": "自研 ZipCrypto 爆破器（CPython zipfile._ZipDecrypter 口径，裸表 CRC 步进；判定=解密流前 N 字节 raw-inflate 后期待 %PDF- 前缀，阳性再 zipfile 全量解密 + CRC32 地面复核）；fcrackzip 1.0 -D 做校验位快滤（UTF-8+数据描述符标志需清洗副本）；pdfcrack/rarcrack/john 本场景不适用",
+        "batches": [
+          {"name": "主题+组合（站点/书名/引流code/弱口令/TLD/文件名）", "count": 5233, "result": "失败"},
+          {"name": "引流 code 大小写全排列", "count": 2048, "result": "失败"},
+          {"name": "纯数字 0-999999（含 4 位零填充）", "count": 1010048, "result": "失败"},
+          {"name": "rockyou.txt 全量（快滤 + 内容前缀复核 56216 过检候选）", "count": 14344391, "result": "失败"},
+          {"name": "7-8 位数字全空间（快滤 + 内容前缀复核 386934 过检候选）", "count": 99000000, "result": "失败"},
+          {"name": "空口令与单字符", "count": 39, "result": "失败"}
+        ],
+        "total_candidates": 115071759,
+        "false_positives": "curated 池 1518 候选按 1/256 校验位误报率预期 ~6 个假阳性，7z 全量复核全部失败（符合预期）",
+        "result": "全部失败",
+        "conclusion": "本地可枚举口令空间（含 rockyou 通用弱口令大全与 8 位以内数字全空间）已穷尽；口令应在 yiquma.com 引流页之后。按政策不自动访问引流站、不提交任何信息。"
+      },
+      "status": "HONEST_BLOCKED",
+      "next": "等待用户提供口令或已解密 PDF，再进入事实提炼与入库（详见 research/iosbook/manifest.json）"
+    },
+    "mongodb_pdf": {
+      "label": "MongoDB 权威指南（第2版）搬书匠中文版 PDF（5.8MB / 802 页）",
+      "encryption_check": {
+        "qpdf": "qpdf --show-encryption：未加密（无加密处理器）",
+        "pypdf": "is_encrypted=False；空口令 decrypt('') 成功，可提取正文"
+      },
+      "verdict": "NOT_ENCRYPTED —— 用户「要破解 mongodb 的 pdf」为误报；该 PDF 本就可直接读",
+      "disposition": "已作为知识库正常导入（#366-#370：data/mongo_docs.json + native/mongo.py + CLI mongo + docs/17），PDF 原件按版权边界不入库",
+      "status": "FALSE_ALARM_RESOLVED"
+    }
+  },
+  "summary": "破解线结论：iOS 书加密 zip 口令诚实阻塞（约 1.15 亿本地候选全失败，真实口令在引流站后，按政策不自动访问）；MongoDB PDF 未加密，无需破解，已入库。两项均不臆造解密内容。"
+}

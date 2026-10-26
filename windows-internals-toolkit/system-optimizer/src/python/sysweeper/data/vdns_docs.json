@@ -1,0 +1,18 @@
+{
+  "title": "虚拟根 DNS 与多 CDN 知识库（vdns）",
+  "sources": [
+    "RFC 1035（DNS）/ RFC 7858（DNS over TLS）/ RFC 8484（DNS over HTTPS）",
+    "/etc/resolv.conf 解析顺序（nameserver / search）",
+    "常见 CDN：Cloudfront / Fastly / Akamai / AliCDN / Cloudflare"
+  ],
+  "root_dns": {
+    "resolv_conf": "nameserver 顺序决定解析入口；systemd-resolved 下多为 127.0.0.53 stub",
+    "dot": "systemd-resolved DNSOverTLS / stubby / cloudflared 可作本地 DoT/DoH stub",
+    "health": "dig +short / nslookup 一次良性解析探测（绝不持续探测、绝不改 DNS）"
+  },
+  "cdn": {
+    "selection": "按地域/健康选 CDN；/etc/hosts 可就近覆写（只读观察）",
+    "known": ["cloudfront.net", "fastly.net", "akamai.net", "akamaihd.net", "alicdn.com", "cloudflare.net"]
+  },
+  "compliance": "本子系统只读观测：绝不改 resolv.conf、绝不切 DoH/DoT、绝不改 hosts"
+}

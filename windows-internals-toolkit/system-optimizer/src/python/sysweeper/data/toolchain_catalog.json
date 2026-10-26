@@ -1,0 +1,1411 @@
+{
+  "schema": "toolchain_catalog/v1",
+  "title": "工具链全景编目（宿主工具链 × 仓库工具软件 × 目标架构矩阵）",
+  "built": "2026-10-24",
+  "host": {
+    "os": "Ubuntu 24.04.3 LTS (noble) amd64",
+    "kernel_note": "环境说明写 22.04，实测 noble 24.04；一切版本以本机命令实读为准",
+    "probe_note": "所有 version 字段均为 2026-10-24 本机 --version 实读，未实读者标 needs_verify"
+  },
+  "categories": [
+    {
+      "key": "cross-compile",
+      "label": "交叉编译",
+      "note": "在 x86_64 Linux 宿主上产出其它架构/OS 的二进制：GNU 交叉、MinGW-w64、Android NDK、OpenHarmony SDK、libiconv 补齐"
+    },
+    {
+      "key": "native-build",
+      "label": "原生构建",
+      "note": "宿主本机编译/解释执行的语言工具链与构建驱动器（GCC/clang/make/cmake/cargo/go/dotnet/jdk/python/node/deno/ruby/qt）"
+    },
+    {
+      "key": "emulation",
+      "label": "仿真运行",
+      "note": "在宿主上运行异构二进制或异构 OS 程序：qemu-user（指令级）、wine（Win32 API 级）"
+    },
+    {
+      "key": "packaging",
+      "label": "打包与校验",
+      "note": "把产物封装为可分发的包并校验质量：dpkg-deb/lintian/syspkg/GitHub Actions"
+    },
+    {
+      "key": "quality",
+      "label": "质量门禁",
+      "note": "回归测试、概念同步检查、仓库护栏——提交前的自动化守门"
+    },
+    {
+      "key": "security-detect",
+      "label": "安全检测（只读）",
+      "note": "仅检测存在性与版本痕迹，绝不启动利用框架、绝不扫描、绝不发载荷"
+    },
+    {
+      "key": "vcs-network",
+      "label": "版本控制与网络",
+      "note": "源码版本管理、网络传输、远程安全与归档压缩：git / http 客户端 / rsync / ssh / openssl / 压缩套件"
+    },
+    {
+      "key": "container",
+      "label": "容器",
+      "note": "Docker 引擎与 Compose——仓库 Dockerfile/compose 的宿主实境（只读编目，不构建不拉取镜像）"
+    },
+    {
+      "key": "media",
+      "label": "媒体",
+      "note": "音视频转码与取证：ffmpeg（git 快照构建，非发行版稳定线）"
+    },
+    {
+      "key": "editor-browser",
+      "label": "编辑器与浏览器",
+      "note": "源码阅读与网页实证工具：Firefox / Google Chrome / vim 家族 / 终端复用器"
+    }
+  ],
+  "host_toolchains": [
+    {
+      "id": "gcc-multilib",
+      "category": "cross-compile",
+      "name": "GCC 13.3.0（原生 + multilib 32/x32）",
+      "version": "13.3.0-6ubuntu2~24.04.1",
+      "status": "installed",
+      "targets": [
+        "x86_64-linux-gnu",
+        "i686-linux-gnu",
+        "x32-linux-gnu"
+      ],
+      "paths": {
+        "cc": "/usr/bin/gcc",
+        "multilib": "gcc -print-multi-lib 实读 .;32;@m32;x32;@mx32"
+      },
+      "setup_steps": [
+        "apt install gcc（24.04 预装）",
+        "apt install gcc-multilib 提供 32 位支持"
+      ],
+      "commands": [
+        "gcc --version",
+        "gcc -print-multi-lib"
+      ],
+      "verify": "gcc -m32 编 hello 运行成功即 32 位库在位"
+    },
+    {
+      "id": "mingw-w64",
+      "category": "cross-compile",
+      "name": "MinGW-w64 双架构（Windows PE 交叉）",
+      "version": "GCC 13-win32（x86_64 + i686 双 triple）",
+      "status": "installed",
+      "targets": [
+        "x86_64-w64-mingw32",
+        "i686-w64-mingw32"
+      ],
+      "paths": {
+        "x86_64": "/usr/bin/x86_64-w64-mingw32-gcc",
+        "i686": "/usr/bin/i686-w64-mingw32-gcc"
+      },
+      "setup_steps": [
+        "apt install mingw-w64",
+        "（可选）mingw-w64-tools 补 wine 运行时对接"
+      ],
+      "commands": [
+        "x86_64-w64-mingw32-gcc --version",
+        "x86_64-w64-mingw32-gcc hello.c -o hello.exe",
+        "file hello.exe"
+      ],
+      "verify": "file 报 PE32+ executable (console) x86-64；本仓 peinfo.exe/peinfo32.exe 即此链产物"
+    },
+    {
+      "id": "android-ndk-r26d",
+      "category": "cross-compile",
+      "name": "Android NDK r26d（API 21 旧版打底 / API 26 项目口径）",
+      "version": "r26d（LLVM 17.0.2，clang 驱动 wrapper）",
+      "status": "installed",
+      "targets": [
+        "aarch64-linux-android21",
+        "armv7a-linux-androideabi21",
+        "x86_64-linux-android21",
+        "i686-linux-android21",
+        "API 26 变体"
+      ],
+      "paths": {
+        "bin": "/opt/android-ndk/android-ndk-r26d/toolchains/llvm/prebuilt/linux-x86_64/bin"
+      },
+      "setup_steps": [
+        "下载 android-ndk-r26d-linux.zip 并解压到 /opt/android-ndk/",
+        "确认 API 门控 wrapper：aarch64-linux-android21-clang（API 21=Android 5.0）",
+        "bionic 无 iconv（NDK r15 起移除）→ 交叉编译 GNU libiconv 1.17 补齐（见 libiconv 条）"
+      ],
+      "commands": [
+        "export NDK_BIN=/opt/android-ndk/android-ndk-r26d/toolchains/llvm/prebuilt/linux-x86_64/bin",
+        "$NDK_BIN/aarch64-linux-android21-clang hello.c -o hello-a64 -static",
+        "classics 需追加 -I/opt/libiconv-android-a64/include 与 libiconv.a libcharset.a 静态链入",
+        "bash classics-linux/build-mobile.sh 一键全矩阵"
+      ],
+      "verify": "file 报 ELF aarch64 static；qemu-user 对 bionic 三连坎（TLS 8<64/personality/linker init）→ 运行级验证不可行，构建级完整（docs/37 §5.2）"
+    },
+    {
+      "id": "libiconv-android",
+      "category": "cross-compile",
+      "name": "GNU libiconv 1.17 交叉缓存（Android 双架构）",
+      "version": "1.17",
+      "status": "installed",
+      "targets": [
+        "aarch64-linux-android",
+        "armv7a-linux-androideabi"
+      ],
+      "paths": {
+        "a64": "/opt/libiconv-android-a64",
+        "a32": "/opt/libiconv-android-a32"
+      },
+      "setup_steps": [
+        "下载 libiconv-1.17.tar.gz 解压到 /tmp/libiconv-1.17",
+        "./configure --host=aarch64-linux-android CC=$NDK_BIN/aarch64-linux-android21-clang --prefix=/opt/libiconv-android-a64 && make install-strip",
+        "为 armv7a 用 armv7a-linux-androideabi21-clang 独立 prefix 重做一遍（两架构库不通用）"
+      ],
+      "commands": [
+        "ls /opt/libiconv-android-a64/lib/libiconv.a /opt/libiconv-android-a64/lib/libcharset.a"
+      ],
+      "verify": "双架构 .a 均在位；classics Android 版链接通过（iconv_open 声明补齐）"
+    },
+    {
+      "id": "ohos-sdk",
+      "category": "cross-compile",
+      "name": "OpenHarmony SDK 6.0.0.47-Beta1（Linux 版 native 工具链）",
+      "version": "6.0.0.47-Beta1（clang 15.0.4，musl sysroot）",
+      "status": "installed",
+      "targets": [
+        "aarch64-unknown-linux-ohos",
+        "loongarch64-unknown-linux-ohos",
+        "x86_64-unknown-linux-ohos"
+      ],
+      "paths": {
+        "root": "/opt/ohos-sdk/linux",
+        "llvm": "/opt/ohos-sdk/linux/native/llvm/bin",
+        "sysroot": "/opt/ohos-sdk/linux/native/sysroot"
+      },
+      "setup_steps": [
+        "华为云镜像下载 ohos-sdk-windows_linux-public.tar.gz（2.4GB）解压到 /opt/ohos-sdk/",
+        "解压 native-linux-x64-6.0.0.47-Beta1.zip 与 toolchains-linux-x64-6.0.0.47-Beta1.zip",
+        "（qemu 动态解析 linker 可选）ln -sfn usr/lib /opt/ohos-sdk/linux/native/sysroot/lib"
+      ],
+      "commands": [
+        "export OHOS_BIN=/opt/ohos-sdk/linux/native/llvm/bin",
+        "$OHOS_BIN/aarch64-unknown-linux-ohos-clang hello.c -o hello-ohos -static",
+        "musl iconv 原生支持 GB18030 → classics 直编，无需 libiconv",
+        "qemu-aarch64-static ./hello-ohos 实跑成功（静态 musl 属 qemu 友好目标）"
+      ],
+      "verify": "qemu-aarch64-static 静态实跑通过；classics OHOS 版输出典籍文本正确（docs/37 §5.3）"
+    },
+    {
+      "id": "osxcross",
+      "category": "cross-compile",
+      "name": "osxcross（macOS 交叉，未安装）",
+      "version": "needs_verify（受 Apple EULA 限制，需自备 SDK 包）",
+      "status": "unavailable",
+      "targets": [
+        "x86_64-apple-darwin",
+        "aarch64-apple-darwin"
+      ],
+      "setup_steps": [
+        "从 macOS 宿主提取 Xcode SDK 打包（EULA 边界自负）",
+        "osxcross 配置 OCURL/macports 与 SDK 解包"
+      ],
+      "commands": [
+        "（不代执行；docs/37 §3.6 给出口径：macOS 10.13+ 路径仅在真机/Xcode 云构建）"
+      ],
+      "verify": "未安装——如实登记为不可用，不臆造产物"
+    },
+    {
+      "id": "gcc-native",
+      "category": "native-build",
+      "name": "GCC 13.3.0 原生",
+      "version": "13.3.0-6ubuntu2~24.04.1",
+      "status": "installed",
+      "targets": [
+        "x86_64-linux-gnu"
+      ],
+      "commands": [
+        "gcc --version"
+      ],
+      "verify": "classics CLI 原生构建（make -C classics-linux）"
+    },
+    {
+      "id": "clang",
+      "category": "native-build",
+      "name": "Clang/LLVM 18.1.3",
+      "version": "18.1.3 (1ubuntu1)",
+      "status": "installed",
+      "targets": [
+        "x86_64-linux-gnu（+llvm 全目标三元组矩阵见 llvm 子系统）"
+      ],
+      "commands": [
+        "clang --version",
+        "llvm-config --targets-built（未装 llvm-config 时按知识库矩阵）"
+      ],
+      "verify": "llvm 子系统 clang_report 实读（native/llvm.py）"
+    },
+    {
+      "id": "binutils-make-cmake",
+      "category": "native-build",
+      "name": "GNU ld 2.42 + Make 4.3 + CMake 3.28.3",
+      "version": "ld 2.42 / make 4.3 / cmake 3.28.3",
+      "status": "installed",
+      "commands": [
+        "ld --version",
+        "make --version",
+        "cmake --version"
+      ],
+      "verify": "classics-linux/Makefile 与 quantum-kernel 构建均走此三件套"
+    },
+    {
+      "id": "rust",
+      "category": "native-build",
+      "name": "Rust 1.93.0 + Cargo 1.93.0",
+      "version": "rustc 1.93.0 (254b59607 2026-01-19) / cargo 1.93.0 (083ac5135 2025-12-15)",
+      "status": "installed",
+      "targets": [
+        "x86_64-linux-gnu 等（cargo metadata 离线实测一致）"
+      ],
+      "paths": {
+        "toolchain": "rustup 管理",
+        "projects": [
+          "classics-rs",
+          "windows-internals-toolkit/Windows/src/rust/peinfo",
+          "windows-internals-toolkit/Windows/src/rust/peview-egui"
+        ]
+      },
+      "commands": [
+        "rustc --version",
+        "cd classics-rs && cargo build --release --offline"
+      ],
+      "verify": "cargo metadata --offline 版本串 2026.10.24（CalVer）"
+    },
+    {
+      "id": "go",
+      "category": "native-build",
+      "name": "Go 1.27.3",
+      "version": "go1.27.3 linux/amd64（GOROOT=/usr/local/go）",
+      "status": "installed",
+      "paths": {
+        "main": "system-optimizer/src/go/main.go（sysweeper Go 组件）"
+      },
+      "commands": [
+        "go version",
+        "cd windows-internals-toolkit/system-optimizer/src/go && go build"
+      ],
+      "verify": "CI 七平台交叉矩阵（GOOS/GOARCH）每次全量重编——对应 comp bringup 域工具链安全响应时钟"
+    },
+    {
+      "id": "dotnet",
+      "category": "native-build",
+      "name": ".NET 10.0.401 SDK",
+      "version": "10.0.401",
+      "status": "installed",
+      "paths": {
+        "projects": [
+          "windows-internals-toolkit/Windows/src/dotnet/PeInfo",
+          "windows-internals-toolkit/Windows/src/dotnet/PeView"
+        ]
+      },
+      "commands": [
+        "dotnet --version",
+        "dotnet build Windows/src/dotnet/PeInfo -c Release"
+      ],
+      "verify": "net6.0 无头控制台 PE 解析器（parity_test 第 5 实现）"
+    },
+    {
+      "id": "openjdk",
+      "category": "native-build",
+      "name": "OpenJDK 20",
+      "version": "20 (2023-03-21)",
+      "status": "installed",
+      "paths": {
+        "project": "windows-internals-toolkit/Windows/src/java/peinfo"
+      },
+      "commands": [
+        "java -version",
+        "javac Windows/src/java/peinfo/PeInfo.java -d /tmp/jout"
+      ],
+      "verify": "parity_test 第 6 实现；宿主持有者责任按时钟评估（docs/52 九项评估表）"
+    },
+    {
+      "id": "python",
+      "category": "native-build",
+      "name": "Python 3.11.17（CPython）",
+      "version": "3.11.17",
+      "status": "installed",
+      "paths": {
+        "package": "system-optimizer/src/python/sysweeper",
+        "packager": "system-optimizer/tools/syspkg.py"
+      },
+      "commands": [
+        "python3 --version",
+        "python3 -m pytest system-optimizer/tests -q"
+      ],
+      "verify": "全量 pytest 回归（1600+ passed）为最高频质量门禁"
+    },
+    {
+      "id": "node",
+      "category": "native-build",
+      "name": "Node.js 22.13.1",
+      "version": "v22.13.1",
+      "status": "installed",
+      "paths": {
+        "project": "novel-website（server.js/publish.js）"
+      },
+      "commands": [
+        "node --version"
+      ],
+      "verify": "novel-website 本地服务器；版本新鲜度见 docs/52 评估（22.13.1→22.23.4 建议）"
+    },
+    {
+      "id": "deno",
+      "category": "native-build",
+      "name": "Deno 2.9.8",
+      "version": "2.9.8 (stable, release, x86_64-unknown-linux-gnu)",
+      "status": "installed",
+      "paths": {
+        "files": [
+          "system-optimizer/src/deno/console.ts",
+          "system-optimizer/src/deno/report_viewer.ts"
+        ]
+      },
+      "commands": [
+        "deno --version",
+        "deno check system-optimizer/src/deno/console.ts"
+      ],
+      "verify": "Deno 本机 Web 控制台 + Deploy 报告查看器（webapi JSON 消费端）"
+    },
+    {
+      "id": "ruby",
+      "category": "native-build",
+      "name": "Ruby 3.2.3",
+      "version": "3.2.3 (2024-01-18 revision 52bb2ac0a6)",
+      "status": "installed",
+      "paths": {
+        "project": "windows-internals-toolkit/Windows/src/ruby/peinfo"
+      },
+      "commands": [
+        "ruby --version",
+        "ruby Windows/src/ruby/peinfo/peinfo.rb <exe>"
+      ],
+      "verify": "parity_test 实现之一（--json 输出对齐）"
+    },
+    {
+      "id": "qt",
+      "category": "native-build",
+      "name": "Qt 5.15.13（qmake 3.1，PyQt/PySide 桥）",
+      "version": "5.15.13 in /usr/lib/x86_64-linux-gnu",
+      "status": "installed",
+      "paths": {
+        "project": "windows-internals-toolkit/Windows/src/python/peview_qt.py"
+      },
+      "commands": [
+        "qmake --version"
+      ],
+      "verify": "peview_qt.py GUI 版 PE 查看器（Linux 原生 Qt 栈）"
+    },
+    {
+      "id": "qemu-user",
+      "category": "emulation",
+      "name": "qemu-user 8.2.2",
+      "version": "8.2.2 (Debian 1:8.2.2+ds-0ubuntu1.18)",
+      "status": "installed",
+      "targets": [
+        "aarch64（实测友好：OHOS musl 静态实跑通过）",
+        "glibc 静态（classics deb arm64/armhf 实跑）"
+      ],
+      "commands": [
+        "qemu-aarch64-static ./hello-ohos",
+        "qemu-aarch64-static ./classics-arm64"
+      ],
+      "verify": "已知边界：bionic 静态三连坎（TLS 对齐 8<64 / personality 被沙箱拒 / 动态 linker init SIGSEGV）→ Android 运行级验证不可行（docs/37 §5.2 如实记录）"
+    },
+    {
+      "id": "wine",
+      "category": "emulation",
+      "name": "Wine 9.0",
+      "version": "wine-9.0 (Ubuntu 9.0~repack-4build3)",
+      "status": "installed",
+      "commands": [
+        "wine --version",
+        "wine peinfo.exe"
+      ],
+      "verify": "PE 查看器 exe 在 Linux 宿主仿真运行（Windows/src/c/peinfo 产物验收手段）"
+    },
+    {
+      "id": "firefox",
+      "category": "editor-browser",
+      "name": "Mozilla Firefox 158.0.1",
+      "version": "158.0.1",
+      "status": "installed",
+      "commands": [
+        "firefox --version"
+      ],
+      "verify": "concept_gui.html / report_viewer.html / PE 格式文档页实证查看"
+    },
+    {
+      "id": "dpkg-lintian",
+      "category": "packaging",
+      "name": "dpkg 1.22.6 + lintian 2.117.0",
+      "version": "dpkg 1.22.6 (amd64) / Lintian v2.117.0ubuntu1.5",
+      "status": "installed",
+      "paths": {
+        "scripts": [
+          "classics-linux/build-debs.sh",
+          "quantum-kernel/desktop/build-debs.sh"
+        ]
+      },
+      "commands": [
+        "dpkg --compare-versions 0001.0000.0000.0000.20261024 gt 0.1.0 && echo ok",
+        "lintian --no-tag-display-limit *.deb"
+      ],
+      "verify": "classics deb 迁移税实测：A 段置 1 保证 dpkg 版本序不降级；lintian 零 error"
+    },
+    {
+      "id": "metasploit",
+      "category": "security-detect",
+      "name": "Metasploit Framework 6.5.3（仅检测，红线不启动）",
+      "version": "6.5.3（官方 msfinstall 落盘 /usr/bin/msfconsole + /opt/metasploit-framework）",
+      "status": "installed",
+      "commands": [
+        "（不执行）secdetect.probe_msf / msf_version_report 只读解析"
+      ],
+      "verify": "secdetect 子系统 detected=true（12 命令 + /opt 目录 + apt 三痕迹）；全程未启动 msfconsole、无扫描、无载荷（#579 实证）"
+    },
+    {
+      "id": "git",
+      "category": "vcs-network",
+      "name": "Git 2.43.0（分布式版本控制）",
+      "version": "2.43.0",
+      "status": "installed",
+      "paths": {
+        "binary": "/usr/bin/git",
+        "repos": [
+          "windows-internals-toolkit（git 根，origin=GitHub main）",
+          "classics-linux",
+          "quantum-kernel"
+        ]
+      },
+      "commands": [
+        "git --version",
+        "git -C . log --oneline -3",
+        "git status --porcelain"
+      ],
+      "verify": "全仓提交历史真实连续；上游 2.55.0 已出（freshness 表 needs_action）"
+    },
+    {
+      "id": "http-clients",
+      "category": "vcs-network",
+      "name": "HTTP 客户端（curl 8.5.0 + wget 1.21.4）",
+      "version": "curl 8.5.0-2ubuntu3 / wget 1.21.4-1ubuntu4.1",
+      "status": "installed",
+      "commands": [
+        "（只读用法）curl -sI <url> 取响应头核实在线事实",
+        "（只读用法）wget -q -O - <url> 抓取网页正文"
+      ],
+      "verify": "docs/52–68 各轮网页查据的抓取手段；红线：本 catalog 与 toolchain 源码零写路径（禁执行下载落盘）"
+    },
+    {
+      "id": "rsync",
+      "category": "vcs-network",
+      "name": "rsync 3.2.7（增量同步）",
+      "version": "3.2.7-1ubuntu1",
+      "status": "installed",
+      "commands": [
+        "rsync --version"
+      ],
+      "verify": "增量传输工具在位；上游 3.4.x 已出（freshness needs_action 登记）"
+    },
+    {
+      "id": "openssl",
+      "category": "vcs-network",
+      "name": "OpenSSL 3.0.13（密码学工具库）",
+      "version": "3.0.13-0ubuntu3.6",
+      "status": "installed",
+      "paths": {
+        "binary": "/usr/bin/openssl",
+        "note": "版本旗标为 openssl version（非 --version）"
+      },
+      "commands": [
+        "openssl version",
+        "openssl version -a（编译参数与 OPENSSLDIR）"
+      ],
+      "verify": "3.0 系列已于 2026-09-07 EOL（公开安全修复终止）——freshness 表最高优先级项"
+    },
+    {
+      "id": "ssh",
+      "category": "vcs-network",
+      "name": "OpenSSH 9.6p1（远程安全 shell）",
+      "version": "OpenSSH_9.6p1 Ubuntu-3ubuntu13.14",
+      "status": "installed",
+      "commands": [
+        "ssh -V（大写 -V，与其它工具 --version 不同）"
+      ],
+      "verify": "git push/pull over SSH 的承载；上游 10.x 已出（freshness 登记）"
+    },
+    {
+      "id": "compression-suite",
+      "category": "vcs-network",
+      "name": "压缩归档套件（tar/gzip/xz/zstd/unzip）",
+      "version": "tar 1.35 / gzip 1.12 / xz 5.4.5 / zstd 1.5.5 / unzip 6.00",
+      "status": "installed",
+      "commands": [
+        "tar --version",
+        "zstd --version",
+        "unzip -v（小写 -v）"
+      ],
+      "verify": "上游 tarball 解包校验（NDK/OHOS SDK/libiconv/内核树）；curl 下载页 tarball 亦用此套件验签"
+    },
+    {
+      "id": "docker",
+      "category": "container",
+      "name": "Docker Engine 27.5.1（CLI + daemon）",
+      "version": "Docker version 27.5.1, build 9f9e405",
+      "status": "installed",
+      "paths": {
+        "compose": "system-optimizer/docker-compose.yml",
+        "dockerfile": "system-optimizer/Dockerfile"
+      },
+      "commands": [
+        "docker --version",
+        "（只读）docker images / docker ps 列出本地镜像与容器"
+      ],
+      "verify": "宿主 daemon 在位；本 catalog 纪律=只读编目不构建不拉取；上游 29.9.1 已出（freshness needs_action）"
+    },
+    {
+      "id": "ffmpeg",
+      "category": "media",
+      "name": "FFmpeg（git 快照构建，非发行版）",
+      "version": "N-124111-g9e90fa505e-20260427（构建日 2026-04-27）",
+      "status": "installed",
+      "commands": [
+        "ffmpeg -version（注意：ffmpeg 用 -version 而非 --version）"
+      ],
+      "verify": "位介于上游 8.1 与 9.0 之间的滚动快照；上游 stable 9.0.2（2026-09-18）已出（freshness 登记）"
+    },
+    {
+      "id": "chrome",
+      "category": "editor-browser",
+      "name": "Google Chrome 144.0.7559.132（stable 通道）",
+      "version": "144.0.7559.132",
+      "status": "installed",
+      "paths": {
+        "binary": "/opt/google/chrome/google-chrome",
+        "symlink": "/usr/bin/chromium → /opt/google/chrome/google-chrome"
+      },
+      "commands": [
+        "google-chrome --version"
+      ],
+      "verify": "网页实证第二通道；上游 stable 152（2026-09-01）已出，落后 8 个大版本（freshness needs_action）"
+    },
+    {
+      "id": "editor-suite",
+      "category": "editor-browser",
+      "name": "编辑器三巨头（vim 9.1 / nvim 0.9.5 / emacs 29.3）",
+      "version": "VIM - Vi IMproved 9.1 / NVIM v0.9.5 / GNU Emacs 29.3",
+      "status": "installed",
+      "commands": [
+        "vim --version | head -1",
+        "nvim --version | head -1",
+        "emacs --version | head -1"
+      ],
+      "verify": "均随 Ubuntu 24.04 钉住；上游 vim 9.2 / nvim 0.12 / emacs 31.1 均已出（freshness 逐条登记）"
+    },
+    {
+      "id": "terminal-mux",
+      "category": "editor-browser",
+      "name": "终端复用器（tmux 3.4 + screen 4.09.01）",
+      "version": "tmux 3.4 / screen 4.09.01 (GNU) 2022-08-03",
+      "status": "installed",
+      "commands": [
+        "tmux -V（大写 -V）",
+        "screen --version"
+      ],
+      "verify": "长时任务会话保持；上游 tmux 3.8（2026-10-08）已出（freshness needs_action）"
+    },
+    {
+      "id": "binary-inspect",
+      "category": "quality",
+      "name": "二进制检查三件套（file 5.45 / xxd / patchelf 0.18.0）",
+      "version": "file 5.45 / xxd 2023-10-25 / patchelf 0.18.0",
+      "status": "installed",
+      "commands": [
+        "file <exe>（PE32/ELF 类型判定）",
+        "xxd <bin> | head（十六进制转储）",
+        "patchelf --version"
+      ],
+      "verify": "交叉产物验收主力：file 判 PE/ELF、xxd 查字节序、patchelf 改 rpath/interpreter"
+    },
+    {
+      "id": "autotools-suite",
+      "category": "quality",
+      "name": "Autotools 套件（autoconf 2.71 / automake 1.16.5 / flex 2.6.4 / bison 3.8.2 / pkg-config 1.8.1）",
+      "version": "autoconf 2.71 / automake 1.16.5 / flex 2.6.4 / bison 3.8.2 / pkg-config 1.8.1",
+      "status": "installed",
+      "commands": [
+        "autoconf --version | head -1",
+        "pkg-config --version"
+      ],
+      "verify": "libiconv 交叉 configure 的承载；与 make/cmake 构成原生构建全家福"
+    },
+    {
+      "id": "debug-trace",
+      "category": "quality",
+      "name": "调试追踪四件套（gdb 15.1 / strace 6.8 / ltrace 0.7.3 / valgrind 3.22.0）",
+      "version": "gdb 15.1 / strace 6.8 / ltrace 0.7.3 / valgrind 3.22.0",
+      "status": "installed",
+      "commands": [
+        "gdb --version | head -1",
+        "valgrind --version"
+      ],
+      "verify": "黑箱逆向与内存安全取证工具（comp 黑箱逆向域实境支撑）；上游 gdb 17.x 已出（freshness 登记）"
+    },
+    {
+      "id": "lint-format",
+      "category": "quality",
+      "name": "Lint 与格式化（clang-format 18.1.3 / clang-tidy 18.1.3 / shellcheck）",
+      "version": "clang-format 18.1.3 / clang-tidy 18.1.3 / ShellCheck - version 0.9.0",
+      "status": "installed",
+      "paths": {
+        "ci_note": "宿主可用，但 .github/workflows 未接入（仅 build.yml 两 job）——如实登记未落地"
+      },
+      "commands": [
+        "clang-format --version",
+        "clang-tidy --version | head -1",
+        "shellcheck --version | grep version"
+      ],
+      "verify": "lint-gate 概念 counterpart：宿主三件套在位、CI 未接入（docs/57 如实口径）"
+    },
+    {
+      "id": "build-extra",
+      "category": "native-build",
+      "name": "附加构建驱动器（ninja 1.11.1 / meson 1.3.2 / scons 4.5.2）",
+      "version": "ninja 1.11.1 / meson 1.3.2 / SCons v4.5.2.120fd4f6",
+      "status": "installed",
+      "commands": [
+        "ninja --version",
+        "meson --version",
+        "scons --version"
+      ],
+      "verify": "与 make/cmake 并列的备选构建路径；上游 ninja 1.13.2 / meson 1.12.1 / scons 4.11.1 均已出（freshness 逐条登记）"
+    },
+    {
+      "id": "text-data-utils",
+      "category": "native-build",
+      "name": "文本与数据工具（jq 1.7 / mawk 1.3.4 / bc 1.07.1）",
+      "version": "jq-1.7 / mawk 1.3.4 / bc 1.07.1",
+      "status": "installed",
+      "commands": [
+        "jq --version",
+        "awk -W version 2>&1 | head -1",
+        "bc --version | head -1"
+      ],
+      "verify": "JSON/文本数据处理（sysweeper 报告消费链）；上游 jq 1.8.2 修 17 CVE（freshness 高优先级）"
+    },
+    {
+      "id": "perl",
+      "category": "native-build",
+      "name": "Perl 5.38.2（系统脚本承载）",
+      "version": "v5.38.2",
+      "status": "installed",
+      "paths": {
+        "binary": "/usr/bin/perl"
+      },
+      "commands": [
+        "perl -v（小写 -v，首行含版本）"
+      ],
+      "verify": "随 Debian/Ubuntu 系统组件分发；5.38 安全补丁已于 2026-07-02 止（freshness needs_action）"
+    },
+    {
+      "id": "tcl",
+      "category": "native-build",
+      "name": "Tcl 8.6（tclsh 解释器）",
+      "version": "8.6",
+      "status": "installed",
+      "paths": {
+        "binary": "/usr/bin/tclsh",
+        "note": "版本旗标特殊：tclsh 输入 puts $tcl_version 读取内建变量"
+      },
+      "commands": [
+        "echo 'puts $tcl_version' | tclsh"
+      ],
+      "verify": "上游 Tcl/Tk 9.1.0（2026-09-29）已出，8→9 大版本有不兼容（freshness needs_action）"
+    }
+  ],
+  "repo_tools": [
+    {
+      "id": "pe-viewer-family",
+      "category": "native-build",
+      "name": "PE 查看器家族（11 个源目录 / 10 门语言实现）",
+      "version": "各语言独立版本（parity_test 一致性对齐）",
+      "status": "verified",
+      "paths": [
+        "windows-internals-toolkit/Windows/src/c/peinfo（C CLI）",
+        "windows-internals-toolkit/Windows/src/c/win32_gui（C Win32 GUI）",
+        "windows-internals-toolkit/Windows/src/dotnet/PeInfo + PeView（.NET 无头控制台 + GUI）",
+        "windows-internals-toolkit/Windows/src/java/peinfo（OpenJDK）",
+        "windows-internals-toolkit/Windows/src/powershell/PEInfo-Gui.ps1 + Optimize-Windows10.ps1",
+        "windows-internals-toolkit/Windows/src/python/gui_peview.py + pe_inspect.py + peview_qt.py",
+        "windows-internals-toolkit/Windows/src/ruby/peinfo",
+        "windows-internals-toolkit/Windows/src/rust/peinfo + peview-egui",
+        "windows-internals-toolkit/Windows/src/vba/PEInfo"
+      ],
+      "setup_steps": [
+        "按语言装对应工具链（见 host_toolchains）",
+        "进入各目录按 README/构建脚本编译"
+      ],
+      "commands": [
+        "python3 Windows/src/python/parity_test.py <exe>（跨语言一致性测试）",
+        "wine peinfo.exe（仿真验收）"
+      ],
+      "verify": "--json 输出跨语言逐字段一致（parity_test）；exe 产物 file + wine 实证"
+    },
+    {
+      "id": "classics-cli",
+      "category": "native-build",
+      "name": "classics 命令行（C，GB18030 编码安全）",
+      "version": "0001.0000.0000.0000.20261024",
+      "status": "verified",
+      "paths": [
+        "classics-linux/src/classics.c",
+        "classics-linux/Makefile",
+        "classics-linux/data/"
+      ],
+      "setup_steps": [
+        "make -C classics-linux",
+        "（移动平台）bash classics-linux/build-mobile.sh"
+      ],
+      "commands": [
+        "./classics-linux/classics --help",
+        "./classics-linux/classics ddj 1（道德经第 1 章，编码无损）"
+      ],
+      "verify": "四发行版 deb（dpkg --compare-versions 版本序 + lintian）+ Android×3 + OHOS×1 交叉产物（#576/#578 实证）"
+    },
+    {
+      "id": "classics-rs",
+      "category": "native-build",
+      "name": "classics-rs（Rust 全平台编码安全工具）",
+      "version": "2026.10.24",
+      "status": "verified",
+      "paths": [
+        "classics-rs/",
+        "classics-rs/build-rs.sh",
+        "classics-rs/wasm/"
+      ],
+      "setup_steps": [
+        "rustup 装 stable 工具链（rustc/cargo）",
+        "cd classics-rs && cargo fetch --offline 备齐依赖"
+      ],
+      "commands": [
+        "cd classics-rs && cargo build --release --offline",
+        "cargo metadata --offline --no-deps | grep version"
+      ],
+      "verify": "wasm 目标产物（Windows/Android/Web 三端口）"
+    },
+    {
+      "id": "sysweeper",
+      "category": "quality",
+      "name": "sysweeper（system-optimizer 万能系统优化包）",
+      "version": "0000.0000.0000.0017.20261025",
+      "status": "verified",
+      "paths": [
+        "windows-internals-toolkit/system-optimizer/",
+        "src/python/sysweeper/",
+        "src/go/main.go",
+        "src/deno/console.ts",
+        "src/deno/report_viewer.ts"
+      ],
+      "setup_steps": [
+        "export PYTHONPATH=.../system-optimizer/src/python",
+        "（可选）deno run --allow-net src/deno/console.ts 起本机 Web 控制台",
+        "（可选）python3 tools/syspkg.py build 打 .pyz"
+      ],
+      "commands": [
+        "python3 -m sysweeper detect（系统识别）",
+        "python3 -m sysweeper scan（分析模式零修改）",
+        "python3 -m sysweeper toolchain（本子系统报告，新增）",
+        "python3 -m pytest tests -q（1600+ 全量回归）"
+      ],
+      "verify": "五处活版本同步（version.py/pyproject/main.go/console.ts/report_viewer.ts）+ repo guard SHA 守护"
+    },
+    {
+      "id": "syspkg",
+      "category": "packaging",
+      "name": "syspkg（Python 语言底层打包器）",
+      "version": "随 sysweeper 0017",
+      "status": "verified",
+      "paths": [
+        "windows-internals-toolkit/tools/syspkg.py"
+      ],
+      "setup_steps": [
+        "纯标准库单文件，无依赖"
+      ],
+      "commands": [
+        "python3 tools/syspkg.py build system-optimizer/src/python -o dist/",
+        "python3 sysweeper-*.pyz detect"
+      ],
+      "verify": "sdist + wheel + .pyz 三形态（版本串原样写入零依赖）；2026-10-25 #662 本地全矩阵实跑：all 12 产物 file 校验 + smoke ok=true，pyz 已上 CI（docs/80）"
+    },
+    {
+      "id": "novel-website",
+      "category": "native-build",
+      "name": "novel-website（Deno/Node 双端站点）",
+      "version": "2026.10.24",
+      "status": "verified",
+      "paths": [
+        "windows-internals-toolkit/novel-website/"
+      ],
+      "setup_steps": [
+        "node server.js 本地起站",
+        "（可选）deno 版控制台消费同一数据"
+      ],
+      "commands": [
+        "node server.js",
+        "node publish.js"
+      ],
+      "verify": "package.json version 与 CalVer 口径一致"
+    },
+    {
+      "id": "classics-swift-linux",
+      "category": "native-build",
+      "name": "classics-swift-linux（Swift 典籍工具 · Linux 原生编译）",
+      "version": "随 classics-swift-linux/README",
+      "status": "partial",
+      "paths": [
+        "classics-swift-linux/"
+      ],
+      "setup_steps": [
+        "swift 工具链（Linux 可编译，swift.org 官方 apt 源；Xcode 仅 macOS）",
+        "swift build 前确认 Package.swift 依赖闭包离线可解析"
+      ],
+      "commands": [
+        "cd classics-swift-linux && swift build（Linux 原生）",
+        "swift test（C 核交叉验证：与 classics-linux/classics.c 逐字段对账）"
+      ],
+      "verify": "swift build 成功产出典籍解析；C 核与 classics-linux 一致"
+    },
+    {
+      "id": "classics-harmony-app",
+      "category": "cross-compile",
+      "name": "classics-harmony-app（HarmonyOS 道家经典应用）",
+      "version": "随 classics-harmony-app/README（API 12→16 已标注）",
+      "status": "partial",
+      "paths": [
+        "classics-harmony-app/"
+      ],
+      "setup_steps": [
+        "HarmonyOS：hvigorw + DevEco（本机无 DevEco，CI 构建）",
+        "签名配置 + 本地脚本就绪（见仓库 README 与 HAP 构建说明）"
+      ],
+      "commands": [
+        "（CI）GitHub Actions 构建 HAP",
+        "（本地）hvigorw assembleHap（需 DevEco/SDK，桌面 GUI 受限）"
+      ],
+      "verify": "HAP 构建就绪（签名配置+本地脚本+CI）；API 12→16 标注到位"
+    },
+    {
+      "id": "classics-ios-mac",
+      "category": "cross-compile",
+      "name": "classics-ios-mac（iOS/macOS SwiftUI 分支）",
+      "version": "随 classics-ios-mac/README（项目口径 API 12→16）",
+      "status": "partial",
+      "paths": [
+        "classics-ios-mac/"
+      ],
+      "setup_steps": [
+        "Xcode / SwiftUI（仅 macOS 桌面 GUI，Linux 无 Xcode）",
+        "osxcross 旧版 macOS/iOS 路径受 Apple EULA 限制（需用户自带 SDK 包）"
+      ],
+      "commands": [
+        "（macOS）xcodebuild -scheme classics-ios-mac",
+        "（CI）GitHub Actions macOS runner 构建"
+      ],
+      "verify": "SwiftUI 工程骨架就位；API 12→16 标注；受 Apple EULA 限制如实记录"
+    },
+    {
+      "id": "android-app",
+      "category": "cross-compile",
+      "name": "android-app（Android Compose 工程 · API 34/min 26）",
+      "version": "随 windows-internals-toolkit/android/README",
+      "status": "partial",
+      "paths": [
+        "windows-internals-toolkit/android/"
+      ],
+      "setup_steps": [
+        "Android：gradlew assembleDebug（targetSdk 34 / minSdk 26）",
+        "交叉验证 C 核经 classics-linux/build-mobile.sh（Android×3 实证）"
+      ],
+      "commands": [
+        "bash classics-linux/build-mobile.sh（交叉验证 C 核，Android hello×3 + classics×3）",
+        "（CI）GitHub Actions android-apk.yml"
+      ],
+      "verify": "Android APK CI 已修 setup-android 失效（#438）；静态产物 file 实证"
+    },
+    {
+      "id": "quantum-kernel",
+      "category": "native-build",
+      "name": "quantum-kernel（量子架构内核 · Linux 6.18.57 LTS + arch/quantum）",
+      "version": "0.6.80（打包 deb；README 基线 v0.6.79）",
+      "status": "verified",
+      "paths": [
+        "quantum-kernel/（arch/quantum/ 新增架构 + drivers/quantum/ + include/uapi/linux/quantum.h）",
+        "quantum-kernel/patches/（基线 6.18.57 + 5 LTS 分支：6.12/6.6/6.1/5.15/5.10）",
+        "quantum-kernel/scripts/（fetch_kernel.sh / build.sh / regen_base_patch.py / gen_version_patch.py / quantum-testbed.sh）",
+        "quantum-kernel/linux-6.18.57/（上游完整内核树，本地保留，/linux-*/ 排除 git）"
+      ],
+      "setup_steps": [
+        "bash quantum-kernel/scripts/fetch_kernel.sh（下载/校验/解压上游 LTS 基线，生成本地 linux-6.18.57/，不入 git）",
+        "bash quantum-kernel/scripts/build.sh（三层构建验收：补丁 round-trip + 内核构建 + deb 产物）"
+      ],
+      "commands": [
+        "python3 quantum-kernel/scripts/gen_version_patch.py <ver>（按目标版本内核面重生分支补丁，零 fuzz/offset）",
+        "python3 quantum-kernel/scripts/regen_base_patch.py（从源码重生基线补丁，含完整性硬校验）",
+        "dpkg -i quantum-kernel/quantum-core_0.6.80_amd64.deb quantum-kernel/xfce4-quantum_0.6.80_all.deb（验收产物）"
+      ],
+      "verify": "补丁对 6.18.57 树 round-trip（洁净应用且复现整树）；六分支补丁按目标内核面重建零 fuzz/offset；deb 产物 quantum-core_0.6.80 + xfce4-quantum_0.6.80 可装"
+    },
+    {
+      "id": "docker-support",
+      "category": "container",
+      "name": "Docker 支持（Dockerfile + docker-compose.yml）",
+      "version": "随 sysweeper 0017",
+      "status": "verified",
+      "paths": [
+        "system-optimizer/Dockerfile",
+        "system-optimizer/docker-compose.yml"
+      ],
+      "setup_steps": [
+        "（本 catalog 纪律：只读编目，不本地构建不拉取镜像）",
+        "CI/持有者侧：docker build -t sysweeper . && docker compose up"
+      ],
+      "commands": [
+        "（不代执行）docker build / docker compose up——镜像层以 Dockerfile 声明为准"
+      ],
+      "verify": "两文件真实存在；container 子系统与 comp container-toolchain 概念的 counterpart 证据"
+    },
+    {
+      "id": "ci-workflows",
+      "category": "quality",
+      "name": "CI 工作流（GitHub Actions，外层 7 个 + 内层/Windows 各 1 个）",
+      "version": "随仓库（tag v* 触发 + workflow_dispatch）",
+      "status": "verified",
+      "paths": [
+        ".github/workflows/ 实数 7 个（find 实证）：build.yml（build-python：pytest 全量 + syspkg sdist/wheel/**pyz+smoke**；build-go：go vet + 三 OS×三架构交叉矩阵）、audit-concepts.yml、audit-standards-eol.yml、build-android.yml、build-harmony.yml、build-python.yml、lint-shell.yml（shellcheck 白名单门禁，#652）",
+        "windows-internals-toolkit/.github/workflows/build.yml（内层 CI）",
+        "windows-internals-toolkit/Windows/.github/workflows/build.yml（Windows 侧构建）"
+      ],
+      "setup_steps": [
+        "shellcheck 一环已接入 CI（#652）：lint-shell.yml 先 apt 安装 shellcheck 再跑 scripts/check_shell_lint.sh 白名单门禁——本地门禁的 SKIP 语义不适用于 CI",
+        "hadolint / actionlint 宿主缺席、CI 未接入——如实挂 needs_action（lint-gate 概念「部分落地」分级）"
+      ],
+      "commands": [
+        "（不代执行）GitHub Actions 页观察构建结果"
+      ],
+      "verify": "全仓 workflow 文件实数 9 个（find 实证：外层 .github/workflows 7 + 内层 .github 1 + Windows/.github 1）；build-python 的 .pyz 缺口已补（#662：两份 build.yml 均含 pyz 构建 + smoke 步，docs/37 首推产物得以上 Release）；lint 三件套中 shellcheck 已落地 CI，hadolint/actionlint 挂 needs_action，docs/57 §2.13 同口径"
+    },
+    {
+      "id": "repo-guard",
+      "category": "quality",
+      "name": "仓库护栏（scripts/check_repo_guard.py + 测试）",
+      "version": "随仓库",
+      "status": "verified",
+      "paths": [
+        "scripts/check_repo_guard.py",
+        "system-optimizer/tests/test_repo_guard.py"
+      ],
+      "setup_steps": [
+        "纯标准库，随 pytest 全量回归执行"
+      ],
+      "commands": [
+        "python3 scripts/check_repo_guard.py（许可证白名单 + 构建产物 SHA 守护，见 #211）"
+      ],
+      "verify": "护栏逻辑有对应单测守护；提交前质量门禁一环"
+    },
+    {
+      "id": "release-matrix",
+      "category": "packaging",
+      "name": "release 资产矩阵（#662：12 syspkg 产物 + 10 classics-rs + Windows PE 家族）",
+      "version": "随 sysweeper 0023（2026-10-25 本地构建实登）",
+      "status": "verified",
+      "paths": [
+        "windows-internals-toolkit/tools/syspkg.py（all 子命令：pyz/wheel/sdist noarch + go×7 + rust-native）",
+        "classics-rs/build-rs.sh（Linux 7 架构 + Windows×2 + WASM 共 10 目标）",
+        "windows-internals-toolkit/Windows/build.sh（C/Rust PE 家族，arm64 步如实中断）",
+        "docs/80_release架构包完善-本地全矩阵构建与CI pyz缺口补齐.md（资产矩阵与缺口清单）"
+      ],
+      "setup_steps": [
+        "宿主工具链全在场（2026-10-25 实读）：go 1.27.3 / rustc 1.93.0（10 rustup targets）/ 6 个交叉 gcc + mingw x86_64/i686 / java 20 / gradle 9.3.0",
+        "cargo registry 缓存 encoding_rs-0.8.42（classics-rs 唯一外部依赖）——可离线构建",
+        "构建命令：python3 tools/syspkg.py all --out <dir>；classics-rs/build-rs.sh；Windows/build.sh"
+      ],
+      "commands": [
+        "python3 tools/syspkg.py all --out /tmp/dist-662   # 12 产物（本地实测）",
+        "python3 tools/syspkg.py smoke --out /tmp/dist-662 # pyz 冒烟（实测 ok=true）",
+        "classics-rs/build-rs.sh                            # 10/10（本地实测）"
+      ],
+      "verify": "2026-10-25 本地全矩阵：syspkg 12 产物（pyz 27766a52925311ce / go×7 / rust-native×2，file 逐一行校验）+ classics-rs 10/10 + Windows PE 4 产物（arm64 步缺 aarch64-w64-mingw32-gcc 如实中断）；CI 覆盖：go×7 与 classics-rs×10 在 CI 矩阵，pyz+smoke 已于 #662 补入两份 build.yml；缺口（needs_action）：Windows ARM64 的 C/Rust 工具链（apt 无 mingw aarch64；rustc 无 aarch64-pc-windows-gnu，gnullvm 变体受网络传输停滞阻塞）、Android APK 未上 CI（需网络 SDK）——详见 docs/80 §五"
+    }
+  ],
+  "target_matrix": [
+    {
+      "triple": "x86_64-linux-gnu",
+      "os": "Linux (glibc)",
+      "toolchain": "gcc 13.3.0",
+      "verified": "native 全量（pytest/deb/qemu）"
+    },
+    {
+      "triple": "i686-linux-gnu",
+      "os": "Linux (glibc 32)",
+      "toolchain": "gcc -m32 multilib",
+      "verified": "构建通过"
+    },
+    {
+      "triple": "x86_64-w64-mingw32",
+      "os": "Windows PE32+",
+      "toolchain": "mingw-w64 GCC 13-win32",
+      "verified": "peinfo.exe + wine 实跑"
+    },
+    {
+      "triple": "i686-w64-mingw32",
+      "os": "Windows PE32",
+      "toolchain": "mingw-w64 GCC 13-win32",
+      "verified": "peinfo32.exe + wine 实跑"
+    },
+    {
+      "triple": "aarch64-linux-android21",
+      "os": "Android 5.0+ (bionic)",
+      "toolchain": "NDK r26d + libiconv 1.17",
+      "verified": "构建级（qemu 三连坎见 emulation 注）"
+    },
+    {
+      "triple": "armv7a-linux-androideabi21",
+      "os": "Android 5.0+ (bionic ARM32)",
+      "toolchain": "NDK r26d + libiconv 1.17 a32",
+      "verified": "构建级"
+    },
+    {
+      "triple": "x86_64-linux-android21",
+      "os": "Android 模拟器 (bionic)",
+      "toolchain": "NDK r26d",
+      "verified": "构建级"
+    },
+    {
+      "triple": "aarch64-unknown-linux-ohos",
+      "os": "OpenHarmony (musl)",
+      "toolchain": "ohos-sdk 6.0.0.47 clang 15.0.4",
+      "verified": "qemu-aarch64-static 静态实跑通过"
+    },
+    {
+      "triple": "loongarch64-unknown-linux-ohos",
+      "os": "OpenHarmony 龙芯 (musl)",
+      "toolchain": "ohos-sdk llvm",
+      "verified": "工具链在位（wrapper 实读）"
+    },
+    {
+      "triple": "arm64/armhf × debian(bookworm/trixie)+ubuntu(jammy/noble)",
+      "os": "deb 矩阵",
+      "toolchain": "gcc 交叉 + dpkg-buildpackage",
+      "verified": "dpkg 版本序 + lintian + qemu 实跑（#570-#574）"
+    },
+    {
+      "triple": "noarch (py3-none-any)",
+      "os": "任意（Python ≥3.8）",
+      "toolchain": "python3 stdlib zipapp（syspkg 手写 PEP427）",
+      "verified": "pyz/wheel/sdist 三形态本地构建 + smoke ok（#662）"
+    },
+    {
+      "triple": "go:linux-amd64",
+      "os": "Linux · x86-64",
+      "toolchain": "go 1.27.3 CGO_ENABLED=0",
+      "verified": "本地构建 + file（ELF 静态）+ CI 矩阵"
+    },
+    {
+      "triple": "go:linux-arm64",
+      "os": "Linux · ARM64",
+      "toolchain": "go 1.27.3 CGO_ENABLED=0",
+      "verified": "本地构建 + file（ELF aarch64 静态）+ CI 矩阵"
+    },
+    {
+      "triple": "go:linux-riscv64",
+      "os": "Linux · RISC-V",
+      "toolchain": "go 1.27.3 CGO_ENABLED=0",
+      "verified": "本地构建 + file（ELF RISC-V 静态）+ CI 矩阵"
+    },
+    {
+      "triple": "go:windows-amd64",
+      "os": "Windows PE32+",
+      "toolchain": "go 1.27.3 CGO_ENABLED=0",
+      "verified": "本地构建 + file（PE32+ x86-64）+ CI 矩阵"
+    },
+    {
+      "triple": "go:windows-arm64",
+      "os": "Windows PE32+ ARM64",
+      "toolchain": "go 1.27.3 CGO_ENABLED=0",
+      "verified": "本地构建 + file（PE32+ Aarch64）+ CI 矩阵"
+    },
+    {
+      "triple": "go:darwin-arm64",
+      "os": "macOS · Apple Silicon",
+      "toolchain": "go 1.27.3 CGO_ENABLED=0",
+      "verified": "本地构建 + file（Mach-O arm64）+ CI 矩阵"
+    },
+    {
+      "triple": "go:darwin-amd64",
+      "os": "macOS · Intel",
+      "toolchain": "go 1.27.3 CGO_ENABLED=0",
+      "verified": "本地构建 + file（Mach-O x86_64）+ CI 矩阵"
+    },
+    {
+      "triple": "classics:x86_64-unknown-linux-gnu",
+      "os": "Linux · x86-64",
+      "toolchain": "rustc 1.93.0（原生）",
+      "verified": "build-rs.sh 1/10 + file + CI"
+    },
+    {
+      "triple": "classics:aarch64-unknown-linux-gnu",
+      "os": "Linux · ARM64",
+      "toolchain": "rustc 1.93.0 + aarch64-linux-gnu-gcc",
+      "verified": "build-rs.sh 2/10 + file（静态 ELF）+ CI"
+    },
+    {
+      "triple": "classics:armv7-unknown-linux-gnueabihf",
+      "os": "Linux · ARM32",
+      "toolchain": "rustc 1.93.0 + arm-linux-gnueabihf-gcc",
+      "verified": "build-rs.sh 3/10 + file（EABI5 静态）+ CI"
+    },
+    {
+      "triple": "classics:riscv64gc-unknown-linux-gnu",
+      "os": "Linux · RISC-V",
+      "toolchain": "rustc 1.93.0 + riscv64-linux-gnu-gcc",
+      "verified": "build-rs.sh 4/10 + file（静态）+ CI"
+    },
+    {
+      "triple": "classics:i686-unknown-linux-gnu",
+      "os": "Linux · x86-32",
+      "toolchain": "rustc 1.93.0（multilib）",
+      "verified": "build-rs.sh 5/10 + file（静态）+ CI"
+    },
+    {
+      "triple": "classics:powerpc64le-unknown-linux-gnu",
+      "os": "Linux · PowerPC 64 LE",
+      "toolchain": "rustc 1.93.0 + powerpc64le-linux-gnu-gcc",
+      "verified": "build-rs.sh 6/10 + file（OpenPOWER ELF）+ CI"
+    },
+    {
+      "triple": "classics:s390x-unknown-linux-gnu",
+      "os": "Linux · IBM-Z",
+      "toolchain": "rustc 1.93.0 + s390x-linux-gnu-gcc",
+      "verified": "build-rs.sh 7/10 + file（MSB ELF）+ CI"
+    },
+    {
+      "triple": "classics:x86_64-pc-windows-gnu",
+      "os": "Windows PE32+",
+      "toolchain": "rustc 1.93.0 + x86_64-w64-mingw32-gcc",
+      "verified": "build-rs.sh 8/10 + file + CI"
+    },
+    {
+      "triple": "classics:i686-pc-windows-gnu",
+      "os": "Windows PE32",
+      "toolchain": "rustc 1.93.0 + i686-w64-mingw32-gcc",
+      "verified": "build-rs.sh 9/10 + file + CI"
+    },
+    {
+      "triple": "classics:wasm32-unknown-unknown",
+      "os": "Web · WASM",
+      "toolchain": "rustc 1.93.0",
+      "verified": "build-rs.sh 10/10 + file（WASM MVP）+ CI"
+    },
+    {
+      "triple": "aarch64-w64-mingw32",
+      "os": "Windows PE32+ ARM64",
+      "toolchain": "缺席：Ubuntu apt 无 mingw aarch64 包（gcc-mingw-w64 仅 i686/x86_64）",
+      "verified": "C/Rust 侧不可构建（needs_action）；go:windows-arm64 已覆盖该架构（CI + 本地 file 校验）"
+    }
+  ],
+  "version_freshness": {
+    "note": "2026-10-24 联网核实（官网/安全公告/发布页）；宿主多随 Ubuntu 24.04 钉住，落后上游主干。本轮 #603 新增 16 条宿主工具链上游核实（安全相关优先：openssl/curl/chrome/docker/git/perl/jq）。详见 docs/52 与 docs/57",
+    "needs_action": [
+      {
+        "item": "OpenJDK 20",
+        "host": "20 (2023-03-21)",
+        "upstream": "LTS 21.0.13 / 25.0.5（25 为现行 LTS，支持至 2030-09）",
+        "action": "20 已 EOL，升 LTS 21/25；宿主持有者责任（tasks/jdk.py 一等字段）"
+      },
+      {
+        "item": "Node.js 22.13.1",
+        "host": "22.13.1",
+        "upstream": "22.23.4（含 Brotli 越界写 RCE 等 10 项 CVE）",
+        "action": "novel-website 构建前升级（docs/52 九项评估表）"
+      },
+      {
+        "item": "binutils 2.42",
+        "host": "ld 2.42",
+        "upstream": "2.48 修 4 CVE",
+        "action": "本机 2.42 不在受影响面（docs/52 评估），登记不动作"
+      },
+      {
+        "item": "GCC 13.3.0",
+        "host": "13.3.0-6ubuntu2~24.04.1",
+        "upstream": "16.2（2026-08-07）；15.3 / 14.4 / 13.5 在维护",
+        "action": "随 Ubuntu 24.04 钉住；发行版滚动时自然升级，无需手工"
+      },
+      {
+        "item": "LLVM/Clang 18.1.3",
+        "host": "18.1.3 (1ubuntu1)",
+        "upstream": "23.1.3（2026-10-06）；22.1.8 末版",
+        "action": "随发行版钉住；NDK/OHOS 自带 clang 17/15 不受影响"
+      },
+      {
+        "item": "Rust 1.93.0",
+        "host": "1.93.0",
+        "upstream": "1.99.0（2026-10-01）；1.98.1 次新",
+        "action": "cargo 升级稳定线即可，离线优先纪律保持"
+      },
+      {
+        "item": "Android NDK r26d",
+        "host": "r26d（LLVM 17）",
+        "upstream": "r29 稳定（29.0.14206865）；r27d LTS；r30 Beta1",
+        "action": "r27d LTS 为旧版打底稳妥选择；升 r29 需复核 16KB 页/严格标志"
+      },
+      {
+        "item": "OpenHarmony SDK 6.0.0.47",
+        "host": "6.0.0.47-Beta1（clang 15）",
+        "upstream": "7.0 Release（Ohos_sdk_public 26.0.0.105 / API 26.0.0，2026-08-29）",
+        "action": "升级 SDK 需重抓 2.4GB 包并复核 musl/ArkUI 差异"
+      },
+      {
+        "item": "Qt 5.15.13",
+        "host": "5.15.13",
+        "upstream": "6.12 LTS（2026-09-30，含 HarmonyOS 支持）；6.11 / 6.10",
+        "action": "5.15 仅商业/legacy；新工程应迁 6.x，本项目仅 peview_qt.py 依赖，低优先级"
+      },
+      {
+        "item": ".NET 10.0.401",
+        "host": "10.0.401",
+        "upstream": "10.0.13（2026-10-13，LTS 至 2028-11）",
+        "action": "补丁级，随 SDK 滚动即可"
+      },
+      {
+        "item": "Python 3.11.17",
+        "host": "3.11.17",
+        "upstream": "3.15.1（2026-10-21）；3.11 安全线至 2027-10",
+        "action": "功能线落后 3.15（UTF-8 默认/frozendict/lazy imports），安全线仍受支持，低紧急度"
+      },
+      {
+        "item": "OpenSSL 3.0.13",
+        "host": "3.0.13-0ubuntu3.6",
+        "upstream": "3.5.9（LTS，2026-09-29，支持至 2030-04-08）；4.0 为现行主线（安全修复至 2027-05-14）",
+        "action": "最高优先级：3.0 系列已于 2026-09-07 EOL，公开安全修复终止；迁 3.5 LTS（PQC/QUIC 一石二鸟）"
+      },
+      {
+        "item": "curl 8.5.0",
+        "host": "8.5.0-2ubuntu3",
+        "upstream": "8.23.0（2026-10-14）；8.22.0 一轮即带 9 项 curl/libcurl 安全修复（10 CVE）",
+        "action": "安全相关高优先级；随 Ubuntu 钉住，发行版滚动时自然升级，或按需 PPA/源码升"
+      },
+      {
+        "item": "git 2.43.0",
+        "host": "2.43.0",
+        "upstream": "2.55.0（2026-06-29）；2.43 线末补 2.43.7（2024）",
+        "action": "落后约 12 个小版本；随发行版钉住，低紧急度（无已知在野利用链）"
+      },
+      {
+        "item": "Google Chrome 144.0.7559.132",
+        "host": "144.0.7559.132",
+        "upstream": "stable 152（2026-09-01）；153 已在 dev 通道",
+        "action": "安全相关高优先级：落后 8 个大版本，期间多轮 High CVE（V8/Blink/WebMCP UAF 等）"
+      },
+      {
+        "item": "Docker Engine 27.5.1",
+        "host": "27.5.1",
+        "upstream": "29.9.1（2026-10-14，含 Go HTTP/2 CVE 批修）",
+        "action": "落后两大版本；daemon 只听本地 unix socket 时可择维护窗口升，暴露 TCP API 则优先"
+      },
+      {
+        "item": "Perl 5.38.2",
+        "host": "5.38.2",
+        "upstream": "5.44.0（2026-07-15）",
+        "action": "5.38 关键安全补丁已于 2026-07-02 止（endoflife.date）；随系统组件钉住，登记不单独动作"
+      },
+      {
+        "item": "jq 1.7",
+        "host": "jq-1.7",
+        "upstream": "1.8.2（2026-06-20，修 17 CVE：堆溢出/栈溢出/NUL 截断/哈希碰撞 DoS）",
+        "action": "凡以 jq 处理不可信 JSON（webhook/CI 产物）视为必升；本仓消费自身报告可择维护窗口"
+      },
+      {
+        "item": "SCons 4.5.2",
+        "host": "v4.5.2.120fd4f6（2023-03-21）",
+        "upstream": "4.11.1（2026-08-26）",
+        "action": "落后 3 年 6 个小版本；随发行版钉住，低紧急度"
+      },
+      {
+        "item": "Meson 1.3.2",
+        "host": "1.3.2",
+        "upstream": "1.12.1（2026-09-22）",
+        "action": "落后约 9 个小版本；随发行版钉住，低紧急度"
+      },
+      {
+        "item": "Neovim 0.9.5",
+        "host": "v0.9.5",
+        "upstream": "0.12（现行 stable）",
+        "action": "落后两大版本（LSP/treesitter 改进显著）；编辑器按需升级，非门禁项"
+      },
+      {
+        "item": "GNU Emacs 29.3",
+        "host": "29.3",
+        "upstream": "31.1（2026-08-24）",
+        "action": "落后两大版本；编辑器按需升级，非门禁项"
+      },
+      {
+        "item": "Vim 9.1",
+        "host": "9.1",
+        "upstream": "9.2（2026-02-14，补丁至 9.2.1225 2026-10-21）",
+        "action": "落后一个小版本；vim 无 EOL 政策，低紧急度"
+      },
+      {
+        "item": "Ninja 1.11.1",
+        "host": "1.11.1",
+        "upstream": "1.13.2（2025-11-20）",
+        "action": "落后两个小版本；随发行版钉住，低紧急度"
+      },
+      {
+        "item": "tmux 3.4",
+        "host": "3.4",
+        "upstream": "3.8（2026-10-08；另有来源记 2026-09-09，日期待核）",
+        "action": "落后四个小版本；终端复用器按需升级"
+      },
+      {
+        "item": "Tcl 8.6",
+        "host": "8.6",
+        "upstream": "9.1.0（2026-09-29 首个稳定）；8.6 线补至 8.6.18（2026-05-12）",
+        "action": "8→9 大版本含不兼容（exec/auto_execok 改革等）；评估后再迁，非门禁项"
+      },
+      {
+        "item": "FFmpeg（git 快照）",
+        "host": "N-124111-g9e90fa505e-20260427",
+        "upstream": "stable 9.0.2（2026-09-18）；8.1.3 / 8.0.3 分支并行维护",
+        "action": "滚动快照介于 8.1 与 9.0 之间；如需稳定口径按发行版源装 8.1 或 9.0"
+      }
+    ],
+    "fresh": [
+      {
+        "item": "Firefox",
+        "host": "158.0.1",
+        "note": "== 上游稳定 158.0.1（2026-10-20）；159 Beta / 160 Nightly 在路上"
+      },
+      {
+        "item": "Go",
+        "host": "1.27.3",
+        "note": "== 上游 1.27 系最新补丁 1.27.3（2026-10-19）；含 CVE-2026-111943 修复，编译型需重编译部署生效"
+      },
+      {
+        "item": "Deno",
+        "host": "2.9.8",
+        "note": "当前稳定线（解释型，换运行时即生效）"
+      },
+      {
+        "item": "Ruby",
+        "host": "3.2.3",
+        "note": "随 Ubuntu 24.04 钉住，发行版会随滚"
+      }
+    ]
+  }
+}

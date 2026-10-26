@@ -1,0 +1,26 @@
+[package]
+name = "classics-rs"
+version = "2026.10.24"
+edition = "2021"
+description = "跨平台典籍阅读与乱码安全解码核心（Rust 重写，复用 TextEncoding 哲学）"
+license = "MIT"
+
+# 唯一外部依赖：encoding_rs 提供 GB18030 解码（纯 Rust、跨平台，覆盖所有 Unicode）
+[dependencies]
+encoding_rs = "0.8"
+
+[lib]
+name = "classics"
+# rlib: 供 Rust 自身与其它 crate 复用；cdylib: 导出 C-ABI，供 C/Go/Swift/Python 等绑定，亦可在 wasm 中导出
+crate-type = ["rlib", "cdylib"]
+
+[[bin]]
+name = "classics"
+path = "src/main.rs"
+
+[profile.release]
+# 全平台统一优化档：尺寸优先（适合嵌入式/边缘与分发）
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"

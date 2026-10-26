@@ -1,0 +1,199 @@
+{
+  "_note": "知识库占位（v0.6.36 gen-stub 生成）：发行版能力。待你补全权威参考来源与条目。本工具只读引用，不自动填充正文。",
+  "key": "distro",
+  "label": "发行版能力",
+  "domain": "系统",
+  "references": [
+    {
+      "name": "Slackware 15.0 发布树主 README（组件版本表 kernel 5.15.19 / GCC 11.2 / glibc 2.33 / KDE Plasma 5.23.5 / Xfce 4.16；包集 A/AP/D/E/F/K/KDE/L/N/T/TCL/X/XAP/XFCE/Y；目录布局）",
+      "org": "Slackware Project（Patrick Volkerding）/ mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/README.TXT"
+    },
+    {
+      "name": "Slackware 安装 HOWTO（从 CD/ISO 安装的新手起点）",
+      "org": "Slackware Project / mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/Slackware-HOWTO"
+    },
+    {
+      "name": "Slackware 14.2→15.0 升级指南（upgradepkg --install-new 升级序、glibc 优先、清理 .la、.new 配置迁移、引导更新）",
+      "org": "Slackware Project（Patrick Volkerding）/ mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/UPGRADE.TXT"
+    },
+    {
+      "name": "Slackware 15.0 变更与提示（14.2→15.0 重大变化：PAM/elogind、iproute2 默认、qt5/python3/postfix；避坑）",
+      "org": "Slackware Project / mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/CHANGES_AND_HINTS.TXT"
+    },
+    {
+      "name": "Slackware FAQ（历史问答集：pkgtool/installpkg/removepkg/makepkg 原生包管理、LILO/Loadlin、网络配置）",
+      "org": "Slackware Project / mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/FAQ.TXT"
+    },
+    {
+      "name": "Slackware 在加密卷（LUKS/cryptsetup）上安装（含 LUKS+LVM 综合方案、crypttab、initrd -C）",
+      "org": "Slackware Project / mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/README_CRYPT.TXT"
+    },
+    {
+      "name": "Slackware 在 LVM 逻辑卷上安装（README_LVM.TXT，含根文件系统置于 LV）",
+      "org": "Slackware Project / mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/README_LVM.TXT"
+    },
+    {
+      "name": "Slackware 用内核软件 RAID（mdadm）安装（RAID 0/1/5；类型 FD 分区；--metadata=0.90；raid-extra-boot）",
+      "org": "Slackware Project / mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/README_RAID.TXT"
+    },
+    {
+      "name": "Slackware UEFI 安装（64 位固件；32 位版不支持 UEFI；elilo/GRUB、FAT EFI 系统分区）",
+      "org": "Slackware Project / mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/README_UEFI.TXT"
+    },
+    {
+      "name": "Slackware initrd mini HOWTO（mkinitrd -c -k -m -f -r；generic 内核 + 模块；LILO/syslinux 装载 initrd.gz）",
+      "org": "Slackware Project（Patrick Volkerding）/ mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/README.initrd"
+    },
+    {
+      "name": "Slackware USB 闪存安装（usbboot.img + usbimg2disk.sh 制作可启动 USB 安装盘）",
+      "org": "Slackware Project / mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/usb-and-pxe-installers/README_USB.TXT"
+    },
+    {
+      "name": "Slackware PXE 网络安装（dhcpd/tftpd/pxelinux；大规模部署；需 isolinux/initrd.img）",
+      "org": "Slackware Project / mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/usb-and-pxe-installers/README_PXE.TXT"
+    },
+    {
+      "name": "Slackware 发声安装（Speakup 语音合成安装指引）",
+      "org": "Slackware Project / mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/SPEAK_INSTALL.TXT"
+    },
+    {
+      "name": "Slackware 安装 ISO 制作（isolinux/README.TXT：从安装介质或网络引导、制作可启动光盘）",
+      "org": "Slackware Project / mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/isolinux/README.TXT"
+    },
+    {
+      "name": "Slackware 15.0 包清单（PACKAGES.TXT：核心软件包详细描述）",
+      "org": "Slackware Project / mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/PACKAGES.TXT"
+    },
+    {
+      "name": "Slackware 15.0 变更日志（ChangeLog.txt：系统变更流水）",
+      "org": "Slackware Project / mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/ChangeLog.txt"
+    },
+    {
+      "name": "SlackDocs 官方文档维基（docs.slackware.com：社区维护的 Slackware 文档总入口）",
+      "org": "Slackware Community / docs.slackware.com",
+      "url": "https://docs.slackware.com/"
+    },
+    {
+      "name": "Slackbook 官方手册（slackbook.org：Slackware 系统管理与构成经典手册；docs.slackware.com 亦镜像 /slackbook:start）",
+      "org": "Slackware Project / slackbook.org",
+      "url": "https://www.slackbook.org/"
+    }
+  ],
+  "items": [
+    {
+      "key": "slackware-package-series",
+      "name": "Slackware 包集 A–Y：发行版视角的「系统构成地图」",
+      "org": "Slackware Project（Patrick Volkerding）/ mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/README.TXT",
+      "protocols": [
+        "Slackware 把整套系统切成 15 个包集（series），每个系列即一个职责域：A 基础（含 glibc/pkgtools/内核与引导）、AP 应用、D 开发、E GNU Emacs、F FAQ/文档、K 内核源码、KDE Plasma、L 库、N 网络、T TeX、TCL（Tcl/Tk 相关）、X X Window System、XAP X 应用、XFCE 桌面、Y BSD 游戏",
+        "包集是「系统构成」的平面切分：二进制发行版用包集切分系统，LFS 用章节切分系统——两者互为表里（见 sysbase_docs.system_layout）",
+        "安装器让你按包集勾选从最小系统到全量桌面；A 系列是任何可用系统的地基"
+      ],
+      "interfaces": [
+        "slackpkg（官方高层包管理：search/install/upgrade/clean-system，需先配 /etc/slackpkg/mirrors）",
+        "pkgtool（菜单式原生工具：安装/移除/查看已装包）",
+        "installpkg / removepkg / upgradepkg / makepkg / explodepkg（命令行的原生包管理原语）",
+        "/var/adm/packages（已装包数据库，文本记录，是清点事实源）"
+      ],
+      "docs": [
+        {"title": "Slackware 15.0 主 README（包集与目录布局）", "url": "https://mirrors.slackware.com/slackware/slackware-15.0/README.TXT"},
+        {"title": "Slackware 核心包清单 PACKAGES.TXT", "url": "https://mirrors.slackware.com/slackware/slackware-15.0/PACKAGES.TXT"},
+        {"title": "Slackbook（系统构成与包管理手册）", "url": "https://www.slackbook.org/"}
+      ],
+      "summary": "Slackware 用 15 个字母包集（A/AP/D/E/F/K/KDE/L/N/T/TCL/X/XAP/XFCE/Y）把一套 Linux 系统切成职责域：A 是地基（glibc/pkgtools/内核），L 是库，N 是网络，X/XAP/KDE/XFCE 是图形与桌面。这与 LFS「工具链+关键组件+引导」的章节式构成论是同一件事的两种表达——二进制发行版用包集、LFS 用章节。",
+      "advice": "把 Slackware 的包集当「系统构成地图」读：要理解一个二进制发行版装了什么、缺什么，先看它勾了哪些 series；A 系列永远是地基，桌面系列（KDE/XFCE/XAP）是可选的应层。清点时用 /var/adm/packages 而非只查文件。",
+      "evidence_status": "official_verified"
+    },
+    {
+      "key": "slackware-boot-initrd",
+      "name": "Slackware 引导架构：huge/generic 内核 + initrd + LILO/elilo/syslinux",
+      "org": "Slackware Project（Patrick Volkerding）/ mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/README.initrd",
+      "protocols": [
+        "两种内核：huge（单体内核，含绝大多数驱动，用于安装/急救，免 initrd）与 generic（精简内核，需 initrd 装载根文件系统所需的模块）",
+        "initrd = initial ramdisk：内核启动、挂根之前先载入的小内存盘，用于加载根文件系统模块（ext4/btrfs/xfs）或磁盘控制器/RAID/LVM/LUKS 支持",
+        "引导器装载 initrd：LILO（/etc/lilo.conf 的 initrd= 行，每次改完需重跑 lilo）、elilo（UEFI，eliloconfig 写 EFI 系统分区）、syslinux 系列亦支持"
+      ],
+      "interfaces": [
+        "mkinitrd -c -k <内核> -m <模块> -f <文件系统> -r <根设备>（-L 加 LVM/RAID，-C 加加密支持）",
+        "geninitrd（升级后自动重建 initrd 的封装）",
+        "/boot/initrd.gz（默认输出）、/boot/vmlinuz-generic-*（generic 内核）",
+        "lilo / eliloconfig（引导器安装与更新）"
+      ],
+      "docs": [
+        {"title": "Slackware initrd mini HOWTO（README.initrd）", "url": "https://mirrors.slackware.com/slackware/slackware-15.0/README.initrd"},
+        {"title": "Slackware UEFI 安装（README_UEFI.TXT）", "url": "https://mirrors.slackware.com/slackware/slackware-15.0/README_UEFI.TXT"},
+        {"title": "安装 ISO 与 isolinux 引导（isolinux/README.TXT）", "url": "https://mirrors.slackware.com/slackware/slackware-15.0/isolinux/README.TXT"}
+      ],
+      "summary": "Slackware 引导分两型：huge 内核（安装/急救，免 initrd）与 generic 内核（日常，必配 initrd 才能挂根）。initrd 由 mkinitrd 从 /boot 的模块拼出，承载 ext4/btrfs/xfs、RAID、LVM、LUKS 等根所需支持；LILO/elilo/syslinux 负责把内核+initrd 装载起来。这是「系统骨架」的启动链实例。",
+      "advice": "根文件系统若在 LVM/RAID/LUKS 上，必须走 generic 内核 + initrd（-L/-C），且安装器不会替你生成，须 chroot 后手动 mkinitrd 再更新引导器。升级内核后务必先重建 initrd、再重装引导器，否则启不动。",
+      "evidence_status": "official_verified"
+    },
+    {
+      "key": "slackware-upgrade-sequence",
+      "name": "Slackware 系统版本演进安全序（14.2→15.0）",
+      "org": "Slackware Project（Patrick Volkerding）/ mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/UPGRADE.TXT",
+      "protocols": [
+        "安全序：① telinit 1 进单用户 → ② 先升 aaa_glibc-solibs（glibc 优先，否则后续乱） → ③ 升 pkgtools/tar/xz/findutils → ④ upgradepkg --install-new 全量升其余并装新包 → ⑤ removepkg 清 obsolete → ⑥ 处理 /etc 下 *.new 配置（手动合并，旧文件备份为 .bak） → ⑦ 更新引导器与 initrd → ⑧ telinit 3 → ⑨ 重启",
+        "glibc 必须先单独升：它是几乎所有二进制的依赖，顺序错了系统直接「haywire」",
+        "obsolete 包清单由 CHANGES_AND_HINTS.TXT 给出（如 ConsoleKit2、大批 KDE4/kde-l10n-*、python2、sendmail 等被移除/替换）"
+      ],
+      "interfaces": [
+        "upgradepkg --install-new --terse（升级并安装新引入的包）",
+        "removepkg --terse（移除 obsolete）",
+        "telinit 1 / telinit 3（运行级切换）",
+        "lilo / geninitrd（升级后引导与 initrd 更新）"
+      ],
+      "docs": [
+        {"title": "Slackware 14.2→15.0 升级指南（UPGRADE.TXT）", "url": "https://mirrors.slackware.com/slackware/slackware-15.0/UPGRADE.TXT"},
+        {"title": "Slackware 15.0 变更与提示（CHANGES_AND_HINTS.TXT）", "url": "https://mirrors.slackware.com/slackware/slackware-15.0/CHANGES_AND_HINTS.TXT"}
+      ],
+      "summary": "Slackware 的跨版本升级把「系统版本演进」显式化为一套安全序：glibc 必须最先单独升，再升包管理工具，再全量 upgradepkg，最后清 obsolete、迁 .new 配置、更新引导。它本质是「构成系统的各组件如何有序地自我重构」的操作手册。",
+      "advice": "升级前先备份 /etc；严格按序——尤其 glibc 优先。.new 配置文件不要无脑覆盖（rc.local、passwd/group/shadow 等有特殊处理）。升级后第一要务是重建 initrd + 重装引导器，否则新内核启不动。",
+      "evidence_status": "official_verified"
+    },
+    {
+      "key": "slackware-native-pkgtools",
+      "name": "Slackware 原生包管理：pkgtool/installpkg/removepkg/makepkg/tarball",
+      "org": "Slackware Project / mirrors.slackware.com",
+      "url": "https://mirrors.slackware.com/slackware/slackware-15.0/FAQ.TXT",
+      "protocols": [
+        ".txz（xz 压缩 tar）是 Slackware 原生包格式；更早有 .tgz/.tbz",
+        "原生工具链：installpkg（装）、removepkg（卸）、upgradepkg（升）、makepkg（把目录打成包）、explodepkg（解包看内容）、pkgtool（菜单总控）",
+        "设计哲学：不自动解决依赖——依赖由管理员自己负责（与 apt/yum/dnf 的高层依赖解析形成对照，见 sysbase_docs.package_formats）",
+        "已装包登记在 /var/adm/packages（文本，逐包一个文件），是清点事实源"
+      ],
+      "interfaces": [
+        "installpkg <pkg.txz> / removepkg <name> / upgradepkg <pkg.txz>",
+        "makepkg /tmp/package.txz（在已 staged 的目录里打包）",
+        "pkgtool（交互菜单：安装/移除/查看）",
+        "slackpkg（社区常用的高层前端，需配 /etc/slackpkg/mirrors）"
+      ],
+      "docs": [
+        {"title": "Slackware FAQ（原生包管理问答）", "url": "https://mirrors.slackware.com/slackware/slackware-15.0/FAQ.TXT"},
+        {"title": "Slackbook（包管理章节）", "url": "https://www.slackbook.org/"}
+      ],
+      "summary": "Slackware 的原生包管理是无依赖自动解析的「透明」模型：installpkg/removepkg/upgradepkg 只管装这一个包，依赖交给人；makepkg 把 staged 目录打成 .txz；/var/adm/packages 是逐包文本的已装清单。这与 apt/yum 的高层依赖解析（sysbase_docs.package_formats）是同一「包管理」轴的两极。",
+      "advice": "清点 Slackware 系统查 /var/adm/packages 而非只查文件；自编译软件若没走 makepkg，就不会有包记录（与 git 源码安装的「无数据库记录」同理）。需要依赖解析时用 slackpkg 前端，但底层仍是这些原语。",
+      "evidence_status": "official_verified"
+    }
+  ]
+}

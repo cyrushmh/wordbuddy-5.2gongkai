@@ -1,0 +1,235 @@
+{
+  "_note": "reverse：黑箱逆向与调试工具链只读知识库（v0.6.73）。全部结论来自沙箱实盘（minGW GCC 13 编 PE32/PE32+ → UPX 4.2.2 加壳 → 自写黑箱扫描器 + GDB 15 + objdump 对比），不引二手结论。边界：只读分析、理解行为；不破解、不绕过任何授权/DRM/保护措施。",
+  "_position": "本库服务两类场景：理解自己/己方产物的行为（发布前自检加壳与符号泄漏），以及学习二进制格式与调试方法。逆向他人受保护软件属于授权问题，本工具不提供任何绕过能力。",
+  "upx_packer_signature": {
+    "name": "UPX 壳识别三特征（marker + 节名 + 高熵数据节）",
+    "org": "沙箱实测（UPX 4.2.2，win32/pe 与 win64/pe 通道）",
+    "url": "https://upx.github.io/",
+    "protocols": [
+      "UPX! magic：加壳后文件含 UPX! 标记字节（实测 PE32+ 样本 @0x205，内容为 UPX!\\r$\\x0e\\n5... 后接压缩参数）",
+      "节区表改写为三节固定模式：UPX0（rawsz=0，仅虚拟尺寸，装载时分配）、UPX1（压缩数据，实测熵 7.985）、UPX2（引导/重定位尾巴，rawsz 常在 0x200 量级）",
+      "压缩比实证：win64/pe 通道 --best --lzma 249562→121050（48.50%）；win32/pe --best 237482→126378（53.22%）",
+      "加壳后整体文件熵从 5.898 升至 7.035——节数据近满熵（>7.5）是压缩/加密的共性信号，非 UPX 独有"
+    ],
+    "interfaces": [
+      "黑箱扫描器判据（本仓 native/reverse.py 的 scan）：输入路径 → (format, sections, UPX! offset, entropy) 只读返回",
+      "发布前自检：自家运输到公网的二进制跑一次 scan——出现 UPX! 或 >7.5 节熵即说明被加过壳或含压缩资源，与发布清单不符要追责",
+      "upx -l <file> 可回读壳元数据（File size/Ratio/Format 三列）——这是限量信息泄露：壳会把原尺寸写明"
+    ],
+    "docs": [
+      {
+        "title": "UPX 官方站点与用法",
+        "url": "https://upx.github.io/"
+      }
+    ],
+    "advice": "三特征齐出（marker+节名+熵）才判 UPX；只凭高熵会误伤正常资源段，只凭节名挡不住改节名的变体。"
+  },
+  "entropy_packing_signal": {
+    "name": "香农熵判据：压缩/加密/正常代码的量化分界",
+    "org": "沙箱实测（自写黑箱扫描器，byte 频率法，纯标准库）",
+    "url": "",
+    "protocols": [
+      "实测分界（x86 可执行程序）：未加壳程序整体熵 5.898-6.013；UPX 加壳后 7.035；UPX1 数据节 7.985（近满）",
+      "正常节区分布：.text 6.3+（指令分布广）、.data/.CRT/.tls <1.5（常量/零填充）、.rdata 4.6 左右（字符串+常量混合）",
+      "strip 后整体熵反而下降（16000B 1.522 → 14472B 1.235）：符号是低频模式噪声，去符号=去「可读性」",
+      "判据表：节熵 >7.5 高度疑似压缩/加密载荷；1.5-7.0 常规；<1 常量/零页——单节判不了整体，须逐节+整体两级看"
+    ],
+    "interfaces": [
+      "REVERSE_CHECKS.entropy_packing_signal 项把上表落成对照：逐节列熵、整体熵、标记 UPX! offset",
+      "误报面：含合法压缩资源（图片/字体/预训练模型）的程序也会有高熵节——所以要连节名和格式一起判",
+      "零依赖计算：256 直方图 + log2，无 numpy 亦可跑；本工具 native 层即此实现"
+    ],
+    "docs": [],
+    "advice": "熵是症状不是病名：它告诉你『这里有东西不寻常』，然后要看节名、格式、上下文才说得出是什么。"
+  },
+  "pe_section_anatomy": {
+    "name": "PE 节区解剖：MZ→PE→COFF→Optional→节表",
+    "org": "沙箱实测（i686/x86_64 win-w64 GCC 13 产出 + 自写解析器）",
+    "url": "https://learn.microsoft.com/windows/win32/debug/pe-format",
+    "protocols": [
+      "两级指针定位：DOS 头 e_lfanew（@0x3C）→ 'PE\\0\\0' → COFF 头（节数 @COFF+2，可选头尺寸 @COFF+16）→ 节表 = COFF+20+optsz",
+      "可选头 magic 分版本：0x10b=PE32，0x20b=PE32+（实测 miniprog32.exe 17 节 / miniprog64.exe 19 节）",
+      "标准节语义：.text 代码（vs≈raw）、.rdata 只读数据、.data/.bss 可写数据（.bss rawsz=0 仅占位）、.idata 导入表、.reloc 重定位、.tls/.CRT 运行时辅助",
+      "每条节 40 字节：Name(8)+VSize+VA+RawSize+RawPtr+重定位/行号指针+特征位——RawPtr 从 0 扇区对齐起步，节间用零填充对齐",
+      "本仓 windows PE 解析多语言实现（C/Rust/Java/Go/PowerShell/.NET/Python）与本条目同源互证"
+    ],
+    "interfaces": [
+      "REVERSE_CHECKS.pe_section_anatomy 项：解析给定 PE 输出节清单+每节熵，格式不明即退指引",
+      "对照 ELF：节表在 ELF 头 e_shoff 间接指向，节名在 .shstrtab——同一个「描述数据布局」的思想两种编码",
+      "带 /4 /19 等数字名节是 GCC/MinGW 的 COMDAT 序号节（实测 win64 有 11 个 /N 节），不是异常"
+    ],
+    "docs": [
+      {
+        "title": "PE Format（Microsoft Learn）",
+        "url": "https://learn.microsoft.com/windows/win32/debug/pe-format"
+      }
+    ],
+    "advice": "读 PE 先认 PE\\0\\0 再认可选头 magic——顺序错了后面的偏移全是错的。"
+  },
+  "mingw_cross_toolchain": {
+    "name": "MinGW 交叉编译链：不装 Windows 产出 PE",
+    "org": "沙箱实测（i686-w64-mingw32-gcc / x86_64-w64-mingw32-gcc，GCC 13-win32）",
+    "url": "https://www.mingw-w64.org/",
+    "protocols": [
+      "沙箱可用：i686-w64-mingw32-gcc（PE32）与 x86_64-w64-mingw32-gcc（PE32+）均在位，GCC 13-win32 运行时",
+      "产出差异实测：同一 C 源 -O2 → PE32 237482B/17 节；-O1 → PE32+ 249562B/19 节（C++ runtime 静态链接进 64 位更重）",
+      "交叉链=本机 gcc 生成目标机代码：-m32/-m64 由目标三元组选择，无需 wine 即可构建；运行才需要目标环境",
+      "objdump 家族同链分发：i686-w64-mingw32-objdump -h 直接列 PE 节表——分析工具与构建工具同源"
+    ],
+    "interfaces": [
+      "REVERSE_CHECKS.mingw_cross_toolchain 项：把「构建 PE 分析样本」纳入诊断流程闭环——想分析 PE 就先造一个",
+      "与本仓 CI 交叉构建矩阵一致：Windows arm64/x64 与 Android NDK 皆是同一思想（一链多目标）",
+      "发布面提醒：MinGW 默认静态链接 libgcc，产物可独立分发；换 MSVC 产物节名/节数不同（.text/.rdata 风格），扫描器按格式解析不按编译器猜"
+    ],
+    "docs": [
+      {
+        "title": "MinGW-w64 官方",
+        "url": "https://www.mingw-w64.org/"
+      }
+    ],
+    "advice": "要分析 Windows 二进制先问有没有 mingw——两分钟造个样本比下载十份样本更可控。"
+  },
+  "gdb_blackbox_basics": {
+    "name": "GDB 黑箱四连：符号→反汇编→映射→断点",
+    "org": "沙箱实测（GNU gdb 15.0.50 batch 模式，ELF x86-64）",
+    "url": "https://sourceware.org/gdb/current/onlinedocs/gdb/",
+    "protocols": [
+      "info functions：列全部符号地址（实测 miniprog-elf 11 个：_init/main/_start/add/...@plt）——看不见符号本身就是信息",
+      "disassemble <fn>：函数级反汇编（实测 add → endbr64; lea (%rdi,%rsi,1),%eax; ret——调用约定 rdi/rsi 即参数）",
+      "info proc mappings：仅运行期有效（实测无进程时报 No current process——静态分析阶段会失败，属预期）",
+      "break + run + bt + info registers：动态观察的标准闭环；batch 模式 -ex 可脚本化无人值守",
+      "实测 strip 前后：strip --strip-all 后 add/main/_init 本地符号消失，仅存动态符号（__printf_chk@plt 等 PLT 桩）——黑箱可见面=符号表可见面"
+    ],
+    "interfaces": [
+      "REVERSE_CHECKS.gdb_blackbox_basics 项：四连命令模板 + 「符号缺失即结论」的读法",
+      "PE 侧 gdb 需目标环境（wine/gdbserver）；沙箱 wine 实测无法启动 PE（ExecuteEx failed）——ELF 侧全链可用，PE 侧用 objdump/minGW 静态分析补位",
+      "本指南只读：break/run 只观察，不 patch 内存、不 hook——hooking 与绕过属于另一授权域，本工具不碰"
+    ],
+    "docs": [
+      {
+        "title": "GDB 官方文档（Sourceware）",
+        "url": "https://sourceware.org/gdb/current/onlinedocs/gdb/"
+      }
+    ],
+    "advice": "黑箱第一问：它给我看了多少符号？看得见反查源码，看不见就从入口+导入表倒推——两条路都别急着下结论。"
+  },
+  "elf_vs_pe_tradeoffs": {
+    "name": "ELF 与 PE：同一份布局思想，两种编码",
+    "org": "沙箱实测（gcc vs mingw-gcc 同源对比 + 自写解析器）",
+    "url": "",
+    "protocols": [
+      "共性：都有魔数头（ELF \\x7fELF / PE MZ+PE）、节/段布局表、重定位（.reloc vs .rela.*）、动态链接接口（.idata/PLT）",
+      "ELF：e_shoff 指节表、节名在 .shstrtab（间接寻址）；machine=62 x86-64（e_machine @18）",
+      "PE：e_lfanew 两级跳（0x3C→PE）；节表直接跟在可选头后；节名常在节内（8 字节定长）",
+      "体积实证：同源小程序 ELF 16000B vs PE32+ 249562B——运行时静态链接策略不同，别拿体积推功能",
+      "本仓跨语言 PE 解析全家桶（七种语言 parity 测试）正是这条知识的工程沉淀"
+    ],
+    "interfaces": [
+      "REVERSE_CHECKS.elf_vs_pe_tradeoffs 项：按输入格式路由解析器，格式不符即退指引不硬解",
+      "复用到本仓 detect 层：跨系统探测本就按「格式路由→只读解析→降级指引」三段式，与黑箱分析同构",
+      "对 asm/llvm 子系统：编译器后端决定节布局，llvm 可同时产出两种格式——工具链知识与格式知识在这里交汇"
+    ],
+    "docs": [],
+    "advice": "格式是壳、语义是核：两边都在回答『代码放哪、数据放哪、怎么被找到』，认格式不认编译器才稳。"
+  },
+  "strip_static_analysis": {
+    "name": "strip 与静态分析：符号是便利不是真相",
+    "org": "沙箱实测（strip --strip-all + gdb 前后对比）",
+    "url": "",
+    "protocols": [
+      "strip 实测：16000→14472B（-9.6%），熵 1.522→1.235——本地符号表删除，动态符号保留",
+      "gdb info functions 前后对照：add/main/_init/_start 消失；__cxa_finalize@plt/__printf_chk@plt 仍在（动态接口是运行必需）",
+      "分析法迁移：无本地符号时改用 PLT 名反推动态依赖 + .text 入口 + 导入函数名做「外部面还原」",
+      "发布侧权衡：strip 减面（少泄露结构）+ 去符号的 crash 栈变难读——调试版/发布版分流是标准做法"
+    ],
+    "interfaces": [
+      "REVERSE_CHECKS.strip_static_analysis 项：判断文件符号保留状态，据此选择 gdb 还是静态导入表分析",
+      "本仓自身纪律同源：对外产物不带调试符号、内部开发版保留——信息最小暴露",
+      "与 cert/asm 的呼应：符号表=人类可读的语义层，指令层才是行为层，两层对账才可信"
+    ],
+    "docs": [],
+    "advice": "strip 把『它能告诉你的』减到最少，但删不掉『它必须带上的』——动态符号就是谈判底线。"
+  },
+  "readonly_reverse_ethics": {
+    "name": "只读逆向边界：理解行为，不绕过保护",
+    "org": "本仓自设纪律（与 privacy/合规系列同源）",
+    "url": "",
+    "protocols": [
+      "本工具边界：只读分析、符号/节区/熵/反汇编观察；不 patch 内存、不 hook 调用、不生成注册机/破解补丁",
+      "目标边界：只分析自己/己方/已授权产物；逆向他人受保护软件属于授权与法律问题，先拿授权再动手",
+      "合理用途：安全研究（报漏洞）、互操作性研究（写兼容实现）、发布前自检（防误加壳/防符号泄漏）",
+      "公司法务红线：DMCA 反规避条款/计算机欺诈相关法条在各司法辖区存在——不确定就问法务，别假设",
+      "沙箱纪律：wine 实测启动 PE 失败（ExecuteEx failed），本环境黑箱以「静态分析+ELF 动态」为主路径，不硬凑"
+    ],
+    "interfaces": [
+      "REVERSE_CHECKS.readonly_reverse_ethics 项：每次 reverse report 固定输出本边界声明",
+      "本工具自身零网络零采集，分析产物不出本机——隐私边界与逆向边界同构（最小暴露）",
+      "拒绝请求的正确姿势：给替代路径（读文档/找符号/问作者），而不是给绕过手段"
+    ],
+    "docs": [],
+    "advice": "能力越大越要划界：把『不做什么』写进报告，比把『能做什么』写满更专业。"
+  },
+  "rea_mcp_reverse": {
+    "name": "REA：MCP + 逆向工具的编码体「分析→重写」链",
+    "org": "REA（Reverse Engineer Anything）开源项目",
+    "url": "https://github.com/ ; docs/77 §3.15（头条文章只读核实，仓库名以文章口径为准）",
+    "protocols": [
+      "形态：REA 经 MCP 把 Claude Code / Codex 类编码体接到 Ghidra / Hopper / IDA——没有源码时，代理分析二进制功能，再据此重写功能相近的代码",
+      "实测口径（Notebookcheck 作者，免费带广告的 Freebuff）：输入提示词→代理反问三个选择题→10~15 分钟交出 VLC 复刻（MP3 拖入即播、进度/静音快捷键正常、可打开文件夹不含子目录）",
+      "已知问题（文章口径）：引擎换 Chromium 而非 libVLC、部分格式打不开、全屏黑屏"
+    ],
+    "interfaces": [
+      "版权边界（如实登记）：功能复刻 ≠ 搬运源码，并非每个克隆都合法；本仓只学「逆向→重实现」的工具链形态，不复制任何被分析二进制与代码",
+      "与 reverse 既有条目（UPX 特征/熵值/PE 节解剖/MinGW 交叉/GDB 黑箱）构成「静态识别→动态调试→agent 重写」的完整光谱"
+    ],
+    "docs": [
+      "docs/77 §3.15"
+    ],
+    "advice": "逆向只作只读学习与安全研究；重写产物版权归属须自行研判，本仓不提供法律结论。"
+  },
+  "hexeditor_010_templates": {
+    "name": "010 Editor：Binary Templates 二进制模板分析（SweetScape 商业专有）",
+    "org": "SweetScape Software Inc.（加拿大爱德华王子岛，2002 年创立；官网 2026-10-26 核实）",
+    "url": "https://www.sweetscape.com/010editor/",
+    "protocols": [
+      "Binary Templates 是类 C/C++ struct 的领域语言：可含 if/for/while、函数与复杂表达式，把文件解析为层次化结构（Template Results），可设为打开文件时自动运行——模板即机器可读的格式说明书",
+      "官方口径覆盖 300+ 格式；BMP/ZIP/WAV 等开箱解析；在线 Template Repository 与 Script Archive 可下载/分享（第三方模板脚本官方明示 use at your own risk，仅保证随软件附送者）",
+      "脚本引擎类 C/C++ 语法、350+ 函数，与模板集成（给模板变量赋值即改文件）；可命令行无界面批处理；带断点/监视的集成调试器",
+      "分析工具：校验和/哈希 CRC-16/CRC-32/Adler32/MD2/MD4/MD5/RIPEMD160/SHA-1/SHA-256/TIGER；反汇编 X86/ARM/MIPS/PowerPC/SPARC/SystemZ/XCore；直方图；二进制逐字节比较",
+      "文本侧 Tree-sitter 实时解析 45+ 语法（含 Rust/Go/Python/JSON 等）；50GB+ 大文件、列模式、无限撤销、暗/亮主题",
+      "驱动器级编辑：NTFS/FAT16/FAT32/exFAT/HFS，解析逻辑/物理驱动含 MBR 与 EFI 分区，可看目录/文件块/slack space——数字取证与数据恢复路径",
+      "版本与平台（2026-10-26 官网核实）：稳定版 16.0.4（Beta v17 在测）；Windows 11/10 32/64 位+便携版、macOS 10.14–15（Intel+ARM）、Ubuntu 18.04–25.04 32/64 位；下载页逐平台附 SHA256",
+      "许可：商业专有一次性买断——官网首页明码 Home/Academic $59.95 US、Commercial $149.95 US；30 天全功能试用（到期需许可密钥，无免费档）；EULA 见 support/kb/kb1038"
+    ],
+    "interfaces": [
+      "与 native/reverse.py binary_scan 互补：扫描器给『格式+节+熵』粗判（零依赖纯标准库），010 Editor 模板给结构级细读——先 binary_scan 认格式再上对应模板读字段，两步不混",
+      "对自研格式：照官方模板语法自写 .bt（结构体+断言），比人眼数偏移可靠；模板随格式版本演进而漂移，换版本必须重核验（与本仓沙箱实测口径固化同理）",
+      "本仓零依赖红线：010 Editor 是商业专有软件，属『人工分析台』参考，不进运行时依赖、不做安装捆绑；可复现路径保持 objdump/gdb/自写解析器的开源组合",
+      "只读边界同源：只用其只读分析能力学习二进制格式；对他人受保护程序不破解不绕过（readonly_reverse_ethics）",
+      "模板仓库是社区格式知识库：遇冷门格式先查仓库再动手写——别人已解析过的格式不必从零逆"
+    ],
+    "docs": [
+      {
+        "title": "010 Editor 官方主页（定位与全特性）",
+        "url": "https://www.sweetscape.com/010editor/"
+      },
+      {
+        "title": "下载页（版本 16.0.4 / 三平台 / SHA256）",
+        "url": "https://www.sweetscape.com/download/010editor/"
+      },
+      {
+        "title": "Binary Templates 专页",
+        "url": "https://www.sweetscape.com/010editor/templates.html"
+      },
+      {
+        "title": "Template Repository（在线模板库）",
+        "url": "https://www.sweetscape.com/010editor/repository/templates/"
+      },
+      {
+        "title": "EULA（support/kb/kb1038）",
+        "url": "https://www.sweetscape.com/support/kb/kb1038.html"
+      }
+    ],
+    "advice": "模板把『猜偏移』变成『读结构』——但模板本身也是人写的断言：先用 binary_scan 认格式再套模板，模板结论与原始字节抽查对照，才不下错。"
+  }
+}

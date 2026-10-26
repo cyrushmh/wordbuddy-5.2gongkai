@@ -1,0 +1,11 @@
+{
+  "modelVersion": "5.0.0",
+  "name": "classics-harmony-app",
+  "version": "1.0.0",
+  "description": "鸿蒙道家经典文库应用 (Stage 模型)",
+  "dependencies": {},
+  "devDependencies": {
+    "@ohos/hypium": "1.0.19",
+    "@ohos/hamock": "1.0.0"
+  }
+}

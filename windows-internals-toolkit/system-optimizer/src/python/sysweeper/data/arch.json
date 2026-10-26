@@ -1,0 +1,166 @@
+{
+  "loongarch": {
+    "name": "龙芯架构 LoongArch（龙架构）",
+    "standard": "LoongArch 指令集架构参考手册（龙芯中科技术股份有限公司）",
+    "org": "龙芯中科（Loongson Technology）",
+    "tier": "national",
+    "uname_machines": ["loongarch64", "loongarch32", "loong64", "loong32"],
+    "cpuinfo_keys": ["Loongson", "LoongArch", "loongson"],
+    "summary": "我国自主指令集架构（2021 年随 3A5000 发布），含基础架构、向量指令（LSX/LASX）、虚拟化（LVZ）与二进制翻译（LBT）扩展；由 MIPS 授权演进为完全自主。",
+    "advice": "龙芯平台优先用龙芯/系统厂商提供的源与工具链（如 loongnix、Loongnix 源）；编译加 -march=loongarch64，二进制翻译层（LBT）可运行 x86/ARM 程序但有损耗。",
+    "standards": {
+      "national": [
+        "龙芯 LoongArch 指令集架构（国产自主，国家标准以全国标准信息公共服务平台 std.samr.gov.cn 检索为准）",
+        "国产处理器生态适配相关国家标准（GB/T 系列，见国家平台 std.samr.gov.cn）"
+      ],
+      "international": [
+        "LoongArch Reference Manual（基础架构 / 向量 / 虚拟化卷，龙芯中科发布）"
+      ],
+      "regional": []
+    }
+  },
+  "mips": {
+    "name": "MIPS 架构（MIPS32 / MIPS64）",
+    "standard": "MIPS Architecture for Programmers（MIPS32 / MIPS64 Release 6）",
+    "org": "MIPS Technologies（现 MIPS Open，Wave Computing 开设计划）",
+    "tier": "international",
+    "uname_machines": ["mips", "mips64", "mipsel", "mips64el", "mipsisa32", "mipsisa64"],
+    "cpuinfo_keys": ["MIPS", "Loongson-3", "Godson", "Ingenic", "Broadcom"],
+    "summary": "经典 RISC 指令集（1985 年起），Release 6 为最新公开版本；2019 年 MIPS Open 计划开放架构。龙芯早期（Godson 2/3）基于 MIPS 授权，后转向自主 LoongArch。",
+    "advice": "老龙芯（MIPS 授权）与路由器/嵌入式设备多为 MIPS；小端（mipsel）与大端（mips）ABI 不通用，装包需对应。资源受限，建议清理缓存与日志优先。",
+    "standards": {
+      "national": [
+        "国产化替代：龙芯/MIPS 平台适配相关国家标准（见国家平台 std.samr.gov.cn 检索）"
+      ],
+      "international": [
+        "MIPS Architecture for Programmers Volume I-A（MIPS32 Release 6 指令集）",
+        "MIPS Architecture for Programmers Volume II-A（MIPS64 Release 6 指令集）",
+        "MIPS Open（开源指令集计划，2019）"
+      ],
+      "regional": []
+    }
+  },
+  "riscv": {
+    "name": "RISC-V（开源指令集架构）",
+    "standard": "RISC-V Instruction Set Specifications（RV32/64 基础 + 扩展，RISC-V International）",
+    "org": "RISC-V International（瑞士，会员制标准组织）",
+    "tier": "international",
+    "uname_machines": ["riscv64", "riscv32", "rv64", "rv32"],
+    "cpuinfo_keys": ["riscv", "RISC-V", "sifive", "T-Head", "XuanTie", "StarFive"],
+    "summary": "开源、免授权费的 RISC 指令集；基础指令集 RV32I/RV64I，标准扩展 M/A/F/D/C/V 等，并有 RVA20 / RVA22 / RVA23 等 ratified profiles 规范兼容性。",
+    "advice": "RISC-V 平台软件生态依发行版而定；编译用 -march=rv64gc -mabi=lp64d，优先取发行版提供的原生包，避免 x86 二进制翻译的性能损耗。",
+    "standards": {
+      "national": [
+        "中国 RISC-V 产业联盟（CRVA）/ 开放指令生态相关标准（国家平台 std.samr.gov.cn 可检索）"
+      ],
+      "international": [
+        "RISC-V Unprivileged ISA Specification（RV32I/RV64I 基础 + 标准扩展）",
+        "RISC-V Privileged Architecture Specification",
+        "RISC-V Profiles（RVA20 / RVA22 / RVA23，ratified 兼容性规范）"
+      ],
+      "regional": []
+    }
+  },
+  "openpower": {
+    "name": "OpenPOWER / Power ISA（开放处理器架构）",
+    "standard": "Power ISA（OpenPOWER Foundation 开放规范）",
+    "org": "OpenPOWER Foundation（Linux Foundation）",
+    "tier": "international",
+    "uname_machines": ["ppc64le", "ppc64", "ppc", "powerpc", "powerpc64"],
+    "cpuinfo_keys": ["POWER", "PowerPC", "ppc"],
+    "summary": "IBM POWER 处理器架构通过 OpenPOWER 基金会开放（小端 ppc64le 为主），含 Microwatt 等开源核实现，属开源硬件生态。",
+    "advice": "ppc64le 为主流小端 ABI；服务器场景注意 NUMA 与 SMT 调度，勿与 x86 包混用。",
+    "standards": {
+      "national": [],
+      "international": [
+        "Power ISA Specification（OpenPOWER Foundation）",
+        "Microwatt 开源 POWER 软核（OpenPOWER / CHIPS Alliance）"
+      ],
+      "regional": []
+    }
+  },
+  "openrisc": {
+    "name": "OpenRISC（开源处理器核）",
+    "standard": "OpenRISC 1000 Architecture（OpenRISC 社区 / OpenCores）",
+    "org": "OpenRISC（OpenCores 社区，现由 FOSSi Foundation 协调）",
+    "tier": "international",
+    "uname_machines": ["or1k", "openrisc"],
+    "cpuinfo_keys": ["OpenRISC", "or1k"],
+    "summary": "完全开源的 RISC 处理器架构，RTL 与工具链（GCC/binutils）均开放，常用于教学、FPGA 与科研。",
+    "advice": "资源受限或 FPGA 运行环境，优化以精简为主：清缓存、关无用服务。",
+    "standards": {
+      "national": [],
+      "international": [
+        "OpenRISC 1000 Architecture Manual（OpenCores / FOSSi）",
+        "GNU 工具链 or1k 后端（gcc / binutils）"
+      ],
+      "regional": []
+    }
+  },
+  "x86": {
+    "name": "x86 / x86-64（AMD64 / Intel 64）",
+    "standard": "Intel SDM / AMD APM（x86-64 架构规范）",
+    "org": "Intel / AMD（架构规范由厂商维护）",
+    "tier": "international",
+    "uname_machines": ["x86_64", "amd64", "i386", "i486", "i586", "i686", "x86"],
+    "cpuinfo_keys": ["Intel", "AMD", "Zhaoxin", "Hygon", "VIA"],
+    "summary": "主流桌面/服务器架构；国产兆芯（x86 授权）与海光（x86）同属此架构。",
+    "advice": "编译可用 -march=native；微码（microcode）更新由系统固件/发行版提供。",
+    "standards": {
+      "national": [
+        "兆芯 / 海光 x86 国产处理器适配相关国家标准（见国家平台 std.samr.gov.cn）"
+      ],
+      "international": [
+        "Intel Software Developer Manual（SDM）",
+        "AMD Architecture Programmer's Manual（APM）",
+        "x86-64 ABI（System V AMD64 ABI / Microsoft x64 calling convention）"
+      ],
+      "regional": []
+    }
+  },
+  "arm": {
+    "name": "ARM / AArch64",
+    "standard": "ARM Architecture Reference Manual（ARMv8-A / ARMv9-A）",
+    "org": "Arm Ltd.",
+    "tier": "international",
+    "uname_machines": ["aarch64", "arm64", "armv7l", "armv8l", "armv6l", "arm"],
+    "cpuinfo_keys": ["ARM", "AArch64", "Phytium", "Kunpeng", "HiSilicon", "Rockchip"],
+    "summary": "移动与服务器主流架构；国产飞腾（Phytium）、鲲鹏（Kunpeng）基于 ARM 授权。",
+    "advice": "ARM 服务器注意 big.LITTLE 调度与 NUMA；容器镜像需匹配 arm64 变体。",
+    "standards": {
+      "national": [
+        "飞腾 / 鲲鹏 ARM 国产处理器适配相关国家标准（见国家平台 std.samr.gov.cn）"
+      ],
+      "international": [
+        "ARM Architecture Reference Manual（Armv8-A / Armv9-A）",
+        "Arm SystemReady（固件/启动兼容认证）"
+      ],
+      "regional": []
+    }
+  },
+  "open_hardware": {
+    "name": "开源硬件（Open Source Hardware）认证与许可",
+    "standard": "OSHWA 认证 / CERN Open Hardware Licence（OHL）/ DIN SPEC 3105",
+    "org": "OSHWA（Open Source Hardware Association）、CERN、DIN（德国标准化学会）",
+    "tier": "international",
+    "uname_machines": [],
+    "cpuinfo_keys": [],
+    "summary": "开源硬件指设计文件（原理图、PCB、HDL、机械图纸）在开放许可下发布的硬件；OSHWA 提供认证 UID，CERN OHL 是专为硬件设计的 copyleft 许可，DIN SPEC 3105 给出开放硬件的标准化要求。",
+    "advice": "采购/复用硬件设计前核对许可（CERN OHL / GPL 硬件变体 / CC 文档许可）与 OSHWA 认证 UID；企业使用需注意衍生设计的源码开放义务。",
+    "standards": {
+      "national": [
+        "开源硬件相关国家标准（见国家平台 std.samr.gov.cn 检索；开源芯片/开放指令生态联盟规范）"
+      ],
+      "international": [
+        "OSHWA Open Source Hardware Definition 1.0 + 认证 UID（oshwa.org）",
+        "CERN Open Hardware Licence（OHL v2，强 copyleft 硬件许可）",
+        "RISC-V International（开放 ISA，无授权费）",
+        "CHIPS Alliance（开放芯片设计与互连标准）"
+      ],
+      "regional": [
+        "DIN SPEC 3105（德国：开放硬件标准化要求，地区标准）",
+        "欧盟开放硬件相关实践（EUPL / 开源硬件倡议，地区标准）"
+      ]
+    }
+  }
+}

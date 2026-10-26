@@ -1,0 +1,56 @@
+name: build-harmony-hap
+
+# 构建道家经典文库 HarmonyOS App 的 HAP（调试签名）。
+#
+# 注意：HarmonyOS SDK 体积大且需授权下载，官方未提供可匿名拉取的 GitHub Action。
+# 因此本流程设计为运行在「已装好 SDK + 签名 material」的【自托管 runner】上：
+#   runs-on: [self-hosted, harmonyos]
+# 该 runner 需预先配置：
+#   - HarmonyOS Command Line Tools（提供 ohpm / hvigor，并含 hvigorw）
+#   - OHOS_SDK_HOME 指向 SDK 目录
+#   - 本工程的 material/ 调试签名已就位（DevEco 自动生成或手动放置）
+#
+# 也可改在本地用 classics-harmony-app/build_hap.sh 直接出包。
+#
+# 2026-10 修复：仓库从未注册 [self-hosted, harmonyos] runner，任何 push 触发
+# 都会产生永远 queued 的幽灵运行（v0.6.62/63/64 曾三连空排队约 15 小时）。
+# 因此触发收敛为仅 workflow_dispatch（人工按需触发）；已排队运行已取消。
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: [self-hosted, harmonyos]
+    steps:
+      - name: 检出
+        uses: actions/checkout@v4
+
+      - name: 校验工具链
+        shell: bash
+        run: |
+          test -n "${OHOS_SDK_HOME:-}" || { echo "未配置 OHOS_SDK_HOME"; exit 1; }
+          command -v ohpm >/dev/null 2>&1 || { echo "未找到 ohpm"; exit 1; }
+          echo "OHOS_SDK_HOME=${OHOS_SDK_HOME}"
+
+      - name: 安装依赖
+        working-directory: classics-harmony-app
+        shell: bash
+        run: ohpm install
+
+      - name: 构建 HAP（调试签名）
+        working-directory: classics-harmony-app
+        shell: bash
+        run: |
+          if [ -f hvigorw ]; then
+            ./hvigorw assembleHap --mode debug
+          else
+            hvigor assembleHap --mode debug
+          fi
+
+      - name: 上传 HAP 产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: entry-hap
+          path: classics-harmony-app/entry/build/default/outputs/default/*.hap
+          if-no-files-found: warn

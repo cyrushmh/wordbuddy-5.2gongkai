@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Quantum Desktop Settings
+Comment=量子架构桌面基座状态与接口（ARCH=quantum）
+Exec=/usr/bin/quantum-settings
+Icon=quantum
+Terminal=false
+Type=Application
+Categories=Settings;DesktopSettings;
+Keywords=quantum;desktop;settings;arch=quantum;

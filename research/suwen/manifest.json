@@ -1,0 +1,74 @@
+{
+  "harvested_at": "2026-10-17 19:24:20",
+  "edition": "黄帝内经素问译解（佚名/战国 attribution；公有领域转录，github:daizhigeATxy2401/yicang）",
+  "source": "https://raw.githubusercontent.com/daizhigeATxy2401/yicang/master/%E9%BB%84%E5%B8%9D%E5%86%85%E7%BB%8F%E7%B4%A0%E9%97%AE-%E6%88%98%E5%9B%BD-%E4%BD%9A%E5%90%8D.txt",
+  "total_chars": 108080,
+  "located": 79,
+  "missing_chapters": [
+    79,
+    80
+  ],
+  "anchor_validation": [
+    {
+      "quote": "三焦者，决渎之官，水道出焉",
+      "expect_chapter": 8,
+      "match_key": "三焦者决渎之官水道出焉",
+      "found_in": [
+        8
+      ],
+      "pass": true
+    },
+    {
+      "quote": "饮入于胃，游溢精气，上输于脾……水精四布，五经并行",
+      "expect_chapter": 21,
+      "match_key": "饮入于胃游溢精气上输于脾",
+      "found_in": [
+        21
+      ],
+      "pass": true
+    },
+    {
+      "quote": "法于阴阳，和于术数",
+      "expect_chapter": 1,
+      "match_key": "法于阴阳和于术数",
+      "found_in": [
+        1
+      ],
+      "pass": true
+    },
+    {
+      "quote": "治病必求于本",
+      "expect_chapter": 5,
+      "match_key": "治病必求于本",
+      "found_in": [
+        5
+      ],
+      "pass": true
+    },
+    {
+      "quote": "湿胜则濡泄",
+      "expect_chapter": 5,
+      "match_key": "湿胜则濡泄",
+      "found_in": [
+        5,
+        71
+      ],
+      "pass": true
+    },
+    {
+      "quote": "肾者水脏，主津液",
+      "expect_chapter": 34,
+      "match_key": "肾者水脏主津液",
+      "found_in": [
+        34
+      ],
+      "pass": true
+    }
+  ],
+  "anomalies": [
+    "第79篇 解精微論（正篇）在本源转录中整章缺失，未伪造内容；全本未收，需另补来源（如《素问》遗篇善本）",
+    "第80篇 刺法論（遺篇）在本源转录中整章缺失，未伪造内容；仅见交叉引用『论在刺法中』，需另补来源（如《素问》遗篇善本）",
+    "第81篇 本病论 源篇头误标为「微论篇第八十一」，已按正文内容(经论从容/形法阴阳刺灸汤液)校正归位",
+    "第74篇 示从容论 源篇头为「示从容论第七十六」(无『篇』字，且篇号错乱)，已按篇名归位"
+  ]
+}

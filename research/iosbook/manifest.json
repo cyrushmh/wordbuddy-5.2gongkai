@@ -1,0 +1,76 @@
+{
+  "source": "用户投递附件（非网络抓取）",
+  "source_kind": "third-party-book-archive",
+  "title": "《iOS编程（第4版）》iOS Programming: The Big Nerd Ranch Guide, 4th Edition（中文版）",
+  "fetched_utc": "2026-10-17T16:43:00Z",
+  "book_identity": {
+    "authors": ["Christian Keur", "Aaron Hillegass", "Joe Conway"],
+    "translator": "丁道骏",
+    "reviewers": ["张召", "吴春燕"],
+    "publisher": "华中科技大学出版社（官方中文版，Big Nerd Ranch Guides 丛书，Jolt 生产力大奖标记）",
+    "pages": 854,
+    "evidence": "cover/front.jpg（真封面）与 cover/toc_screenshot.jpg（打包者用福昕 PDF 编辑器打开后截图，含书签面板，可见版权信息/作者简介/第1章 一个简单的iOS应用 ~ 第24章 Core Data 起始；目录完整清单以解锁后 PDF 为准）",
+    "tech_era": "Objective-C + ARC + 自动布局（iOS 8/9 时期教材）"
+  },
+  "archive_structure": {
+    "layer_0_rar": {
+      "file": "/root/uploads/1792255387373015028-《iOS编程 第4版》.rar",
+      "format": "RAR v5",
+      "bytes": 19105521,
+      "sha256": "d6d2170b7034ba767eac01e6b5853be8f8003a8ac461d10b65c2b0fa6bb19313",
+      "entries": ["《iOS编程 第4版》.zip（存储模式，19105317 字节）"]
+    },
+    "layer_1_zip": {
+      "file": "《iOS编程 第4版》.zip（L1）",
+      "bytes": 19105317,
+      "sha256": "81fa32adee917914476fa82659fbb519d28c3d4be947c890cf7a6d9e39a0d32e",
+      "encryption": "无",
+      "entries": [
+        {"name": "35118a98ba208e7c26bcafee4d0c8d0e0.jpg", "size": 19621, "encrypted": false, "archived_as": "cover/front.jpg", "sha256": "71f727b887ca6e3352bf0bd3057848f04d15a4554c84f5da30ef550d552cf7db"},
+        {"name": "35118a98ba208e7c26bcafee4d0c8d0e1.jpg", "size": 123865, "encrypted": false, "archived_as": "cover/toc_screenshot.jpg", "sha256": "9fc409062872ff35c338a7cb0e2d05d663cccdf2cecbec1484beb2c15893f175"},
+        {"name": "iOS编程 第4版_.zip", "size": 18974755, "encrypted": false},
+        {"name": "密码链接说明.txt", "size": 352, "encrypted": false}
+      ]
+    },
+    "layer_2_zip": {
+      "file": "iOS编程 第4版_.zip（L2）",
+      "bytes": 18974755,
+      "encryption": "容器无密码",
+      "entries": [
+        {"name": "iOS编程 第4版_.pdf", "size": 24744148, "encrypted": "ZIP 传统加密（ZipCrypto）+ Deflate；PDF 本体内容未核验"}
+      ]
+    }
+  },
+  "password_gate": {
+    "note_file_content": "收集整理资料不容易，请复制以下链接，在浏览器打开并获取解压密码\n\n资料不贵,您的时间宝贵!\n\n    http://www.yiquma.com/code/Nqq18bMw0tk1h8VD\n\n本资料为最新整理的《iOS编程 第4版》高清pdf ，用于学习，内容丰富！\n\n更多程序员书籍下载，请访问  https://www.manongbook.com",
+    "policy": "外部链接（yiquma.com / manongbook.com）为第三方引流站，不访问、不提交任何信息；密码获取须由用户决定并提供",
+    "local_attempts": {
+      "candidates_tried": ["www.manongbook.com", "manongbook.com", "https://www.manongbook.com", "manongbook", "MANONGBOOK", "www.manongbook.com/", "yiquma.com", "www.yiquma.com", "123456", "8888", "6666", "password", "1234", "1234567890", "www.manongbook.cn", "book"],
+      "result": "全部失败（诚实记录；未做字典暴力破解）",
+      "date": "2026-10-17"
+    },
+    "crack_attempts_2026_10_18": {
+      "date": "2026-10-18",
+      "tooling": {
+        "zipcrack_py": "自研 ZipCrypto 字典爆破器：密钥调度按 CPython zipfile._ZipDecrypter 口径（裸表 CRC 步进 crc>>8 ^ tab[(crc^ch)&0xff]；曾误用 zlib.crc32 反转约定导致全盘假阴性，已修正）；判定用『解密流前 N 字节 -> raw-inflate -> 期待 %PDF- 前缀』，阳性再 zipfile 全量解密 + CRC32 地面复核。实现经自造 ZipCrypto+Deflate 包正反验证（正确口令命中/错误口令排除）",
+        "fcrackzip": "1.0 -D 字典模式做校验位快滤（14M 候选 2 秒）；本包 UTF-8(0x0800)+数据描述符(0x0008) 标志致其报 corrupted，用仅改标志位并回填本地头 crc/csize/usize 的清洗副本扫描，命中一律回原包复核",
+        "pdfcrack": "0.20 已安装但本场景不适用——加密层是 ZIP 传统加密（ZipCrypto）容器，zip 解密前不存在『PDF 标准安全处理器』可攻；若将来取得 zip 口令而 PDF 另有打开密码，才轮到 pdfcrack",
+        "rarcrack": "已安装但本场景不适用——最外层 RAR5 容器无密码（见 archive_structure.layer_0_rar）",
+        "john": "此构建非 jumbo 版，无 PKZIP 格式，不可用"
+      },
+      "batches": [
+        {"name": "主题+组合（站点/书名/引流code/通用弱口令/TLD/文件名）", "count": 5233, "result": "失败"},
+        {"name": "引流 code Nqq18bMw0tk1h8VD 大小写全排列", "count": 2048, "result": "失败"},
+        {"name": "纯数字 0-999999（含 4 位零填充）", "count": 1010048, "result": "失败"},
+        {"name": "rockyou.txt 全量（fcrackzip 快滤 + 内容前缀复核 56216 个过检候选）", "count": 14344391, "result": "失败"},
+        {"name": "7-8 位数字全空间（fcrackzip 快滤 + 内容前缀复核 386934 个过检候选）", "count": 99000000, "result": "失败"},
+        {"name": "空口令与单字符", "count": 39, "result": "失败"}
+      ],
+      "total_candidates": 115071759,
+      "result": "全部失败",
+      "conclusion": "本地可枚举口令空间（含通用弱口令大全 rockyou 与 8 位以内数字全空间）已穷尽；口令应在 yiquma.com 引流页之后，按既定政策不自动访问引流站、不提交任何信息。等用户提供口令或已解密 PDF。"
+    }
+  },
+  "discipline": "只归档已核验事实；加密 PDF 内容在解锁前一律不臆造；目录章名仅录截图可见部分",
+  "next": "等待用户提供密码或解密后的 PDF，再进入事实提炼与入库流程（2026-10-18 已做约 1.15 亿候选修补爆破，仍 honest 阻塞）"
+}

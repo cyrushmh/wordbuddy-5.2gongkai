@@ -1,0 +1,4 @@
+# SwiftPM 构建产物与依赖缓存（勿入仓）
+.build/
+# Cargo 类比：SwiftPM 无 Package.resolved 外的锁文件需排除；
+# 本包仅依赖 Foundation，无外部依赖，故无需提交 resolved 文件。

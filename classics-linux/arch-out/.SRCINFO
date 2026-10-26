@@ -1,0 +1,25 @@
+pkgbase = classics
+	pkgdesc = 经典典籍阅读与编码安全解码命令行工具（严格 UTF-8 优先，GB18030 回退，绝不假装解码成功）
+	pkgver = 1.0.0
+	pkgrel = 1
+	url = https://github.com/cyrushmh/wordbuddy-github
+	arch = x86_64
+	arch = aarch64
+	arch = riscv64
+	license = MIT
+	makedepends = gcc
+	makedepends = make
+	source = classics-1.0.0.tar.gz
+	sha256sums = b4485acb43f1c900ae52a92629cdaa76e38c52c57e3a7989954fca61bad1be27
+
+pkgname = classics
+	pkgdesc = 经典典籍阅读与编码安全解码命令行工具（严格 UTF-8 优先，GB18030 回退）
+	arch = x86_64
+	arch = aarch64
+	arch = riscv64
+	depends = glibc
+	depends = classics-data=1.0.0-1
+
+pkgname = classics-data
+	pkgdesc = classics 的典籍文本数据（架构无关，安装到 /usr/share/classics/）
+	arch = any

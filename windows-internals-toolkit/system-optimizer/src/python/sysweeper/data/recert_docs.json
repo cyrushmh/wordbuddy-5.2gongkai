@@ -1,0 +1,250 @@
+{
+  "_meta": {
+    "title": "WCET 续证 PDU 计分方案（IEEE WCET Recertification PDU Scheme）",
+    "certification": "IEEE WCET (Wireless Communications Engineering Technologies) Certification",
+    "certification_zh": "IEEE 无线通信工程技术认证",
+    "source_files": [
+      "recert/Recertification PDU Spreadsheet (3 year cycle) FINAL.xls",
+      "recert/Recertification PDU spreadsheet 5 year (Dec2016).xls"
+    ],
+    "author": "Dr. Mohamed Moustafa（续证表原作者；Last Saved By: Tara Gallus / Natasha Simonovski）",
+    "created": "2012-03-28",
+    "program_status": "IEEE WCET 认证项目已于 2019 年停办；本知识库仅供继续教育 / PDU 跟踪方法论参考，不作为现行认证依据",
+    "method": "从用户投递的两个 .xls 续证跟踪表解析 PDU 计分规则（只读元数据，不复制表内个人隐私字段）",
+    "note": "PDU 计算与认定以官方 WCET Candidate Handbook 为准；本库为规则知识层，可被 sysweeper 查询与对账",
+    "license_note": "用户投递的续证跟踪表为个人使用模板，原件（含姓名/证书号等）不入库，仅留规则知识以 SHA256 备核验",
+    "generated_by": "research/recert/build_recert_docs.py"
+  },
+  "requirements": {
+    "increment_hours": 0.25,
+    "increment_note": "活动时间以 15 分钟（0.25 小时）为最小计量单位累加",
+    "technical_areas_total": 7,
+    "min_technical_areas_addressed": 3,
+    "technical_areas_note": "活动须关联到 WCET 七大技术知识领域中的至少一项；整个续证周期内须覆盖其中至少 3 个领域",
+    "min_distinct_years": 3,
+    "min_distinct_years_note": "活动须分布在周期内至少 3 个自然年",
+    "cycles": {
+      "3year": {
+        "label": "三年周期（标准）",
+        "min_pdus": 60,
+        "span_requirement": "活动覆盖 ≥3 年（三年周期内）",
+        "source": "Recertification PDU Spreadsheet (3 year cycle) FINAL.xls"
+      },
+      "5year": {
+        "label": "五年周期",
+        "min_pdus": 100,
+        "span_requirement": "活动覆盖 ≥3 年（五年周期内）",
+        "source": "Recertification PDU spreadsheet 5 year (Dec2016).xls"
+      }
+    }
+  },
+  "technical_areas": {
+    "note": "七大类由 WCET Candidate Handbook Appendix A 定义（原表引用但未在表内枚举）。以下为公开 WCET BoK 常见领域名称，第 7 类需对照停办前 Handbook 核实，本库不做臆造",
+    "source": "WCET Candidate Handbook Appendix A（项目已停办，仅历史存档可查）",
+    "areas": [
+      "RF and Propagation（射频与传播）",
+      "Signal Processing（信号处理 / DSP）",
+      "Communication Theory（通信理论）",
+      "Networks, Systems, and Access（网络 / 系统 / 接入）",
+      "Hardware, Digital, and Multimedia（硬件 / 数字 / 多媒体）",
+      "Software（软件）",
+      "[待核实] 第 7 类领域——请对照 WCET Candidate Handbook Appendix A 原文确认"
+    ]
+  },
+  "activity_categories": [
+    {
+      "key": "work",
+      "sheet": "Work ",
+      "label": "Professional Activities（专业工作）",
+      "rule": "Use this page to enter information about significant work you've done in wireless communications and/or wireless patents applied for or awarded.",
+      "pdu_per_unit": {
+        "3year": "10 PDU/年（≥6 个月专业工作）",
+        "5year": "6 PDU/年（≥6 个月专业工作）"
+      },
+      "cycle_cap": {
+        "3year": 30,
+        "5year": 30
+      },
+      "per_year_cap": null,
+      "patent_pdu": {
+        "applied": 5,
+        "awarded": 10,
+        "5year_awarded_cap": 20
+      },
+      "max_patents_per_cycle": 1
+    },
+    {
+      "key": "volunteering",
+      "sheet": "Volunteering",
+      "label": "Professional/Industry Volunteer Services（行业志愿服务）",
+      "rule": "Use this page to report your volunteer service on behalf of the industry. Report only service that is relevant to wireless communications.",
+      "pdu_per_unit": {
+        "3year": "1 PDU/小时",
+        "5year": "1 PDU/小时"
+      },
+      "cycle_cap": {
+        "3year": 20,
+        "5year": 30
+      },
+      "per_year_cap": {
+        "3year": 10,
+        "5year": 10
+      },
+      "patent_pdu": null,
+      "max_patents_per_cycle": null
+    },
+    {
+      "key": "wcet_support",
+      "sheet": "WCET Support",
+      "label": "WCET Program Support（WCET 项目贡献）",
+      "rule": "Use this page to report any contributions you have made to the WCET certification program.",
+      "pdu_per_unit": {
+        "3year": "1 PDU/小时",
+        "5year": "1 PDU/小时"
+      },
+      "cycle_cap": {
+        "3year": 15,
+        "5year": 25
+      },
+      "per_year_cap": null,
+      "patent_pdu": null,
+      "max_patents_per_cycle": null
+    },
+    {
+      "key": "teaching",
+      "sheet": "Teaching",
+      "label": "Course Development / Instruction（课程开发 / 授课）",
+      "rule": "Use this page to report any relevant courses in wireless communications (including short courses at conferences) and/or workshops you have developed, taught or organized.",
+      "pdu_per_unit": {
+        "3year": "开发 2 PDU/小时；授课 1 PDU/小时",
+        "5year": "开发 2 PDU/小时；授课 1 PDU/小时"
+      },
+      "cycle_cap": {
+        "3year": 20,
+        "5year": 30
+      },
+      "per_year_cap": null,
+      "patent_pdu": null,
+      "max_patents_per_cycle": null
+    },
+    {
+      "key": "publications",
+      "sheet": "Publications",
+      "label": "Publications（论文 / 著作）",
+      "rule": "Use this page to report papers published in relevant journals, conference proceedings, etc. and any contributions to published books on wireless communications.",
+      "pdu_per_unit": {
+        "3year": "1 PDU/小时（撰写）",
+        "5year": "1 PDU/小时（撰写）"
+      },
+      "cycle_cap": {
+        "3year": 15,
+        "5year": 25
+      },
+      "per_year_cap": null,
+      "patent_pdu": null,
+      "max_patents_per_cycle": null
+    },
+    {
+      "key": "training",
+      "sheet": "Training",
+      "label": "ComSoc / Outside Training（正规培训）",
+      "rule": "Use this page to report any relevant formal training you have taken. Report conference short courses/workshops on the Conferences page.",
+      "pdu_per_unit": {
+        "3year": "1 PDU/小时",
+        "5year": "1 PDU/小时"
+      },
+      "cycle_cap": {
+        "3year": 15,
+        "5year": 25
+      },
+      "per_year_cap": null,
+      "patent_pdu": null,
+      "max_patents_per_cycle": null
+    },
+    {
+      "key": "self_study",
+      "sheet": "Self Study",
+      "label": "Self-Directed Learning（自学）",
+      "rule": "Use this page to report any relevant independent study (for example, self-directed computer-based training) you have taken.",
+      "pdu_per_unit": {
+        "3year": "1 PDU/小时（须评估）",
+        "5year": "1 PDU/小时（须评估）"
+      },
+      "cycle_cap": {
+        "3year": 10,
+        "5year": 15
+      },
+      "per_year_cap": null,
+      "patent_pdu": null,
+      "max_patents_per_cycle": null
+    },
+    {
+      "key": "license_cert",
+      "sheet": "License-Certification",
+      "label": "Other Certifications（其他执照 / 认证）",
+      "rule": "Use this page to report any additional relevant licenses, certifications, etc. that you have earned.",
+      "pdu_per_unit": {
+        "3year": "1 PDU/小时",
+        "5year": "1 PDU/小时"
+      },
+      "cycle_cap": {
+        "3year": 15,
+        "5year": 25
+      },
+      "per_year_cap": null,
+      "patent_pdu": null,
+      "max_patents_per_cycle": null
+    },
+    {
+      "key": "conferences",
+      "sheet": "Conferences",
+      "label": "Industry Conferences and Events（行业会议）",
+      "rule": "Use this page to report your attendance at and participation in  technical conferences, symposia, etc. on wireless communications.",
+      "pdu_per_unit": {
+        "3year": "1 PDU/小时（参会）",
+        "5year": "1 PDU/小时（参会）"
+      },
+      "cycle_cap": {
+        "3year": 15,
+        "5year": 20
+      },
+      "per_year_cap": null,
+      "patent_pdu": null,
+      "max_patents_per_cycle": null
+    },
+    {
+      "key": "member_rank",
+      "sheet": "Member Rank",
+      "label": "Professional / Industrial Community（会员升级）",
+      "rule": "Use this page to report any upgrades earned in relevant professional/industrial society memberships.",
+      "pdu_per_unit": {
+        "3year": "Sr→Fellow 15 / Member→Sr 15 / Student→full 5 / 两级连升 15",
+        "5year": "Sr→Fellow 20 / Member→Sr 15 / Student→full 5 / 两级连升 15"
+      },
+      "cycle_cap": {
+        "3year": 15,
+        "5year": 25
+      },
+      "per_year_cap": null,
+      "patent_pdu": null,
+      "max_patents_per_cycle": null
+    }
+  ],
+  "validation_rules": [
+    "总 PDU ≥ 周期下限（三年 60 / 五年 100）",
+    "活动分布 ≥3 个自然年",
+    "覆盖 ≥3 个 WCET 技术知识领域（共 7 个）",
+    "每活动分类 PDU 不超过其周期封顶（cycle_cap）",
+    "志愿服务另受每年封顶约束（per_year_cap）",
+    "专业工作每年封顶见 pdu_per_unit；每周期仅 1 项专利",
+    "执照/认证与培训重复计时不可双报",
+    "自学须含评估方法；非纯无线主题按相关占比折算",
+    "申报须诚实完整，接受审计；虚假信息可致认证撤销"
+  ],
+  "summary_lines": [
+    "WCET 续证 PDU 方案：IEEE 无线通信工程技术认证（已于 2019 年停办）的继续教育计分规则。",
+    "两个周期模板：三年周期 ≥60 PDU、五年周期 ≥100 PDU；均要求活动覆盖 ≥3 年、≥3 个技术知识领域。",
+    "10 个活动分类（专业工作/志愿/WCET贡献/授课/论文/培训/自学/其他认证/会议/会员升级），各有 PDU 计分与周期封顶。",
+    "本库为规则知识层（只读），可由 sysweeper 查询与对账；原件为个人模板，不入库。"
+  ]
+}

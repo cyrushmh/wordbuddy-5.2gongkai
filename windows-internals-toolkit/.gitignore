@@ -1,0 +1,17 @@
+# 构建产物 / 依赖缓存（跨语言通用，monorepo 根级）
+**/target/
+**/__pycache__/
+**/*.pyc
+**/.DS_Store
+**/node_modules/
+**/bin/
+**/obj/
+**/.vs/
+**/*.user
+**/*.suo
+**/*.swp
+**/*.tmp
+**/dist/
+
+# Go 构建产物（go build 默认落在源码目录）
+system-optimizer/src/go/go

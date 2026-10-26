@@ -1,0 +1,20 @@
+#!/usr/bin/make -f
+# SPDX-License-Identifier: GPL-2.0
+#
+# xfce4-quantum Debian 规则。
+# 源包根目录为 quantum-kernel/desktop/；构建时 dpkg-buildpackage 在此目录运行。
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+%:
+	dh $@
+
+# 编译 C 守护进程（DBus 为可选依赖，由 Makefile 探测）。
+override_dh_auto_build:
+	$(MAKE) -C quantum-core
+
+# 安装完全由 dh_install 经 quantum-core.install / xfce4-quantum.install 处理；
+# quantum-core 的 Makefile 不提供 install 目标，故此处留空。
+override_dh_auto_install:
+
+# 不自动启用 systemd 用户服务：XFCE 会话通过 autostart 桌面文件拉起 quantum-core。
+override_dh_installsystemduser:

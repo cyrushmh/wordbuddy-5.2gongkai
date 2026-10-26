@@ -1,0 +1,31 @@
+# 根目录 = monorepo 总览 + 通用同步脚本；各子项目自带 .gitignore
+# 本文件只覆盖根级产物与通用噪声，不重复子项目的忽略规则。
+
+# 构建产物（windows-internals-toolkit 的 Python/Go 输出，个别场景会落在根）
+dist/
+build/
+
+# Debian 打包产物：dpkg-buildpackage 把 .deb/.ddeb 落在源码树的上级目录（即仓库根）。
+# 交付用 .deb 已显式归档在 classics-linux/build/ 下（force-add），根级产物一律忽略。
+/*.deb
+/*.ddeb
+/*.buildinfo
+/*.changes
+
+# Python 噪声（子项目若未自带可兜底）
+__pycache__/
+*.pyc
+*.egg-info/
+
+# 编辑器 / OS 噪声
+.DS_Store
+*.swp
+
+# 量子架构桌面基座（xfce4-quantum）打包产物：可由 build_deb.sh / dpkg-buildpackage 重建
+quantum-kernel/*.deb
+quantum-kernel/*.ddeb
+quantum-kernel/*.buildinfo
+quantum-kernel/*.changes
+
+# classics-rs 构建缓存（cargo build --release 产物由 CI 重建并发布到 Release）
+classics-rs/target/

@@ -1,0 +1,56 @@
+# 打包配置（PEP 621）。纯标准库、零运行时依赖。sdist / wheel 由仓库自带 tools/syspkg.py
+# 生成（手写 PEP 427、不经由 setuptools，对去中心化版本号格式零依赖、规避 PEP 440 校验）。
+# CI 见仓库根 .github/workflows/build.yml：打 tag 时由 GitHub 自动构建并附到 Release（同样走 syspkg）。
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sysweeper"
+version = "0000.0000.0000.0034.20261026"
+description = "跨系统 / 跨语言 / 跨平台的系统优化与清理任务库（分类规范整体，纯标准库，零依赖）"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+authors = [{ name = "system-optimizer contributors" }]
+keywords = ["system", "optimizer", "cleanup", "cross-platform", "maintenance", "privacy"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: System Administrators",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: BSD",
+    "Operating System :: Android",
+    "Operating System :: iOS",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Systems Administration",
+]
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.pytest.ini_options]
+markers = [
+    "slow: 较慢的端到端测试（构建 .pyz / wheel 并跑起来）",
+]
+
+[project.scripts]
+sysweeper = "sysweeper.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/cyrushmh/wordbuddy-github"
+Repository = "https://github.com/cyrushmh/wordbuddy-github"
+
+[tool.setuptools]
+packages = { find = { where = ["src/python"] } }
+
+[tool.setuptools.package-data]
+sysweeper = ["data/*.json", "data/concepts/*.json", "plugins/*.json"]

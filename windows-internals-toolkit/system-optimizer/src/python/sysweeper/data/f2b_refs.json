@@ -1,0 +1,124 @@
+{
+  "key": "f2b",
+  "title": "fail2ban 学习应用知识库（f2b）",
+  "domain": "安全",
+  "version": "v0.6.84",
+  "concept": "十二都天神煞大阵：fail2ban 以单一守护进程统观全部日志源、按规则集中响应，如十二神煞环绕一周、周遍防御；本仓库学习其架构模式与分级响应思想，落为只读咨询——配置建议以文本交还用户，绝不代写、绝不代行封禁。",
+  "philosophy": {
+    "_note": "十二都天神煞大阵的指导理念（两大阵法共用的总纲）：",
+    "items": [
+      "道法自然：响应顺应攻击的自然节律——阈值分级、退避递进，不一刀切、不骤然绝杀；",
+      "活在当下：立足当下实际环境——本机装了 fail2ban 才解析其配置，没有就降级为模式学习，不虚构战果；",
+      "只有生存才能发展：先设 ignoreip 白名单防误封——把自己封在门外是生存事故，生存优先于防护；",
+      "在发展中能更好的生存：分级封禁与累犯升级提升安全，反哺系统更好地存续；",
+      "如此循环，亦复如是：观测 → 响应 → 再观测，每一轮防御都比上一轮更精准，循环上升。"
+    ]
+  },
+  "upstream": {
+    "name": "fail2ban",
+    "homepage": "https://www.fail2ban.org/",
+    "source": "https://github.com/fail2ban/fail2ban",
+    "docs": "https://fail2ban.readthedocs.io/en/latest/",
+    "wiki": "https://github.com/fail2ban/fail2ban/wiki",
+    "license": "GPL-2.0",
+    "license_note": "fail2ban 为 GPL-2.0（强拷贝左）项目；本仓库不 vendored 其源代码，仅在自有模块中引用官方源并学习其架构模式——学习不等于打包，引用不等于拷贝。所有模式总结均为本仓库原创表述。"
+  },
+  "architecture": {
+    "_note": "fail2ban 架构模式学习（本仓库原创总结，非其文档译文）。「十二」取周遍之义：十二都天神煞各司其职、环绕一周；jail 模型同理——每接入一个受监控服务就如添一尊神煞，十二乃至更多，环绕系统一周而防御周遍。",
+    "layers": [
+      {
+        "id": "jail",
+        "label": "监控单元 jail",
+        "pattern": "把「日志源 + 过滤器 + 动作 + 阈值」绑定为一个可命名的监控单元（sshd/nginx/postfix…），一处定义、统一启停",
+        "lesson": "响应策略应按服务维度封装为独立单元，而非散落的规则堆"
+      },
+      {
+        "id": "filter",
+        "label": "过滤器 filter",
+        "pattern": "以 failregex 正则刻画失败模式，配 ignoreregex 白名单防误杀",
+        "lesson": "任何自动响应都须内置「不误伤」的白名单视角；匹配面越窄越安全"
+      },
+      {
+        "id": "action",
+        "label": "动作 action",
+        "pattern": "ban/unban/通知等响应动作可组合（action_ 链式引用），与触发条件解耦",
+        "lesson": "触发与响应分层：同一判定可挂不同力度的响应，可分级升级"
+      },
+      {
+        "id": "threshold",
+        "label": "阈值与退避",
+        "pattern": "maxretry/findtime/bantime 三元组：窗口内失败计数超限才响应，bantime 可递增（recidive）",
+        "lesson": "响应强度应按事实分级，一次性永久封禁是最粗暴的下策"
+      },
+      {
+        "id": "daemon",
+        "label": "守护进程与数据库",
+        "pattern": "server 常驻统一观测，sqlite3（/var/lib/fail2ban/fail2ban.sqlite3）持久化封禁状态，重启不丢",
+        "lesson": "集中观测须有持久记忆，否则重启即失忆；状态与策略分离"
+      },
+      {
+        "id": "client",
+        "label": "客户端分权",
+        "pattern": "fail2ban-client 提供 status/get 只读查询与 set 写操作两类命令面",
+        "lesson": "读写命令面分权：只读查询可放心开放，写操作须显式且可审计"
+      }
+    ]
+  },
+  "common_jails": {
+    "_note": "常见 jail 的只读登记（供咨询建议时引用；参数语义为 fail2ban 通用口径）：",
+    "jails": [
+      {
+        "id": "sshd",
+        "label": "SSH 暴力破解防护",
+        "logpath": "/var/log/auth.log",
+        "typical": "maxretry=3 findtime=600 bantime=3600"
+      },
+      {
+        "id": "nginx-http-auth",
+        "label": "Nginx 基础认证失败防护",
+        "logpath": "/var/log/nginx/error.log",
+        "typical": "maxretry=6 findtime=600 bantime=600"
+      },
+      {
+        "id": "postfix",
+        "label": "邮件服务异常防护",
+        "logpath": "/var/log/mail.log",
+        "typical": "maxretry=5 findtime=600 bantime=3600"
+      },
+      {
+        "id": "recidive",
+        "label": "累犯升级（重复被封者延长封禁）",
+        "logpath": "/var/log/fail2ban.log",
+        "typical": "maxretry=3 findtime=86400 bantime=604800"
+      }
+    ]
+  },
+  "config_paths": {
+    "_note": "只读解析的配置文件位置（按发行版习惯登记，不存在则跳过）：",
+    "unix": [
+      "/etc/fail2ban/jail.local",
+      "/etc/fail2ban/jail.d/*.local",
+      "/etc/fail2ban/jail.conf",
+      "/etc/fail2ban/filter.d/*.conf",
+      "/etc/fail2ban/action.d/*.conf"
+    ]
+  },
+  "consult_templates": [
+    {
+      "id": "sshd-basic",
+      "label": "SSH 基础防护 jail（建议文本）",
+      "text": "[sshd]\nenabled = true\nmaxretry = 3\nfindtime = 600\nbantime = 3600\n# 说明：10 分钟内失败 3 次即封禁 1 小时；请按自身误登录风险调整。\n# 本建议仅文本，是否写入 /etc/fail2ban/jail.local 由用户决定。"
+    },
+    {
+      "id": "whitelist",
+      "label": "白名单防误封（建议文本）",
+      "text": "[DEFAULT]\nignoreip = 127.0.0.1/8 ::1\n# 说明：先把本机与可信运维网段加入 ignoreip，再启用任何 jail——把自己封在门外是最常见的事故。"
+    },
+    {
+      "id": "graduated",
+      "label": "分级响应（累犯升级，建议文本）",
+      "text": "[recidive]\nenabled = true\nmaxretry = 3\nfindtime = 86400\nbantime = 604800\n# 说明：一天内被封 3 次者升级为一周；bantime 递增优于一次性永久封禁。"
+    }
+  ],
+  "compliance": "只读学习应用：不 vendored fail2ban 源代码（GPL-2.0 强拷贝左）；只读探测安装状态、只读解析配置文件；配置建议仅以文本交还用户，绝不代写 jail.local、绝不重启 fail2ban、绝不代行封禁/解封。"
+}

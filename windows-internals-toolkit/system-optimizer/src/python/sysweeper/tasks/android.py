@@ -1,0 +1,397 @@
+"""Android 平台任务定义（通过 adb 执行）。
+
+Android 无法直接被 PC 脚本「清理系统分区」，但可通过 adb 在已连接、开启
+USB 调试的设备上：清理应用缓存、删除共享存储垃圾、trim 释放空间。
+未连接设备时，动作会自动失败并提示，工具同时给出手动指引。
+版本口径（2026-10）：最新为 Android 17；旧版本命令基本一致。
+"""
+
+from __future__ import annotations
+
+from ..models import Action, Task
+
+A = lambda cmd, desc="", rev=False: Action("adb", cmd, desc, rev)
+N = lambda op, desc="", rev=False: Action("native", op, desc, rev)
+M = lambda text, desc="", rev=False: Action("manual", text, desc, rev)
+
+
+TASKS = [
+    Task(
+        id="and_cache",
+        platform="android",
+        title="清理应用缓存（adb）",
+        category="cleanup",
+        risk="low",
+        desc="对第三方应用执行 trim（释放缓存），而非清空数据。",
+        actions=[A("adb shell pm trim `adb shell pm list packages -3 "
+                   "| cut -d: -f2`", "批量 trim 第三方应用缓存")],
+        notes=["pm trim 仅释放缓存、不删账号数据；需设备已连接并授权。"],
+    ),
+    Task(
+        id="and_download_junk",
+        platform="android",
+        title="删除下载目录与缩略图垃圾",
+        category="cleanup",
+        risk="medium",
+        desc="删除 /sdcard/Download 的临时文件与 DCIM/.thumbnails。",
+        actions=[
+            A("adb shell rm -f /sdcard/Download/*.tmp", "删除 Download 临时文件"),
+            A("adb shell rm -rf /sdcard/DCIM/.thumbnails", "删除相册缩略图缓存", rev=True),
+        ],
+        caveats=["不要误删 /sdcard/Download 下有用文件；建议先手动查看。"],
+    ),
+    Task(
+        id="and_dalvik",
+        platform="android",
+        title="清理 Dalvik/ART 缓存（恢复模式向）",
+        category="maintenance",
+        risk="high",
+        desc="通常无需手动清；系统更新后会自动重建。",
+        actions=[M("一般无需操作；若卡顿，重启进 Recovery 选择 Wipe Cache Partition。",
+                  "Recovery 模式清缓存")],
+        caveats=["错误操作可能需重刷系统；普通用户不建议。"],
+    ),
+    Task(
+        id="and_manual",
+        platform="android",
+        title="Android 手动优化指引",
+        category="optimize",
+        risk="low",
+        desc="无需 adb 的日常优化项。",
+        actions=[
+            M("设置 → 存储 → 清理「其他/临时文件」；定期重启释放内存。",
+              "系统自带存储清理"),
+            M("设置 → 应用 → 各应用 → 存储 → 清除缓存（逐个）。", "手动清应用缓存"),
+            M("卸载长期不用的 App、关闭后台自启动与通知。", "减负与续航"),
+        ],
+        notes=["未 Root 的安卓无法深度清理系统分区，依赖厂商自带工具更稳妥。"],
+    ),
+    Task(
+        id="and_trim_native",
+        platform="android",
+        title="存储分区 fstrim（原生 adb 接口）",
+        category="optimize",
+        risk="low",
+        desc="用 adb 原生接口对内部存储执行 fstrim，回收已删除块、提升读写效率。",
+        actions=[N("android.trim", "对 /data 执行 sm fstrim（adb 接口）")],
+        notes=["需设备已连接并授权 USB 调试；部分厂商 ROM 限制 fstrim，失败属正常。"],
+    ),
+    Task(
+        id="and_adaptive_battery",
+        platform="android",
+        title="开启自适应电池与后台限制",
+        category="optimize",
+        risk="low",
+        desc="用系统自带的「自适应电池」限制后台耗电应用，提升续航与流畅度（无需 adb）。",
+        actions=[
+            M("设置 → 电池 → 更多电池设置 → 开启「自适应电池」。",
+              "开启自适应电池"),
+            M("设置 → 应用 → 按应用限制后台耗电（改为「受限/优化」）。",
+              "限制后台耗电应用"),
+        ],
+        notes=["纯系统设置，无数据风险；可随时改回。"],
+    ),
+    Task(
+        id="and_storage_optimize",
+        platform="android",
+        title="存储分析与大文件清理",
+        category="maintenance",
+        risk="low",
+        desc="进入系统存储分析，定位「其他/大文件」并清理云端已备份的本地副本。",
+        actions=[
+            M("设置 → 存储 → 等待分析完成 → 查看「文件/其他」占比。",
+              "系统存储分析"),
+            M("对已在 Google 相册/云服务备份的照片视频，删除本地副本释放空间。",
+              "清理已备份副本"),
+        ],
+        notes=["建议先确认已开启云备份，再删本地副本，避免数据丢失。"],
+    ),
+
+    Task(
+        id="and_app_hibernate",
+        platform="android",
+        title="未使用应用休眠与权限回收",
+        category="optimize",
+        risk="low",
+        # v0.5.22：cmd package set-app-hibernate 是 Android 11（API 30）才有的官方子命令，
+        # 原先没写 min_ver，导致在 Android 8/9/10 上会被列出来却必然失败。
+        # 现按「平台版本 + API」双口径门控，低于 11 直接不出现（不是失败，是不适用）。
+        min_ver="11",
+        desc="对长期未使用的应用启用休眠（撤销权限、停止后台、释放空间），提升续航与隐私。",
+        actions=[A('cmd package set-app-hibernate <包名> true',
+                   "对指定应用启用休眠（需要具体包名）")],
+        standards=["[官方] cmd package set-app-hibernate（AOSP App Hibernation，Android 11 起）",
+                   "[国际] AOSP frameworks/base：android.provider.Settings",
+                   "[国标] 《个人信息保护法》PIPL（最小必要权限）"],
+        notes=["设置路径：设置 → 应用 → 未使用的应用 → 休眠；Android 12+ 原生支持。",
+               "休眠会撤销已授予权限并停止后台，重新打开时恢复。"],
+        caveats=["勿对闹钟/无障碍/设备管理器类应用休眠，否则可能失效。",
+                 "Android 10 及以下无此官方能力，改用「限制后台活动」或厂商的清理工具。"],
+    ),
+
+    # --------------------------------------------------------------------- #
+    # v0.5.15 Android 官方接口深度调优（and_tune_*）：
+    # 沿用「按自身协议与接口」模式——只调 Android 自己的官方子命令
+    # （settings put / pm trim-caches / svc wifi enable / dumpsys * --reset /
+    # logcat -c / am kill-all / wm size|density reset），绝不套桌面平台的写法
+    # （不碰注册表/plist/sysctl，也不 adb remount 后改系统分区）。全部 opt_in：
+    # 默认不出现、需显式选择 + 确认。只往安全方向写：动画只关可恢复、缓存只放
+    # 不删数据、无线只开不关、统计只清计数、日志只清缓冲、后台只收不影响前台、
+    # 显示只 reset 回默认。
+    # --------------------------------------------------------------------- #
+    Task(
+        id="and_tune_anim_scale",
+        platform="android",
+        title="关闭窗口动画（settings put global）",
+        category="optimize",
+        risk="low",
+        opt_in=True,
+        standards=["[官方] settings 命令（SettingsProvider global 命名空间：window/transition/animator_animation_scale）",
+                   "[国际] AOSP frameworks/base：android.provider.Settings"],
+        desc="用官方 settings put 把窗口/过渡/Animator 动画缩放设为 0，界面更跟手、省一点合成开销；可随时改回 1 恢复。",
+        actions=[N("android.settings_anim_scale_off", "settings put global *_animation_scale 0（官方写接口，可恢复）")],
+        notes=["只读核对：settings get global window_animation_scale；动画关掉不影响任何功能。"],
+        caveats=["个别依赖过渡动画反馈的 App 可能略显生硬；属可恢复体验项，非系统改动。"],
+    ),
+    Task(
+        id="and_tune_trim_cache",
+        platform="android",
+        title="释放全部应用缓存（pm trim-caches）",
+        category="maintenance",
+        risk="low",
+        opt_in=True,
+        standards=["[官方] pm trim-caches（PackageManager 缓存回收，只清可丢弃缓存）",
+                   "[国际] AOSP frameworks/base：PackageManagerService"],
+        desc="用官方 pm trim-caches 释放已装应用的可丢弃缓存，回收空间而不删账号数据。",
+        actions=[N("android.pm_trim_caches", "pm trim-caches 2147483647（官方写接口，只清缓存）")],
+        notes=["只读核对：pm list packages -3（看第三方应用数）。设置→存储能看到释放量。"],
+        caveats=["只清缓存、不删数据；大数值=尽量多清，等价于设置里逐 App 清缓存的可批量化版本。"],
+    ),
+    Task(
+        id="and_tune_wifi_on",
+        platform="android",
+        title="开启 Wi-Fi（svc wifi enable）",
+        category="network",
+        risk="low",
+        opt_in=True,
+        standards=["[官方] svc wifi enable（WifiManager 官方开关，只启用）",
+                   "[国际] AOSP frameworks/base：WifiManager"],
+        desc="用官方 svc wifi enable 确保 Wi-Fi 开启，便于同步与更新；只开不关。",
+        actions=[N("android.svc_wifi_enable", "svc wifi enable（官方写接口，只开不关）")],
+        notes=["只读核对：settings get global wifi_on。需要关无线请在设置里自行操作。"],
+        caveats=["本工具只往安全方向写——绝不替用户 disable 网络（那是减功能、可能误伤同步/支付）。"],
+    ),
+    Task(
+        id="and_tune_battery_reset",
+        platform="android",
+        title="清零电量统计（dumpsys batterystats --reset）",
+        category="maintenance",
+        risk="low",
+        opt_in=True,
+        standards=["[官方] dumpsys batterystats --reset（BatteryStats 统计计数器复位）",
+                   "[国际] AOSP frameworks/base：BatteryStatsService"],
+        desc="用官方 dumpsys batterystats --reset 清零电量统计，便于重新开始测量续航表现。",
+        actions=[N("android.batterystats_reset", "dumpsys batterystats --reset（官方写接口，只清计数）")],
+        notes=["只读核对：dumpsys batterystats（看当前统计）。统计清零不影响运行、不删文件。"],
+        caveats=["只是计数器归零，不是清电池校准；想重测续航请在清零后正常使用一段时间再看。"],
+    ),
+    Task(
+        id="and_tune_logcat_clear",
+        platform="android",
+        title="清空日志缓冲（logcat -c）",
+        category="maintenance",
+        risk="low",
+        opt_in=True,
+        standards=["[官方] logcat -c（logd 环形缓冲清空，只清日志）",
+                   "[国际] AOSP system/core：logcat / logd"],
+        desc="用官方 logcat -c 清空内存环形日志缓冲，排障前清场用；只清日志、不碰文件。",
+        actions=[N("android.logcat_clear", "logcat -c（官方写接口，只清日志缓冲）")],
+        notes=["只读核对：logcat -d -t 40（看当前日志）。缓冲是内存环形，清了会重新产生。"],
+        caveats=["只清日志缓冲，不删 /data 下的任何日志文件，不影响 App 运行。"],
+    ),
+    Task(
+        id="and_tune_kill_bg",
+        platform="android",
+        title="回收后台内存（am kill-all）",
+        category="maintenance",
+        risk="medium",
+        opt_in=True,
+        standards=["[官方] am kill-all（ActivityManager 杀全部后台进程，只后台）",
+                   "[国际] AOSP frameworks/base：ActivityManagerService"],
+        desc="用官方 am kill-all 杀掉所有后台进程，等价于一次内存回收；前台 App 不受影响。",
+        actions=[N("android.am_kill_all", "am kill-all（官方写接口，只清后台）")],
+        notes=["只读核对：dumpsys meminfo（看内存占用）。后台进程被杀后再次打开会自动重启。"],
+        caveats=["只对后台进程生效；勿对正在前台、或带设备管理员/无障碍/闹钟角色的应用强停——可能触发拉起或短暂失效。"],
+    ),
+    Task(
+        id="and_tune_netstats_reset",
+        platform="android",
+        title="清零网络流量统计（dumpsys netstats --reset）",
+        category="maintenance",
+        risk="low",
+        opt_in=True,
+        standards=["[官方] dumpsys netstats --reset（NetworkStats 统计计数器复位）",
+                   "[国际] AOSP frameworks/base：NetworkStatsService"],
+        desc="用官方 dumpsys netstats --reset 清零网络流量统计计数器，便于重新计量。",
+        actions=[N("android.netstats_reset", "dumpsys netstats --reset（官方写接口，只清计数）")],
+        notes=["只读核对：dumpsys netstats（看当前统计）。清计数不影响连接与真实计费记录。"],
+        caveats=["只是统计归零，不切断任何连接、不改计费本身。"],
+    ),
+    Task(
+        id="and_tune_display_reset",
+        platform="android",
+        title="恢复默认显示（wm size reset / wm density reset）",
+        category="maintenance",
+        risk="low",
+        opt_in=True,
+        standards=["[官方] wm size reset / wm density reset（WindowManager 显示恢复默认）",
+                   "[国际] AOSP frameworks/base：WindowManager"],
+        desc="用官方 wm reset 把显示尺寸与 DPI 恢复为设备物理默认，修复误设导致的界面不可点。",
+        actions=[N("android.wm_size_reset", "wm size reset / wm density reset（官方写接口，只恢复默认）")],
+        notes=["只读核对：wm size / wm density（看当前显示参数）。reset 是修复性操作，不丢数据。"],
+        caveats=["本工具只 reset 回默认、绝不自定义设具体 WxH/DPI——设错有「界面不可点、需恢复出厂」风险。"],
+    ),
+
+    # --------------------------------------------------------------------- #
+    # v0.5.22 适老化（老年人 / 高龄用户）无障碍任务组（and_a11y_*）：
+    # 全部 risk=low 且 opt_in=False —— **只读探测 + 纯文字指引**，不代用户改任何
+    # 开关。理由很硬：替长辈打开读屏/放大镜/移除动画，属于改变其使用习惯，
+    # 开了没教反而更糟（TalkBack 手势全变）。所以本工具只做「体检 + 建议」。
+    #
+    # 版本口径：Android 8.0（API 26）= 本工具下探下限；读屏/放大镜等更早就有，
+    # 色彩校正自 API 26 起，护眼夜览 API 28+，高对比/深色 API 29+——由 native 层
+    # 的 supports() 逐项判版本，低版本明说「无此开关」而非伪装已开。
+    # --------------------------------------------------------------------- #
+    Task(
+        id="and_a11y_report",
+        platform="android",
+        title="适老化无障碍体检总报告（只读）",
+        category="optimize",
+        risk="low",
+        min_ver="8",
+        desc="一次性读取字体缩放、显示无障碍、读屏服务、减弱动画、护眼五类适老化开关的当前状态，给出可读结论。",
+        actions=[N("android.elderly_a11y_report", "适老化总报告（settings get 只读，逐项按 API 门控）")],
+        standards=["[官方] Android Accessibility（AccessibilityManager / AccessibilityService）",
+                   "[国际] WCAG 2.1 / 2.2（1.4.3 对比度 / 1.4.4 调整文字大小 / 2.3.3 动画）",
+                   "[国家] GB/T 37668-2019《信息技术 互联网内容无障碍可访问性技术要求与测试方法》"],
+        notes=["需 adb + 设备已开启 USB 调试并授权；未连设备时降级为文档指引。",
+               "只读：只 settings get，不代为开启任何无障碍服务。"],
+        caveats=["本工具不改设置——开启 TalkBack 会改变触控手势，须由本人或当面确认后进行。"],
+    ),
+    Task(
+        id="and_a11y_font",
+        platform="android",
+        title="适老化：字体缩放与字重核对（只读）",
+        category="optimize",
+        risk="low",
+        min_ver="8",
+        desc="读 font_scale（字体缩放，API 1 起）与 font_weight_adjustment（字重，API 28+），判断字号是否够大。",
+        actions=[N("android.font_scale_report", "读字体缩放并给出适老化判断（font_scale，API 1+）")],
+        standards=["[官方] settings get system font_scale（Configuration.fontScale 全局生效）",
+                   "[国际] WCAG 2.1 1.4.4 Resize Text（文字可放大至 200%）"],
+        notes=["判断口径：<1.0 未放大偏小；1.15–1.3 已放大；≥1.3 已属大字体档。",
+               "字重探针（font_weight_adjustment）在 Android 9+ 才有，低版本自动跳过。"],
+        caveats=["字号过大会挤版式、反而难用；建议 1.15–1.5 之间取稳。"],
+    ),
+    Task(
+        id="and_a11y_display",
+        platform="android",
+        title="适老化：放大镜 / 色彩校正 / 高对比度（只读，按版本门控）",
+        category="optimize",
+        risk="low",
+        min_ver="8",
+        desc="读放大镜、色彩校正（色盲色弱）、高对比度文本、深色模式四类视觉辅助开关，低版本明说无此开关。",
+        actions=[N("android.a11y_display_report", "读显示类无障碍开关（放大镜/色彩校正/高对比/深色，API 逐项门控）")],
+        standards=["[官方] accessibility_display_magnification_enabled（API 17+）",
+                   "[官方] accessibility_display_daltonizer（色彩校正，API 26+）",
+                   "[官方] accessibility_high_text_contrast / ui_night_mode（API 29+）",
+                   "[国际] WCAG 2.1 1.4.3 Contrast (Minimum) / 1.4.11 Non-text Contrast"],
+        notes=["Android 8/9 无高对比度与深色模式开关，改用「亮度拉满 + 减少深色背景应用」等效替代。",
+               "放大镜在 Android 4.2+ 即有，是老设备上最实用的低视力辅助。"],
+        caveats=["色彩校正会改变全屏配色，看视频/修图时需临时关回。"],
+    ),
+    Task(
+        id="and_a11y_talkback",
+        platform="android",
+        title="适老化：读屏服务（TalkBack）状态核对（只读）",
+        category="optimize",
+        risk="low",
+        min_ver="8",
+        desc="读无障碍总开关与已启用服务列表，判断 TalkBack 是否已就绪。",
+        actions=[N("android.a11y_speech_report", "读读屏与语音支持状态（settings secure，只读）")],
+        standards=["[官方] settings get secure enabled_accessibility_services（AccessibilityService 已启用清单）",
+                   "[国际] Android Accessibility / TalkBack 官方文档"],
+        notes=["读屏是视力障碍用户的核心依赖；已启用列表会显示服务 component 名。",
+               "开启路径：设置 → 辅助功能 → TalkBack。"],
+        caveats=["TalkBack 开启后单指点=朗读、双指点=返回，务必当面教一次再放手。",
+                 "本工具只读状态，绝不代为开启。"],
+    ),
+    Task(
+        id="and_a11y_motion",
+        platform="android",
+        title="适老化：移除动画 + 保留触感反馈（只读核对）",
+        category="optimize",
+        risk="low",
+        min_ver="8",
+        desc="读窗口/过渡/Animator 动画缩放与触感、提示音开关，核对「防眩晕」与「非视觉确认」是否到位。",
+        actions=[N("android.a11y_motion_haptics_report", "读减弱动画与触感反馈（settings 只读，API 17+）")],
+        standards=["[官方] settings get global window/transition/animator_animation_scale（API 17+）",
+                   "[国际] WCAG 2.1 2.3.3 Animation from Interactions（可关闭非必要动画）",
+                   "[官方] haptic_feedback_enabled / sound_effects_enabled（非视觉反馈确认）"],
+        notes=["动画降到 0 可显著降低前庭敏感老人的眩晕与迷向感。",
+               "触感与提示音建议至少留触感开——操作是否生效能「摸到」，不必盯屏确认。"],
+        caveats=["本工具只报状态不改设置；改动画是「移除动画」开关，属用户偏好。"],
+    ),
+    Task(
+        id="and_a11y_eyecare",
+        platform="android",
+        title="适老化：亮度 / 息屏 / 护眼夜览核对（只读）",
+        category="optimize",
+        risk="low",
+        min_ver="8",
+        desc="读屏幕亮度、自动息屏超时与护眼夜览状态，结合老花与白内障的视觉需求给判断。",
+        actions=[N("android.a11y_eyecare_report", "读护眼与省电状态（亮度/息屏/夜览，只读）")],
+        standards=["[官方] settings get system screen_brightness / screen_off_timeout",
+                   "[官方] settings get secure night_display_activated（护眼夜览，API 28+）",
+                   "[国际] WCAG 2.1 1.4.3 Contrast（对比度可调）"],
+        notes=["老花与白内障用户普遍需要更高亮度；自动亮度忽明忽暗反而更累。",
+               "息屏调长可减少反复点亮，但更耗电——建议与本人确认。",
+               "API 28 以下无夜览开关，多在厂商显示设置里。"],
+        caveats=["仅报告状态，不代替长辈做决定。"],
+    ),
+    Task(
+        id="and_a11y_guide",
+        platform="android",
+        title="适老化设置指引（纯文字，无需 adb）",
+        category="optimize",
+        risk="low",
+        min_ver="8",
+        desc="不连设备也能给出的适老化调整清单，可直接照着念给长辈逐条设置。",
+        actions=[M("字号调到 1.15 以上；屏幕亮度调高；开高对比度/深色模式（Android 10+）；"
+                   "开放大镜（Android 8 起）；开 TalkBack 读屏并当面教一次手势；"
+                   "把三项动画降到 0（移除动画，防眩晕）；保留触感反馈与提示音；"
+                   "延长息屏超时但注意充电习惯；配好锁屏紧急联系人与紧急呼叫。",
+                  "适老化八条调整清单（逐条照做即可）")],
+        standards=["[国际] WCAG 2.1 / 2.2 可访问性指南（可调整文字、对比度、可关闭动画）",
+                   "[国家] GB/T 37668-2019 互联网内容无障碍可访问性技术要求与测试方法"],
+        notes=["本任务为纯文字指引，不执行任何命令、无数据风险。",
+               "专门用于「PC 没连安卓设备」或「想让子女远程照着念」的场景。"],
+        caveats=["替长辈改设置前先问一句：他们愿不愿意换熟悉的操作方式。"],
+    ),
+    Task(
+        id="and_compat_audit",
+        platform="android",
+        title="Android 8 向下兼容口径总览（只读）",
+        category="maintenance",
+        risk="low",
+        min_ver="8",
+        desc="列出各 Android 接口的最低 API 与本机可用性，回答「这台老安卓还能不能被管」。",
+        actions=[N("android.android_compat_report", "Android 8（API 26）向下兼容总览（本工具下探下限）")],
+        standards=["[官方] AOSP 平台版本与 API 级别对照（Android 8.0 Oreo = API 26）",
+                   "[官方] AOSP 各 framework 服务引入版本（magnification API 17+ / daltonizer API 26+ / hibernation API 30+）"],
+        notes=["本工具承诺下探到 Android 8.0（API 26）；低于此值的适老化项给系统设置路径指引。",
+               "会显式标出「本机 API < 所需 API」的项，避免在老设备上给出必然失败的命令。"],
+        caveats=["部分厂商 ROM 裁剪了 settings 键，即便 API 达标也可能读不到值——此时会明说「未暴露该键」。"],
+    ),
+
+]

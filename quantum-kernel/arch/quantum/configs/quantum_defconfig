@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: GPL-2.0
+# Quantum architecture defconfig — minimal emulated QPU host.
+CONFIG_QUANTUM=y
+CONFIG_QUANTUM_QUBITS=8
+CONFIG_QUANTUM_LINK_SLOTS=7
+CONFIG_QUANTUM_QPU=y
+CONFIG_QUANTUM_QPU_NR=1
+# Quantum networking subsystem (见 Documentation/quantum/net-model.rst)
+CONFIG_QUANTUM_NET=y
+CONFIG_QUANTUM_NET_NR=3
+# Energy-level model (see Documentation/quantum/energy-model.rst)
+CONFIG_QUANTUM_EXCITED_LEVELS=4
+CONFIG_QUANTUM_ENERGY_STEP=16
+CONFIG_QUANTUM_COHERENCE_TICKS=8
+CONFIG_QUANTUM_DECOHERE_STEPS=64
+CONFIG_EXPERT=y
+CONFIG_BINFMT_ELF=y
+CONFIG_TTY=y
+CONFIG_PRINTK=y
+CONFIG_PROC_FS=y
+CONFIG_SYSFS=y
+CONFIG_TMPFS=y
+# 4KiB page discipline (storage-domain 4K alignment parity)
+CONFIG_DEFERRED_STRUCT_PAGE_INIT=n

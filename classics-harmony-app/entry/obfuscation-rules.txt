@@ -1,0 +1,4 @@
+# 混淆规则（release 构建使用）。当前保留最小集合。
+# -keep-global-name
+# -enable-property-obfuscation
+# -enable-toplevel-obfuscation

@@ -1,0 +1,3 @@
+# 完整内核树与源码包本地保留，不入 git（凭 scripts/fetch_kernel.sh 重建）
+/linux-*/
+*.tar.xz

@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>量子态模拟器 · 复数即电压 · 六态造化 · QFT 傅里叶</title>
+<style>
+  :root{
+    --bg:#0b1020; --panel:#121a30; --panel2:#0f1526; --line:#22304f;
+    --txt:#dbe6ff; --dim:#7f8db3; --acc:#5cc8ff; --acc2:#b58cff;
+    --pos:#4ade80; --neg:#f87171; --zero:#3b4a6b; --imag:#fbbf24;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);
+       font:14px/1.6 "PingFang SC","Microsoft YaHei",system-ui,sans-serif;}
+  header{padding:14px 22px;border-bottom:1px solid var(--line);
+         display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+  header h1{font-size:18px;margin:0;font-weight:600}
+  header .sub{color:var(--dim);font-size:12.5px}
+  main{display:flex;min-height:calc(100vh - 58px)}
+  aside{width:252px;flex:none;border-right:1px solid var(--line);padding:14px;
+        background:var(--panel2);overflow-y:auto}
+  section{flex:1;padding:14px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+  h3{font-size:12px;color:var(--dim);margin:14px 0 6px;font-weight:600;
+     letter-spacing:.08em}
+  h3:first-child{margin-top:0}
+  .row{display:flex;gap:6px;flex-wrap:wrap}
+  button{background:var(--panel);color:var(--txt);border:1px solid var(--line);
+         border-radius:7px;padding:6px 11px;font-size:13px;cursor:pointer;
+         transition:.15s}
+  button:hover{border-color:var(--acc);color:var(--acc)}
+  button.on{background:var(--acc);border-color:var(--acc);color:#06121f;font-weight:600}
+  button.preset{border-color:var(--acc2);color:var(--acc2)}
+  button.pre:hover{background:rgba(181,140,255,.15)}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap}
+  .tabs button{padding:6px 13px}
+  .stage{background:var(--panel2);border:1px solid var(--line);border-radius:10px}
+  canvas{display:block;width:100%}
+  .note{color:var(--dim);font-size:12.5px;min-height:42px}
+  .note b{color:var(--acc)}
+  table{border-collapse:collapse;font-size:12.5px;width:100%;max-width:760px}
+  th,td{border:1px solid var(--line);padding:4px 9px;text-align:right}
+  th{background:var(--panel);color:var(--dim);font-weight:500}
+  td:first-child,th:first-child{text-align:left}
+  .mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--dim)}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;
+       vertical-align:-1px}
+</style>
+</head>
+<body>
+<header>
+  <h1>量子态模拟器 · 六态造化</h1>
+  <span class="sub">阴阳 = 0/1 = 计算基 · 六位 = 64 态 = 六十四卦 · 六态 = 电·磁·波·固·液·气 · 相位 = 正负零电压 · QFT = 傅里叶谱</span>
+</header>
+<main>
+<aside>
+  <h3>量子比特数（二 → 六）</h3>
+  <div class="row">
+    <button id="n2" class="on" onclick="setN(2)">2 比特</button>
+    <button id="n3" onclick="setN(3)">3 比特</button>
+    <button id="n6" onclick="setN(6)">6 比特 · 六态</button>
+  </div>
+  <h3>预设态</h3>
+  <div class="row">
+    <button class="preset" onclick="preset('zero')">|0⁶⟩ 混沌未开</button>
+    <button class="preset" onclick="preset('zaohua')">六态造化（均匀）</button>
+    <button class="preset" onclick="preset('yinyang')">阴阳对缠（罡0煞1）</button>
+    <button class="preset" onclick="preset('ghz')">GHZ 全通全断</button>
+    <button class="preset" onclick="preset('bell')">Bell 纠缠对</button>
+    <button class="preset" onclick="preset('half')">半叠加（S/T 用）</button>
+  </div>
+  <h3>单比特门</h3>
+  <div class="row" id="qsel"></div>
+  <div class="row">
+    <button onclick="gate('H')">H</button><button onclick="gate('X')">X</button>
+    <button onclick="gate('Y')">Y</button><button onclick="gate('Z')">Z</button>
+    <button onclick="gate('S')">S</button><button onclick="gate('T')">T</button>
+  </div>
+  <h3>双比特 · 分区</h3>
+  <div class="row">
+    <button onclick="cnot(0,1)">CNOT 0→1</button>
+    <button onclick="cnot(1,0)">CNOT 1→0</button>
+    <button onclick="swapGate()">SWAP 0↔1</button>
+  </div>
+  <h3>相变矩阵（数字转换逻辑门）</h3>
+  <div class="row" id="phsel"></div>
+  <div class="row">
+    <button id="ps90" class="on" onclick="setPhaseStep(90)">步进 90°</button>
+    <button id="ps120" onclick="setPhaseStep(120)">步进 120°（三相）</button>
+  </div>
+  <div class="row" style="margin-top:6px">
+    <button class="preset" onclick="preset('trit')">三进制寄存器（3 trit）</button>
+    <button onclick="exportTrit()">三进制→二进制 编码</button>
+  </div>
+  <h3>傅里叶</h3>
+  <div class="row">
+    <button onclick="applyQFT()">QFT（→频谱）</button>
+    <button onclick="applyQFTdag()">QFT†（→回时域）</button>
+  </div>
+  <h3>观测（正 / 零 / 负 / 过渡为无）</h3>
+  <div class="row">
+    <button onclick="observe()">观测所选位（Born 采样）</button>
+  </div>
+  <div class="row" style="margin-top:8px">
+    <button onclick="reset()">RESET 复位</button>
+  </div>
+</aside>
+<section>
+  <div class="tabs" id="tabs">
+    <button class="on" data-v="state" onclick="setView('state')">叠加态</button>
+    <button data-v="wave" onclick="setView('wave')">cos / sin 波</button>
+    <button data-v="volt" onclick="setView('volt')">正负零电压</button>
+    <button data-v="swap" onclick="setView('swap')">交换分区 · 转场</button>
+    <button data-v="fourier" onclick="setView('fourier')">傅里叶 QFT</button>
+    <button data-v="num" onclick="setView('num')">数制转换</button>
+  </div>
+  <div class="row" id="waveCtl" style="display:none">
+    <button class="on" id="wm1" onclick="setWaveMode(1)">双轨 cos+sin</button>
+    <button id="wm2" onclick="setWaveMode(2)">仅 cos（实轴）</button>
+    <button id="wm3" onclick="setWaveMode(3)">仅 sin（虚轴）</button>
+  </div>
+  <div class="legend" id="legend"></div>
+  <div class="stage"><canvas id="cv"></canvas></div>
+  <div class="note" id="note"></div>
+  <table id="tbl"><thead><tr>
+    <th>基态</th><th>实部 cos</th><th>虚部 sin</th><th>振幅</th><th>相位</th><th>电压</th>
+  </tr></thead><tbody></tbody></table>
+</section>
+</main>
+
+<script>
+"use strict";
+/* ================= 引擎（node 验证同款） ================= */
+const amp=c=>Math.hypot(c[0],c[1]);                       // 复数模长
+const cmul=(a,b)=>[a[0]*b[0]-a[1]*b[1], a[0]*b[1]+a[1]*b[0]];
+const matVec=(M,v)=>M.map(r=>r.reduce((ac,x,j)=>[ac[0]+cmul(x,v[j])[0],ac[1]+cmul(x,v[j])[1]],[0,0]));
+const fullGate=(U,n,q)=>{const N=1<<n;
+  return Array.from({length:N},(_,s)=>Array.from({length:N},(_,t)=>
+    ((s&~(1<<q))===(t&~(1<<q)))?U[(s>>q)&1][(t>>q)&1]:[0,0]));};
+const permGate=(n,f)=>{const N=1<<n;
+  const M=Array.from({length:N},()=>Array.from({length:N},()=>[0,0]));
+  for(let s=0;s<N;s++)M[f(s)][s]=[1,0];   // 规范方向 |s> → |f(s)>
+  return M;};
+const CNOT=(n,c,t)=>permGate(n,s=>((s>>c)&1)?s^(1<<t):s);
+const SWAPM=(n,a,b)=>permGate(n,s=>{const ba=(s>>a)&1,bb=(s>>b)&1;
+  return ba===bb?s:(s^(1<<a)^(1<<b));});
+const QFT=(n)=>{const N=1<<n,w=2*Math.PI/N;
+  return Array.from({length:N},(_,j)=>Array.from({length:N},(_,k)=>
+    [Math.cos(w*j*k)/Math.sqrt(N),Math.sin(w*j*k)/Math.sqrt(N)]));};
+const QFTdag=(n)=>{const Q=QFT(n);
+  return Q.map((row,j)=>row.map((c,k)=>[Q[k][j][0],-Q[k][j][1]]));};
+// Born 采样：单比特 Z 测量。r∈[0,1) 为均匀随机源（可注入以便测试）。
+// 测量前相位连续 = 过渡态「无」；测量后其余基态振幅归零（离散化）。
+const measureQ=(v,q,r)=>{const p=[0,0];
+  for(let i=0;i<v.length;i++){const A=amp(v[i]);p[(i>>q)&1]+=A*A;}
+  const tot=p[0]+p[1]; if(tot<=0)return{b:0,state:v};
+  const b=r<p[0]/tot?0:1;
+  const w=v.map((c,i)=>((i>>q)&1)===b?c:[0,0]);
+  const n2=Math.sqrt(w.reduce((s,c)=>s+amp(c)*amp(c),0));
+  return{b,state:w.map(c=>[c[0]/n2,c[1]/n2])};};
+const U2={
+  H:[[[.70710678,0],[.70710678,0]],[[.70710678,0],[-.70710678,0]]],
+  X:[[[0,0],[1,0]],[[1,0],[0,0]]],
+  Y:[[[0,0],[0,-1]],[[0,1],[0,0]]],
+  Z:[[[1,0],[0,0]],[[0,0],[-1,0]]],
+  S:[[[1,0],[0,0]],[[0,0],[0,1]]],
+  T:[[[1,0],[0,0]],[[0,0],[.70710678,.70710678]]],
+};
+// 相变矩阵（数字转换逻辑门）：P(θ)=diag(1, e^{iθ})。θ=π/2 即 S、π 即 Z、3π/2 即 S†。
+// 六比特各配一枚：步进 90°（二值+过渡：正/负/±i）或 120°（三相：0/120/240）。
+const phaseGate=(n,q,th)=>fullGate([[[1,0],[0,0]],[[0,0],[Math.cos(th),Math.sin(th)]]],n,q);
+// 数制转换：6 位 = 3 对 qubit；每对是 1 个三进制位（trit）。00→0 / 01→1 / 10→2 / 11→无效码。
+const PAIR2T=[0,1,2,null];
+const TRIT2PAIR=[0,1,2];
+const bitsToTrits=b=>{const t=[];for(let p=0;p<3;p++)
+  t.push(PAIR2T[((b>>(2*p))&1)|(((b>>(2*p+1))&1)<<1)]);return t;};
+const tritsToBits=t=>{let b=0;for(let p=0;p<3;p++)b|=TRIT2PAIR[t[p]&3]<<(2*p);return b;};
+const packTrit5=t=>t[0]+t[1]*3+t[2]*9;            // 3 trit（0..26）→ 传统二进制 5 bit
+const pack5ToBin=v=>v.toString(2).padStart(5,"0");
+// 三进制寄存器：3 个 trit 等幅叠加（1/√27），余 37 个基态为缺失态（可作校验位）
+const tritRegister=()=>{const v=Array.from({length:64},()=>[0,0]),a=1/Math.sqrt(27);
+  for(let x=0;x<3;x++)for(let y=0;y<3;y++)for(let z=0;z<3;z++)
+    v[tritsToBits([x,y,z])]=[a,0];return v;};
+/* ================= 状态 ================= */
+const ELEM=["电","磁","波","固","液","气"];   // 六态标签（文化类比，非物理量）
+let N=2, st, from=null, anim=1, view="state", tgt=0, tPhase=0, waveMode=1;
+let swapAnim=null, qftPair=null;
+let phaseAcc=[0,0,0,0,0,0], phaseStep=90;      // 六枚相变矩阵的累计相位与步进角
+const EPS=0.01;
+const zero=n=>{const v=Array.from({length:1<<n},()=>[0,0]);v[0]=[1,0];return v;};
+const reset=()=>{st=zero(N);from=null;anim=1;swapAnim=null;qftPair=null;
+  phaseAcc=[0,0,0,0,0,0];buildPhaseSel();draw();};
+function setN(n){N=n;2===n||3===n||6===n||(n=2);
+  ["n2","n3","n6"].forEach(id=>document.getElementById(id).classList.remove("on"));
+  document.getElementById("n"+n).classList.add("on");
+  buildQSel();buildPhaseSel();reset();}
+function buildQSel(){const el=document.getElementById("qsel");el.innerHTML="";
+  for(let q=0;q<N;q++){const b=document.createElement("button");
+    b.textContent=(N===6?ELEM[q]+" ":"")+"q"+q;b.className=q===tgt?"on":"";
+    b.onclick=()=>{tgt=q;buildQSel();buildPhaseSel();};el.appendChild(b);}}
+function buildPhaseSel(){const el=document.getElementById("phsel");if(!el)return;el.innerHTML="";
+  for(let q=0;q<N;q++){const b=document.createElement("button");
+    b.textContent=`${N===6?ELEM[q]+" ":""}q${q} 相变 ${phaseAcc[q]}°`;
+    b.className=q===tgt?"on":"";
+    b.onclick=()=>{apply(phaseGate(N,q,phaseStep*Math.PI/180),
+      `相变矩阵 q${q}（${N===6?ELEM[q]:""}）：相位 +${phaseStep}°，P(${phaseStep}°)=diag(1, e^{i${phaseStep}°})`);
+      phaseAcc[q]=(phaseAcc[q]+phaseStep)%360;buildPhaseSel();};
+    el.appendChild(b);}}
+function setPhaseStep(s){phaseStep=s;
+  document.getElementById("ps90").classList.toggle("on",s===90);
+  document.getElementById("ps120").classList.toggle("on",s===120);}
+function apply(M,label){from=st.map(c=>[...c]);st=matVec(M,st);anim=0;note(label);draw();}
+function gate(g){apply(fullGate(U2[g],N,tgt),`${g} 作用于 ${N===6?ELEM[tgt]+" ":""}q${tgt}`);}
+function cnot(c,t){apply(CNOT(N,c,t),`CNOT 控制位 q${c} → 目标位 q${t}`);}
+function swapGate(){
+  if(N>1){swapAnim={t:0};apply(SWAPM(N,0,1),"SWAP q0↔q1：两个分区的全部基态沿对角线转场");}}
+function applyQFT(){apply(QFT(N),"QFT：时域 → 频率谱（缺失频率 = 该分量为零）");}
+function applyQFTdag(){apply(QFTdag(N),"QFT†：频率谱 → 回时域");}
+function observe(){
+  const m=measureQ(st,tgt,Math.random());
+  from=st.map(c=>[...c]);st=m.state;anim=0;swapAnim=null;
+  note(`观测 ${N===6?ELEM[tgt]+" ":""}q${tgt}：相位连续体上的「正 / 负 / 零」问不出答案——`+
+       `那是<b>过渡态「无」</b>，不可驻留、不可直证；Born 采样得 ${m.b}，`+
+       `其余基态振幅归零（相位连续性被打断 = 坍缩为离散）`);
+  draw();}
+function preset(k){const n=N;
+  if(k==="zero")st=zero(n);
+  else if(k==="zaohua"){let s=zero(n);
+    for(let q=0;q<n;q++)s=matVec(fullGate(U2.H,n,q),s);st=s;}
+  else if(k==="yinyang"){
+    if(n<6){note("阴阳对缠需要 6 比特（天罡三元 + 地煞三元）");return;}
+    // 天罡（气液固 q5q4q3）与地煞（波磁电 q2q1q0）互补纠缠：
+    // |罡000·煞111> + |罡111·煞000> —— 阳之极即阴、阴之极即阳（互根，非各自修行）
+    const v=zero(n);v[0]=[0,0];v[7]=[0.70710678,0];v[56]=[0.70710678,0];st=v;}
+  else if(k==="bell"){st=matVec(CNOT(n,0,1),matVec(fullGate(U2.H,n,0),zero(n)));}
+  else if(k==="ghz"){let s=matVec(fullGate(U2.H,n,n-1),zero(n));
+    for(let q=n-1;q>0;q--)s=matVec(CNOT(n,q,q-1),s);st=s;}
+  else if(k==="one"){const v=zero(n);v[0]=[0,0];v[1]=[1,0];st=v;}
+  else if(k==="trit"){st=tritRegister();
+    note("三进制寄存器：3 个 trit（每对 qubit 一枚：q1q0 / q3q2 / q5q4）等幅叠加 1/√27；"+
+         "每对 00→0 / 01→1 / 10→2 / 11→无效码，余 37 个基态为缺失态（可作校验位）");}
+  else if(k==="half"){st=matVec(fullGate(U2.H,n,0),zero(n));}
+  from=null;anim=1;swapAnim=null;qftPair=null;
+  note({zero:"混沌未开：100% 在 |0…0⟩，其余为缺失态",
+        zaohua:"六态造化：2⁶ = 64 个计算基态等幅共存——造化无数态（傅里叶域为纯零频单峰）",
+        yinyang:"阴阳对缠：(|罡000·煞111⟩+|罡111·煞000⟩)/√2——元阳之极即元阴，互根互成；"+
+               "阴阳 = 0/1 = 计算基，两组之差正是每一位 0↔1 的对偶",
+        bell:"Bell 对 (|00⟩+|11⟩)/√2：两比特不可分解地纠缠",
+        ghz:"GHZ (|0…0⟩+|1…1⟩)/√2：全通全断型纠缠",
+        one:"单激发 |01⟩：一个量子比特翻转",
+        half:"半叠加：仅 q0 置 H"}[k]);draw();}
+function note(s){document.getElementById("note").innerHTML=s;}
+// 三进制→二进制编码导出：从当前态的最大概率基态解出 3 trit，给出两种经典编码
+function exportTrit(){
+  let bi=0,bp=-1;
+  for(let i=0;i<st.length;i++){const A=amp(st[i]);if(A>bp){bp=A;bi=i;}}
+  const trits=bitsToTrits(bi);
+  if(trits.some(t=>t===null)){
+    note(`基态 |${bits(bi)}⟩ 含无效对 11（(${trits.map(t=>t===null?"11":TRIT2PAIR[t].toString(2).padStart(2,"0")).join(" ")}）——`+
+      `该读出不是合法三进制码；三进制寄存器需避开每对的 11 组合`);return;}
+  const pairBits=trits.map(t=>TRIT2PAIR[t].toString(2).padStart(2,"0"));
+  const packed=packTrit5(trits);
+  note(`三进制读数 [${trits.join(", ")}] → 传统二进制电脑编码：<br>`+
+    `① 定长码（Сетунь 式）：${pairBits.join("")}（每 trit 2 bit：0→00 / 1→01 / 2→10，11 无效）<br>`+
+    `② 紧pack码：${pack5ToBin(packed)}（3 trit = 0..26 恰好装进 5 bit；log₂3≈1.585，1 trit=1.585 bit 是数制的硬汇率）`);
+  draw();}
+/* ================= 视图公共 ================= */
+const cv=document.getElementById("cv"),ctx=cv.getContext("2d");
+let CW=0,CH=0;
+function fit(){const r=cv.parentElement.getBoundingClientRect(),d=devicePixelRatio||1;
+  CW=r.width-2;CH=Math.max(280,Math.min(430,innerHeight-300));
+  cv.width=CW*d;cv.height=CH*d;cv.style.height=CH+"px";ctx.setTransform(d,0,0,d,0,0);}
+addEventListener("resize",()=>{fit();draw();});
+const phase=c=>Math.atan2(c[1],c[0]);
+const hue=c=>{const p=phase(c)/(Math.PI*2)*360;return (p+360)%360;};
+const volt=c=>{const A=amp(c),p=phase(c)*180/Math.PI;
+  if(A<EPS)return{s:"0",cls:"zero",t:"零电压（缺失态）"};
+  const d=(a,b)=>Math.abs(((a-b+540)%360)-180)<20;
+  if(d(p,0))return{s:"+",cls:"pos",t:"正极（相位 0°）"};
+  if(d(p,180))return{s:"−",cls:"neg",t:"负极（相位 180°）"};
+  if(d(p,90))return{s:"+i",cls:"imag",t:"虚轴正（相位 +90°，纯虚数）"};
+  if(d(p,-90))return{s:"−i",cls:"imag",t:"虚轴负（相位 −90°，纯虚数）"};
+  return{s:p.toFixed(0)+"°",cls:"mix",t:"复合相位（cos 与 sin 皆有）"};};
+const bits=i=>i.toString(2).padStart(N,"0");
+/* ================= 绘制 ================= */
+function draw(){
+  fit();
+  const v=st.map((c,i)=>{const f=from?from[i]:c;
+    const t=anim<1?anim:1,e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+    return [f[0]+(c[0]-f[0])*e, f[1]+(c[1]-f[1])*e];});
+  ctx.clearRect(0,0,CW,CH);
+  if(view==="state")drawState(v);
+  else if(view==="wave")drawWave(v);
+  else if(view==="volt")drawVolt(v);
+  else if(view==="swap")drawSwap(v);
+  else if(view==="num")drawNum(v);
+  else drawFourier(v);
+  drawTable(v);
+  document.getElementById("legend").innerHTML=LEG[view]();
+}
+const LEG={
+  state:()=>{const M=1<<N;
+    return M>8
+    ? '<span>64 计算基态网格：亮度 = 振幅，色相 = 相位　</span>'+
+      '<span style="color:#3b4a6b">▨ 虚线空槽 = 缺失态（振幅≈0）</span>'
+    : '<span><span class="dot" style="background:#5cc8ff"></span>柱高 = 振幅 |c|　</span>'+
+    '<span><span class="dot" style="background:#b58cff"></span>色相 = 相位（红 0° → 青 180°）　</span>'+
+    '<span style="color:#3b4a6b">▨ 虚线空槽 = 缺失态（振幅≈0）</span>';},
+  wave:()=>{const m=waveMode===2?"仅实部 A·cos(ωt+φ)（cos 轴 = 正负电压）":
+      waveMode===3?"仅虚部 A·sin(ωt+φ)（sin 轴 = ±i）":"实部 A·cos + 虚部 A·sin 双轨";
+    return '<span><span class="dot" style="background:#5cc8ff"></span>'+m+'　</span>'+
+    '<span>同一相位 φ：两路振荡恒差 90°</span>';},
+  volt:()=>'<span><span class="dot" style="background:#4ade80"></span>正极 +（相位 0°）　</span>'+
+    '<span><span class="dot" style="background:#f87171"></span>负极 −（相位 180°）　</span>'+
+    '<span><span class="dot" style="background:#fbbf24"></span>虚轴 ±i（相位 ±90°，过渡）　</span>'+
+    '<span style="color:#3b4a6b">□ 零电压 0（缺失态）</span>',
+  swap:()=>'<span>网格：行 = spectator 分区（q≥2），4 格 = (q1,q0) 两分区装配　</span>'+
+    '<span style="color:#3b4a6b">▨ 虚线空槽 = 缺失态（转场中被让出）</span>',
+  fourier:()=>'<span><span class="dot" style="background:#5cc8ff"></span>时域（计算基）　</span>'+
+    '<span><span class="dot" style="background:#b58cff"></span>频域（QFT 后）　</span>'+
+    '<span style="color:#3b4a6b">▨ 虚线空槽 = 缺失频率（分量为 0）</span>',
+  num:()=>'<span>二进制：6 基态索引 = 传统 6 bit（每 qubit 读出 0/1）　</span>'+
+    '<span>三进制：3 对 qubit = 3 trit（00→0 / 01→1 / 10→2 / 11→无效码）　</span>'+
+    '<span style="color:#3b4a6b">× = 无效对；余 37 基态 = 缺失态</span>',
+};
+function drawState(v){
+  const M=1<<N;
+  if(M>8){drawGrid64(v);return;}
+  const pad=34,bw=(CW-pad*2)/M;
+  for(let i=0;i<M;i++){const c=v[i],A=amp(c),x=pad+bw*i+bw/2;
+    const h=A*(CH-90);
+    if(A<EPS){dashSlot(x,CH-40,bw*0.62);continue;}
+    const g=ctx.createLinearGradient(0,CH-40-h,0,CH-40);
+    g.addColorStop(0,`hsl(${hue(c)},85%,62%)`);g.addColorStop(1,`hsl(${hue(c)},60%,30%)`);
+    ctx.fillStyle=g;ctx.fillRect(x-bw*0.31,CH-40-h,bw*0.62,h);
+    ctx.fillStyle="#dbe6ff";ctx.font="11px ui-monospace";
+    ctx.textAlign="center";ctx.fillText("|"+bits(i)+"⟩",x,CH-22);
+    ctx.fillText(A.toFixed(3),x,CH-46-h);
+    ctx.fillStyle=`hsl(${hue(c)},85%,62%)`;ctx.fillText((phase(c)*180/Math.PI).toFixed(0)+"°",x,CH-8);}
+  ctx.fillStyle="#7f8db3";ctx.textAlign="left";ctx.font="12px sans-serif";
+  ctx.fillText("叠加态：每根柱 = 一个计算基态（高度=振幅，颜色=相位）",12,20);}
+function drawGrid64(v){   // 6 比特：64 基态网格（8×8），亮度=振幅、色相=相位
+  const M=1<<N,cols=8,rows=M/cols,gx=(CW-16)/cols,gy=(CH-46)/rows;
+  const mx=Math.max(...v.map(amp),1e-9);
+  for(let i=0;i<M;i++){const c=v[i],A=amp(c);
+    const x=8+gx*(i%cols),y=40+gy*Math.floor(i/cols);
+    if(A<EPS){ctx.strokeStyle="#3b4a6b";ctx.setLineDash([4,4]);ctx.lineWidth=1.2;
+      ctx.strokeRect(x+3,y+3,gx-6,gy-6);ctx.setLineDash([]);continue;}
+    const t=Math.sqrt(A/mx);
+    ctx.fillStyle=`hsl(${hue(c)},72%,${14+40*t}%)`;
+    ctx.fillRect(x+2,y+2,gx-4,gy-4);
+    ctx.strokeStyle="#22304f";ctx.lineWidth=1;ctx.strokeRect(x+2,y+2,gx-4,gy-4);
+    ctx.textAlign="center";
+    ctx.fillStyle=t>0.55?"#06121f":"#dbe6ff";ctx.font="9px ui-monospace";
+    ctx.fillText(i.toString(2).padStart(6,"0"),x+gx/2,y+gy/2-1);
+    ctx.fillText(A.toFixed(2),x+gx/2,y+gy/2+11);}
+  ctx.fillStyle="#7f8db3";ctx.textAlign="left";ctx.font="12px sans-serif";
+  ctx.fillText("六态造化网格：64 个计算基态（索引 = 六位二进制，位序 = 气液固波磁…电）",12,20);
+  ctx.fillStyle="#7f8db3";ctx.fillText("格子亮度 = 振幅，颜色 = 相位；虚线空槽 = 缺失态",12,36);}
+function dashSlot(x,base,w){
+  ctx.save();ctx.strokeStyle="#3b4a6b";ctx.setLineDash([4,4]);ctx.lineWidth=1.5;
+  ctx.strokeRect(x-w/2,base-26,w,26);ctx.restore();}
+function drawWave(v){
+  const M=1<<N,show=Math.min(M,8),pad=44,top=52,rowH=(CH-top-20)/show;
+  const T=2.4,tSec=(performance.now()/1000)%T,k0=tSec/T;
+  for(let i=0;i<show;i++){const c=v[i],A=amp(c);
+    const yc=top+rowH*i+rowH/2;
+    ctx.strokeStyle="rgba(34,48,79,.5)";ctx.beginPath();
+    ctx.moveTo(pad,yc);ctx.lineTo(CW-10,yc);ctx.stroke();
+    if(A<EPS){ctx.fillStyle="#3b4a6b";ctx.font="11px ui-monospace";
+      ctx.fillText("|"+bits(i)+"⟩ 缺失态（无振荡）",pad+6,yc-4);continue;}
+    const k=i,ph=phase(c);
+    for(const [col,fn] of [["#5cc8ff",Math.cos],["#fbbf24",Math.sin]]){
+      if(waveMode===2&&fn===Math.sin)continue;   // 仅 cos
+      if(waveMode===3&&fn===Math.cos)continue;   // 仅 sin
+      ctx.strokeStyle=col;ctx.lineWidth=2.2;
+      ctx.beginPath();
+      for(let px=0;px<=CW-pad-10;px+=2){
+        const u=px/(CW-pad-10);
+        const yy=yc-fn(2*Math.PI*(k*u+k0)+ph)*A*rowH*0.42;
+        px?ctx.lineTo(pad+px,yy):ctx.moveTo(pad+px,yy);}
+      ctx.stroke();}
+    ctx.fillStyle="#dbe6ff";ctx.font="11px ui-monospace";
+    ctx.fillText("|"+bits(i)+"⟩",6,yc+4);
+    ctx.fillStyle="#7f8db3";ctx.fillText("A="+A.toFixed(3),CW-64,yc-4);}
+  ctx.fillStyle="#7f8db3";ctx.textAlign="left";ctx.font="12px sans-serif";
+  ctx.fillText("复指数 e^{i(ωt+φ)} = cos + i·sin：实部与虚部是两路恒差 90° 的振荡",12,20);
+  ctx.fillStyle="#7f8db3";ctx.fillText(M>8?"64 条行波过密：此处显示前 8 个基态（切回 2/3 比特看全貌）":
+    "频率编号 k = 基态索引（这正是离散傅里叶的基）",12,36);}
+function drawVolt(v){
+  const M=1<<N,show=Math.min(M,8),cols=Math.min(show,4),rows=Math.ceil(show/cols);
+  const gx=(CW-24)/cols,gy=(CH-46)/rows;
+  for(let i=0;i<show;i++){const c=v[i],r=Math.floor(i/cols),col=i%cols;
+    const x=12+gx*col,y=40+gy*r,vc=volt(c);
+    ctx.fillStyle="#0f1526";ctx.strokeStyle="#22304f";
+    ctx.fillRect(x+4,y+4,gx-8,gy-8);ctx.strokeRect(x+4,y+4,gx-8,gy-8);
+    ctx.textAlign="center";
+    ctx.fillStyle="#7f8db3";ctx.font="12px ui-monospace";
+    ctx.fillText("|"+bits(i)+"⟩",x+gx/2,y+22);
+    ctx.font="bold 34px sans-serif";
+    ctx.fillStyle=vc.cls==="pos"?"#4ade80":vc.cls==="neg"?"#f87171":
+                  vc.cls==="imag"?"#fbbf24":vc.cls==="zero"?"#3b4a6b":"#5cc8ff";
+    if(vc.cls==="zero"){ctx.setLineDash([4,4]);ctx.strokeStyle="#3b4a6b";
+      ctx.strokeRect(x+gx/2-26,y+34,52,44);ctx.setLineDash([]);
+      ctx.fillText("0",x+gx/2,y+64);}
+    else ctx.fillText(vc.s,x+gx/2,y+66);
+    ctx.fillStyle="#7f8db3";ctx.font="11px sans-serif";
+    ctx.fillText(`A=${amp(c).toFixed(3)}  φ=${(phase(c)*180/Math.PI).toFixed(0)}°`,x+gx/2,y+gy-10);
+    ctx.fillStyle="#9fb0d8";ctx.font="11px sans-serif";
+    ctx.fillText(vc.t,x+gx/2,y+gy-24);}
+  ctx.textAlign="left";ctx.fillStyle="#7f8db3";ctx.font="12px sans-serif";
+  ctx.fillText("复数两根轴 → 电压语言：实轴 cos=正负极，虚轴 sin=±i（过渡），幅度≈0=零电压（缺失态）",12,20);
+  if(M>8){ctx.fillStyle="#7f8db3";
+    ctx.fillText("64 格过密：此处显示前 8 个基态（全量见下方分量表）",12,36);}}
+function drawSwap(v){
+  const rowsAll=Math.max(1,1<<(N-2)),rows=Math.min(rowsAll,4);
+  const gx=(CW-16)/4,gy=(CH-46)/rows;
+  const e=swapAnim?Math.min(1,swapAnim.t/0.55):1;
+  const ez=e<1?1-(1-e)*(1-e):1;                    // easeOutQuad
+  // 网格底：行 = spectator 分区（q≥2），4 格 = (q1,q0) 两分区的装配
+  for(let p=0;p<rows;p++)for(let i=0;i<4;i++){
+    const x=8+gx*i,y=40+gy*p;
+    ctx.fillStyle="#0f1526";ctx.strokeStyle="#22304f";
+    ctx.fillRect(x+2,y+2,gx-4,gy-4);ctx.strokeRect(x+2,y+2,gx-4,gy-4);
+    ctx.fillStyle="#7f8db3";ctx.font="11px ui-monospace";ctx.textAlign="center";
+    ctx.fillText("|"+bits(p*4+i)+"⟩",x+gx/2,y+gy-8);}
+  const slot=(x,y)=>{ctx.strokeStyle="#3b4a6b";ctx.setLineDash([4,4]);ctx.lineWidth=1.5;
+    ctx.strokeRect(x+gx/2-gx*0.3,y+gy*0.26,gx*0.6,gy*0.42);ctx.setLineDash([]);
+    ctx.fillStyle="#3b4a6b";ctx.font="11px sans-serif";ctx.textAlign="center";
+    ctx.fillText("缺失态",x+gx/2,y+gy*0.26+gy*0.42+16);};
+  const box=(x,y,c,lb)=>{
+    if(amp(c)<EPS){slot(x,y);return;}
+    ctx.fillStyle=A2bg(c);ctx.strokeStyle=`hsl(${hue(c)},80%,60%)`;ctx.lineWidth=1.5;
+    ctx.fillRect(x+4,y+6,gx-8,gy-16);ctx.strokeRect(x+4,y+6,gx-8,gy-16);
+    ctx.fillStyle=`hsl(${hue(c)},85%,66%)`;ctx.font="bold 20px sans-serif";
+    ctx.textAlign="center";ctx.fillText(amp(c).toFixed(2),x+gx/2,y+gy/2);
+    ctx.fillStyle="#dbe6ff";ctx.font="11px ui-monospace";
+    ctx.fillText(lb,x+gx/2,y+gy/2+17);};
+  for(let p=0;p<rows;p++){
+    const y=40+gy*p,x0=8+gx*0,x1=8+gx*1,x2=8+gx*2,x3=8+gx*3;
+    const A=from?from[p*4+0]:st[p*4+0],B=from?from[p*4+1]:st[p*4+1],
+          C=from?from[p*4+2]:st[p*4+2],D=from?from[p*4+3]:st[p*4+3];
+    const lbA="|"+bits(p*4+0)+"⟩",lbB="|"+bits(p*4+1)+"⟩",
+          lbC="|"+bits(p*4+2)+"⟩",lbD="|"+bits(p*4+3)+"⟩";
+    box(x0,y,A,lbA);box(x3,y,D,lbD);
+    if(e<1){ // 转场中：q0 格与 q1 格的盒子沿水平槽对穿；让出的格子露出缺失态
+      slot(x1,y);slot(x2,y);
+      box(Math.round(x1+(x2-x1)*ez),y,B,lbB);
+      box(Math.round(x2+(x1-x2)*ez),y,C,lbC);}
+    else{box(x1,y,st[p*4+1],lbB);box(x2,y,st[p*4+2],lbC);}}
+  ctx.textAlign="left";ctx.fillStyle="#7f8db3";ctx.font="12px sans-serif";
+  ctx.fillText("交换分区：点 SWAP 后，q0 分区与 q1 分区的盒子沿水平槽对穿交换",12,20);
+  ctx.fillText(N>3?`spectator（q≥2）共 ${rowsAll} 行，此处显示前 ${rows} 行；让出的格子露出缺失态，对侧滑入填补`:
+    "让出的格子露出虚线缺失态，对侧盒子滑入填补；几何本质 = 转置 |q1 q0⟩ ↔ |q0 q1⟩",12,36);}
+const A2bg=c=>amp(c)<EPS?"#0b1020":`hsla(${hue(c)},45%,22%,.55)`;
+function drawFourier(v){
+  const f=matVec(QFT(N),v),M=1<<N,pad=30,half=(CW-60)/2;
+  bars("时域（计算基）",pad,v,M,0,"#5cc8ff");
+  bars("频域（QFT 后）",pad+half+30,f,M,1,"#b58cff");
+  // 转场箭头
+  ctx.strokeStyle="#7f8db3";ctx.fillStyle="#7f8db3";ctx.font="12px sans-serif";
+  ctx.textAlign="center";
+  const ax=CW/2;ctx.beginPath();ctx.moveTo(ax-14,CH/2);ctx.lineTo(ax+14,CH/2);
+  ctx.lineTo(ax+8,CH/2-5);ctx.moveTo(ax+14,CH/2);ctx.lineTo(ax+8,CH/2+5);ctx.stroke();
+  ctx.fillText("QFT",ax,CH/2-10);}
+function bars(title,pad,v,M,side,col){
+  const bw=Math.min(52,(CW-60)/M*0.62);
+  ctx.fillStyle="#7f8db3";ctx.font="12px sans-serif";ctx.textAlign="center";
+  ctx.fillText(title,pad+(CW-60)/4,26);
+  for(let i=0;i<M;i++){const c=v[i],A=amp(c);
+    const x=pad+((CW-60)/M)*i+((CW-60)/M-bw)/2,h=A*(CH-110);
+    if(A<EPS){dashSlot(x+bw/2,CH-40,bw);ctx.fillStyle="#3b4a6b";
+      ctx.font="10px sans-serif";ctx.fillText("缺失",x+bw/2,CH-50);continue;}
+    const g=ctx.createLinearGradient(0,CH-40-h,0,CH-40);
+    g.addColorStop(0,col);g.addColorStop(1,col+"44");
+    ctx.fillStyle=g;ctx.fillRect(x,CH-40-h,bw,h);
+    if(M<=8){ctx.fillStyle="#dbe6ff";ctx.font="10px ui-monospace";
+      ctx.fillText(i,x+bw/2,CH-24);
+      ctx.fillText(A.toFixed(2),x+bw/2,CH-46-h);}}}
+function drawNum(v){   // 数制转换：同一量子态 → 二进制读数（6 bit）与三进制读数（3 trit）
+  const M=1<<N;
+  let bi=0,bp=-1;
+  for(let i=0;i<M;i++){const A=amp(v[i]);if(A>bp){bp=A;bi=i;}}
+  ctx.fillStyle="#7f8db3";ctx.textAlign="left";ctx.font="12px sans-serif";
+  ctx.fillText("同一量子态，两种数制读出：二进制（传统电脑，6 qubit=6 bit）· 三进制（Сетунь 式，3 对=3 trit）",12,20);
+  const half=(CW-40)/2;
+  // 左：二进制面板
+  panel(12,40,half,"二进制 6 bit（测量读出）");
+  ctx.textAlign="center";
+  ctx.fillStyle="#5cc8ff";ctx.font="bold 40px ui-monospace";
+  ctx.fillText(bi.toString(2).padStart(N,"0"),12+half/2,110);
+  ctx.fillStyle="#dbe6ff";ctx.font="12px ui-monospace";
+  ctx.fillText(`=|${bits(bi)}⟩  概率 ${(bp*bp*100).toFixed(1)}%`,12+half/2,134);
+  const bw2=(half-40)/N;
+  for(let q=0;q<N;q++){const x=32+bw2*q+bw2/2,on=(bi>>q)&1;
+    ctx.fillStyle=on?"#5cc8ff":"#0f1526";ctx.strokeStyle="#22304f";
+    ctx.fillRect(x-bw2*0.36,150,bw2*0.72,26);ctx.strokeRect(x-bw2*0.36,150,bw2*0.72,26);
+    ctx.fillStyle=on?"#06121f":"#7f8db3";ctx.font="bold 13px ui-monospace";
+    ctx.fillText(on?"1":"0",x,168);
+    ctx.fillStyle="#7f8db3";ctx.font="10px sans-serif";ctx.fillText(N===6?ELEM[q]:"q"+q,x,186);}
+  // 右：三进制面板
+  const rx=28+half;
+  panel(rx,40,half,"三进制 3 trit（每对 qubit 一枚）");
+  const trits=bitsToTrits(bi);
+  const tw=(half-40)/3;
+  for(let p=0;p<3;p++){const cx=rx+20+tw*p+tw/2,t=trits[p];
+    const bad=t===null;
+    ctx.strokeStyle=bad?"#f87171":"#b58cff";ctx.setLineDash(bad?[4,4]:[]);ctx.lineWidth=1.5;
+    ctx.strokeRect(cx-tw*0.36,150,tw*0.72,26);ctx.setLineDash([]);
+    ctx.fillStyle=bad?"#f87171":"#b58cff";ctx.font="bold 22px ui-monospace";
+    ctx.fillText(bad?"×":t,cx+6,172);
+    ctx.fillStyle="#7f8db3";ctx.font="10px ui-monospace";
+    ctx.fillText(bad?"11":TRIT2PAIR[t].toString(2).padStart(2,"0"),cx+tw*0.18,142);
+    ctx.fillText("trit"+p,cx-tw*0.18,142);}
+  ctx.fillStyle="#dbe6ff";ctx.font="12px ui-monospace";ctx.textAlign="center";
+  if(trits.some(t=>t===null))
+    ctx.fillText("含无效对 11 —— 非法三进制读出",rx+half/2,206);
+  else ctx.fillText(`第三进制值 = ${trits.join("")}₃ = ${packTrit5(trits)}₁₀`,rx+half/2,206);
+  // 底部：汇率说明
+  ctx.textAlign="left";ctx.fillStyle="#7f8db3";ctx.font="11px sans-serif";
+  ctx.fillText("汇率：1 trit = log₂3 ≈ 1.585 bit —— 3 trit = 0..26 恰好装进 5 bit；",12,CH-52);
+  ctx.fillText("定长编码每 trit 占 2 bit（0→00/1→01/2→10，11 无效）；紧 pack 码 3 trit 共 5 bit。点「三进制→二进制 编码」导出当前态。",12,CH-38);}
+function panel(x,y,w,title){
+  ctx.fillStyle="#0f1526";ctx.strokeStyle="#22304f";
+  ctx.fillRect(x,y,w,CH-46-40);ctx.strokeRect(x,y,w,CH-46-40);
+  ctx.fillStyle="#9fb0d8";ctx.font="12px sans-serif";ctx.textAlign="left";
+  ctx.fillText(title,x+10,y+20);}
+function drawTable(v){
+  const tb=document.querySelector("#tbl tbody");tb.innerHTML="";
+  for(let i=0;i<v.length;i++){const c=v[i],A=amp(c),vc=volt(c);
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td class="mono">|${bits(i)}⟩</td>
+      <td class="mono">${c[0].toFixed(3)}</td><td class="mono">${c[1].toFixed(3)}</td>
+      <td class="mono">${A.toFixed(3)}</td>
+      <td class="mono">${(phase(c)*180/Math.PI).toFixed(1)}°</td>
+      <td class="mono" style="color:${vc.cls==="pos"?"#4ade80":vc.cls==="neg"?"#f87171":
+        vc.cls==="imag"?"#fbbf24":"#3b4a6b"}">${vc.s}</td>`;
+    tb.appendChild(tr);}}
+/* ================= 主循环 ================= */
+let last=0;
+function loop(ts){
+  const dt=(ts-last)/1000;last=ts;
+  if(from&&anim<1){anim=Math.min(1,anim+dt*1.6);draw();}
+  else if(view==="wave")draw();
+  if(swapAnim){swapAnim.t=Math.min(0.7,swapAnim.t+dt);draw();}
+  requestAnimationFrame(loop);}
+function setView(x){view=x;
+  document.querySelectorAll("#tabs button").forEach(b=>
+    b.classList.toggle("on",b.dataset.v===x));
+  document.getElementById("waveCtl").style.display=x==="wave"?"flex":"none";
+  draw();}
+function setWaveMode(m){waveMode=m;
+  [1,2,3].forEach(i=>document.getElementById("wm"+i).classList.toggle("on",i===m));
+  if(view==="wave")draw();}
+document.querySelectorAll("#tabs button").forEach(b=>
+  b.onclick=()=>setView(b.dataset.v));
+/* 启动 */
+buildQSel();preset("yinyang");requestAnimationFrame(loop);
+</script>
+</body>
+</html>

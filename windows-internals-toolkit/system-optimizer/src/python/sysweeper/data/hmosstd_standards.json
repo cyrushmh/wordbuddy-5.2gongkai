@@ -1,0 +1,258 @@
+{
+  "_note": "hmosstd：HarmonyOS NEXT 标准与合规知识库（v0.6.72，承接 androidstd/gmsstd/fdroidstd 三库之后的第四生态标准库）。口径=国内法规（PIPL/工信部）+ 华为官方公开文档 + AppGallery 上架要求。全部只读登记、不代审；社区/第三方整理一律 needs_verify。知识条目形制与其他 std 库一致：name/org/url/protocols/interfaces/docs/advice。",
+  "_position": "本库只回答「鸿蒙侧的标准与合规口径是什么」，不代替律师意见、不代替官方审核；判定权在用户与官方来源。",
+
+  "pipl_harmony": {
+    "name": "中华人民共和国个人信息保护法（鸿蒙 App 的上位合规法）",
+    "org": "全国人大常委会 2021-08-20 通过，2021-11-01 施行（共 8 章 74 条）",
+    "url": "http://www.npc.gov.cn/npc/c2/c30834/202108/t20210820_313088.html",
+    "protocols": [
+      "告知-同意为核心：处理个人信息应具有明确、合理的目的，限于实现目的的最小范围，公开处理规则，保证信息质量（第 5-7 条）",
+      "敏感个人信息（生物识别、宗教信仰、特定身份、医疗健康、金融账户、行踪轨迹、14 周岁以下未成年人信息）须具有特定目的与充分必要性并取得单独同意（第 28-29 条）",
+      "个人信息处理者义务：安全制度、分类管理、加密与去标识化、合规审计、事前个人信息保护影响评估（第 51-56 条）",
+      "个人权利：查阅复制、更正补充、删除、撤回同意、可携带权（第 44-49 条）",
+      "跨境提供：向境外提供个人信息应通过安全评估/标准合同/专业机构认证之一，并另行取得个人单独同意（第 38-40 条）",
+      "违法成本：最高 5000 万元或上一年度营业额 5%，责任人 10-100 万元并可禁业"
+    ],
+    "interfaces": [
+      "本工具自评基线：sysweeper 自身零权限、零网络、零采集——只读系统与硬件能力面，不处理任何个人数据，这正是 PIPL 最小必要原则的工程化自评",
+      "对照鸿蒙 App 自查：隐私政策是否在首次启动即公示且同意后才收集；是否按最小必要申请权限（权限≠已同意）；敏感个人信息是否有单独同意链路；是否提供撤回同意与删除渠道；是否做过 PIA 影响评估留档",
+      "NEXT 纯血鸿蒙无 GMS、无 AOSP 兼容层：App 收集面聚焦@ohos.* 系统能力——隐私政策的数据清单应与实际调用的 API 逐条对上，而不是照抄 Android 版政策"
+    ],
+    "docs": [
+      {"title": "PIPL 全文（中国人大网）", "url": "http://www.npc.gov.cn/npc/c2/c30834/202108/t20210820_313088.html"},
+      {"title": "华为应用市场隐私合规要求（developer.huawei.com）", "url": "https://developer.huawei.com/consumer/cn/doc/app/50127", "needs_verify": true}
+    ],
+    "advice": "把隐私政策、权限申请、数据收集三张表做成同一份清单逐条对账——政策写了没申请是违规，申请了政策没写也是违规。"
+  },
+
+  "appgallery_listing": {
+    "name": "AppGallery（华为应用市场）上架审核要件",
+    "org": "华为开发者联盟 AppGallery Connect 审核指南（社区/官方公开整理，以站内最新版为准）",
+    "url": "https://developer.huawei.com/consumer/cn/doc/app/50127",
+    "protocols": [
+      "上架四件套基石：软件著作权登记证书（软著）、App 备案号、隐私政策 URL、应用描述与实际功能一致",
+      "隐私政策必须可从 App 内+应用市场详情页双入口访问；政策内容需覆盖三方 SDK 清单",
+      "首次启动闪屏/弹窗收集个人信息前须先取得同意——审核机实测点，未同意不得初始化含采集逻辑的 SDK",
+      "权限申请须伴随场景说明（UIAbility 内 context.requestPermission 弹窗文案需具体），拒绝后不得闪退或循环弹窗",
+      "未成年人保护：面向未成年人群体须适配青少年模式/儿童账号与时长限制（以最新审核指南为准）",
+      "广告与付费：含广告须提供关闭/投诉入口，内购价格与到账一致（SDK 合规审查项）"
+    ],
+    "interfaces": [
+      "对照 any 待上架鸿蒙 App：软著/备案/隐私政策三项是否齐备；首次启动同意链路是否在采集之前；权限弹窗文案是否说明场景",
+      "本工具自身零采集、零网络、零权限，是「无需隐私政策例外」的极端形态——可作为同类纯本地工具的上架参照",
+      "第三方应用侧载（HapInstaller/PC 助手）与官方市场上架是两条通道：侧载通道无审核约束但签名密钥自担，两国通道的合规责任不同（见 hmos_ecosystem 库 sideload_path_known）"
+    ],
+    "docs": [
+      {"title": "AppGallery Connect 审核指南", "url": "https://developer.huawei.com/consumer/cn/doc/app/50127", "needs_verify": true},
+      {"title": "应用市场隐私合规常见拒审原因（官方公开课整理）", "url": "https://developer.huawei.com/consumer/cn/", "needs_verify": true}
+    ],
+    "advice": "上架三件事（软著/备案/隐私政策）在提测前就备齐，不要等审核驳回再补——驳回一次就是一周。"
+  },
+
+  "app_filing_miit": {
+    "name": "工信部 App 备案与 ICP 信息（App 上架硬门槛）",
+    "org": "工业和信息化部《关于开展移动互联网应用程序备案工作的通知》（工信部信管函〔2023〕171 号）",
+    "url": "https://beian.miit.gov.cn/",
+    "protocols": [
+      "2023-08 起 App 主办者须通过接入服务提供商完成备案；未备案 App 各应用市场不得为其提供分发服务（公告自 2024-04 起分批对存量执行）",
+      "备案信息三要素：主办者信息、接入服务提供商、App 基本信息（名称/包名/功能描述/公钥证书指纹 SHA-256）",
+      "NEXT 应用包名需与备案、软著、应用市场后台三处一致；包名变更等同重新备案",
+      "备案信息变更（更名/换主体/换接入商）须在限期内申报变更，逾期按未备案处置",
+      "仅在本机使用、不分发的自研工具不在分发场景内——备案义务的触发点是「通过应用市场等渠道向公众提供」"
+    ],
+    "interfaces": [
+      "对照 any 面向国内分发的鸿蒙 App：beian.miit.gov.cn 可查其备案号；市场详情页应公示备案编号",
+      "自查把三码对齐：bundleName ↔ 软著登记名称 ↔ 市场备案信息，任一处漂移都会被拦",
+      "本工具 sysweeper 不通过应用市场分发（打 .pyz/源码分发），不落入 App 备案场景——本地工具与分发 App 的合规边界在此"
+    ],
+    "docs": [
+      {"title": "工信部备案系统", "url": "https://beian.miit.gov.cn/"},
+      {"title": "App 备案工作通知（171 号文）", "url": "https://www.gov.cn/zhengce/zhengceku/2023-08/04/content_5743492.htm", "needs_verify": true}
+    ],
+    "advice": "备案号是 2023 后国内 App 的身份证；先备案再提审，顺序反了一切白等。"
+  },
+
+  "permission_apl_model": {
+    "name": "HarmonyOS 权限模型与 APL 分级",
+    "org": "华为开发者联盟 HarmonyOS 安全能力文档（权限申请与 APL 说明）",
+    "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/permission-list-0000001793983965",
+    "protocols": [
+      "权限按 APL（Ability Privilege Level）分级：normal（安装时默认授予）/ system_basic / system_core（后两级仅系统应用可申请）——普通 App 只能申请 normal 级",
+      "权限授予方式分两类：system_grant（安装或首次使用时系统授予，如 ohos.permission.INTERNET）与 user_grant（运行时弹窗由用户授权，即敏感权限）",
+      "敏感权限清单（user_grant）：位置、相机、麦克风、通讯录、日历、屏幕截图、健康数据、附近设备、图片/视频/音频媒体库等——每次申请须有场景说明",
+      "ACL（Access Control List）跨应用申请受限权限时需在 module.json5 声明 acl 扩展字段并说明用途，否则申请失败",
+      "module.json5 的 requestPermissions 字段是声明面；运行期 requestPermissionFromUser 才是凭据——只声明不调用是死代码，调用未声明直接抛异常"
+    ],
+    "interfaces": [
+      "把 module.json5 的 requestPermissions 清单与隐私政策数据清单、代码实际调用三对照：多声明/少声明都是问题",
+      "read-only 工具视角：hmos_ecosystem 库的 devicetypes_declared 同理——工程声明面与运行期行为对账，是只读诊断在鸿蒙侧的基本方法",
+      "本工具自身零权限基线：不申请任何 ohos.permission 项，这是它敢把源码完全公开的原因——权限申请面即可信面"
+    ],
+    "docs": [
+      {"title": "HarmonyOS 权限列表（按 APL 分级的完整清单）", "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/permission-list-0000001793983965", "needs_verify": true},
+      {"title": "应用权限（requestPermissions 声明指南）", "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/declare-permissions-0000001793983965", "needs_verify": true}
+    ],
+    "advice": "权限清单不是越多越好：每多申请一项敏感权限，审核多一分风险、用户多一次拒绝——申请权就是信用。"
+  },
+
+  "privacy_indicators": {
+    "name": "NEXT 隐私指示器与即时提示（相机/麦克风/位置/剪贴板）",
+    "org": "华为开发者联盟 HarmonyOS 隐私安全文档（指示器与读取提示，社区整理口径）",
+    "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/privacy-indicators-0000001840981741",
+    "protocols": [
+      "状态栏隐私指示器：相机/麦克风/位置被调用时状态栏出现对应图标，点按可查看近期使用记录——用户可感知是 NEXT 的硬特性，App 无法隐藏",
+      "剪贴板读取提示：读取剪贴板时系统 toast 提示「读取剪贴板」；过度频繁读取会被判定为滥用",
+      "位置精度分级：粗略位置（约 5km）与精确位置需分别授权，能粗就不精是最小必要的落地",
+      "仅在使用中允许：相机/位置/麦克风支持「仅使用期间」授权，退到后台即失效——App 不得假设权限全天有效",
+      "权限撤回：用户在设置中撤回授权后，App 下次调用进入无权限分支——须有降级路径而非闪退"
+    ],
+    "interfaces": [
+      "用户侧只读自查：设置→隐私与安全性里查看各 App 的权限使用记录——与它声称的功能对不对得上是普通用户可执行的检查",
+      "工程侧对照 any App：退到后台后定位/相机是否还在工作？看一次状态栏指示器胜过读十页隐私政策",
+      "本工具零权限、不碰相机/位置/剪贴板，因此无任何指示器留痕——这是可自证的合规姿态"
+    ],
+    "docs": [
+      {"title": "隐私指示器行为说明（官方开发者文档）", "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/privacy-indicators-0000001840981741", "needs_verify": true}
+    ],
+    "advice": "指示器把隐私从纸面变成可见光：开发时问自己——状态栏亮着的时候，用户认不认这笔账。"
+  },
+
+  "huki_key_management": {
+    "name": "HUKS 通用密钥库（密钥生成/存储/证明）",
+    "org": "华为开发者联盟 HarmonyOS 密钥管理服务文档（HUKS: HarmonyOS Universal Keystore）",
+    "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/huks-overview-0000001793125577",
+    "protocols": [
+      "HUKS 是 NEXT 统一的密钥管理与加解密服务：密钥由系统在受保护环境生成与存储，App 只拿到句柄不接触明文密钥——密钥永不出 TEE",
+      "支持算法面：HUKS 主密钥校验（huks 主密钥完整性自校验）、AES/HMAC/SHA/RSA/ECC/ED25519/SM2/SM3/SM4 等国密算法（按 SDK 版本核对，以官方文档为准）",
+      "密钥分级存储：密钥可由用户认证（指纹/人脸/锁屏密码）绑定后才可用，实现『解锁才能用』",
+      "密钥证明（Key Attestation）：证明某密钥确实生成于本机 TEE、硬件等级别，服务端验 attestation 证书链可判真机/模拟器",
+      "导入密钥走安全通道（huks 导入接口有认证要求）；明文硬编码密钥是审核与安全审计的双重红线"
+    ],
+    "interfaces": [
+      "对照 any 需要加密的鸿蒙 App：本地令牌/缓存是否走 HUKS；密钥是否绑定用户认证；服务端是否验 attestation 证书链",
+      "把 HUKS 与 androidstd/gmsstd 的 keystore 口径并读：三生态都是「密钥不出安全硬件」，差别只在 API 名称与证明格式",
+      "本工具本地零凭据，无任何密钥管理需求——对照之下更凸显普通 App 保管密钥的责任"
+    ],
+    "docs": [
+      {"title": "HUKS 概览与开发指南", "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/huks-overview-0000001793125577", "needs_verify": true},
+      {"title": "国密算法支持（以 SDK API 文档为准）", "url": "https://developer.huawei.com/consumer/cn/doc/", "needs_verify": true}
+    ],
+    "advice": "密钥设计的及格线：不硬编码、不落明文日志、可证明在 TEE 里生成——三条都做到才敢谈安全。"
+  },
+
+  "crypto_cert_tee": {
+    "name": "加解密算法框架 / 证书校验 / TEE 安全环境",
+    "org": "华为开发者联盟 HarmonyOS 安全能力文档（CryptoFramework、Cert 算法库、iTrustee TEE）",
+    "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/crypto-framework-overview-0000001820999677",
+    "protocols": [
+      "@ohos.security.cryptoFramework：对称/非对称/摘要/消息鉴别码的统一入口，随机数走 SecureRandom（SP 800-90A 类实现，以官方口径为准）",
+      "@ohos.security.cert：X.509 证书解析、证书链校验、CRL/OCSP 类吊销检查（按版本核对），系统信任锚在 /etc/security/trusted_capaths",
+      "证书锁定（Cert Pinning）与 HTTPS 传输加密仍是 App 侧职责——框架给工具，用不用在于工程",
+      "iTrustee TEE：敏感生物特征、支付凭据、密钥运算在可信执行环境完成，与富执行环境（REE）隔离",
+      "完整性校验：多包（HAP+HSP）的 bundleName/签名证书链一致性由系统安装时校验——侧载场景签名自验工作由用户自担"
+    ],
+    "interfaces": [
+      "对照 any 鸿蒙 App 的网络层：证书链校验是否开启、是否 pinning、错误码是否静默降级为 HTTP",
+      "工程侧把 cryptoFramework 与 HUKS 分工记清：HUKS 管『钥匙在哪』，cryptoFramework 管『怎么算』——两层别混用",
+      "本工具不联网，无 TLS 面；但同仓 cert 子系统（CA 审计）提供信任链判据，与本节互证"
+    ],
+    "docs": [
+      {"title": "CryptoFramework 加解密框架概览", "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/crypto-framework-overview-0000001820999677", "needs_verify": true},
+      {"title": "证书算法库使用指南", "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/cert-overview-0000001820999601", "needs_verify": true}
+    ],
+    "advice": "TEE 是底座不是护身符：钥匙在保险柜里，锁门动作（校验/pinning/错误处理）仍是应用的工程责任。"
+  },
+
+  "api_version_compat": {
+    "name": "API 版本兼容与 canIUse 降级（4.x ↔ NEXT）",
+    "org": "华为开发者联盟 HarmonyOS 版本演进与兼容性文档（含 @ohos→@kit 接口迁移，社区整理口径）",
+    "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/version-change-overview-0000001776619685",
+    "protocols": [
+      "API Version 查询：hdc shell param get const.ohos.apiversion 返回本机整型版本（如 12）——真机探测只读且零权限即可做",
+      "canIUse('SystemCapability.Xxx.Yyy') 运行期判定能力存在性；编译期按 module.json5 的 compileSdkVersion 选 API 面",
+      "NEXT 与 4.x 断层：@ohos.d.* 等旧接口按官方迁移表替换为 @kit.* 新接口（如 ohos.security.huks → kit.AbilityKit/AssetStoreKit 类），照旧编译的代码跨版本即碎",
+      "FA→Stage 已定局：新工程一律 Stage（UIAbility），仅维护老 FA 工程才需 module.config（config.json）路径",
+      "多设备 deviceTypes 与 API 能力取交集：声明的 deviceTypes 越多，可用的系统能力子集越小"
+    ],
+    "interfaces": [
+      "把本节与 hmos_ecosystem 库 fa_stage_evolution / toolchain_version_matched 串读：范式识别（FA/Stage）→ 接口面识别（@ohos/@kit）→ 版本门控（canIUse）是三步降级法",
+      "对照 any 鸿蒙仓库：build-profile.json5 的 compileSdkVersion + 工程内 canIUse 出现频率 = 兼容性成熟度信号",
+      "本工具对鸿蒙侧的探测（harmony native 层）全部遵守 canIUse 先行原则，缺能力即降级为指引而非报错"
+    ],
+    "docs": [
+      {"title": "版本演进总览与 API 变更", "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/version-change-overview-0000001776619685", "needs_verify": true},
+      {"title": "@ohos → @kit 接口迁移说明", "url": "https://developer.huawei.com/consumer/cn/doc/", "needs_verify": true}
+    ],
+    "advice": "兼容三问：声明面选哪个 SDK、运行期能力在不在、缺了走什么降级——三问都有答案的代码才敢上多设备。"
+  },
+
+  "minor_protection": {
+    "name": "未成年人保护（青少年模式/儿童账号/14 岁分界）",
+    "org": "PIPL 第 31 条（不满 14 周岁未成年人个人信息按敏感个人信息处理）+ 《未成年人网络保护条例》（2024-01-01 施行）+ 华为青少年模式公开文档",
+    "url": "http://www.npc.gov.cn/npc/c2/c30834/202108/t20210820_313088.html",
+    "protocols": [
+      "不满 14 周岁未成年人的个人信息=敏感个人信息：须监护人单独同意+专门处理规则（PIPL 第 31 条）",
+      "《未成年人网络保护条例》：网络产品服务提供者须设置未成年人模式、时长与消费管理、个人信息保护规则",
+      "HarmonyOS 青少年模式：系统级时段/应用/时长管控，App 可通过系统接口感知是否处于青少年模式并调整功能面（以官方接口文档为准）",
+      "应用市场对儿童类 App 有专审：收集范围、广告投放、付费设计从严",
+      "家长监护工具与删除权：监护人可要求查阅/更正/删除未成年人信息——App 侧须有响应流程"
+    ],
+    "interfaces": [
+      "对照 any 含 UGC/社交/游戏的鸿蒙 App：是否识别青少年模式并收紧推荐与消费；14 岁分界的年龄判定是否可信（不能只靠用户自填）",
+      "本工具不收集任何个人信息、不识别用户年龄——无未成年数据处理面，天然满足；但可作对照基线讲清『不处理』本身也是合规策略",
+      "把 PIPL 第 31 条与上架审核的未成年人专审串读：管理条例是法、青少年模式是系统机制、App 适配是三层漏斗"
+    ],
+    "docs": [
+      {"title": "未成年人网络保护条例（国务院令第 766 号）", "url": "https://www.gov.cn/zhengce/content/202310/content_6911288.htm", "needs_verify": true},
+      {"title": "HarmonyOS 青少年模式（消费者使用指南）", "url": "https://consumer.huawei.com/cn/support/", "needs_verify": true}
+    ],
+    "advice": "14 岁是一条红线也是一条产品线：线以下按敏感信息处理，线以上按普通用户处理——两套流程得分开写。"
+  },
+
+  "background_network_std": {
+    "name": "后台任务规范与网络权限（长时任务/代理提醒/网络统计）",
+    "org": "华为开发者联盟 HarmonyOS 后台任务与网络管理文档（@ohos.backgroundTaskManager / @ohos.net.* 族）",
+    "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/background-task-overview-0000001793125597",
+    "protocols": [
+      "长时任务（dataTransfer/audioPlayback/location/task 等类型）须在 UIAbility 内 startBackgroundRunning 并持续显示通知——没有可见通知的长时任务会被系统回收",
+      "代理提醒（reminderAgent）：系统级定时提醒服务，闹钟/日历类场景走它而非自持进程保活——保活本身就是反模式",
+      "退后台冻结：NEXT 对后台进程冻结严格，短期内存活靠系统调度轮询，App 不得用音频通道空转等方式伪装前台",
+      "网络权限与信息：ohos.permission.INTERNET + ohos.permission.GET_NETWORK_INFO 是网络能力两件套；连接属性（Wi-Fi/蜂窝/计费）走 @ohos.net.statistics 或 connection API",
+      "网络共享（热点/Tethering）在鸿蒙侧由网络管理统管，App 侧只读连接属性即可做省流量策略"
+    ],
+    "interfaces": [
+      "对照 any 常驻型鸿蒙 App：是否有『无通知的后台长任务』（直接违规项）；定时提醒是否走 reminderAgent；蜂窝网络是否跳过自动更新",
+      "把本节与 submissions 里 earthwork/energy 精神串读：省电/省流量本质都是后台自持面最小化",
+      "本工具零网络零后台——其整份 runtime 只在前台按需跑完即退，是后台规范的终态示范"
+    ],
+    "docs": [
+      {"title": "后台任务开发指南（长时任务/代理提醒）", "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/background-task-overview-0000001793125597", "needs_verify": true},
+      {"title": "网络连接管理文档", "url": "https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/net-connection-overview-0000001820999521", "needs_verify": true}
+    ],
+    "advice": "正确的后台三件套：通知可见、系统调度、须时可唤醒——而不是把进程钉在内存里。"
+  },
+
+  "xts_app_testing": {
+    "name": "兼容性测试与 XTS 认证（ACTS/Acts 应用兼容性）",
+    "org": "OpenHarmony XTS 体系与华为开发者联盟测试文档（社区整理口径）",
+    "url": "https://gitee.com/openharmony/xts_acts",
+    "protocols": [
+      "XTS（X Compatibility Test Suite）是 OpenHarmony 兼容性测评套件：设备厂商过 XTS 才可称兼容性认证发行版",
+      "ACTS（Application Compatibility Test Suite）面向应用：验证 App 在标准设备上的行为一致性——应用侧可用 Acts 自检",
+      "Acts 双重身份：既是测试框架也是测试用例集，本地 hdc 安装 Acts.apk 后运行用例，不符合规范的 App 行为在这里暴露",
+      "兼容性四关：安装/卸载、权限、生命周期（UIAbility 拉起与恢复）、多设备 deviceTypes 行为一致",
+      "本机只读探测口径：API 版本（const.ohos.apiversion）、系统能力（param get 全量）都可用 hdc 零权限读取——测试前的环境面摸底先于跑分"
+    ],
+    "interfaces": [
+      "对照 any 待发布鸿蒙 App：安装/卸载/升级全走一遍、权限拒绝链、生命周期恢复（切后台再回来）三项是兼容性最低成本自检",
+      "把本节与 api_version_compat 串读：XTS 是厂商的另一端，App 的 canIUse 降级是本机这一端——兼容性测评是两端对齐",
+      "本工具自身以 pytest 全量回归（1416+ 项）充当自家兼容性门禁；对鸿蒙 App 的检测建议同样回归化"
+    ],
+    "docs": [
+      {"title": "XTS/ACTS 套件仓库（Gitee OpenHarmony）", "url": "https://gitee.com/openharmony/xts_acts", "needs_verify": true},
+      {"title": "OpenHarmony 兼容性测评（文档站）", "url": "https://docs.openharmony.cn/pages/xts/", "needs_verify": true}
+    ],
+    "advice": "兼容性不是一次认证而是一习惯：每次 API 升级跑一遍最小套件，比上架前背水一战便宜得多。"
+  }
+}

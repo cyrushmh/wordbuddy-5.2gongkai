@@ -1,0 +1,179 @@
+{
+  "_comment": "uni-app 需要的原生能力与 API 清单（按能力分组）。platforms 标注该 API 在 uni-app 各端的支持情况：App（5+ plus API）/ H5 / 微信小程序。standard 为相关标准或规范出处，便于对照实现。",
+  "groups": [
+    {
+      "id": "system",
+      "name": "系统与设备信息",
+      "note": "先识别运行端（平台/版本/型号），再按端选择优化与清理策略——与 sysweeper 的「按平台+版本」思路一致。",
+      "apis": [
+        {
+          "name": "uni.getSystemInfoSync / uni.getDeviceInfo",
+          "desc": "获取设备品牌、型号、系统平台与版本、屏幕与窗口信息",
+          "platforms": ["App", "H5", "微信小程序"],
+          "standard": "W3C Device APIs / uni-app 官方 API"
+        },
+        {
+          "name": "uni.getAppBaseInfo",
+          "desc": "获取 App（或宿主）基础信息：语言、主题、版本号、SDK 版本",
+          "platforms": ["App", "H5", "微信小程序"],
+          "standard": "uni-app 官方 API"
+        },
+        {
+          "name": "plus.device.getInfo / plus.device.uuid",
+          "desc": "5+ 引擎设备信息：设备标识、厂商、IMEI 类信息（注意隐私合规）",
+          "platforms": ["App"],
+          "standard": "HTML5+ (5+ App) 规范 / 个人信息保护法合规要求"
+        },
+        {
+          "name": "uni.getSystemInfo 的 platform 字段",
+          "desc": "区分 android / ios / devtools / 各小程序端，用于分支处理",
+          "platforms": ["App", "H5", "微信小程序"],
+          "standard": "uni-app 官方 API"
+        }
+      ]
+    },
+    {
+      "id": "storage",
+      "name": "本地存储（清理相关）",
+      "note": "端上缓存是 uni-app 项目最主要的「垃圾」来源，各端容量上限不同，清理前务必确认。",
+      "apis": [
+        {
+          "name": "uni.setStorage / uni.getStorage / uni.setStorageSync",
+          "desc": "端上键值对存储（App 走原生存储，小程序走平台 storage）",
+          "platforms": ["App", "H5", "微信小程序"],
+          "standard": "HTML5 Web Storage（W3C）"
+        },
+        {
+          "name": "uni.getStorageInfo / uni.getStorageInfoSync",
+          "desc": "查看当前 storage 占用（已用大小/上限），用于判断是否需要清理",
+          "platforms": ["App", "H5", "微信小程序"],
+          "standard": "uni-app 官方 API"
+        },
+        {
+          "name": "uni.clearStorage / uni.clearStorageSync / uni.removeStorage",
+          "desc": "清空或按 key 移除端上存储（清理动作，需用户确认）",
+          "platforms": ["App", "H5", "微信小程序"],
+          "standard": "HTML5 Web Storage（W3C）"
+        },
+        {
+          "name": "plus.io / plus.cache.calculate",
+          "desc": "5+ 文件系统与缓存计算：统计应用缓存/数据体积后再决定是否清理",
+          "platforms": ["App"],
+          "standard": "HTML5+ (5+ App) 规范"
+        }
+      ]
+    },
+    {
+      "id": "network",
+      "name": "网络与协议",
+      "note": "仅作能力参考；涉及协议/参数调优的开关保持默认关闭，需用户选择并确认（与本项目 opt-in 策略一致）。",
+      "apis": [
+        {
+          "name": "uni.request / uni.uploadFile / uni.downloadFile",
+          "desc": "HTTP(S) 请求与文件传输，可设置 timeout、header",
+          "platforms": ["App", "H5", "微信小程序"],
+          "standard": "RFC 9110 (HTTP Semantics) / RFC 9113 (HTTP/2)"
+        },
+        {
+          "name": "uni.getNetworkType / uni.onNetworkStatusChange",
+          "desc": "获取当前网络类型（wifi/2g~5g/ethernet/none）与变化监听",
+          "platforms": ["App", "H5", "微信小程序"],
+          "standard": "IEEE 802.11（Wi-Fi）/ 3GPP 蜂窝制式"
+        },
+        {
+          "name": "plus.networkinfo.getCurrentType",
+          "desc": "5+ 网络信息：区分蜂窝代际与以太网，用于按网络质量降级策略",
+          "platforms": ["App"],
+          "standard": "IEEE 802.11 / ITU-T 相关移动网络建议"
+        },
+        {
+          "name": "uni.connectSocket",
+          "desc": "WebSocket 长连接，用于实时通道（心跳与重连需自行实现）",
+          "platforms": ["App", "H5", "微信小程序"],
+          "standard": "RFC 6455 (WebSocket)"
+        }
+      ]
+    },
+    {
+      "id": "fs",
+      "name": "文件系统与构建产物",
+      "note": "uni-app 工程侧（开发机）的清理主要发生在这里：编译产物、依赖缓存、编辑器缓存。",
+      "apis": [
+        {
+          "name": "plus.io.requestFileSystem / plus.io.resolveLocalFileSystemURL",
+          "desc": "5+ 沙盒文件系统访问：应用私有目录、缓存目录的文件读写与删除",
+          "platforms": ["App"],
+          "standard": "HTML5+ (5+ App) 规范"
+        },
+        {
+          "name": "plus.cache.clear / plus.io 删除接口",
+          "desc": "清理应用运行期缓存（图片/离线包等），释放端上空间",
+          "platforms": ["App"],
+          "standard": "HTML5+ (5+ App) 规范"
+        },
+        {
+          "name": "工程目录约定：unpackage/ dist/ build/",
+          "desc": "uni-app 发行/运行后的编译输出目录，可安全重建",
+          "platforms": ["工程侧"],
+          "standard": "uni-app 工程规范"
+        },
+        {
+          "name": "工程目录约定：node_modules/.cache、.vite、.hbuilderx",
+          "desc": "Vite/webpack 构建缓存与 HBuilderX 编辑器缓存，重建可恢复",
+          "platforms": ["工程侧"],
+          "standard": "Node.js / Vite 生态约定"
+        }
+      ]
+    },
+    {
+      "id": "runtime",
+      "name": "运行期与升级",
+      "note": "版本与热更新相关；涉及安装/重启的动作一律标为手动，不自动执行。",
+      "apis": [
+        {
+          "name": "plus.runtime.version / plus.runtime.getProperty",
+          "desc": "获取运行期版本、应用标识与渠道信息，用于版本分支处理",
+          "platforms": ["App"],
+          "standard": "HTML5+ (5+ App) 规范"
+        },
+        {
+          "name": "plus.runtime.install / plus.runtime.restart",
+          "desc": "安装 wgt 热更新包或重启应用（高风险，需用户确认）",
+          "platforms": ["App"],
+          "standard": "HTML5+ (5+ App) 规范"
+        },
+        {
+          "name": "uni.getUpdateManager",
+          "desc": "小程序端更新管理：检查版本、应用更新并重启",
+          "platforms": ["微信小程序"],
+          "standard": "微信小程序官方 API"
+        }
+      ]
+    },
+    {
+      "id": "ui",
+      "name": "界面与交互",
+      "note": "给「清理/优化」结果做反馈用；提示类接口不涉及系统修改。",
+      "apis": [
+        {
+          "name": "uni.showToast / uni.showModal / uni.showLoading",
+          "desc": "轻提示、确认对话框、加载态——执行清理前后的确认与结果反馈",
+          "platforms": ["App", "H5", "微信小程序"],
+          "standard": "uni-app 官方 API"
+        },
+        {
+          "name": "plus.nativeUI.toast / confirm",
+          "desc": "5+ 原生 UI：原生 toast 与确认框",
+          "platforms": ["App"],
+          "standard": "HTML5+ (5+ App) 规范"
+        },
+        {
+          "name": "uni.setNavigationBarTitle / uni.setClipboardData",
+          "desc": "导航栏标题与剪贴板（便于复制清理报告摘要）",
+          "platforms": ["App", "H5", "微信小程序"],
+          "standard": "uni-app 官方 API"
+        }
+      ]
+    }
+  ]
+}

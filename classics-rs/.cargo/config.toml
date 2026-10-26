@@ -1,0 +1,42 @@
+# 每目标链接器配置：让 cargo 在交叉编译时自动选用对应前缀的 gcc
+# （与 Debian 打包里「统一 host 前缀 CC」同一哲学，只是这里由 cargo 驱动）
+#
+# 覆盖矩阵：Linux×{x86-64,ARM64,ARM32,RISC-V,x86-32,PowerPC64LE,IBM-Z} +
+#           Windows×{x86-64,x86-32} + Web-WASM
+# Linux 交叉目标统一 +crt-static：产物静态链接、可在无对应 glibc 的机器直接运行；
+# Windows-gnu 目标 mingw 运行时本就静态入链，只需指定链接器。
+#
+# 不可构建（如实记录，不硬凑）：
+#   aarch64-pc-windows-gnu（Windows on ARM）——本 rustc 1.93.0 target-list 无此项，
+#     仅提供 aarch64-pc-windows-msvc / -gnullvm 变体；宿主亦无 MSVC 工具链。
+#   *-apple-darwin —— 无 macOS SDK 与 ld64，交叉产物无法链接。
+
+[target.aarch64-unknown-linux-gnu]
+linker = "aarch64-linux-gnu-gcc"
+rustflags = ["-C", "target-feature=+crt-static"]
+
+[target.armv7-unknown-linux-gnueabihf]
+linker = "arm-linux-gnueabihf-gcc"
+rustflags = ["-C", "target-feature=+crt-static"]
+
+[target.riscv64gc-unknown-linux-gnu]
+linker = "riscv64-linux-gnu-gcc"
+rustflags = ["-C", "target-feature=+crt-static"]
+
+[target.i686-unknown-linux-gnu]
+linker = "i686-linux-gnu-gcc"
+rustflags = ["-C", "target-feature=+crt-static"]
+
+[target.powerpc64le-unknown-linux-gnu]
+linker = "powerpc64le-linux-gnu-gcc"
+rustflags = ["-C", "target-feature=+crt-static"]
+
+[target.s390x-unknown-linux-gnu]
+linker = "s390x-linux-gnu-gcc"
+rustflags = ["-C", "target-feature=+crt-static"]
+
+[target.x86_64-pc-windows-gnu]
+linker = "x86_64-w64-mingw32-gcc"
+
+[target.i686-pc-windows-gnu]
+linker = "i686-w64-mingw32-gcc"

@@ -1,0 +1,44 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          quantum-core
+# Required-Start:    $local_fs $remote_fs
+# Required-Stop:     $local_fs $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Quantum architecture core monitor
+# Description:       Monitor the quantum-architecture kernel's honest interfaces
+#                    (/proc/quantum-energy, /dev/qpu0) and expose them to the
+#                    XFCE desktop. Emulated accounting model, not real hardware.
+### END INIT INFO
+#
+# SPDX-License-Identifier: GPL-2.0
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+DAEMON=/usr/bin/quantum-core
+NAME=quantum-core
+PIDFILE=/run/quantum-core.pid
+
+case "$1" in
+  start)
+	echo "Starting $NAME"
+	start-stop-daemon --start --background --make-pidfile --pidfile "$PIDFILE" \
+		--exec "$DAEMON"
+	;;
+  stop)
+	echo "Stopping $NAME"
+	start-stop-daemon --stop --pidfile "$PIDFILE"
+	rm -f "$PIDFILE"
+	;;
+  restart|reload|force-reload)
+	"$0" stop
+	"$0" start
+	;;
+  status)
+	start-stop-daemon --status --pidfile "$PIDFILE" && echo "$NAME running" || echo "$NAME not running"
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart|status}" >&2
+	exit 3
+	;;
+esac
+exit 0

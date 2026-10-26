@@ -1,0 +1,345 @@
+{
+ "cdd": {
+  "name": "Android 兼容性定义文档（CDD, Compatibility Definition Document）",
+  "org": "Google（Android 兼容性计划）；每个 Android 大版本发布配套 CDD，source.android.google.cn/compatibility/cdd 索引页在列 Android 16",
+  "url": "https://source.android.google.cn/compatibility/cdd",
+  "protocols": [
+   "CDD 用自然语言逐条陈述『兼容 Android 设备』必须满足的资源、行为与 API 契约——是判定设备能否声称兼容 Android 的**规范文本**",
+   "覆盖硬件与软件面：屏幕、输入、传感器、连接、多媒体、WebView、权限模型、后台限制等",
+   "每版 CDD 与平台版本一一对应，持续演进；设备实现需对照所声明的 Android 版本使用对应 CDD"
+  ],
+  "interfaces": [
+   "与本工具的关系：本工具只读系统 Settings 的探针口径即参照平台公开契约（Settings.Global/Secure/System 键），CDD 是这些契约的规范源头",
+   "自研 ROM/设备对照：先读 CDD 再跑 CTS，二者是『规范文本 + 测试执行』的关系",
+   "App 侧无需直接满足 CDD，但依赖的行为（权限模型、后台限制）在 CDD 中有定义"
+  ],
+  "docs": [
+   "Android 兼容性计划概览（source.android.google.cn/docs/compatibility）",
+   "CTS 概览（source.android.google.cn/docs/compatibility/cts）"
+  ],
+  "summary": "CDD 是 Android 兼容性体系的『规范文本』：先声明什么是兼容，再用 CTS 去验证；GMS 授权预装以兼容性为前提。",
+  "advice": "做系统定制/ROM 的学生先通读所跟版本 CDD；做 App 的开发者重点看权限与后台行为章节，避免依赖未契约化行为。"
+ },
+ "cts_suite": {
+  "name": "兼容性测试套件（CTS, Compatibility Test Suite）",
+  "org": "Google；免费商业级测试套件，source.android.google.cn/docs/compatibility/cts（2026-10 实检）",
+  "url": "https://source.android.google.cn/docs/compatibility/cts",
+  "protocols": [
+   "CTS 是**免费**的商业级测试套件，帮设备方在开发早期发现不兼容问题；可集成进持续构建系统",
+   "两大组件：Trade Federation 自动化框架（跑自动化测试）+ CTS Verifier（CTS-V，必须**手工**执行的测试，覆盖无法固定设备自动测的功能）",
+   "测试用例为打包成 APK 的 JUnit；按测试模块/测试计划组织，在 DUT（所连设备或模拟器）上执行",
+   "测试覆盖八大域：签名（每版公开 API 签名 XML 比对）、平台 API（正确类/方法/负面行为）、Dalvik 可执行格式、平台数据模型（content provider）、平台 Intent、平台权限、平台资源、CTS-V 手工项"
+  ],
+  "interfaces": [
+   "运行方式：下载安装 CTS → 按需装测试环境（工作站+DUT/模拟器）→ Trade Federation 跑自动化 → 看结果 XML → 失败项重跑",
+   "本工具 Windows 端诊断与 CTS 的关系：都只读取平台公开面，不修改系统状态，可并行互不干扰",
+   "设备方视角：CTS 全绿是从 AOSP 走向 GMS 授权预装的必要工程环节之一"
+  ],
+  "docs": [
+   "CTS 设置（source.android.google.cn/docs/compatibility/cts/setup）",
+   "CDD（source.android.google.cn/compatibility/cdd）",
+   "Trade Federation（source.android.google.cn/docs/core/tests/tradefed）"
+  ],
+  "summary": "CTS = Android 兼容性的『自动体检』：规范（CDD）声明什么必须兼容，CTS 用上万自动化用例+手工 CTS-V 验证设备是否做到。",
+  "advice": "设备/ROM 团队把 CTS 接入 CI；普通 App 开发者了解即可——但调用隐藏 API 前先看该 API 是否在 CTS 签名域内，避免上架后被下架。"
+ },
+ "vts_suite": {
+  "name": "供应商测试套件（VTS, Vendor Test Suite）",
+  "org": "Google；source.android.google.cn/docs/core/tests/vts（2026-10 实检）",
+  "url": "https://source.android.google.cn/docs/core/tests/vts",
+  "protocols": [
+   "VTS 针对 **Kernel（Linux 内核）与 HAL（硬件抽象层）** 做全面测试——与 CTS 测框架/App 层互补",
+   "同样跑在桌面设备上、在所连设备或模拟器执行；使用 Trade Federation 框架，支持多 DUT 分片配置与套件重试（只重跑失败项）",
+   "测试分四类：GTest 式（C++、测 HAL 实现，遍历接口每个实例跑全部用例）、Linux 内核测试（kselftest 23 项 + LTP）、JUnit 式（主机驱动，如 KernelApiSysfsTest）、独立 Python3（如 vts_treble_sys_prop_test，官方不建议新写）",
+   "Treble 架构下 vendor/system 分区解耦，VTS 是保障 system 镜像可在任意兼容 vendor 上升级的关键测试"
+  ],
+  "interfaces": [
+   "官方建议新测试写成 GTest，其次 JUnit 式；Python 测试因 Android 树支持有限不推荐",
+   "HAL 接口（如 health/storage）的 VTS 用例随 AOSP 同步演进，用例路径 cs.android.com 可查",
+   "本工具Windows端的内核符号/驱动枚举诊断与 VTS 测的领域相邻，但 VTS 面向设备制造方，本工具面向使用方诊断"
+  ],
+  "docs": [
+   "CTS 概览（source.android.google.cn/docs/compatibility/cts）",
+   "Trade Federation（source.android.google.cn/docs/core/tests/tradefed）"
+  ],
+  "summary": "VTS 测的是 Android 的『地基』：内核 + HAL；Treble 之后 system 与 vendor 分家，VTS 就是验证两个分区之间契约的测试套件。",
+  "advice": "内核/HAL 开发者优先把 VTS GTest 跑绿；应用开发者无需直接接触，但要知道『为什么新 system 能装在旧 vendor 上』靠的就是这套测试兜底。"
+ },
+ "sts_suite": {
+  "name": "安全测试套件（STS, Security Test Suite）",
+  "org": "Google；官方单页在本仓检索环境未实检到（source.android.google.cn 镜像 404），本条事实以官方安全公告体系页为锚点 + 社区整理源，标注 needs_verify",
+  "url": "https://source.android.google.cn/docs/security/bulletin",
+  "protocols": [
+   "STS（Android Security Test Suite）是 Google 面向 Android 安全的专项测试套件，用于验证设备安全补丁的安装情况与系统安全漏洞防护（社区整理：CSDN 2026-06、博客园 2025-06）",
+   "与每月 Android 安全公告（ASB）联动：公告披露的漏洞有对应 STS 用例回归；补丁日期是否新鲜是认证硬指标（社区整理：security patch 日期在 3 个月内，属 GTS case，不通过无法获得 Google 认证）",
+   "与 CTS 互补：CTS 管兼容，STS 管安全；社区经验：需 Debug 版本、特定环境运行（needs_verify，以官方文档为准）"
+  ],
+  "interfaces": [
+   "本工具的角色边界：sysweeper 不跑 STS、不提供安全补丁操作，只在知识库层说明『设备安全补丁时效』这一诊断维度",
+   "设备方视角：STS + GTS 是 GMS 认证链路的安全合规部分（社区整理，认证要求以 Google 商务协议为准）",
+   "官方锚点已实检：每月安全公告体系、Pixel/Wear/Automotive/XR 分版本公告、OTA 与 Play 服务两条补丁分发通道（source.android.google.cn/docs/security/bulletin）"
+  ],
+  "docs": [
+   "官方锚点：Android 安全公告（source.android.google.cn/docs/security/bulletin，已实检）",
+   "官方锚点：安全更新和资源（source.android.google.cn/docs/security/overview/updates-resources，已实检）",
+   "社区整理（needs_verify）：CSDN《Android STS 完整介绍与测试流程》blog.csdn.net/Megumi99/article/details/161894690",
+   "社区整理（needs_verify）：博客园《STS、CTS、GTS、VTS 测试指南》cnblogs.com/linhaostudy/p/18911737"
+  ],
+  "summary": "STS 是 Android 兼容/认证体系里的安全专项：公告出的漏洞要用 STS 回归，补丁时效不达标拿不到 Google 认证。官方单页未实检，社区细节均标注 needs_verify。",
+  "advice": "买设备看安全补丁日期是否在 3 个月内；设备方按每月 ASB 合入补丁并跑 STS 回归；细节以 Google 官方文档与商务协议为准。"
+ },
+ "gms_compat_licensing": {
+  "name": "Google 移动服务（GMS）兼容与许可体系",
+  "org": "Google；官方锚点 source.android.google.cn/docs/security/overview（2026-10 实检），android.com/gms 页在本环境不可达",
+  "url": "https://source.android.google.cn/docs/security/overview",
+  "protocols": [
+   "官方实检原话：GMS 是一套基于云的服务，用户通过 Google 移动服务安装到**兼容的 Android 设备**上；它们不是 AOSP 的一部分，但包含在许多 Android 设备中",
+   "官方实检原话：SafetyNet Attestation 是『用于确定设备是否与 CTS 兼容的第三方 API』——即 CTS/GMS 兼容性是 Google 服务栈的准入门槛",
+   "Google 主要安全服务：Google Play（含许可验证、应用扫描）、Android 更新（OTA）、应用服务（备份/C2DM）、验证应用（安装有害应用时警告或阻止并持续扫描）",
+   "GMS 预装授权由 Google 商务协议管理（MADA/EDLA 等协议族，社区整理需以 Google 官方渠道为准）"
+  ],
+  "interfaces": [
+   "三层递进（社区整理，官方分见各锚点页）：AOSP 代码实现 → 满足 CDD 兼容性定义 → 通过 CTS 测试 → 具备申请 GMS 授权预装资格",
+   "本工具与 GMS 的关系：sysweeper 完全不依赖 GMS/谷歌服务框架，纯 AOSP 公开 API 可跑——在国内无 GMS 的设备上正是可用形态",
+   "诊断对照：Play 保护机制（Play Protect）扫描状态属设备安全面，本工具只做只读呈现，不触发扫描"
+  ],
+  "docs": [
+   "Android 安全概览（source.android.google.cn/docs/security/overview，已实检）",
+   "Android 兼容性计划（source.android.google.cn/docs/compatibility，已实检）",
+   "Google 移动服务（android.com/gms，本环境不可达，未实检）"
+  ],
+  "summary": "GMS 兼容与许可是 Google 的商业准入层：CTS 兼容是门槛（官方 SafetyNet 页原话），协议授权是商务层；国内无 GMS 生态是独立平行世界。",
+  "advice": "出海 App 按 GMS 标准做（见 play_integrity/play_app_signing 等条）；国内发行则对照国内标准知识库（androidstd）——两套标准并行不悖。"
+ },
+ "play_integrity_api": {
+  "name": "Play Integrity API（应用与设备完整性判定）",
+  "org": "Google；developer.android.google.cn/google/play/integrity/overview（2026-10 实检）",
+  "url": "https://developer.android.google.cn/google/play/integrity/overview",
+  "protocols": [
+   "用途：检查用户操作和服务器请求是否来自『通过 Google Play 安装、在正版认证 Android 设备上运行的正版应用』，检测篡改版本、不可信设备、模拟环境",
+   "核心判定（verdict）：accountDetails/appLicensingVerdict（LICENSED=经 Play 安装）、appIntegrity/appRecognitionVerdict（PLAY_RECOGNIZED=Play 可识别的未篡改二进制）、deviceIntegrity（设备标签分层）",
+   "设备信任分层（由低到高）：MEETS_BASIC_INTEGRITY < MEETS_DEVICE_INTEGRITY < MEETS_STRONG_INTEGRITY（后两者 Android 13+ 依赖硬件支持的安全信号+最新安全补丁）",
+   "可选判定：appAccessRiskVerdict（是否有在运行的应用可截屏/叠窗/控制设备，如滥用无障碍服务）、playProtectVerdict（Play 保护机制开启与风险应用）、recentDeviceActivity（近 1 小时请求量异常）、deviceRecall（Beta，跨重装/重置的设备记忆）",
+   "配额：默认每天每应用共 10,000 次请求，可在 Play 管理中心申请提高",
+   "标准请求 vs 传统请求：标准请求延迟几百毫秒、频繁按需、由 Play 自动缓解重放；传统请求延迟几秒、用 nonce、应作为高敏操作的一次性检查",
+   "使用 Play Integrity API 即接受其服务条款；Play 数据安全表单需披露其数据处理"
+  ],
+  "interfaces": [
+   "集成要点：客户端 Play Core 库请求完整性令牌 → 后端服务端解密校验 verdict → 分层决策返回给 App（官方建议返回『允许/有限允许/CAPTCHA/拒绝』一档决策而非二元）",
+   "安全实践（官方推荐）：适时请求（操作发生时才请求）、requestHash/nonce 防重放、不缓存判定、先看基础 verdict 再叠加设备分层、配套反滥用策略与错误码处理",
+   "对本工具的启发：诊断 App 检查第三方服务集成完整性（是否只信 LICENSED/PLAY_RECOGNIZED）——只做知识呈现，不实际调用"
+  ],
+  "docs": [
+   "Play Integrity API 设置（developer.android.google.cn/google/play/integrity/setup）",
+   "Play Integrity API 服务条款（developer.android.google.cn/google/play/integrity/terms）",
+   "Play 状态信息中心（status.play.google.com）"
+  ],
+  "summary": "Play Integrity API 是出海 App 的反滥用/反作弊标准件：三类核心 verdict（许可/应用完整性/设备完整性）+ 四类可选风险信号，官方建议分层执法而非一禁了之。",
+  "advice": "接支付/账号/排行榜的 App 应按官方分层策略接入：基础 verdict 必查、设备标签分层放行、风险流量先查验后放行；国内发行版本同样可保留该能力作为纵深防御一层。"
+ },
+ "play_app_signing": {
+  "name": "Play 应用签名（Play App Signing）与密钥管理",
+  "org": "Google；developer.android.google.cn/studio/publish/app-signing + support.google.com/googleplay/android-developer/answer/9842756 + play.google/intl/zh-CN_cn/play-app-signing-terms/（2026-10 实检）",
+  "url": "https://developer.android.google.cn/studio/publish/app-signing",
+  "protocols": [
+   "机制：Google 在自有 KMS 基础设施中托管**应用签名密钥**并负责为分发 APK 重新签名；开发者只保管**上传密钥**",
+   "上传密钥：Java 密钥库（.jks）格式，**必须是不小于 2048 位的 RSA 密钥**；泄露/丢失可在 Play 管理中心申请重置，不影响分发",
+   "应用签名密钥：Google 生成的为 4096 位 RSA；自定义导入的须 2048 位或更高 RSA；证书 .der/.pem；注册后**不可取回**（Google 保留灾难恢复备份）",
+   "条款：Play 应用签名服务条款自 2021-08-01 起生效，注册即同意；授权 Google 在应用生命周期内用 AAB 生成 APK 并为性能/安全/体积优化修改 APK",
+   "发布 AAB（Android App Bundle）**必须**加入 Play 应用签名；加入后可用功能模块、免安装体验、Play Asset Delivery 等",
+   "密钥升级（key upgrade）：仅 AAB 应用支持；新旧密钥双发布过渡（Android R/30+ 用新密钥，≤29 用旧 APK）",
+   "补充：符合条件应用自动使用 **v4 签名方案**（Android 11+ 优化分发）；已出现量子就绪（混合 PQC）密钥类型，API 供应商需注册多把密钥指纹"
+  ],
+  "interfaces": [
+   "流程：生成上传密钥（有效期≥25 年，Play 要求 2033-10-22 后结束）→ 上传 AAB → Play 管理台可选让 Google 生成/复用/导入应用签名密钥 → 接受条款",
+   "本工具自身的对应实践：windows-internals-toolkit/android 构建本地调试/测试 APK，不入 Play 分发即不触发本机制；但**密钥材料绝不入库**（keystore 走环境变量/本地文件，.gitignore 已防）",
+   "第三方 API 注册：Firebase/地图等需在控制台登记应用签名证书 SHA-1/SHA-256；多商店共用密钥需自持（导入而非让 Google 生成）"
+  ],
+  "docs": [
+   "Play 应用签名服务条款（play.google/intl/zh-CN_cn/play-app-signing-terms/）",
+   "重置上传密钥（support.google.com/googleplay/android-developer/answer/7384423）",
+   "APK 签名方案 v3/v4（source.android.google.cn/security/apksigning）"
+  ],
+  "summary": "Play 应用签名 = 应用签名密钥托管 Google + 上传密钥自管：AAB 分发强制接入，密钥丢失有重置路径，多商店分发要自己拿主意。",
+  "advice": "发布 Play 前把上传密钥、keystore.properties、CI 密钥注入链路理一遍；密钥只走环境变量不进仓库；跨商店分发选择『导入自有密钥』而不是 Google 生成。"
+ },
+ "play_target_api": {
+  "name": "Google Play 目标 API 级别要求（targetSdkVersion）",
+  "org": "Google；developer.android.com/google/play/requirements/target-sdk（2026-10 实检）",
+  "url": "https://developer.android.com/google/play/requirements/target-sdk",
+  "protocols": [
+   "官方实检原话：Starting August 31 2026: New apps and app updates must target Android 16 (API level 36) or higher to be submitted to Google Play",
+   "例外：Wear OS 与 Android Automotive OS 应用须 target Android 15（API level 35）或更高",
+   "历史节点（已实检记录）：2025-08-31 起为新 App 与更新 target Android 14（API level 34）",
+   "Google Play 每年抬高 targetSdk 门槛的老牌机制：老应用可暂不更新，但新提交与更新必须达标"
+  ],
+  "interfaces": [
+   "工程落点：app/build.gradle.kts 的 targetSdk（compileSdk 同步跟上）——本仓库 android 工程当前 targetSdk 34，若要上 Play 需评估升 35/36 的行为变更（前台服务类型、精确闹钟、通知权限 POST_NOTIFICATIONS 等）",
+   "对照：Play 要求 targetSdk ≥ 一年期版本；32 位架构、API 30 以下安装等限制同样逐年收紧",
+   "与国内标准的关系：targetSdk 高低同时也影响国内合规（高 targetSdk 默认收紧存储/权限行为，事实上帮助满足 GB/T 最小必要）"
+  ],
+  "docs": [
+   "Play targetSdk 要求页（developer.android.com/google/play/requirements/target-sdk）",
+   "Android 各版本行为变更（developer.android.com/about/versions）"
+  ],
+  "summary": "Play 的 targetSdk 门槛一年一抬：2026-08-31 起新 App/更新必须 target API 36（Android 16），Wear/车机为 API 35。",
+  "advice": "把 targetSdk 升级排进版本计划：每年 Q3 前完成升级与回归，别赶在截止日前压哨；升级前跑本工具 androidstd/权限探针核对行为变更影响面。"
+ },
+ "play_data_safety": {
+  "name": "Play 数据安全（Data safety）披露表单",
+  "org": "Google；developers.google.cn/admob/android/privacy/play-data-disclosure + support.google.com/googleplay/android-developer/answer/10787469（2026-10 实检）",
+  "url": "https://developers.google.cn/admob/android/privacy/play-data-disclosure",
+  "protocols": [
+   "2021 年 5 月 Google Play 推出『数据安全』部分：应用商店列表向用户展示开发者关于数据收集、共享与安全做法的**披露声明**",
+   "披露通过 Play 管理中心的 Data safety 表单完成：收集哪些数据、用途（应用功能/分析/广告等）、是否共享给第三方、是否传输中加密、是否可请求删除",
+   "官方明确：开发者对表单填写**负全责**——填错即违规；SDK（如 Play 服务/广告 SDK）的收集行为同样要纳入披露",
+   "若使用 Play Integrity API 等 Google 服务，其数据处理方式也需在表单中体现（参见其服务条款 Data safety 章节）"
+  ],
+  "interfaces": [
+   "本工具自身：零权限零采集零网络 → 若上架，Data safety 表单如实填『不收集任何数据』，与 manifest 一致（这也是事实）",
+   "与国内标准联动：Data safety 的披露口径与国内隐私政策（PIPL 告知-同意）可复用同一张数据清单，一次盘点两处披露",
+   "审查点：第三方 SDK 隐式收集（广告 ID、崩溃日志）最常漏填，表单前先列 SDK 清单"
+  ],
+  "docs": [
+   "Play Data safety 表单帮助（support.google.com/googleplay/android-developer/answer/10787469）",
+   "PIPL 告知-同意（对照国内标准知识库 pipl 条）",
+   "Google Play 开发者政策中心（play.google/policy)"
+  ],
+  "summary": "Play 数据安全表单 = 面向用户的隐私说明书：收集/共享/删除三件事说清楚，填错是开发者的责任，与国内隐私政策可共用一份数据清单。",
+  "advice": "上架前用一张表盘点全部 SDK 与数据流，Data safety 与国内隐私政策一起写；本工具类零采集 App 也要留档『为什么不填收集项』的依据。"
+ },
+ "security_bulletin_patching": {
+  "name": "Android 安全公告与补丁更新体系",
+  "org": "Google；source.android.google.cn/docs/security/bulletin 与 updates-resources（2026-10 实检）",
+  "url": "https://source.android.google.cn/docs/security/bulletin",
+  "protocols": [
+   "每月发布 Android 安全公告（ASB）：覆盖平台（AOSP 修复）、上游 Linux 内核修复、SoC 厂商修复；另有 Automotive/Wear/Pixel/Chromecast/XR 分线公告",
+   "补丁分发双通道：系统级走 OTA 固件更新；Google Play 安装的应用/库（Gmail、Play 服务、WebView）可由 Google Play 直接推送更新",
+   "验证应用（Verify Apps）对 Play 外安装的应用警告/阻止；Google Play 会扫描并移除利用安全 bug 的应用",
+   "漏洞报告与分级：漏洞奖励计划表单（bughunters.google.com）；严重/高/中/低/NSI 分级，『低』与 NSI 不发 CVE",
+   "补丁时效是行业硬指标（社区整理：与 STS/GTS 关联，3 个月内；needs_verify 以官方为准）"
+  ],
+  "interfaces": [
+   "本工具 Windows 端可对照的安全面诊断：Windows 更新/补丁状态、Defender 状态——与 Android 侧 ASB/OTA 机制互为镜像（工具跨平台诊断的口径一致性）",
+   "设备使用者视角：买机/用机看『Android 安全补丁程序级别』日期是否新鲜；过期即风险敞口",
+   "企业侧：按 ASB 月份打补丁的节奏纳入 MDM 基线；不合入补丁的设备逐渐失去 MEETS_STRONG_INTEGRITY 资格（见 play_integrity 条）"
+  ],
+  "docs": [
+   "Android 安全公告（source.android.google.cn/docs/security/bulletin）",
+   "安全更新和资源（source.android.google.cn/docs/security/overview/updates-resources）",
+   "Pixel 出厂映像（developers.google.cn/android/images）"
+  ],
+  "summary": "Android 每月出安全公告、双通道发补丁（OTA + Play）；补丁日期新鲜度既是用户安全指标，也逐步成为设备完整性判定的输入。",
+  "advice": "把『安全补丁日期』当购机/用机硬指标看；设备及时跟进每月 ASB；App 侧关注 Play 服务/WebView 的 Play 侧更新机制。"
+ },
+ "gms_packages_map": {
+  "name": "GMS 组件包名地图与依赖关系（gsf/gms/vending）",
+  "org": "AOSP 组件命名惯例 + Google Play 服务公开文档；社区部署实战 to-alan/HarmonyOSInstallGMS（2024-05，needs_verify）",
+  "url": "https://github.com/to-alan/HarmonyOSInstallGMS",
+  "protocols": [
+   "三件套分层：Google 服务框架 com.google.android.gsf（账号/认证底座）→ Google Play 服务 com.google.android.gms（推送/位置/API 提供方）→ Google Play 商店 com.google.android.vending（分发与更新）",
+   "辅助组件：com.google.android.gms.policy_sidecar_aps、SharedLibrary、Google 账户管理程序、谷歌服务助手（部署激活器）",
+   "FCM 长连接诊断：拨号盘输入 *#*#426#*#*，返回 Server:Connected / Host:mtalk.google.com / Port:5228 即通",
+   "停用 gsf 不影响已登录应用的日常运行，但影响新增账号与部分系统联动——这正是『先借框架登录、再拆框架保 FCM』部署法的利用点"
+  ],
+  "interfaces": [
+   "盘点：adb shell pm list packages | grep google",
+   "停用（非卸载）：adb shell pm disable-user --user 0 com.google.android.gsf",
+   "排障纪律：先分清代管域（账号/服务/商店三组件），再定位失效点——Play 商店打不开 ≠ 服务坏了，多半是更新链或账号态问题"
+  ],
+  "docs": [
+   "HarmonyOSInstallGMS README（to-alan，安装全流程与包名清单）",
+   "AOSP packages/apps 命名惯例（gsf/gms/vending 组件关系）"
+  ],
+  "summary": "GMS = 框架(gsf) + 服务(gms) + 商店(vending) 三层；账号归框架、推送/位置归服务、分发归商店，排障先分层再定位。",
+  "advice": "把三件套包名当排障地图背下来；任何『GMS 不能用』的问题先 *#*#426#*#* 看 FCM 通不通，再逐组件核对。"
+ },
+ "harmonyos_gms_deploy": {
+  "name": "HarmonyOS 4.x（AOSP 兼容层）安装原生 GMS 三件套路径",
+  "org": "社区教程 to-alan/HarmonyOSInstallGMS + toalan.com/archives/165（2024-05 最后更新；社区源，needs_verify，随系统 OTA 可能失效）",
+  "url": "https://github.com/to-alan/HarmonyOSInstallGMS",
+  "protocols": [
+   "适用边界：仅 HarmonyOS 4.x（AOSP 兼容层时代）国行手机（2019-05-15 后发布机型，可在 GSMArena 查）；EMUI 直接原生支持无需本流程；HarmonyOS NEXT（纯血）不支持",
+   "关键流程：清谷歌应用残留 → 系统时间回拨 2019 → 从内部存储恢复备份包（须置于手机 /Huawei 目录）→ 激活谷歌服务助手 → 装 MicroG 并登录 Google 账号 → 装 Play 服务/商店组件 → 卸载 MicroG → 装 Edge 浏览器 → ADB 在 Play 服务更新进度 >50% 时禁用 gsf → 权限与应用启动管理收尾",
+   "MicroG 跳板原理：先用 MicroG 替原生框架把账号体系落地，卸载后 Play 服务沿用其账号成果——解决『原生框架未激活无法登录』的死锁",
+   "时间回拨 2019 是为绕过助手对服务端兼容性窗口的判定；恢复后改回自动时间"
+  ],
+  "interfaces": [
+   "PC 侧：数据线 + USB 调试 + ADB 终端（搞机工具箱类工具），关键命令 adb shell pm disable-user --user 0 com.google.android.gsf",
+   "验证：拨号 *#*#426#*#* 显示 Connected",
+   "失败模式：恢复备份不出现=备份目录放错；提示『当前设备不支持』=机型不在支持列表，无法通过本流程救回"
+  ],
+  "docs": [
+   "HarmonyOSInstallGMS README（12 步全流程 + FAQ）",
+   "toalan.com/archives/165（原生三件套原教程，作者持续更新）"
+  ],
+  "summary": "HarmonyOS 4.x 国行机装原生 GMS 的可行路径：备份激活助手 + MicroG 账号跳板 + 50% 进度禁用 gsf 保 FCM。",
+  "advice": "只作为知识留存与排障参考——操作有数据风险需先备份；系统已升 NEXT 的用户不要尝试，无效。涉及第三方备份包与 APK 分发的合规风险自担。"
+ },
+ "microg_fallback": {
+  "name": "MicroG 替代 GMS 方案与能力边界",
+  "org": "microG 项目 + 社区部署经验 to-alan/HarmonyOSInstallGMS（2024-05，needs_verify）",
+  "url": "https://github.com/microg/GmsCore",
+  "protocols": [
+   "覆盖范围：手机 + 平板 + 系统 4.2 以上（比原生三件套宽，原生方案仅手机）",
+   "支持：解决认证弹窗、正常使用 GMS 应用、ChatGPT、应用分身、继续添加谷歌账号、Google location services、GCM 云端推送",
+   "不支持：GooglePay、设备定位、Google Passkey 密码填充、附近分享、登录提示验证、谷歌企业服务；玩谷歌游戏大部分不支持；应用内购部分应用不支持",
+   "老麒麟 2019 年前机型可不走本流程：Go安装器直接原生三件套（原汁原味）"
+  ],
+  "interfaces": [
+   "与原生方案互斥使用：同一设备二选一，混装会账号态冲突",
+   "选择判据：要 PlayPay/Passkey/附近分享 → 原生三件套；要平板/老系统/位置服务 → MicroG"
+  ],
+  "docs": [
+   "microG 项目文档（microg.org）",
+   "HarmonyOSInstallGMS README 方案对比表"
+  ],
+  "summary": "MicroG = 无 GMS 授权设备的最大公约数替代：覆盖面宽但缺支付/Passkey/设备定位等闭环能力。",
+  "advice": "做跨设备兼容的 App 时按 microG 能力边界设计降级：支付走网页收银台、Passkey 用备用凭证、定位用系统 AMap/Fused 兜底。"
+ },
+ "fcm_push_keepalive": {
+  "name": "FCM 后台推送机制与保活设置",
+  "org": "Google FCM 公开文档 + 社区部署经验 to-alan/HarmonyOSInstallGMS（2024-05，needs_verify）",
+  "url": "https://firebase.google.com/docs/cloud-messaging",
+  "protocols": [
+   "机制：GMS 后台统一收消息再拉起对应应用——IM 类应用（微信/Telegram/WhatsApp）不必常驻后台，锁屏清理也不漏消息，反而更省电",
+   "长连接端点：mtalk.google.com:5228；诊断命令拨号 *#*#426#*#*",
+   "保活设置：设置 → 应用和服务 → 应用启动管理 → 目标应用 → 手动管理并全选（自动管理会被系统按策略冻结）",
+   "50% 进度禁用 gsf 技巧：在 Edge 中打开 Play 服务详情页点更新，下载进度超过 50% 时立刻 ADB 停用 gsf——Play 服务升级完成而框架保持停用，FCM 通道保留",
+   "分身/隐私空间需按用户分别处理：对每个分身 user 的 gsf/gms/vending 逐个 disable-user，消除『Play 未获保护机制认证』弹窗"
+  ],
+  "interfaces": [
+   "adb shell pm disable-user --user 0 com.google.android.gsf（主用户）",
+   "adb shell pm list users → adb shell pm disable-user --user <分身id> com.google.android.gms（分用户）",
+   "App 侧：接 FCM 而非自建长连接；国内无 GMS 设备走厂商推送（HMSCore/鸿蒙 push kit），两端都要兜底"
+  ],
+  "docs": [
+   "Firebase Cloud Messaging 文档（firebase.google.com/docs/cloud-messaging）",
+   "HarmonyOSInstallGMS README 第 10-12 步（GSF 禁用时机与 FCM 检查）"
+  ],
+  "summary": "FCM 是 GMS 的核心价值：统一推送省电不漏消息；保活=安装时机控制（更新>50%再禁gsf）+ 启动管理手动化 + 多用户分别处置。",
+  "advice": "做出海 IM/工具 App 必须接 FCM 并处理 token 刷新；同时按无 GMS 场景设计厂商推送兜底——判定用本工具 android 探针的 gms 检查项。"
+ },
+ "adb_multi_user_control": {
+  "name": "ADB 多用户维度包管理（分身/隐私空间排障）",
+  "org": "AOSP 多用户模型公开文档 + 社区排障经验 to-alan/HarmonyOSInstallGMS FAQ4（2024-05，needs_verify）",
+  "url": "https://source.android.com/docs/devices/admin/multi-user",
+  "protocols": [
+   "Android 多用户模型：主用户固定 user 0；应用分身、隐私空间、第二空间本质都是独立 user（随机 id，系统生成）",
+   "所有包管理操作支持 --user <id> 定向：pm install/uninstall/disable/enable/clear 均可",
+   "典型故障：开启分身后弹『Play 未获得 Play 保护机制认证』——是分身 user 的 gms/vending 在作祟，对主用户毫无影响，逐个 disable-user 即可根除",
+   "干净拆解法：清理所有后台 → 断网（流量+WiFi）→ 再启用分身，可避开激活风暴"
+  ],
+  "interfaces": [
+   "枚举用户：adb shell pm list users",
+   "定向停用：adb shell pm disable-user --user <id> com.google.android.gsf / .gms / .vending（三条分别执行）",
+   "恢复：adb shell pm enable --user <id> <package>"
+  ],
+  "docs": [
+   "AOSP 多用户文档（source.android.com/docs/devices/admin/multi-user）",
+   "HarmonyOSInstallGMS README FAQ4（终极解决分身弹窗）"
+  ],
+  "summary": "分身/隐私空间=多 user；Play 弹窗类疑难按 user 维度 disable-user 定向处置，主用户无感知。",
+  "advice": "排障先 pm list users 弄清 user 拓扑再动手；企业设备管理（MDM）场景同样按 user id 做策略隔离——本工具只给命令口径，不代执行。"
+ }
+}

@@ -1,0 +1,731 @@
+{
+  "_meta": {
+    "schema": "zhuangzi_taxonomy/v1",
+    "built_by": "research/zhuangzi/build_zhuangzi.py",
+    "main_root": "wordbuddy-github",
+    "title": "南华真经用户端概念系统（以 wordbuddy-github 为主目录）",
+    "system_root": "wordbuddy-github",
+    "version": "0000.0000.0000.0060.20261023",
+    "canon": "南华真经（庄子）33 篇：内篇 7 / 外篇 15 / 杂篇 11",
+    "axes": [
+      "core",
+      "inner",
+      "outer",
+      "ergonomics"
+    ],
+    "concept_total": 20,
+    "principle_total": 8,
+    "bridge_count": 18,
+    "honesty": "不复制经典全文；用户未上传《南华真经》原典文本，篇旨按通行本登记（needs_verify 统一标注）；人体工程学七原则系理念的工程翻译，非经典原文。",
+    "redline_note": "用户端安全红线延续 apilab/auth：破坏性操作快照先行、最小惊讶、失败指路可回退；不替用户「凿窍」（浑沌之诫）。",
+    "generated_at": "2026-10-26T05:19:11.638726+00:00"
+  },
+  "layers": [
+    {
+      "role": "core",
+      "canon": "庄子·内篇",
+      "tier": 1,
+      "sense": "核心理念三篇：逍遥游（无待一步）/应帝王（顺性不抢）/大宗师（意图为宗师）",
+      "count": 3
+    },
+    {
+      "role": "inner",
+      "canon": "庄子·内篇",
+      "tier": 2,
+      "sense": "内篇辅篇四篇：齐物论（平权）/养生主（不伤）/人间世（安命）/德充符（重内容）",
+      "count": 4
+    },
+    {
+      "role": "outer",
+      "canon": "庄子·外篇杂篇",
+      "tier": 2,
+      "sense": "外杂 26 篇中选登 5 条（秋水/天道/达生/胠箧/概览）",
+      "count": 5
+    },
+    {
+      "role": "ergonomics",
+      "canon": "理念的工程翻译",
+      "tier": 1,
+      "sense": "七条可审计的用户端人体工程学原则",
+      "count": 8
+    }
+  ],
+  "domains": [
+    {
+      "domain": "core",
+      "label": "核心理念",
+      "note": "用户指定的核心理念三篇：内篇一《逍遥游》、内篇七《应帝王》、内篇六《大宗师》——以《南华真经》为用户端设计的中心指导"
+    },
+    {
+      "domain": "inner",
+      "label": "内篇辅篇",
+      "note": "内篇余四篇：齐物论 / 养生主 / 人间世 / 德充符——核心理念的补充面向"
+    },
+    {
+      "domain": "outer",
+      "label": "外篇与杂篇",
+      "note": "外篇十五 + 杂篇十一共 26 篇：仅选登对用户端设计有直接意涵的 5 篇，余作概览登记（needs_verify，不逐篇臆造）"
+    },
+    {
+      "domain": "ergonomics",
+      "label": "用户端工程原则",
+      "note": "七篇理念翻译成的可审计人体工程学原则：逍遥游一步直达 / 应帝王顺应性情 / 大宗师意图为宗师 / 接口平权 / 养生不伤 / 人间安命 / 德充于内"
+    }
+  ],
+  "concepts": [
+    {
+      "id": "xiaoyaoyou",
+      "name": "逍遥游",
+      "domain": "core",
+      "no": 1,
+      "gist": "鲲鹏化变、「小大之辩」，归结于「乘天地之正，御六气之辩，以游无穷」的无待境界；惠子谓樗树大而无用，庄子答「树之于无何有之乡，彷徨乎无为其侧，逍遥乎寝卧其下」。",
+      "detail": "北冥有鱼其名为鲲，化而为鸟其名为鹏，海运将徙于南冥；蜩与学鸠笑之「奚以之九万里而南为」；列子御风而行，犹有所待；至人无己、神人无功、圣人无名，方能无待而逍遥。全篇以「无待」为眼目：一切有待（有待于风、有待于名）皆非究竟。",
+      "engineering": "操作无阻碍、一步直达。**无待**即不预设前提：不依赖记忆、不依赖教程、不依赖环境配置，常用任务从任意状态一屏可达；入口唯一化（一个 `python -m sysweeper` 走遍轻重任务），而非满墙功能按钮各藏三级菜单——用户要的是「无何有之乡」的一棵大树，不是一片必须遍历的森林。",
+      "bridges": [
+        {
+          "system": "daoxue",
+          "target": "principle:daofa-ziran",
+          "relation": "理念同源",
+          "how": "「无待」即不预设前提：依环境与使用者本性组织入口，不强人所难"
+        },
+        {
+          "system": "netsys",
+          "target": "module:sysmesh",
+          "relation": "系统互联协调",
+          "how": "无待而游 ↔ 系统互联协调（sysmesh）：各系统顺性互联、互不僭越，与无待「不预设前提、依本性而联」同源"
+        }
+      ],
+      "standards": []
+    },
+    {
+      "id": "yingdiwang",
+      "name": "应帝王",
+      "domain": "core",
+      "no": 7,
+      "gist": "「顺物自然而无容私焉，而天下治矣」（无名人语）；中央之帝浑沌待儵忽甚善，儵忽谋报其德，日凿一窍，七日而浑沌死——不为用户「凿窍」，顺应其本来性情。",
+      "detail": "狂接舆见王而先告之以难，无名人教羊说明「明王之治，功盖天下而似其自己」；阳子居问「明王之治」，老聃曰「明王之治……感而后应，迫而后动，不得已而后起」；最触目的是浑沌之死的寓言：自以为报德，实以己凿人，七日而浑沌死——**不强迫、不凿窍、顺物自然**是全篇纲宗。",
+      "engineering": "顺应使用者性情，不强迫学习。默认即最佳：零配置开箱可用，「拿得起放得下」——新用户不读文档也能干活，老用户可渐进深入；系统「不自是」：不把设计者想象的功能当作用户需要的强行塞与（儵忽勿凿浑沌窍）；帮助是发现式（--help、GUI 提示行、控制台 /help），教程是引导非必修。",
+      "bridges": [
+        {
+          "system": "daoxue",
+          "target": "principle:wuwei",
+          "relation": "理念同源",
+          "how": "「顺物自然而无容私」= 无为：界面不强行作为，默认路径即最佳路径"
+        }
+      ],
+      "standards": []
+    },
+    {
+      "id": "dazongshi",
+      "name": "大宗师",
+      "domain": "core",
+      "no": 6,
+      "gist": "「以天为宗，以德为本」——真人「不知说生，不知恶死」「不以心捐道，不以人助天」；宗师者，可宗而不可师，以道为归而非以人为归。",
+      "detail": "古之真人，其寝不梦、其觉无忧、其食不甘、其息深深；「泉涸，鱼相与处于陆，相呴以湿，相濡以沫，不如相忘于江湖」；大宗师即可宗可印的「道」，非某位可模仿的人——归于意图的本源而非某人设定的规程。",
+      "engineering": "以使用者意图为宗师。意图先行而非规程先行：预测式默认（按上下文预取下一步，如 CLI 上次操作、感知平台能力），「不以人助天」= 不替用户做他未表达的决定（最小惊讶原则）；失败不抛术语，指路并给可回退路径（每一步破坏性操作先留快照，提示如何撤销——意图的宗师地位意味着容错而非问责）。",
+      "bridges": [
+        {
+          "system": "daoxue",
+          "target": "principle:zhi-bu-zhi",
+          "relation": "理念同源",
+          "how": "「知不知」：以使用者意图为宗师，知用户不知而指路，不猜不降级"
+        }
+      ],
+      "standards": []
+    },
+    {
+      "id": "qiwulun",
+      "name": "齐物论",
+      "domain": "inner",
+      "no": 2,
+      "gist": "「天地一指，万物一马」：齐彼我、齐是非——地籁、天籁，大辩无言。",
+      "detail": "南郭子綦隐几而坐，嗒焉似丧其偶，「今者吾丧我」；「道行之而成，物谓之而然」；持之以恒的齐平视野：高低、贵贱、彼此皆是观待而立。",
+      "engineering": "接口平权：人类可读与机器可读（--json）双模输出平权、新手与专家道路平权、破坏性与清理性子命令共用同一帮助体系；不按「用户等级」设障，同一能力不同表达（呼应 apilab 的CLI 契约：人类与机器双模输出是成熟接口的标志）。",
+      "bridges": [
+        {
+          "system": "daoxue",
+          "target": "principle:bu-zheng",
+          "relation": "理念同源",
+          "how": "双模平权，不设高低级指令之争；争无从起，界面自正"
+        }
+      ],
+      "standards": []
+    },
+    {
+      "id": "yangshengzhu",
+      "name": "养生主",
+      "domain": "inner",
+      "no": 3,
+      "gist": "「吾生也有涯，而知也无涯，以有涯随无涯，殆已」；庖丁解牛「以无厚入有间，恢恢乎其于游刃必有余地」——缘督以为经。",
+      "detail": "庖丁为文惠君解牛，「臣之所好者道也，进乎技矣」，依乎天理批大郤、导大窾，十九年而刀刃若新发于硎；「缘督以为经，可以保身，可以全生，可以养亲，可以尽年」。",
+      "engineering": "不伤害使用者、不耗竭有限注意力。破坏性操作前置确认 + 快照先行（snapshot 子系统「先留痕后动手」），每一步可回退；「以无厚入有间」= 在平台结构与风险间游刃，不与结构性阻塞硬碰；功能不贪多——以有限生命/注意力随无限功能，殆矣。",
+      "bridges": [
+        {
+          "system": "daoxue",
+          "target": "principle:shou-zhong",
+          "relation": "理念同源",
+          "how": "「缘督以为经」= 守中谨慎：危险操作守中而慎行，快照留痕在先"
+        }
+      ],
+      "standards": []
+    },
+    {
+      "id": "renjianshi",
+      "name": "人间世",
+      "domain": "inner",
+      "no": 4,
+      "gist": "颜回之卫、叶公子高使齐、栎社树「是不材之木也，无所可用，故能若是之寿」——处浊世而知其不可奈何而安之若命，虚己以游世。",
+      "detail": "仲尼教颜回「先存诸己而后存诸人」；叶公「行事之情而忘其身」；「山木自寇也，膏火自煎也；桂可食故伐之，漆可用故割之」——有用即险，虚己无累。",
+      "engineering": "在平台限制中周旋，不与本性相强。平台能力不足处诚实告知降级路径（不装能做：如 NTFS 只读检查、容器内受限功能明确标注），「安之若命」式适配环境（detect 探测真实环境，按平台给可用子集而非全平台硬套）。",
+      "bridges": [
+        {
+          "system": "daoxue",
+          "target": "principle:xin-yan-bu-mei",
+          "relation": "理念同源",
+          "how": "能力边界诚实告知：不可用明示原因，不装能做、不吞异常"
+        }
+      ],
+      "standards": []
+    },
+    {
+      "id": "dezongfu",
+      "name": "德充符",
+      "domain": "inner",
+      "no": 5,
+      "gist": "王骀「立不教，坐不议，虚而往，实而归」；申徒嘉子产以刑余之形立于朝廷而「德有所长而形有所忘」——德充于内者形遗于外。",
+      "detail": "「知不能规乎其前者也」——形体残缺而德行充沛者，人自宾之；「有人之形，故群于人；无人之情，故是非不得于身」。",
+      "engineering": "内容重于形式，界面朴素。输出以信息密度优先（ASCII 表/条形图可删、核心结论不减）；GUI 面板装饰可减，数据与结论不减——「见素抱朴」的用户端化身：界面之形可忘，内容之德必充。",
+      "bridges": [
+        {
+          "system": "daoxue",
+          "target": "principle:pu",
+          "relation": "理念同源",
+          "how": "见素抱朴：界面之形可忘，内容之德必充，装饰可删核心不减"
+        }
+      ],
+      "standards": []
+    },
+    {
+      "id": "heqiu",
+      "name": "秋水（选）",
+      "domain": "outer",
+      "gist": "「井蛙不可以语于海者，拘于虚也；夏虫不可以语于冰者，笃于时也；曲士不可以语于道者，束于教也」——河伯望洋兴叹：认知有边界。",
+      "engineering": "不向不了解前提的用户硬推高级功能：危险/高级子命令在具体上下文中展示（run --plan 预览、提示前提），不按「井蛙之虚」预设用户；术语首次出现处即解释。",
+      "bridges": [
+        {
+          "system": "daoxue",
+          "target": "principle:tu-nan-yu-yi",
+          "relation": "理念同源",
+          "how": "图难于其易：大事化小展示前提，大事在小步中可见"
+        }
+      ],
+      "detail": "河伯见海若而望洋兴叹：井蛙拘于虚、夏虫笃于时、曲士束于教——认知各有边界，不是对方笨，是彼此的前提不同。用在用户端：不要向没看到前提的人硬推高级选项，术语首次出现就要解释，危险操作要在具体上下文里说明代价。",
+      "standards": []
+    },
+    {
+      "id": "tiandao",
+      "name": "天道（选）",
+      "domain": "outer",
+      "gist": "轮扁斲轮于堂下：「徐则甘而不固，疾则苦而不入……得之于手而应于心，口不能言」——默会知识不可尽传于书。",
+      "engineering": "文档与 --help 之外保留交互式探索（webapi 长连接实测、GUI 左键面板）；默会手感靠试错留痕——失败指路可回退而非仅给文档链接；「口不能言」处给示例而非概念堆砌。",
+      "bridges": [
+        {
+          "system": "apilab",
+          "target": "concept:repo-webapi",
+          "relation": "同域",
+          "how": "控制台即交互式探索场：手感类错误给示例与尝试路径"
+        }
+      ],
+      "detail": "轮扁斲轮：徐则甘而不固、疾则苦而不入，得之于手而应于心，口不能言——有些手感写不进说明书。所以文档之外还要留出可试错的交互空间，写不出来的地方给示例、给预览、给可回退的一步，而不是只丢一句「详见文档」。",
+      "standards": []
+    },
+    {
+      "id": "dasheng",
+      "name": "达生（选）",
+      "domain": "outer",
+      "gist": "「忘足，屦之适也；忘腰，带之适也；知忘是非，心之适也」——工具合手则忘。",
+      "engineering": "界面消失感即人体工程学最高境界：常用路径无感通过（快照自动、默认平台自适应），用户只在「想起它」时才看到它（概念系统中心、各子系统面板之类）——**逍遥游**的用户端试金石：用时忘记界面的存在。",
+      "bridges": [
+        {
+          "system": "apilab",
+          "target": "concept:repo-cli",
+          "relation": "同域",
+          "how": "常用子命令短名直达、零配置可用，合手则忘"
+        }
+      ],
+      "detail": "忘足，屦之适也；忘腰，带之适也——鞋合脚时你不会想起脚。工具的最高境界是让人忘了工具存在：常用路径应当无感通过，用户只在真的想起它时才需要看见它（而不是把它摆在每一屏中央）。",
+      "standards": []
+    },
+    {
+      "id": "quqie",
+      "name": "胠箧（选）",
+      "domain": "outer",
+      "gist": "「绝圣弃智，大盗乃止」；「盗亦有道」——窃国者侯，所窃者恰是仁义筐箧：破坏者利用的正是你留下的门。",
+      "engineering": "最小攻击面即最大善：插件白名单制（manifest native 字段必须在内）、webapi ACTIONS 白名单 + 无 getattr 兜底、令牌禁入 URL/localStorage——「门上无钩，盗何由入」。",
+      "bridges": [
+        {
+          "system": "apilab",
+          "target": "concept:repo-plugins",
+          "relation": "同域",
+          "how": "白名单制 = 绝钩绳之圣：不给未登记入口留门"
+        }
+      ],
+      "detail": "胠箧之诫最锋利处在于「盗亦有道」：窃国者侯，而他所窃的正是你留下的仁义筐箧——破坏者利用的，往往是你为了方便而留的门。故攻击面越小才是越大的善意：白名单、默认拒、不设兜底派发。",
+      "standards": []
+    },
+    {
+      "id": "wai-za-gailan",
+      "name": "外篇杂篇概览",
+      "domain": "outer",
+      "gist": "外篇十五（骈拇·马蹄·胠箧·在宥·天地·天道·天运·刻意·缮性·秋水·至乐·达生·山木·田子方·知北游）+ 杂篇十一（庚桑楚·徐无鬼·则阳·外物·寓言·让王·盗跖·说剑·渔父·列御寇·天下），共 26 篇。",
+      "detail": "本系统只选登对用户端设计有直接意涵的 4 篇（秋水/天道/达生/胠箧），其余 22 篇未逐篇登记核对——needs_verify，不逐篇臆造篇旨。",
+      "engineering": "克制本身即落法：登记册只收有据可依的条目，未读原文的篇目概览挂牌 needs_verify 而非逐条臆造——与 daoxue「心经/论语未附原典按通行本登记并标 needs_verify」同口径；用户端面对「不知道」同样诚实：未核实的能力标注状态，不写满墙功能。",
+      "bridges": [
+        {
+          "system": "daoxue",
+          "target": "principle:fan-zhe",
+          "relation": "互文",
+          "how": "外杂篇概览只收有据可依的条目，未读原文的篇目挂牌 needs_verify 而不逐篇臆造，与道枢「反者道之动」的对待观互文"
+        }
+      ],
+      "standards": []
+    },
+    {
+      "id": "wudai-yizhi",
+      "name": "无待一步",
+      "canon_refs": [
+        "逍遥游"
+      ],
+      "domain": "ergonomics",
+      "gist": "「无待」即不预设前提：不依赖记忆、教程、配置，常用任务一屏可达、任意深度可一步回顶。",
+      "engineering": "入口唯一化：python -m sysweeper 一个命令走遍轻重任务；子命令扁平（120 个实测），概念/子系统直达无需多层菜单；关键功能 3 步内可达（--json/one-shot 参数）。",
+      "bridges": [
+        {
+          "system": "apilab",
+          "target": "concept:repo-cli",
+          "relation": "翻译",
+          "how": "无待一步即入口唯一化：单一 argparse 入口承载全部子命令，任意深度可一步回顶，不依赖用户记忆层级"
+        }
+      ],
+      "detail": "「无待」即不预设前提：不依赖用户记得住、读得懂教程、配得对环境。常用任务应当一屏可达，任意深度都能一步回顶——这条原则后来直接长成了 guide 那一屏入口地图。",
+      "standards": []
+    },
+    {
+      "id": "shunxing-buqiang",
+      "name": "顺性不抢",
+      "canon_refs": [
+        "应帝王"
+      ],
+      "domain": "ergonomics",
+      "gist": "顺物自然而无容私：不把设计者的想象当用户的需求，默认即最佳、零配置可用。",
+      "engineering": "默认路径开箱即用（--platform 自动探测、风险档位默认安全）；帮助是发现式而非必修课（--help、GUI 提示行、控制台 /help）；用户不用被教育「该怎么用系统」，系统沿用用户已有的心智。",
+      "bridges": [
+        {
+          "system": "apilab",
+          "target": "concept:repo-plugins",
+          "relation": "同构",
+          "how": "顺性不抢即零配置可用：插件清单静态白名单 + 运行时显式登记，用户无需先配置即可用，帮助是发现式而非必修课"
+        }
+      ],
+      "detail": "顺物自然而无容私：不要把设计者的想象当成用户的需求。零配置可用是硬指标，帮助应当是发现式的而非必修课，平台差异由探测代劳，不该让用户先回答一堆问题。",
+      "standards": []
+    },
+    {
+      "id": "shiwei-zongshi",
+      "name": "意图宗师",
+      "canon_refs": [
+        "大宗师"
+      ],
+      "domain": "ergonomics",
+      "gist": "以使用者意图为宗师：意图先行而非规程先行，「不以人替用户做决定」。",
+      "engineering": "预测式默认（按上下文预取下一步）；最小惊讶（不静默改变全局状态，变更前明示）；失败指路可回退（错误码+原因+恢复建议，快照先行让每个破坏性动作可撤销）。",
+      "detail": "以使用者意图为宗师：意图先行而非规程先行，并且**不替用户做决定**。落到预定 continuum 上：可预测的默认、最小惊讶（不静默改全局状态）、以及失败必给下一步（原因 + 恢复建议 + 可回退）。",
+      "standards": [],
+      "bridges": []
+    },
+    {
+      "id": "jiekou-pingquan",
+      "name": "双模平权",
+      "canon_refs": [
+        "齐物论"
+      ],
+      "domain": "ergonomics",
+      "gist": "齐是非：人读与机读、新手与专家、清理与危险指令，同一能力不同表达，不设高低之争。",
+      "engineering": "可解析输出（--json/JSONL）与人类可读输出平权；新手有 GUI点击路径，专家有脚本路径；同一任务双端同源（report schema 双端消费）。",
+      "detail": "齐是非：人读与机读、新手与专家、只读与写操作，同一能力不同表达，不设高低之争。本机 --json/JSONL 与人类可读输出平权、GUI 点击路径与脚本路径同源——缺了哪一端，那一端的人就被排除在外。",
+      "standards": [],
+      "bridges": []
+    },
+    {
+      "id": "yangsheng-bu-shang",
+      "name": "养生不伤",
+      "canon_refs": [
+        "养生主"
+      ],
+      "domain": "ergonomics",
+      "gist": "以有涯随无涯，殆已：不耗竭有限注意力，不让误操作成不可逆损失。",
+      "engineering": "破坏性操作前置确认（danger=true 明示）；快照先行（snapshot 子系统先留痕后动手，可回退可对比）；功能不求全，注意力是有限资源（庖丁批大郤导大窾）。",
+      "detail": "以有涯随无涯，殆已：注意力是有限资源，误操作应当可回退。所以危险动作前置确认并明示等级，快照先行、留痕可比对，功能宁可不全也不透支用户的注意力预算。",
+      "standards": [],
+      "bridges": []
+    },
+    {
+      "id": "renjian-anming",
+      "name": "人间安命",
+      "canon_refs": [
+        "人间世"
+      ],
+      "domain": "ergonomics",
+      "gist": "知其不可奈何而安之若命：在平台限制中周旋，能力边界诚实告知。",
+      "engineering": "按平台给可用子集（detect 探测真实环境，非全平台硬套）；降级路径明示（受限功能标注原因与替代）；不与结构性阻塞硬碰，「以无厚入有间」。",
+      "detail": "知其不可奈何而安之若命：平台限制是结构性事实，硬碰是没用的。正确的做法是先诚实地告知边界（哪些不可用、为什么），再给降级路径与替代方案——「以无厚入有间」才是周旋之道。",
+      "standards": [],
+      "bridges": []
+    },
+    {
+      "id": "dechong-yu-nei",
+      "name": "德充于内",
+      "canon_refs": [
+        "德充符"
+      ],
+      "domain": "ergonomics",
+      "gist": "德有所长而形有所忘：内容重于形式，界面朴素信息不减。",
+      "engineering": "信息密度优先（ASCII 图表/对比表可减，核心结论不减）；界面装饰可删、数据不减（GUI 面板极简、报告查看器内容优先）。",
+      "bridges": [
+        {
+          "system": "apilab",
+          "target": "concept:repo-report-viewer",
+          "relation": "翻译",
+          "how": "德充于内即内容重于形式：报告查看器壳极简而信息量不减，装饰可删、数据不删"
+        }
+      ],
+      "detail": "德有所长而形有所忘：内容重于形式。界面可以朴素，信息量不能减；装饰可以删，核心结论不能删。这也是本报告查看器「内容优先、壳极简」的由来。",
+      "standards": []
+    },
+    {
+      "id": "idempotent-guard",
+      "name": "幂等护栏",
+      "canon_refs": [
+        "应帝王"
+      ],
+      "domain": "ergonomics",
+      "gist": "改动必有阈值护栏，回调不触发反馈环——只动该动的，动过之后不再动。",
+      "detail": "center-widget-popups（terminallywell，KWin/Script，MIT，约 40 行 main.js）监听 workspace.windowAdded 与 frameGeometryChanged，对 appletPopup 类窗口取水平中心，落在用户配置区间（默认 25%–50% 屏宽）内的移到屏幕水平中心；区间外一律不顺动，且只改水平位置（垂直面板与多显示器未测，README 如实挂 Limitations）。防反馈环的关键是 |geo.x - x| < 1 即返回——移动后的回调再进来时已是目标位置，不再触发第二次移动。",
+      "engineering": "center-widget-popups（KWin 脚本，MIT）的落法：配置范围夹紧（a<=b?[a,b]:[b,a] 防倒置）、重入护栏（|geo.x-x|<1 即返回，frameGeometryChanged 回调不自我触发）、范围外不顺动（弹窗中心落在用户定义区间外则保持 Plasma 原位）。对应本仓：GUI 报告「生成/关闭」按钮模式不重入、genmon 定时刷新只读不写、破坏性操作前置确认——每个自动改动都可重复执行而不累积副作用。",
+      "bridges": [],
+      "standards": []
+    }
+  ],
+  "principles": [
+    {
+      "id": "wudai-yizhi",
+      "name": "无待一步",
+      "canon_refs": [
+        "逍遥游"
+      ],
+      "domain": "ergonomics",
+      "gist": "「无待」即不预设前提：不依赖记忆、教程、配置，常用任务一屏可达、任意深度可一步回顶。",
+      "engineering": "入口唯一化：python -m sysweeper 一个命令走遍轻重任务；子命令扁平（120 个实测），概念/子系统直达无需多层菜单；关键功能 3 步内可达（--json/one-shot 参数）。",
+      "bridges": [
+        {
+          "system": "apilab",
+          "target": "concept:repo-cli",
+          "relation": "翻译",
+          "how": "无待一步即入口唯一化：单一 argparse 入口承载全部子命令，任意深度可一步回顶，不依赖用户记忆层级"
+        }
+      ],
+      "detail": "「无待」即不预设前提：不依赖用户记得住、读得懂教程、配得对环境。常用任务应当一屏可达，任意深度都能一步回顶——这条原则后来直接长成了 guide 那一屏入口地图。",
+      "standards": []
+    },
+    {
+      "id": "shunxing-buqiang",
+      "name": "顺性不抢",
+      "canon_refs": [
+        "应帝王"
+      ],
+      "domain": "ergonomics",
+      "gist": "顺物自然而无容私：不把设计者的想象当用户的需求，默认即最佳、零配置可用。",
+      "engineering": "默认路径开箱即用（--platform 自动探测、风险档位默认安全）；帮助是发现式而非必修课（--help、GUI 提示行、控制台 /help）；用户不用被教育「该怎么用系统」，系统沿用用户已有的心智。",
+      "bridges": [
+        {
+          "system": "apilab",
+          "target": "concept:repo-plugins",
+          "relation": "同构",
+          "how": "顺性不抢即零配置可用：插件清单静态白名单 + 运行时显式登记，用户无需先配置即可用，帮助是发现式而非必修课"
+        }
+      ],
+      "detail": "顺物自然而无容私：不要把设计者的想象当成用户的需求。零配置可用是硬指标，帮助应当是发现式的而非必修课，平台差异由探测代劳，不该让用户先回答一堆问题。",
+      "standards": []
+    },
+    {
+      "id": "shiwei-zongshi",
+      "name": "意图宗师",
+      "canon_refs": [
+        "大宗师"
+      ],
+      "domain": "ergonomics",
+      "gist": "以使用者意图为宗师：意图先行而非规程先行，「不以人替用户做决定」。",
+      "engineering": "预测式默认（按上下文预取下一步）；最小惊讶（不静默改变全局状态，变更前明示）；失败指路可回退（错误码+原因+恢复建议，快照先行让每个破坏性动作可撤销）。",
+      "detail": "以使用者意图为宗师：意图先行而非规程先行，并且**不替用户做决定**。落到预定 continuum 上：可预测的默认、最小惊讶（不静默改全局状态）、以及失败必给下一步（原因 + 恢复建议 + 可回退）。",
+      "standards": [],
+      "bridges": []
+    },
+    {
+      "id": "jiekou-pingquan",
+      "name": "双模平权",
+      "canon_refs": [
+        "齐物论"
+      ],
+      "domain": "ergonomics",
+      "gist": "齐是非：人读与机读、新手与专家、清理与危险指令，同一能力不同表达，不设高低之争。",
+      "engineering": "可解析输出（--json/JSONL）与人类可读输出平权；新手有 GUI点击路径，专家有脚本路径；同一任务双端同源（report schema 双端消费）。",
+      "detail": "齐是非：人读与机读、新手与专家、只读与写操作，同一能力不同表达，不设高低之争。本机 --json/JSONL 与人类可读输出平权、GUI 点击路径与脚本路径同源——缺了哪一端，那一端的人就被排除在外。",
+      "standards": [],
+      "bridges": []
+    },
+    {
+      "id": "yangsheng-bu-shang",
+      "name": "养生不伤",
+      "canon_refs": [
+        "养生主"
+      ],
+      "domain": "ergonomics",
+      "gist": "以有涯随无涯，殆已：不耗竭有限注意力，不让误操作成不可逆损失。",
+      "engineering": "破坏性操作前置确认（danger=true 明示）；快照先行（snapshot 子系统先留痕后动手，可回退可对比）；功能不求全，注意力是有限资源（庖丁批大郤导大窾）。",
+      "detail": "以有涯随无涯，殆已：注意力是有限资源，误操作应当可回退。所以危险动作前置确认并明示等级，快照先行、留痕可比对，功能宁可不全也不透支用户的注意力预算。",
+      "standards": [],
+      "bridges": []
+    },
+    {
+      "id": "renjian-anming",
+      "name": "人间安命",
+      "canon_refs": [
+        "人间世"
+      ],
+      "domain": "ergonomics",
+      "gist": "知其不可奈何而安之若命：在平台限制中周旋，能力边界诚实告知。",
+      "engineering": "按平台给可用子集（detect 探测真实环境，非全平台硬套）；降级路径明示（受限功能标注原因与替代）；不与结构性阻塞硬碰，「以无厚入有间」。",
+      "detail": "知其不可奈何而安之若命：平台限制是结构性事实，硬碰是没用的。正确的做法是先诚实地告知边界（哪些不可用、为什么），再给降级路径与替代方案——「以无厚入有间」才是周旋之道。",
+      "standards": [],
+      "bridges": []
+    },
+    {
+      "id": "dechong-yu-nei",
+      "name": "德充于内",
+      "canon_refs": [
+        "德充符"
+      ],
+      "domain": "ergonomics",
+      "gist": "德有所长而形有所忘：内容重于形式，界面朴素信息不减。",
+      "engineering": "信息密度优先（ASCII 图表/对比表可减，核心结论不减）；界面装饰可删、数据不减（GUI 面板极简、报告查看器内容优先）。",
+      "bridges": [
+        {
+          "system": "apilab",
+          "target": "concept:repo-report-viewer",
+          "relation": "翻译",
+          "how": "德充于内即内容重于形式：报告查看器壳极简而信息量不减，装饰可删、数据不删"
+        }
+      ],
+      "detail": "德有所长而形有所忘：内容重于形式。界面可以朴素，信息量不能减；装饰可以删，核心结论不能删。这也是本报告查看器「内容优先、壳极简」的由来。",
+      "standards": []
+    },
+    {
+      "id": "idempotent-guard",
+      "name": "幂等护栏",
+      "canon_refs": [
+        "应帝王"
+      ],
+      "domain": "ergonomics",
+      "gist": "改动必有阈值护栏，回调不触发反馈环——只动该动的，动过之后不再动。",
+      "detail": "center-widget-popups（terminallywell，KWin/Script，MIT，约 40 行 main.js）监听 workspace.windowAdded 与 frameGeometryChanged，对 appletPopup 类窗口取水平中心，落在用户配置区间（默认 25%–50% 屏宽）内的移到屏幕水平中心；区间外一律不顺动，且只改水平位置（垂直面板与多显示器未测，README 如实挂 Limitations）。防反馈环的关键是 |geo.x - x| < 1 即返回——移动后的回调再进来时已是目标位置，不再触发第二次移动。",
+      "engineering": "center-widget-popups（KWin 脚本，MIT）的落法：配置范围夹紧（a<=b?[a,b]:[b,a] 防倒置）、重入护栏（|geo.x-x|<1 即返回，frameGeometryChanged 回调不自我触发）、范围外不顺动（弹窗中心落在用户定义区间外则保持 Plasma 原位）。对应本仓：GUI 报告「生成/关闭」按钮模式不重入、genmon 定时刷新只读不写、破坏性操作前置确认——每个自动改动都可重复执行而不累积副作用。",
+      "bridges": [],
+      "standards": []
+    }
+  ],
+  "bridges": [
+    {
+      "from": "zhuangzi:xiaoyaoyou",
+      "system": "daoxue",
+      "target": "principle:daofa-ziran",
+      "relation": "理念同源",
+      "how": "「无待」即不预设前提：依环境与使用者本性组织入口，不强人所难"
+    },
+    {
+      "from": "zhuangzi:xiaoyaoyou",
+      "system": "netsys",
+      "target": "module:sysmesh",
+      "relation": "系统互联协调",
+      "how": "无待而游 ↔ 系统互联协调（sysmesh）：各系统顺性互联、互不僭越，与无待「不预设前提、依本性而联」同源"
+    },
+    {
+      "from": "zhuangzi:yingdiwang",
+      "system": "daoxue",
+      "target": "principle:wuwei",
+      "relation": "理念同源",
+      "how": "「顺物自然而无容私」= 无为：界面不强行作为，默认路径即最佳路径"
+    },
+    {
+      "from": "zhuangzi:dazongshi",
+      "system": "daoxue",
+      "target": "principle:zhi-bu-zhi",
+      "relation": "理念同源",
+      "how": "「知不知」：以使用者意图为宗师，知用户不知而指路，不猜不降级"
+    },
+    {
+      "from": "zhuangzi:qiwulun",
+      "system": "daoxue",
+      "target": "principle:bu-zheng",
+      "relation": "理念同源",
+      "how": "双模平权，不设高低级指令之争；争无从起，界面自正"
+    },
+    {
+      "from": "zhuangzi:yangshengzhu",
+      "system": "daoxue",
+      "target": "principle:shou-zhong",
+      "relation": "理念同源",
+      "how": "「缘督以为经」= 守中谨慎：危险操作守中而慎行，快照留痕在先"
+    },
+    {
+      "from": "zhuangzi:renjianshi",
+      "system": "daoxue",
+      "target": "principle:xin-yan-bu-mei",
+      "relation": "理念同源",
+      "how": "能力边界诚实告知：不可用明示原因，不装能做、不吞异常"
+    },
+    {
+      "from": "zhuangzi:dezongfu",
+      "system": "daoxue",
+      "target": "principle:pu",
+      "relation": "理念同源",
+      "how": "见素抱朴：界面之形可忘，内容之德必充，装饰可删核心不减"
+    },
+    {
+      "from": "zhuangzi:heqiu",
+      "system": "daoxue",
+      "target": "principle:tu-nan-yu-yi",
+      "relation": "理念同源",
+      "how": "图难于其易：大事化小展示前提，大事在小步中可见"
+    },
+    {
+      "from": "zhuangzi:tiandao",
+      "system": "apilab",
+      "target": "concept:repo-webapi",
+      "relation": "同域",
+      "how": "控制台即交互式探索场：手感类错误给示例与尝试路径"
+    },
+    {
+      "from": "zhuangzi:dasheng",
+      "system": "apilab",
+      "target": "concept:repo-cli",
+      "relation": "同域",
+      "how": "常用子命令短名直达、零配置可用，合手则忘"
+    },
+    {
+      "from": "zhuangzi:quqie",
+      "system": "apilab",
+      "target": "concept:repo-plugins",
+      "relation": "同域",
+      "how": "白名单制 = 绝钩绳之圣：不给未登记入口留门"
+    },
+    {
+      "from": "zhuangzi:wai-za-gailan",
+      "system": "daoxue",
+      "target": "principle:fan-zhe",
+      "relation": "互文",
+      "how": "外杂篇概览只收有据可依的条目，未读原文的篇目挂牌 needs_verify 而不逐篇臆造，与道枢「反者道之动」的对待观互文"
+    },
+    {
+      "from": "zhuangzi:wudai-yizhi",
+      "system": "apilab",
+      "target": "concept:repo-cli",
+      "relation": "翻译",
+      "how": "无待一步即入口唯一化：单一 argparse 入口承载全部子命令，任意深度可一步回顶，不依赖用户记忆层级"
+    },
+    {
+      "from": "zhuangzi:shunxing-buqiang",
+      "system": "apilab",
+      "target": "concept:repo-plugins",
+      "relation": "同构",
+      "how": "顺性不抢即零配置可用：插件清单静态白名单 + 运行时显式登记，用户无需先配置即可用，帮助是发现式而非必修课"
+    },
+    {
+      "from": "zhuangzi:dechong-yu-nei",
+      "system": "apilab",
+      "target": "concept:repo-report-viewer",
+      "relation": "翻译",
+      "how": "德充于内即内容重于形式：报告查看器壳极简而信息量不减，装饰可删、数据不删"
+    },
+    {
+      "from": "zhuangzi:dazongshi",
+      "system": "datong",
+      "target": "principle:weidao-duzun",
+      "relation": "同宗",
+      "how": "大宗师以道为宗师 ↔ 唯道独尊：道通为一"
+    },
+    {
+      "from": "zhuangzi:jiekou-pingquan",
+      "system": "datong",
+      "target": "concept:renti-yiti",
+      "relation": "翻译",
+      "how": "接口平权单一事实源 ↔ 人类一体：一处登记四处读"
+    }
+  ],
+  "by_domain": {
+    "core": [
+      "xiaoyaoyou",
+      "yingdiwang",
+      "dazongshi"
+    ],
+    "inner": [
+      "qiwulun",
+      "yangshengzhu",
+      "renjianshi",
+      "dezongfu"
+    ],
+    "outer": [
+      "heqiu",
+      "tiandao",
+      "dasheng",
+      "quqie",
+      "wai-za-gailan"
+    ],
+    "ergonomics": [
+      "wudai-yizhi",
+      "shunxing-buqiang",
+      "shiwei-zongshi",
+      "jiekou-pingquan",
+      "yangsheng-bu-shang",
+      "renjian-anming",
+      "dechong-yu-nei",
+      "idempotent-guard"
+    ]
+  },
+  "user_face_facts": {
+    "cli_subcommands": 128,
+    "webapi_actions": 29,
+    "gui_windows": 112,
+    "deno_console_version": "0000.0000.0000.0034.20261026",
+    "deno_report_viewer_version": "0000.0000.0000.0034.20261026",
+    "webapi_protocol": "JSONL 白名单协议（一行请求 JSON → 一行响应 JSON）",
+    "gui_note": "tkinter GUI：show_* 面板窗口（概念系统中心/各子系统面板）",
+    "deno_note": "Deno Web 控制台（console.ts）+ 报告查看器（report_viewer.ts），与 Python 侧经 webapi JSONL 衔接"
+  },
+  "needs_verify": [
+    {
+      "item": "篇旨依据",
+      "status": "needs_verify",
+      "note": "用户未上传《南华真经》原典文本，全部篇旨/章旨按通行本登记，未逐字核对（与 daoxue 心经/论语同口径）"
+    },
+    {
+      "item": "外篇杂篇 22 篇",
+      "status": "needs_verify",
+      "note": "外篇十五 + 杂篇十一共 26 篇，仅选登 5 条，其余未逐篇登记核对"
+    },
+    {
+      "item": "人体工程学七原则",
+      "status": "needs_verify",
+      "note": "系南华理念的工程翻译而非经典原文；工程落法指向本仓库实测事实（user_face_facts 构建期实测，--check 防漂移）"
+    }
+  ]
+}

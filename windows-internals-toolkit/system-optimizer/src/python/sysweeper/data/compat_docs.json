@@ -1,0 +1,224 @@
+{
+  "wine": {
+    "name": "Wine（Wine Is Not an Emulator）",
+    "org": "WineHQ / 社区",
+    "url": "https://www.winehq.org/",
+    "protocols": [
+      "Win32 API",
+      "Win64 API",
+      "Direct3D（经 DXVK/VKD3D 转 Vulkan）",
+      "PE/COFF 加载"
+    ],
+    "interfaces": [
+      "wine 命令行（wine <程序.exe>）",
+      "winecfg 配置（前缀 prefix / 版本模拟 / 库覆盖）",
+      "wineserver（Windows 服务与进程语义的宿主）",
+      "libwine + ntdll/kernel32/user32 等 DLL 重实现"
+    ],
+    "docs": [
+      "https://www.winehq.org/documentation",
+      "https://wiki.winehq.org/Wine_Developer%27s_Guide",
+      "https://www.winehq.org/download"
+    ],
+    "summary": "在 Linux/macOS 上**重新实现** Windows API 的兼容层（不是模拟器、不跑 Windows 内核）：把 Win32/Win64 调用翻译到宿主系统的 POSIX/图形栈上，因此没有虚拟化开销，但也不保证 100% 行为一致。",
+    "advice": "跑办公与老程序优先 Wine；先用 winecfg 建独立前缀（WINEPREFIX），别把软件装进默认前缀，避免互相污染。"
+  },
+  "proton": {
+    "name": "Proton（Steam Play 兼容层）",
+    "org": "Valve / CodeWeavers / 社区",
+    "url": "https://github.com/ValveSoftware/Proton",
+    "protocols": [
+      "Win32/Win64",
+      "DXVK（D3D9/10/11 → Vulkan）",
+      "VKD3D-Proton（D3D12 → Vulkan）",
+      "NTSync/fsync/esync"
+    ],
+    "interfaces": [
+      "Steam 客户端里「为所选工具启用 Steam Play」",
+      "PROTON_USE_ 系列环境变量（如 PROTON_LOG / PROTON_NO_ESYNC）",
+      "Steam Runtime（自带依赖，避免宿主缺库）",
+      "compatibilitytool.d（第三方 Proton 版本挂载点）"
+    ],
+    "docs": [
+      "https://github.com/ValveSoftware/Proton/wiki",
+      "https://github.com/ValveSoftware/Proton/blob/proton_9.0/README.md",
+      "https://store.steampowered.com/steamdeck"
+    ],
+    "summary": "Valve 基于 Wine 的游戏兼容层：Wine + DXVK + VKD3D-Proton + wine-mono + Steam Runtime 打包，专门解决「Windows 游戏在 Linux 上跑起来」，并靠 Steam Runtime 抹平发行版差异。",
+    "advice": "跑游戏用 Proton 而不是裸 Wine（自带依赖与图形转译层更全）；同步原语优先 NTSync（新内核）→ fsync → esync，逐档降级兜底。"
+  },
+  "dosbox": {
+    "name": "DOSBox（DOS 模拟器）",
+    "org": "DOSBox Team / 社区",
+    "url": "https://www.dosbox.com/",
+    "protocols": [
+      "x86 实模式模拟",
+      "DOS INT 21h 等中断",
+      "SoundBlaster/Adlib 音频模拟",
+      "VGA/SVGA 显示模拟"
+    ],
+    "interfaces": [
+      "dosbox 命令行（dosbox <程序.exe>）",
+      "dosbox.conf 配置（cycles / 内存 / 挂载点 mount）",
+      "MOUNT 命令把宿主目录挂成 DOS 盘符",
+      "DOSBox Staging（现代分支，画质与音频更好）"
+    ],
+    "docs": [
+      "https://www.dosbox.com/wiki/",
+      "https://github.com/dosbox-staging/dosbox-staging",
+      "https://www.dosbox.com/wiki/DOSBoxConf"
+    ],
+    "summary": "完整的 x86 CPU + 声卡 + 显卡**模拟**环境，专门跑老 DOS 游戏与程序：与 Wine 不同，DOSBox 连 CPU 都模拟，因此兼容性极高但性能受 cycles 限制。",
+    "advice": "老 DOS 游戏用 DOSBox；先用 MOUNT 挂目录再运行，cycles 按程序年代调（太老的程序 cycles 太高反而跑飞）。"
+  },
+  "wsl": {
+    "name": "WSL（Windows Subsystem for Linux）",
+    "org": "Microsoft",
+    "url": "https://learn.microsoft.com/windows/wsl/",
+    "protocols": [
+      "WSL2 虚拟化（Hyper-V 轻量 VM）",
+      "9P/virtiofs 文件共享",
+      "WSLg（Wayland/RDP 图形）",
+      "systemd（可启用）"
+    ],
+    "interfaces": [
+      "wsl.exe 命令行（wsl --install / --list --online / --shutdown）",
+      "wslconfig / .wslconfig（内存、CPU、交换限制）",
+      "interop（在 Linux 里调 windows 程序，反之亦然）",
+      "\\wsl$ 网络路径访问 Linux 文件系统"
+    ],
+    "docs": [
+      "https://learn.microsoft.com/windows/wsl/install",
+      "https://learn.microsoft.com/windows/wsl/wsl-config",
+      "https://github.com/microsoft/WSL"
+    ],
+    "summary": "方向相反的桥：在 Windows 上跑真正的 Linux 内核（WSL2 用轻量虚拟机），与 Wine/Proton 恰好互为镜像——一个把 Linux 搬到 Windows，一个把 Windows 搬到 Linux。",
+    "advice": "开发用 WSL2 但**别把工程放在 /mnt/c**（跨文件系统 IO 慢），放 Linux 根文件系统里；内存与 CPU 用 .wslconfig 限住，别让它吃光宿主机。"
+  },
+  "vulkan": {
+    "name": "Vulkan（图形与计算 API）",
+    "org": "Khronos Group",
+    "url": "https://www.vulkan.org/",
+    "protocols": [
+      "Vulkan 1.x",
+      "SPIR-V 中间表示",
+      "Vulkan Video",
+      "Vulkan Ray Tracing"
+    ],
+    "interfaces": [
+      "Vulkan loader（libvulkan）+ ICD（驱动实现）",
+      "vulkaninfo 命令行（能力自检）",
+      "DXVK / VKD3D-Proton（把 D3D 转 Vulkan，兼容层的下游）",
+      "VirtIO-GPU Venus（虚拟机里把 Vulkan 透传给宿主）"
+    ],
+    "docs": [
+      "https://www.vulkan.org/learn",
+      "https://registry.khronos.org/vulkan/specs/latest/man/html/",
+      "https://github.com/KhronosGroup/Vulkan-Loader"
+    ],
+    "summary": "现代跨平台图形与计算 API，是 Proton/DXVK 的**下游依赖**：Windows 游戏要在 Linux 上跑，先得有能用的 Vulkan 栈（loader + ICD），否则翻译层无处落地。",
+    "advice": "兼容层跑不动先查 vulkaninfo：缺 ICD 或 loader 时，Wine/Proton 一定起不来；虚拟机里要 Venus（virtio-gpu）才有像样的 Vulkan。"
+  },
+  "busybox": {
+    "name": "busybox（嵌入式「瑞士军刀」）",
+    "org": "busybox.net / 社区",
+    "url": "https://busybox.net/",
+    "protocols": [
+      "POSIX 用户态子集",
+      "多调用二进制（multi-call binary）",
+      "init 与 ash shell"
+    ],
+    "interfaces": [
+      "busybox <命令> 直接调用",
+      "符号链接形式（/bin/ls → busybox）",
+      "busybox --list 看编译进去了哪些命令",
+      "init / mdev / udhcpc（轻量系统管理组件）"
+    ],
+    "docs": [
+      "https://busybox.net/downloads/BusyBox.html",
+      "https://busybox.net/FAQ.html",
+      "https://git.busybox.net/busybox/"
+    ],
+    "summary": "单个二进制撑起整套常用 Unix 命令，是嵌入式系统、路由器（OpenWrt）、initramfs 与救援环境的根用户态——「遗留/嵌入式」这条兼容链的老端。",
+    "advice": "在极简环境里先 busybox --list 确认哪些命令被编进去了（不是全量）；缺命令要么重新编译 busybox，要么换完整发行版。"
+  },
+  "freedos": {
+    "name": "FreeDOS（开源 MS-DOS 兼容系统）",
+    "org": "The FreeDOS Project",
+    "url": "https://www.freedos.org/",
+    "protocols": [
+      "MS-DOS 兼容（INT 21h 等）",
+      "FAT12/16/32",
+      "COM/EXE/MZ 可执行"
+    ],
+    "interfaces": [
+      "LiveCD / LegacyCD / FullUSB / Floppy Edition 安装介质",
+      "COMMAND.COM / FreeCOM shell",
+      "FDI 安装器"
+    ],
+    "docs": [
+      "https://www.freedos.org/download/announce.html",
+      "https://www.freedos.org/download/"
+    ],
+    "summary": "1994 年发起、GPL 的开源 MS-DOS 兼容操作系统；1.4 版 2025-04-05 发布（LiveCD 301.9 MiB，640KB 内存下限，Floppy Edition 可上原始 IBM PC/XT/AT）。是「16 位实模式世代」的开源落脚点，也是刷 BIOS/固件的常用启动介质。",
+    "advice": "官方源实检（2026-10）：装机用 LiveCD、无光驱真机用 FullUSB、IBM PC/XT 级用 Floppy Edition。测试线 T2610 滚动发布中，正式版仍 1.4。"
+  },
+  "dosemu2": {
+    "name": "DOSEMU2（Linux 近原生 DOS 虚拟机）",
+    "org": "DOSEMU2 项目",
+    "url": "https://www.dosemu2.org/",
+    "protocols": [
+      "DPMI（DOS 保护模式接口）",
+      "x86 实模式/保护模式"
+    ],
+    "interfaces": [
+      "dosemu 命令（Linux）",
+      "dosemu2 包（apt/dnf）"
+    ],
+    "docs": [],
+    "summary": "近原生而非逐指令模拟：在 Linux 上直接跑实模式/DPMI DOS 程序。性能优于 dosbox、兼容面窄于 dosbox，是 16 位实模式 + 32 位 DPMI 两档能力的快路径。",
+    "advice": "Linux 跑 DOS：求快 dosemu2、求全 dosbox；沙箱内未实测运行（本工具不启动任何 DOS 程序）。"
+  },
+  "pae": {
+    "name": "PAE（物理地址扩展）",
+    "org": "Intel / Microsoft / Linux 内核官方口径",
+    "url": "https://learn.microsoft.com/previous-versions/windows/hardware/design/dn613975(v=vs.85)",
+    "protocols": [
+      "x86 三级页表（PDPT→PD→PT）",
+      "页表项 32→64 位",
+      "物理地址 32→36 位及以上"
+    ],
+    "interfaces": [
+      "Windows XP/2003：boot.ini /PAE 开关",
+      "Vista/Win7 32 位：bcdedit /set pae ForceEnable",
+      "Linux 32 位内核：CONFIG_HIGHMEM64G / -pae 内核变体"
+    ],
+    "docs": [
+      "https://learn.microsoft.com/previous-versions/windows/hardware/design/dn613975(v=vs.85)",
+      "https://msdn.microsoft.com/en-us/library/ff557168.Aspx",
+      "https://www.kernel.org/"
+    ],
+    "summary": "Pentium Pro 起的 x86 CPU 特性：让 32 位系统寻址 4GB 以上物理内存（页表项扩为 64 位、两级页表变三级）。微软官方口径：Windows XP（所有版本）物理地址空间上限就是 4GB——PAE 在 XP 上的意义是硬件 DEP/NX 与热插拔，不是突破 4GB；进程虚拟地址空间仍是 4GB（用户态 2GB）。Linux 侧 HIGHMEM64G 选择后 select X86_PAE，PAE 同时是 32 位内核 NX 的前提。",
+    "advice": "XP 显式开启：boot.ini 加 /PAE 重启（/NOPAE 禁用）；Vista/7 32 位用 bcdedit /set {ID} pae ForceEnable（DEP 开着就禁不掉 PAE）；64 位系统不需要也不支持 PAE。Linux 32 位：换 -pae 内核或自编 HIGHMEM64G。改引导项属系统写操作，本工具只检测与给命令文本，不代改。"
+  },
+  "bitwidth": {
+    "name": "位宽世代（8/16/32/64 位）",
+    "org": "本仓库位宽能力矩阵登记",
+    "url": "",
+    "protocols": [
+      "8 位（8080/Z80/6502/6809）",
+      "16 位实模式（8086/286）",
+      "32 位保护模式（80386+，含 PAE 扩展）",
+      "64 位长模式（x86-64/arm64）"
+    ],
+    "interfaces": [
+      "qemu-system-i386 / qemu-system-x86_64（32/64 位模拟）",
+      "dosbox / dosemu2（16 位实模式与 DPMI）",
+      "wine / wine32（32 位 Win32）",
+      "MAME/FCEU 等（8 位世代专用）"
+    ],
+    "docs": [],
+    "summary": "位宽世代按「数据线与地址线宽度 + 运行模式」分档：8 位机年代靠专用模拟器；16 位实模式由 dosbox/dosemu2 覆盖；32 位保护模式由 qemu/wine/32 位用户态覆盖；32 位 + PAE 扩展的是物理寻址不是虚拟地址；64 位长模式原生全寻址。",
+    "advice": "跑老程序先定年代再选层：实模式 DOS→dosbox/dosemu2；DPMI/Win32→dosemu2/wine；8 位游戏机→MAME/FCEU 另一族。本机能力由 cpuinfo flags（lm/pae）+ 内核位宽 + 模拟层存在性三件事共同决定。"
+  }
+}

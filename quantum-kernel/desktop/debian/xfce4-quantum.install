@@ -1,0 +1,11 @@
+xsessions/quantum.desktop usr/share/xsessions/
+xsessions/autostart-quantum-core.desktop etc/xdg/autostart/
+session/quantum-session usr/bin/
+session/quantum-panel-add-genmon.sh usr/lib/quantum-core/
+genmon/quantum-energy-genmon.sh usr/lib/quantum-core/genmon/
+genmon/quantum-qpu-genmon.sh usr/lib/quantum-core/genmon/
+genmon/quantum-net-genmon.sh usr/lib/quantum-core/genmon/
+theme/Quantum usr/share/themes/
+theme/quantum-wallpaper.svg usr/share/backgrounds/quantum/
+quantum-settings/quantum-settings.desktop usr/share/applications/
+quantum-settings/quantum-settings.sh usr/bin/

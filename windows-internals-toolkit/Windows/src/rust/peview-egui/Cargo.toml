@@ -1,0 +1,18 @@
+[package]
+name = "peview-egui"
+version = "2026.10.24"
+edition = "2021"
+rust-version = "1.74"
+description = "PE 头查看器 GUI（Rust + egui 稳定版）"
+
+[[bin]]
+name = "peview-egui"
+path = "src/main.rs"
+
+[dependencies]
+eframe = "0.29"
+
+[profile.release]
+opt-level = 3
+lto = true
+strip = true

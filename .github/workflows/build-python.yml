@@ -1,0 +1,139 @@
+name: Build Python Layer
+
+# 「语言底层」构建：只用各 runner **系统自带**的 Python（不 setup-python、不装 pip 包），
+# 产出单文件 .pyz + wheel + sdist，并在 Linux / macOS / Windows 上跑同一个 .pyz 验证。
+#
+# 为什么强调这一层：Python 3 是多数 Linux / macOS / BSD 发行版默认自带的语言，
+# 本包又零第三方依赖 —— 于是「一个 .pyz 文件，任何有 python3 的机器都能跑」，
+# 不需要 Go / Rust / JDK 任何工具链。Go / Rust / APK 见 build.yml 与 build-android.yml。
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write   # 打 tag 时上传 .pyz 到 Release
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true   # 同一 ref 上被顶掉的旧跑立即取消，省 Actions 分钟（私有仓库额度有限）
+
+jobs:
+  guard:
+    name: 仓库安全护栏（凭据 / 私钥 / Android 权限）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 扫描公开源码树
+        run: python3 windows-internals-toolkit/scripts/check_repo_guard.py
+
+  build:
+    name: 构建语言底层产物（系统自带 python3）
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: windows-internals-toolkit
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 系统自带的 Python（未安装任何东西）
+        run: |
+          python3 -VV
+          python3 -c "import zipapp, zipfile, tarfile, hashlib; print('stdlib 打包依赖齐备')"
+
+      - name: 探测工具链与可产出目标
+        run: python3 tools/syspkg.py probe
+
+      - name: 构建单文件 .pyz（zipapp，零依赖）
+        run: python3 tools/syspkg.py pyz --out dist
+
+      - name: 构建 wheel / sdist（纯标准库手写，不用 setuptools）
+        run: |
+          python3 tools/syspkg.py wheel --out dist
+          python3 tools/syspkg.py sdist --out dist
+
+      - name: 冒烟：pyz 能跑且包内知识库完整
+        run: python3 tools/syspkg.py smoke --out dist
+
+      - name: 校验 wheel 结构（PEP 427：可直接放 sys.path 导入）
+        run: |
+          python3 - <<'PY'
+          import sys, pathlib
+          whl = sorted(pathlib.Path("dist").glob("sysweeper-*.whl"))[-1]
+          sys.path.insert(0, str(whl))            # wheel 就是 zip，zipimport 可直接吃
+          import sysweeper
+          print("wheel 内包可用，版本", sysweeper.__version__)
+          names = __import__("zipfile").ZipFile(whl).namelist()
+          assert any(n.endswith(".dist-info/METADATA") for n in names)
+          assert any(n.endswith(".dist-info/RECORD") for n in names)
+          print("dist-info 元数据与 RECORD 齐备，pip 可安装")
+          PY
+
+      # v5：v4 在 new runners 上被强制跑在 Node.js 24，会刷
+      # "Node.js 20 is deprecated" 警告（不是错误，但会淹没真正的报错行）。
+      - uses: actions/upload-artifact@v5
+        with:
+          name: dist-python-layer
+          path: windows-internals-toolkit/dist/*
+
+      - name: 发布 .pyz 到 Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: windows-internals-toolkit/dist/*.pyz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  verify-cross:
+    name: 同一个 .pyz 跑在 ${{ matrix.label }}
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest,  py: python3, label: Linux }
+          - { os: macos-latest,   py: python3, label: macOS }
+          - { os: windows-latest, py: python,  label: Windows }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          name: dist-python-layer
+          path: dist
+
+      - name: 直接用系统自带 Python 运行
+        shell: bash
+        run: |
+          PY="${{ matrix.py }}"
+          command -v "$PY" >/dev/null 2>&1 || PY=python3
+          command -v "$PY" >/dev/null 2>&1 || PY=py
+          "$PY" -VV
+          PYZ=$(ls dist/sysweeper-*.pyz | head -1)
+          echo "运行：$PYZ"
+          "$PY" "$PYZ" detect
+          # 这里刻意不写 `cmd | head -n`：head 读完就关管道，Python 在退出阶段
+          # 那次 flush 会抛 BrokenPipeError 并把退出码抬成 120，再配上 runner 的
+          # `set -o pipefail` 整步判失败（曾在 Linux job 上真实发生）。
+          # 先落盘再取前几行 —— 输出截断和退出码互不干扰。
+          # （CLI 侧也已经能在断管时静默退出，两边都留一手。）
+          "$PY" "$PYZ" hardware > hardware.txt
+          head -6 hardware.txt
+          SYSWEEPER_ZIPRES_SHIM=1 "$PY" "$PYZ" android > android.txt
+          head -4 android.txt
+
+      - name: 窄编码控制台不崩（cp1252 / ascii 回归）
+        shell: bash
+        run: |
+          PY="${{ matrix.py }}"
+          command -v "$PY" >/dev/null 2>&1 || PY=python3
+          command -v "$PY" >/dev/null 2>&1 || PY=py
+          PYZ=$(ls dist/sysweeper-*.pyz | head -1)
+          echo "编码：cp1252（Windows 英文 runner 的 Git Bash 就是这个）"
+          PYTHONIOENCODING=cp1252 "$PY" "$PYZ" detect > cp1252.txt
+          head -3 cp1252.txt
+          echo "编码：ascii（最坏情况，任何非 ASCII 都编不出来）"
+          PYTHONIOENCODING=ascii "$PY" "$PYZ" detect > ascii.txt
+          head -3 ascii.txt
+          echo "窄编码下均正常退出"

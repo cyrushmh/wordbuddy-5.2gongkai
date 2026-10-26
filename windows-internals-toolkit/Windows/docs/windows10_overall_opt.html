@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Windows 10 整体优化方案 · 文档展示系统</title>
+<style>
+  :root{
+    --bg:#0f1320; --panel:#161b2e; --panel-2:#1c2238; --ink:#e7ebf5; --ink-2:#aab3c9;
+    --line:#2a3252; --brand:#36c5a8; --brand-2:#4f8cff; --ok:#36d399; --warn:#fbbd23;
+    --bad:#f87272; --chip:#222a45; --shadow:0 10px 30px rgba(0,0,0,.35); --radius:14px;
+  }
+  html[data-theme="light"]{
+    --bg:#f4f6fb; --panel:#ffffff; --panel-2:#f7f9fd; --ink:#1a2138; --ink-2:#586079;
+    --line:#e3e8f3; --brand:#0f9b82; --brand-2:#2f6fed; --chip:#eef2fb;
+    --shadow:0 10px 30px rgba(40,60,120,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--brand);text-decoration:none}
+  .shell{display:grid;grid-template-columns:296px 1fr;min-height:100vh}
+  aside{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:22px 16px}
+  .brand{display:flex;align-items:center;gap:10px;padding:6px 8px 16px}
+  .brand .logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:14px}
+  .brand b{font-size:15px;line-height:1.2}
+  .brand span{display:block;font-size:11px;color:var(--ink-2)}
+  nav .grp{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin:18px 8px 8px}
+  nav a{display:block;padding:9px 11px;border-radius:9px;color:var(--ink-2);font-size:13.5px;margin:2px 0;transition:.15s}
+  nav a:hover{background:var(--panel-2);color:var(--ink)}
+  nav a.active{background:linear-gradient(90deg,rgba(54,197,168,.18),rgba(79,140,255,.06));color:#fff;box-shadow:inset 3px 0 0 var(--brand)}
+  main{padding:0 0 80px}
+  .topbar{position:sticky;top:0;z-index:20;backdrop-filter:blur(8px);background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--line);padding:14px 32px;display:flex;align-items:center;gap:14px}
+  .topbar .prog{flex:1;height:4px;background:var(--panel-2);border-radius:99px;overflow:hidden}
+  .topbar .prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--brand-2))}
+  .topbar button{background:var(--chip);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:7px 12px;cursor:pointer;font-size:13px}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 32px}
+  .hero{padding:54px 32px 30px}
+  .tag{display:inline-flex;gap:6px;align-items:center;background:var(--chip);border:1px solid var(--line);color:var(--ink-2);font-size:12px;padding:5px 12px;border-radius:99px;margin-bottom:18px}
+  .hero h1{font-size:33px;line-height:1.2;margin:0 0 14px;background:linear-gradient(120deg,#fff,#a8f0db);-webkit-background-clip:text;background-clip:text;color:transparent}
+  html[data-theme="light"] .hero h1{background:linear-gradient(120deg,#1a2138,#0f9b82);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{color:var(--ink-2);font-size:16px;max-width:780px;margin:0}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+  .meta .m{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:140px}
+  .meta .m b{display:block;font-size:21px;color:#fff}
+  html[data-theme="light"] .meta .m b{color:var(--ink)}
+  .meta .m span{font-size:12px;color:var(--ink-2)}
+  section{padding:28px 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:none}
+  h2{font-size:24px;margin:0 0 6px;display:flex;align-items:center;gap:10px}
+  h2 .no{font-size:13px;color:var(--brand);background:rgba(54,197,168,.12);border:1px solid rgba(54,197,168,.25);padding:3px 9px;border-radius:8px}
+  h3{font-size:17.5px;margin:26px 0 8px}
+  h3 .bar{display:inline-block;width:5px;height:16px;background:var(--brand);border-radius:3px;margin-right:9px;vertical-align:-2px}
+  .lead{color:var(--ink-2);margin:4px 0 16px}
+  p{margin:10px 0}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:14px;margin:18px 0}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+  .card h4{margin:0 0 6px;font-size:15px;display:flex;align-items:center;gap:8px}
+  .card .dot{width:9px;height:9px;border-radius:50%;background:var(--brand)}
+  .card p{font-size:13.5px;color:var(--ink-2);margin:6px 0 0}
+  .card .rel{display:inline-block;margin-top:10px;font-size:11.5px;color:var(--brand);background:var(--chip);border:1px solid var(--line);padding:3px 9px;border-radius:7px}
+  .note,.tip,.warn,.risk{ border-radius:12px;padding:14px 16px;margin:16px 0;border:1px solid var(--line);font-size:14px}
+  .note{background:rgba(54,197,168,.08)}
+  .tip{background:rgba(54,211,153,.08)}
+  .warn{background:rgba(251,189,35,.08)}
+  .risk{background:rgba(248,114,114,.08)}
+  .note b,.tip b,.warn b,.risk b{display:block;margin-bottom:4px}
+  .tbl{overflow-x:auto;margin:18px 0;border:1px solid var(--line);border-radius:var(--radius)}
+  table{border-collapse:collapse;width:100%;font-size:13.5px}
+  th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--panel-2);color:var(--ink);font-weight:600}
+  tbody tr:hover{background:var(--panel-2)}
+  td code,code{font-family:Consolas,monospace;background:#0b0f1c;color:#9ad;padding:1px 6px;border-radius:5px;font-size:12.5px}
+  .diagram{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin:18px 0;overflow-x:auto}
+  .diagram svg{width:100%;height:auto;min-width:640px}
+  .steps{counter-reset:s;margin:16px 0}
+  .step{position:relative;padding:14px 16px 14px 52px;background:var(--panel);border:1px solid var(--line);border-radius:12px;margin:10px 0}
+  .step::before{counter-increment:s;content:counter(s);position:absolute;left:14px;top:14px;width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:700}
+  .step b{display:block;margin-bottom:3px}
+  .step p{margin:0;color:var(--ink-2);font-size:13.5px}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+  .pill{display:inline-block;font-size:11.5px;padding:3px 10px;border-radius:99px;border:1px solid var(--line);background:var(--chip);color:var(--ink-2);margin:3px 4px 3px 0}
+  .pill.ok{color:var(--ok);border-color:rgba(54,211,153,.4)}
+  .pill.bad{color:var(--bad);border-color:rgba(248,114,114,.4)}
+  .pill.warn{color:var(--warn);border-color:rgba(251,189,35,.4)}
+  .pill.r{color:#c4a3ff;border-color:rgba(124,92,255,.4)}
+  .lvl{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:6px;margin-right:8px;vertical-align:1px}
+  .lvl.s{background:rgba(54,211,153,.15);color:var(--ok)}
+  .lvl.m{background:rgba(251,189,35,.15);color:var(--warn)}
+  .lvl.d{background:rgba(248,114,114,.15);color:var(--bad)}
+  footer{padding:30px 32px 10px;color:var(--ink-2);font-size:13px;border-top:1px solid var(--line)}
+  .src{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:10px;font-size:13px;color:var(--ink-2)}
+  .menu-btn{display:none}
+  @media(max-width:880px){.shell{grid-template-columns:1fr}aside{position:fixed;left:0;top:0;z-index:50;width:276px;transform:translateX(-100%);transition:.25s}aside.open{transform:translateX(0)}.menu-btn{display:inline-flex}.wrap,.hero,.topbar{padding-left:18px;padding-right:18px}.twocol{grid-template-columns:1fr}.hero h1{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside id="sidebar">
+    <div class="brand">
+      <div class="logo">W10</div>
+      <div><b>Windows 10<br>整体优化方案</b><span>文档展示系统 · 适配 21H2/22H2</span></div>
+    </div>
+    <nav id="nav">
+      <div class="grp">开始</div>
+      <a href="#overview">概览与方法</a>
+      <a href="#principle">优化总纲（机理映射）</a>
+      <div class="grp">一 · 启动与引导</div>
+      <a href="#boot">快速启动与引导优化</a>
+      <a href="#startup">启动项与开机负载</a>
+      <div class="grp">二 · 内存</div>
+      <a href="#memory">内存与 SysMain</a>
+      <a href="#pagefile">分页文件与内存压缩</a>
+      <div class="grp">三 · CPU 与调度</div>
+      <a href="#cpu">线程调度与 Game Mode</a>
+      <a href="#efficiency">效率模式与电源节流</a>
+      <div class="grp">四 · 磁盘与存储</div>
+      <a href="#disk">存储感知与优化驱动器</a>
+      <a href="#bitlocker">BitLocker 与 NTFS 选项</a>
+      <div class="grp">五 · 电源</div>
+      <a href="#power">电源计划与 Modern Standby</a>
+      <div class="grp">六 · 服务/视觉/隐私</div>
+      <a href="#services">后台服务精简</a>
+      <a href="#visual">视觉与桌面合成</a>
+      <a href="#privacy">遥测与隐私</a>
+      <div class="grp">七 · 更新与游戏</div>
+      <a href="#update">更新与传递优化</a>
+      <a href="#game">游戏与多媒体</a>
+      <div class="grp">八 · 落地</div>
+      <a href="#verify">诊断与验证工具</a>
+      <a href="#checklist">一键检查清单</a>
+      <a href="#source">资料来源</a>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <button class="menu-btn" id="menuBtn">☰</button>
+      <div style="font-size:13px;color:var(--ink-2)">阅读进度</div>
+      <div class="prog"><i id="prog"></i></div>
+      <button id="themeBtn">🌓 主题</button>
+    </div>
+
+    <div class="hero">
+      <div class="tag">🪟 Windows 10 · 整体优化 · 文档展示系统</div>
+      <h1>Windows 10 整体优化方案</h1>
+      <p>以 Windows 10（21H2 / 22H2 为主）为适配对象，把《Windows Internals》的进程/线程/内存/I/O/电源/安全机理落到可执行的整体调优上。每条动作标注<span class="lvl s">低风险</span><span class="lvl m">中风险</span><span class="lvl d">高风险</span>与适用版本，附回退方式。</p>
+      <div class="meta">
+        <div class="m"><b>11</b><span>优化维度</span></div>
+        <div class="m"><b>21H2+</b><span>适配版本</span></div>
+        <div class="m"><b>3</b><span>风险分级</span></div>
+        <div class="m"><b>22H2</b><span>效率模式/专属特性</span></div>
+      </div>
+      <div class="note" style="margin-top:22px"><b>与磁盘优化方案的关系</b>本系统是上一套<a href="https://workbuddy.link/p/u4B6T95LH556y75cf5kCVA">《Windows 内部机理与磁盘优化方案》</a>的"整体版"：磁盘/存储优化仍是一根支柱（见第 11、12 节并复用其结论），本系统补齐启动、内存、CPU 调度、电源、服务、视觉、隐私、更新、游戏等其余维度，构成完整闭环。</div>
+    </div>
+
+    <div class="wrap">
+      <!-- 概览 -->
+      <section id="overview">
+        <h2><span class="no">00</span>概览与方法</h2>
+        <p class="lead">不要"一键优化神器"。Windows 10 的卡顿来自多个子系统的耦合，按"瓶颈在哪调哪"原则逐项处理。</p>
+        <div class="steps">
+          <div class="step"><b>先定位瓶颈，再优化</b><p>用任务管理器/资源监视器确认是 CPU、内存、磁盘还是网络受限，针对性优化；盲目全开反而会引入不稳定。</p></div>
+          <div class="step"><b>机理驱动、标注风险</b><p>每项优化都标明其背后的 Windows 内核机理（进程/线程/内存/I/O/电源）与风险等级，避免"听君一席话，重装 Win10"。</p></div>
+          <div class="step"><b>可回退优先</b><p>所有修改尽量走"设置/组策略/注册表可还原"路径；禁用服务与组策略前记录原值，出问题可一键回退。</p></div>
+        </div>
+        <div class="risk"><b>总原则红线</b>不要禁用与启动/安全强相关的服务（如 <code>Winmgmt</code>、<code>rpcss</code>、<code>Security Center</code>、<code>Windows Defender</code> 相关）；不要关闭 Windows Update 与防火墙；VBS/安全特性带来的轻微开销不建议为性能而关。</div>
+      </section>
+
+      <!-- 机理映射 -->
+      <section id="principle">
+        <h2><span class="no">01</span>优化总纲：机理 → 动作映射</h2>
+        <p class="lead">下表把 Windows 10 各优化维度对应到《Windows Internals》的内核机理，建立"为什么有效"的根据。</p>
+        <div class="tbl">
+          <table>
+            <thead><tr><th>优化维度</th><th>对应内核机理（原书）</th><th>Win10 落点</th></tr></thead>
+            <tbody>
+              <tr><td>启动/引导</td><td>启动轨迹（ReadyBoot）、SuperFetch、Smss/Wininit 流程</td><td>快速启动、启动项、SysMain</td></tr>
+              <tr><td>内存</td><td>虚拟内存、工作集、页面优先级（Ch.5）</td><td>分页文件、内存压缩、SysMain</td></tr>
+              <tr><td>CPU 调度</td><td>线程调度、优先级提升（Ch.3/4）</td><td>Game Mode、效率模式、亲和性</td></tr>
+              <tr><td>磁盘/存储</td><td>I/O 系统、存储驱动栈、缓存管理器（Ch.6）</td><td>存储感知、优化驱动器、写缓存</td></tr>
+              <tr><td>电源</td><td>电源管理器、Modern/Connected Standby（Ch.6）</td><td>电源计划、链路电源管理、S0ix</td></tr>
+              <tr><td>服务/后台</td><td>Executive、System 进程、驱动加载</td><td>服务延迟启动/禁用</td></tr>
+              <tr><td>隐私/遥测</td><td>ETW、WDI 诊断基础设施（Ch.6）</td><td>诊断数据级别、活动历史</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 启动 -->
+      <section id="boot">
+        <h2><span class="no">02</span>快速启动与引导优化</h2>
+        <p class="lead">对应启动轨迹（ReadyBoot）与混合关机机理：Windows 10 默认"快速启动"在关机时保存内核会话到 <code>hiberfil.sys</code>，开机直接还原而非全量初始化。</p>
+        <div class="twocol">
+          <div class="card"><h4><span class="dot"></span>开启快速启动 <span class="lvl s">低风险</span></h4><p>控制面板 → 电源选项 → 选择电源按钮功能 → 更改当前不可用设置 → 勾选"启用快速启动"。多数硬件默认已开。</p><span class="rel">机理：混合关机/内核会话还原</span></div>
+          <div class="card"><h4><span class="dot"></span>保留 hiberfil 空间 <span class="lvl s">低风险</span></h4><p>快速启动依赖休眠文件；若之前用 <code>powercfg -h off</code> 关过，需重新开启。文件大小约等于内存的 40–75%。</p><span class="rel">机理：hiberfil.sys</span></div>
+        </div>
+        <div class="warn"><b>注意</b>快速启动对"重启"无效（重启仍全初始化），仅加速"关机再开机"。部分旧驱动/双系统环境下快速启动会导致设备异常，遇到则关闭排查。</div>
+        <div class="tip"><b>验证</b><code>powercfg /a</code> 查看可用休眠/快速启动状态；<code>powercfg /energy</code> 生成能效报告定位引导期异常。</div>
+      </section>
+
+      <section id="startup">
+        <h2><span class="no">03</span>启动项与开机负载</h2>
+        <p class="lead">开机后由 <code>Wininit.exe</code>/<code>smss.exe</code> 拉起会话，过多开机自启进程会拖慢可用时间与早期内存/磁盘占用。</p>
+        <div class="steps">
+          <div class="step"><b>清理开机启动（设置 / 任务管理器）</b><p>设置 → 应用 → 启动，或任务管理器"启动"选项卡，禁用非必要高影响项（厂商工具条、更新器、云盘自启）。</p></div>
+          <div class="step"><b>延迟非关键服务</b><p>服务管理器中把非关键第三方服务启动类型设为"自动(延迟启动)"，错峰加载，缩短登录等待。</p></div>
+          <div class="step"><b>卸载冗余 OEM 管家软件</b><p>厂商"电脑管家/驱动助手"常驻且互相冲突，是开机慢与后台 I/O 的重灾区，优先卸载。</p></div>
+        </div>
+        <div class="tip"><b>验证</b>任务管理器"启动"影响列；<code>msconfig</code> 仅用于临时诊断，不建议长期使用"有选择的启动"。</div>
+      </section>
+
+      <!-- 内存 -->
+      <section id="memory">
+        <h2><span class="no">04</span>内存与 SysMain（原 SuperFetch）</h2>
+        <p class="lead">对应第 5 章主动内存管理：Windows 10 把 SuperFetch 改名为 <strong>SysMain</strong> 服务，按使用模式预取页面减少冷启动磁盘读。</p>
+        <div class="twocol">
+          <div class="card"><h4><span class="dot"></span>保留 SysMain <span class="lvl s">低风险</span></h4><p>物理内存 ≥ 8GB 的机器，SysMain 利大于弊；仅在"内存极小(≤4GB)且机械盘"的老机上可考虑关闭以减少后台预取 I/O。</p><span class="rel">机理：SuperFetch/预取</span></div>
+          <div class="card"><h4><span class="dot"></span>保证物理内存 <span class="lvl s">低风险</span></h4><p>最有效的"内存优化"是加内存。内存充足则工作集不被修剪、几乎不触发换页磁盘读。</p><span class="rel">机理：工作集 / 页错误</span></div>
+        </div>
+        <div class="risk"><b>误区</b>网上流传"禁用 SysMain 能提速"——多数现代机器禁用后反而增加冷启动磁盘读取。除非实测开机/常用软件明显变慢且确由 SysMain 引起，否则保留默认。</div>
+      </section>
+
+      <section id="pagefile">
+        <h2><span class="no">05</span>分页文件与内存压缩</h2>
+        <p class="lead">对应第 5 章虚拟内存；Windows 10 引入<strong>内存压缩</strong>（在 NT 池中压缩不活跃页面，减少换页到磁盘），以及 Store Manager 协同。</p>
+        <div class="tbl">
+          <table>
+            <thead><tr><th>项目</th><th>建议</th><th>机理 / 风险</th></tr></thead>
+            <tbody>
+              <tr><td>分页文件</td><td>系统托管（推荐），或固定为 1× 物理内存</td><td>安全阀；完全禁用会失去换页缓冲，极端情况触发系统受限 <span class="lvl d">高风险禁用</span></td></tr>
+              <tr><td>内存压缩</td><td>保持开启（默认）</td><td>压缩冷页面减少磁盘换页；CPU 开销极小 <span class="lvl s">低风险</span></td></tr>
+              <tr><td>多磁盘布局</td><td>分页文件置于最快盘（SSD）</td><td>换页 I/O 直接落 pagefile，SSD 显著降低页错误延迟</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tip"><b>验证</b>任务管理器 → 性能 → 内存 → 查看"已压缩"与"分页缓冲池"；<code>RAMMap</code>（Sysinternals）看各内存类型分布。</div>
+      </section>
+
+      <!-- CPU -->
+      <section id="cpu">
+        <h2><span class="no">06</span>线程调度与 Game Mode</h2>
+        <p class="lead">对应第 3/4 章：进程优先级类 + 线程调度，前台线程会被提升优先级。Windows 10 的 <strong>Game Mode（游戏模式）</strong>正是利用调度器把游戏线程提升为最高优先级、限制后台干扰。</p>
+        <div class="cards">
+          <div class="card"><h4><span class="dot"></span>Game Mode <span class="lvl s">低风险</span></h4><p>设置 → 游戏 → 游戏模式，开启后系统为前台游戏保留更多 CPU/GPU 资源、抑制后台更新与索引。对游戏/全屏应用有效。</p><span class="rel">机理：线程优先级提升</span></div>
+          <div class="card"><h4><span class="dot"></span>游戏栏(Game Bar) <span class="lvl s">低风险</span></h4><p><code>Win+G</code> 录制/性能监看；录制走硬件编码，开销低。非游戏场景可关。</p><span class="rel">机理：DWM/合成层</span></div>
+          <div class="card"><h4><span class="dot"></span>CPU 亲和性（进阶） <span class="lvl m">中风险</span></h4><p>对特定进程用 <code>start /AFFINITY</code> 或任务管理器"设置相关性"绑定核心，隔离噪声核。误设会导致程序无法运行。</p><span class="rel">机理：多处理器调度</span></div>
+        </div>
+        <div class="note"><b>原理</b>原书：线程优先级由"进程基本优先级 + 线程相对优先级"决定，前台线程有临时提升。Game Mode 本质是把游戏线程推到顶端，让后台 <code>MoUsoCoreWorker</code>（更新）、<code>SearchIndexer</code>（索引）等退让。</div>
+      </section>
+
+      <section id="efficiency">
+        <h2><span class="no">07</span>效率模式与电源节流</h2>
+        <p class="lead">Windows 10 22H2 任务管理器新增<strong>效率模式（Efficiency Mode）</strong>，对某进程设置 Eco QoS（降低 CPU 与 I/O 优先级）；更早版本有"电源节流（Power Throttling）"在电池下限制后台工作。</p>
+        <div class="twocol">
+          <div class="card"><h4><span class="dot"></span>效率模式（22H2+） <span class="lvl s">低风险</span></h4><p>任务管理器右键进程 → 效率模式，把高占用但非紧急的后台进程（浏览器冗余标签、同步客户端）压到低优先级，释放前台资源。</p><span class="rel">机理：Eco QoS / I/O 优先级</span></div>
+          <div class="card"><h4><span class="dot"></span>电源节流（电池） <span class="lvl s">低风险</span></h4><p>笔记本插电时后台全速；用电池时对非前台进程限频。设置 → 系统 → 电源和睡眠 → 相关设置中可调。</p><span class="rel">机理：电源管理器限频</span></div>
+        </div>
+        <div class="warn"><b>注意</b>不要对前台主进程、杀毒、驱动服务开效率模式，会导致卡顿或安全功能降级。</div>
+      </section>
+
+      <!-- 磁盘 -->
+      <section id="disk">
+        <h2><span class="no">08</span>存储感知与优化驱动器</h2>
+        <p class="lead">复用磁盘方案结论（详见<a href="https://workbuddy.link/p/u4B6T95LH556y75cf5kCVA">磁盘优化方案</a>），此处给 Windows 10 专属入口。</p>
+        <div class="steps">
+          <div class="step"><b>开启存储感知（Storage Sense）</b><p>设置 → 系统 → 存储 → 存储感知，定期自动清理临时文件/回收站，避免磁盘被缓存与更新残留占满导致性能下降。</p></div>
+          <div class="step"><b>优化驱动器计划</b><p>此电脑 → 磁盘属性 → 工具 → 优化，对 HDD 定期碎片整理、对 SSD 定期 Retrim（TRIM）。Windows 10 默认每周自动优化。</p></div>
+          <div class="step"><b>磁盘清理 + 旧 Windows</b><p>运行 <code>cleanmgr /sageset:1</code> 勾选"以前的 Windows 安装/更新缓存"，大版本升级后常可释放数十 GB。</p></div>
+        </div>
+        <div class="tip"><b>关键区分</b>SSD 上"优化"= Retrim（通知回收无效块），<strong>不是</strong>传统碎片整理；对 SSD 跑碎片整理既无收益又增写磨损，请用上套方案的介质判定。</div>
+      </section>
+
+      <section id="bitlocker">
+        <h2><span class="no">09</span>BitLocker 与 NTFS 选项</h2>
+        <p class="lead">对应第 6 章"文件系统过滤驱动"与第 7 章安全：BitLocker 是卷级加密过滤驱动，会在 I/O 栈上增加加解密层。</p>
+        <div class="tbl">
+          <table>
+            <thead><tr><th>项目</th><th>建议</th><th>机理 / 影响</th></tr></thead>
+            <tbody>
+              <tr><td>BitLocker</td><td>笔记本/移动设备建议开启</td><td>现代 CPU 有 AES-NI，加密开销极低；老 CPU 无硬件加速时会有可见 I/O 开销 <span class="lvl m">中风险关</span></td></tr>
+              <tr><td>NTFS 压缩</td><td>仅对小文件/归档目录用</td><td>实时压缩省空间但增加 CPU 与随机读开销；系统盘/数据库勿用</td></tr>
+              <tr><td>NTFS 加密(EFS)</td><td>按需单文件</td><td>同样走过滤驱动，整盘用优先选 BitLocker</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="risk"><b>权衡</b>安全过滤驱动必然在 I/O 路径增加一层（见上套方案"过滤驱动叠加延迟"）。在受 AES-NI 支持的机器上 BitLocker 几乎无损，应优先保安全；性能极端敏感的旧机上再考虑取舍。</div>
+      </section>
+
+      <!-- 电源 -->
+      <section id="power">
+        <h2><span class="no">10</span>电源计划与 Modern Standby</h2>
+        <p class="lead">对应第 6 章电源管理器：Modern Standby（S0ix）替代传统 S3，带来即时唤醒但后台也更活跃；电源计划决定 CPU/磁盘/PCIe 策略。</p>
+        <div class="cards">
+          <div class="card"><h4><span class="dot"></span>高性能/卓越性能 <span class="lvl s">低风险</span></h4><p>台式/工作站：电源计划设为"高性能"，或 <code>powercfg -duplicatescheme e9a42b02-d5d5-4411-9c1c-e5b6c6c4c0e0</code> 启用"卓越性能"，禁用磁盘闲置停转与链路降速。</p><span class="rel">机理：电源可用性请求</span></div>
+          <div class="card"><h4><span class="dot"></span>链路电源管理 <span class="lvl m">中风险</span></h4><p>低延迟/服务器：PCI Express → 链接状态电源管理设为"关闭"，避免随机 I/O 唤醒抖动。</p><span class="rel">机理：链路状态(L0s/L1)</span></div>
+          <div class="card"><h4><span class="dot"></span>USB 选择性暂停 <span class="lvl s">低风险</span></h4><p>笔记本保留"已启用"省电；台式可设为"已禁用"降低外设唤醒延迟。</p><span class="rel">机理：端口电源</span></div>
+        </div>
+        <div class="warn"><b>Modern Standby 注意</b>新笔记本多为 S0ix，传统"休眠/睡眠"行为改变，部分外设/网络在"睡眠"下仍活动。若需彻底断开，用"休眠"或关机；遇到唤醒异常可排查驱动 Modern Standby 兼容性。</div>
+      </section>
+
+      <!-- 服务 -->
+      <section id="services">
+        <h2><span class="no">11</span>后台服务精简</h2>
+        <p class="lead">对应 Executive/System 进程与驱动加载机理。谨慎延迟或禁用非关键服务可降后台 CPU/磁盘，但务必避开系统服务。</p>
+        <div class="tbl">
+          <table>
+            <thead><tr><th>服务</th><th>动作</th><th>风险</th><th>说明</th></tr></thead>
+            <tbody>
+              <tr><td>SysMain</td><td>通常保留</td><td><span class="lvl s">低</span></td><td>预取，老机小内存才考虑关</td></tr>
+              <tr><td>Windows Search</td><td>可禁用（改用 Everything）</td><td><span class="lvl m">中</span></td><td>索引常占磁盘；禁用后开始菜单搜索变弱</td></tr>
+              <tr><td>Connected User Experiences / DiagTrack</td><td>可禁用遥测</td><td><span class="lvl m">中</span></td><td>诊断数据上传，见隐私节</td></tr>
+              <tr><td>Print Spooler</td><td>无打印机则禁用</td><td><span class="lvl s">低</span></td><td>无打印机时纯占资源且有攻击面</td></tr>
+              <tr><td>蓝牙支持服务</td><td>无蓝牙则禁用</td><td><span class="lvl s">低</span></td><td>按需</td></tr>
+              <tr><td>Windows Update</td><td><span class="pill bad">勿禁用</span></td><td><span class="lvl d">高</span></td><td>安全更新必须保留</td></tr>
+              <tr><td>Security Center / Defender</td><td><span class="pill bad">勿禁用</span></td><td><span class="lvl d">高</span></td><td>安全防护核心</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="risk"><b>红线</b><code>RpcSs</code>、<code>DcomLaunch</code>、<code>Winmgmt</code>、<code>LanmanWorkstation</code> 等基础服务禁用会蓝屏/无法登录。禁用任何服务前：①记录原启动类型 ②用"延迟启动"代替"禁用" ③一次只改一项并重启验证。</div>
+      </section>
+
+      <!-- 视觉 -->
+      <section id="visual">
+        <h2><span class="no">12</span>视觉与桌面合成</h2>
+        <p class="lead">桌面窗口管理器（DWM）负责合成与透明效果，依赖 GPU/驱动上下文；低配机可牺牲视觉换流畅。</p>
+        <div class="twocol">
+          <div class="card"><h4><span class="dot"></span>视觉效果设置 <span class="lvl s">低风险</span></h4><p>此电脑 → 属性 → 高级 → 性能 → 设置：低配机选"调整为最佳性能"（关透明/动画/阴影）；中高配机保留。</p><span class="rel">机理：DWM 合成</span></div>
+          <div class="card"><h4><span class="dot"></span>硬件加速 GPU 调度(HAGS) <span class="lvl s">低风险</span></h4><p>设置 → 系统 → 显示 → 图形 → 更改默认图形设置：支持 WDDM 2.7 的显卡开启 HAGS，把调度权交给 GPU，降延迟。老旧显卡若有卡顿则关。</p><span class="rel">机理：GPU 调度</span></div>
+        </div>
+        <div class="tip"><b>验证</b>任务管理器 → 性能 → GPU 看"复制/视频编码"占用；HAGS 兼容性问题表现为偶发卡顿或黑屏，关回即可。</div>
+      </section>
+
+      <!-- 隐私 -->
+      <section id="privacy">
+        <h2><span class="no">13</span>遥测与隐私</h2>
+        <p class="lead">对应第 6 章 ETW / WDI 诊断基础设施：诊断数据通过 ETW 会话采集并上传，会持续产生后台活动。</p>
+        <div class="steps">
+          <div class="step"><b>降低诊断数据级别</b><p>设置 → 隐私 → 诊断和反馈，设为"必需诊断数据"（企业版可设安全/增强但受限）。减少后台遥测 I/O 与上传。</p></div>
+          <div class="step"><b>关闭活动历史与广告 ID</b><p>同页关闭"在此电脑上存储我的活动历史"；设置 → 隐私 → 常规，关"允许应用使用广告 ID"。削减后台追踪。</p></div>
+          <div class="step"><b>清理叙事与剪贴板云同步</b><p>设置 → 系统 → 剪贴板，关"跨设备同步"；减少云上后台通信。</p></div>
+        </div>
+        <div class="warn"><b>边界</b>家庭版无法完全关闭基础遥测（仅降为"必需"）。企业/教育版可用组策略 <code>AllowTelemetry=0</code> 进一步收紧。不要为"零遥测"而破坏更新与安全组件。</div>
+      </section>
+
+      <!-- 更新 -->
+      <section id="update">
+        <h2><span class="no">14</span>更新与传递优化</h2>
+        <p class="lead">Windows Update 的后台下载（<code>MoUsoCoreWorker</code>/<code>DoSvc</code>）是常见磁盘/带宽占用源；传递优化（Delivery Optimization）默认会向局域网/互联网 P2P 分发更新。</p>
+        <div class="twocol">
+          <div class="card"><h4><span class="dot"></span>传递优化限局域网 <span class="lvl s">低风险</span></h4><p>设置 → 更新 → 高级 → 传递优化，关"从 Internet 上的 PC 下载"，或限"本地网络"；避免占用外网带宽与磁盘。</p><span class="rel">机理：DoSvc P2P</span></div>
+          <div class="card"><h4><span class="dot"></span>活跃时段与暂停 <span class="lvl s">低风险</span></h4><p>设置"活跃时段"避免工作中重启；可临时暂停更新 7 天做稳定性窗口，但勿长期关。</p><span class="rel">机理：更新编排</span></div>
+        </div>
+        <div class="tip"><b>验证</b>设置 → 更新 → 查看更新历史；资源监视器 → 磁盘，看 <code>svchost (DoSvc)</code> 是否在大带宽下载。</div>
+      </section>
+
+      <!-- 游戏 -->
+      <section id="game">
+        <h2><span class="no">15</span>游戏与多媒体</h2>
+        <p class="lead">综合 Game Mode（第 6 节）、HAGS（第 12 节）与 GPU 偏好，给出游戏场景的整体配置。</p>
+        <div class="tbl">
+          <table>
+            <thead><tr><th>项目</th><th>建议</th><th>机理</th></tr></thead>
+            <tbody>
+              <tr><td>Game Mode</td><td>开启</td><td>前台游戏线程优先级提升</td></tr>
+              <tr><td>HAGS</td><td>支持的显卡开启</td><td>GPU 调度降延迟</td></tr>
+              <tr><td>GPU 性能偏好</td><td>设置 → 图形 → 指定游戏用"高性能"</td><td>独显直连/偏好选择</td></tr>
+              <tr><td>游戏内叠加</td><td>按需开 Game Bar</td><td>DWM 合成层</td></tr>
+              <tr><td>全屏独占 vs 无边框</td><td>无边框更稳（Win10 全屏优化）</td><td>合成路径差异</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note"><b>原理</b>Windows 10 的"全屏优化"让无边框窗口也走类似独占的路径并享 Game Mode 收益；老游戏若异常可右键 exe → 兼容性 → 关"全屏优化"。</div>
+      </section>
+
+      <!-- 验证 -->
+      <section id="verify">
+        <h2><span class="no">16</span>诊断与验证工具</h2>
+        <p class="lead">优化前后用下列工具量化对比，避免"玄学调优"。</p>
+        <div class="cards">
+          <div class="card"><h4><span class="dot"></span>任务管理器 / 资源监视器</h4><p>实时看 CPU/内存/磁盘/网络瓶颈与具体进程；资源监视器可下钻到文件级磁盘占用。</p><span class="rel">内置</span></div>
+          <div class="card"><h4><span class="dot"></span>性能监视器 (PerfMon)</h4><p>建数据收集器集，记录磁盘队列、页错误/秒、CPU 等待等，优化前后对比曲线。</p><span class="rel">内置</span></div>
+          <div class="card"><h4><span class="dot"></span>PowerShell / powercfg</h4><p><code>powercfg /energy</code>、<code>powercfg /batteryreport</code>、<code>Get-Service</code> 审计状态。</p><span class="rel">内置</span></div>
+          <div class="card"><h4><span class="dot"></span> Sysinternals 套件</h4><p>Process Monitor / RAMMap / Process Explorer / Autoruns（启动项审计），见磁盘方案工具集。</p><span class="rel">Sysinternals</span></div>
+        </div>
+      </section>
+
+      <!-- 清单 -->
+      <section id="checklist">
+        <h2><span class="no">17</span>一键检查清单</h2>
+        <div class="tbl">
+          <table>
+            <thead><tr><th>维度</th><th>动作</th><th>风险</th></tr></thead>
+            <tbody>
+              <tr><td>启动</td><td>快速启动开 + 清理开机项</td><td><span class="lvl s">低</span></td></tr>
+              <tr><td>内存</td><td>保 SysMain、系统托管分页文件、加内存</td><td><span class="lvl s">低</span></td></tr>
+              <tr><td>CPU</td><td>游戏开 Game Mode；22H2 后台开效率模式</td><td><span class="lvl s">低</span></td></tr>
+              <tr><td>磁盘</td><td>存储感知开、计划优化(SSD=Retrim)、清旧 Windows</td><td><span class="lvl s">低</span></td></tr>
+              <tr><td>电源</td><td>台式高性能/卓越性能；链路电源关(低延迟)</td><td><span class="lvl m">中</span></td></tr>
+              <tr><td>服务</td><td>无打印机禁 Print Spooler；索引按需；勿动安全/更新</td><td><span class="lvl m">中</span></td></tr>
+              <tr><td>视觉</td><td>低配关特效；显卡支持开 HAGS</td><td><span class="lvl s">低</span></td></tr>
+              <tr><td>隐私</td><td>诊断数据降为必需、关活动历史/广告 ID</td><td><span class="lvl m">中</span></td></tr>
+              <tr><td>更新</td><td>传递优化限局域网、设活跃时段</td><td><span class="lvl s">低</span></td></tr>
+              <tr><td>安全</td><td><span class="pill bad">保留 Defender+Update+防火墙</span></td><td><span class="lvl d">高</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 来源 -->
+      <section id="source">
+        <h2><span class="no">18</span>资料来源</h2>
+        <div class="src">
+          <p><strong>内核机理</strong>：Yosifovich P., Ionescu A., Solomon D. A. — <em>Windows Internals, Part 1</em>（7e）。涉及 Ch.3 进程、Ch.4 线程、Ch.5 内存管理、Ch.6 I/O 系统与电源管理器、Ch.7 安全（VBS/BitLocker 关联）。</p>
+          <p><strong>Windows 10 特性</strong>：快速启动/混合关机、SysMain(原 SuperFetch)、内存压缩、Game Mode、效率模式(22H2)、存储感知、Modern Standby(S0ix)、硬件加速 GPU 调度(HAGS)、传递优化(Delivery Optimization)、诊断数据级别——均来自 Windows 10 21H2/22H2 公开行为与设置项。</p>
+          <p><strong>关联文档</strong>：<a href="https://workbuddy.link/p/u4B6T95LH556y75cf5kCVA">《Windows 内部机理与磁盘优化方案》</a>（本系统的磁盘/存储支柱依据）。</p>
+          <p><strong>免责</strong>：禁用服务/组策略类操作标注了风险等级，请按"可回退"原则逐项执行；涉及系统稳定性与安全的项目（更新、Defender、防火墙、基础服务）不建议为性能而关闭。</p>
+        </div>
+      </section>
+
+      <footer>
+        Windows 10 整体优化方案 · 文档展示系统 · 基于 Windows Internals 机理映射 + Windows 10 特性实践。所有动作均可回退，请按瓶颈逐项验证。
+      </footer>
+    </div>
+  </main>
+</div>
+
+<script>
+  const root=document.documentElement;
+  document.getElementById('themeBtn').onclick=()=>{const t=root.getAttribute('data-theme')==='light'?'dark':'light';root.setAttribute('data-theme',t);localStorage.setItem('wb-theme',t);};
+  if(localStorage.getItem('wb-theme')==='light') root.setAttribute('data-theme','light');
+  const sb=document.getElementById('sidebar');
+  document.getElementById('menuBtn').onclick=()=>sb.classList.toggle('open');
+  document.querySelectorAll('#nav a').forEach(a=>a.onclick=()=>sb.classList.remove('open'));
+  const links=[...document.querySelectorAll('#nav a')];
+  const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+  const prog=document.getElementById('prog');
+  function onScroll(){const y=window.scrollY,h=document.documentElement.scrollHeight-window.innerHeight;prog.style.width=(h>0?Math.min(100,y/h*100):0)+'%';let cur=0;secs.forEach((s,i)=>{if(s&&s.getBoundingClientRect().top<=120)cur=i;});links.forEach((a,i)=>a.classList.toggle('active',i===cur));}
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+</script>
+</body>
+</html>

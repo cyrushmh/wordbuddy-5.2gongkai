@@ -1,0 +1,217 @@
+{
+  "key": "matrix",
+  "title": "数字矩阵冗余数据知识库（matrix）",
+  "domain": "存储",
+  "version": "v0.6.84",
+  "concept": "周天星斗大阵：散布全盘的冗余数据如满天星斗，只读观测其分布与体量，绝不触碰任何一颗『星』——清理只给指引，由用户沿原路执行。",
+  "philosophy": {
+    "_note": "周天星斗大阵的指导理念（两大阵法共用的总纲）：",
+    "items": [
+      "道法自然：只读观测不妄为——顺应冗余数据的自然分布，只记录星斗方位与体量，不强行改造一寸磁盘；",
+      "活在当下：立足当下实际环境——此刻有什么缓存才统计什么，没有就跳过，不虚构、不假设；",
+      "只有生存才能发展：denylist（个人数据与关键资产）是系统生存的根基，清理永不涉足——生存优先于发展；",
+      "在发展中能更好的生存：清掉可再生冗余腾出空间与性能，反哺系统更好地存续；",
+      "如此循环，亦复如是：观测 → 清理 → 再观测，每一轮都比上一轮更清明，循环上升。"
+    ]
+  },
+  "allowlist": {
+    "_note": "可再生/可再生成的冗余数据位置：缓存、临时、包管理缓存、回收站、日志轮转。只读统计存在性与体积；路径模板支持 ~（家目录）。",
+    "kinds": [
+      {
+        "id": "user-cache",
+        "label": "用户缓存（XDG_CACHE_HOME）",
+        "note": "程序自行重建的缓存（缩略图/字体/图标/浏览器缓存等）"
+      },
+      {
+        "id": "tmp",
+        "label": "临时目录",
+        "note": "重启即清的会话级临时数据"
+      },
+      {
+        "id": "pkg-cache",
+        "label": "包管理器缓存",
+        "note": "apt/pacman/dnf/yum 等下载的安装包缓存，可重新下载"
+      },
+      {
+        "id": "trash",
+        "label": "回收站",
+        "note": "用户已删除但未清空的项；清理须用户显式确认"
+      },
+      {
+        "id": "log-rotate",
+        "label": "日志轮转",
+        "note": "系统日志的轮转历史；只统计体积，绝不读取内容"
+      }
+    ],
+    "paths": [
+      {
+        "template": "~/.cache",
+        "kind": "user-cache",
+        "note": "XDG 用户缓存总目录"
+      },
+      {
+        "template": "~/.thumbnails",
+        "kind": "user-cache",
+        "note": "旧版缩略图缓存"
+      },
+      {
+        "template": "/tmp",
+        "kind": "tmp",
+        "note": "临时文件（会话级）"
+      },
+      {
+        "template": "/var/tmp",
+        "kind": "tmp",
+        "note": "持久临时文件（重启保留）"
+      },
+      {
+        "template": "/var/cache",
+        "kind": "pkg-cache",
+        "note": "系统级缓存（含 apt 归档等）"
+      },
+      {
+        "template": "/var/cache/apt/archives",
+        "kind": "pkg-cache",
+        "note": "Debian/Ubuntu 安装包缓存"
+      },
+      {
+        "template": "~/.cache/pacman/pkg",
+        "kind": "pkg-cache",
+        "note": "Arch 安装包缓存"
+      },
+      {
+        "template": "~/.cache/dnf",
+        "kind": "pkg-cache",
+        "note": "Fedora/dnf 缓存"
+      },
+      {
+        "template": "~/.cache/yum",
+        "kind": "pkg-cache",
+        "note": "RHEL/yum 缓存"
+      },
+      {
+        "template": "~/.local/share/Trash",
+        "kind": "trash",
+        "note": "freedesktop 回收站"
+      },
+      {
+        "template": "/var/log",
+        "kind": "log-rotate",
+        "note": "系统日志目录（含轮转历史）"
+      }
+    ]
+  },
+  "denylist": {
+    "_note": "个人数据与关键资产：任何情况下不扫描、不统计、不清理。与 allowlist 展开后必须无交集（测试强制）。",
+    "paths": [
+      {
+        "template": "~/.ssh",
+        "kind": "keys",
+        "note": "SSH 私钥与配置"
+      },
+      {
+        "template": "~/.gnupg",
+        "kind": "keys",
+        "note": "GPG 密钥环"
+      },
+      {
+        "template": "~/.password-store",
+        "kind": "keys",
+        "note": "pass 密码库"
+      },
+      {
+        "template": "~/.config/keyrings",
+        "kind": "keys",
+        "note": "GNOME 密钥环"
+      },
+      {
+        "template": "~/.netrc",
+        "kind": "credentials",
+        "note": "明文凭据文件"
+      },
+      {
+        "template": "~/.gitconfig",
+        "kind": "credentials",
+        "note": "可能含凭据的 git 配置"
+      },
+      {
+        "template": "~/.aws",
+        "kind": "credentials",
+        "note": "AWS 凭据"
+      },
+      {
+        "template": "~/.kube",
+        "kind": "credentials",
+        "note": "Kubernetes 凭据"
+      },
+      {
+        "template": "~/.docker",
+        "kind": "credentials",
+        "note": "Docker 配置（含仓库登录凭据）"
+      },
+      {
+        "template": "~/Documents",
+        "kind": "personal",
+        "note": "个人文档"
+      },
+      {
+        "template": "~/Desktop",
+        "kind": "personal",
+        "note": "桌面（常放个人文件）"
+      },
+      {
+        "template": "~/Downloads",
+        "kind": "personal",
+        "note": "下载目录（常混个人文件）"
+      },
+      {
+        "template": "~/Pictures",
+        "kind": "personal",
+        "note": "图片"
+      },
+      {
+        "template": "~/Music",
+        "kind": "personal",
+        "note": "音乐"
+      },
+      {
+        "template": "~/Videos",
+        "kind": "personal",
+        "note": "视频"
+      },
+      {
+        "template": "~/.mozilla",
+        "kind": "personal",
+        "note": "Firefox profile（书签/密码/历史）"
+      },
+      {
+        "template": "~/.config/google-chrome",
+        "kind": "personal",
+        "note": "Chrome profile"
+      },
+      {
+        "template": "~/.config/chromium",
+        "kind": "personal",
+        "note": "Chromium profile"
+      },
+      {
+        "template": "/etc/ssl/private",
+        "kind": "keys",
+        "note": "系统私钥"
+      },
+      {
+        "template": "/etc/pki",
+        "kind": "keys",
+        "note": "RHEL 系 PKI 目录（含私钥）"
+      }
+    ]
+  },
+  "build_artifacts_note": "构建产物目录（node_modules/target/dist/.gradle 等）语义上可再生，但位于用户项目目录内、误伤风险高，本子系统只扫系统级缓存/临时，构建产物清理仅以文本指引形式给出，由用户按项目自行判断。",
+  "guidance": [
+    "清理前先用本工具的只读报告确认目录与体积；不要凭记忆 rm -rf。",
+    "包管理器请用其自带接口清理（apt clean / pacman -Sc / dnf clean all），不要直接删缓存目录。",
+    "回收站清空是不可逆操作，务必先确认其中没有想恢复的文件。",
+    "日志轮转文件建议交给 logrotate/journalctl --vacuum 处理，不要手工删。"
+  ],
+  "compliance": "只读扫描：只统计 allowlist 内目录的存在性与体积，不读取任何文件内容，不删除、不移动、不改写任何数据；denylist（个人数据与关键资产）完全不触碰。清理建议仅以文本交还用户——原路返回，不代行写操作。"
+}
